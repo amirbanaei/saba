@@ -1,0 +1,179 @@
+﻿
+@{ Layout = null;}
+@model IEnumerable<SaabWebProject.Models.DomainModels.tbEquipmentMoalefeValueReffrenceSave>
+<div class="tab-pane active" id="">
+
+    <style>
+        .card .card-arrow-bottom-left:before, .card .card-arrow-bottom-right:before, .card .card-arrow-top-left:before, .card .card-arrow-top-right:before {
+            content: "";
+            position: absolute;
+            width: 2px;
+            height: 8px;
+            background: aqua;
+            opacity: .75;
+        }
+
+        .card .card-arrow-bottom-left:after, .card .card-arrow-bottom-right:after, .card .card-arrow-top-left:after, .card .card-arrow-top-right:after {
+            content: "";
+            position: absolute;
+            width: 10px;
+            height: 2px;
+            background: aqua;
+            opacity: .75;
+        }
+
+      
+    </style>
+    <link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="form-group mb-12">
+                <div class="table-responsive">
+                    <table class="table table-hover text-nowrap">
+                        <thead>
+                            <tr style="text-align:center;margin:auto">
+                                <th>
+                                    @Html.DisplayName("عملیات")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("ردیف")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("نام و نام خانوادگی")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("تاریخ")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("توضیحات")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("فایل")
+                                </th>
+
+                            </tr>
+
+                        </thead>
+                        <tbody>
+                            @{ int counter = 0;}
+                            @foreach (var item in Model)
+                            {
+                                counter = counter + 1;
+
+                            <tr style="text-align:center;">
+                                @if (counter == 1)
+                                {
+                                <td>
+                                    @if (item.Parent_ID != null)
+                                    {
+                                        <span>تایید</span>
+                                    }
+                                    else
+                                    {
+                                        <span id="@item.ID" class="parent">ثبت</span>
+                                    }
+                                </td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        @if (item.Parent_ID != null)
+                                        {
+                                            <span>تایید</span>
+                                        }
+                                        else
+                                        {
+                                            <span>ثبت</span>
+                                        }
+                                    </td>
+                                }
+
+                                <td>@counter</td>
+                                <td>@item.tbUsers.FullName</td>
+                                <td>@item.DateTime</td>
+                                <td>@item.Description</td>
+                                <td><a href="~/Areas/Contracts/Contents/DefFacilitiesEquipment/UserUpload/@item.File_SystemName">download</a></td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="row">
+    <div class="col-md-8">
+        <input class="form-control" id="description" placeholder="توضیحات" />
+    </div>
+    <div class="col-md-2">
+        <button class="btn form-control buttonGeneral" id="Up_File">
+            <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+            <span class="bGeneral-text"> آپلود</span>
+        </button>
+        <input id="myfile" style="display:none" type="file" class="form-control file" value="" />
+    </div>
+    <div class="col-md-2">
+        <button class="btn form-control buttonsabt" id="save">
+            <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+            <span class="bSabt-text">ثبت</span>
+        </button>
+    </div>
+</div>
+
+<script>
+     var fd = new FormData();
+
+     $("#Up_File").click(function () {
+          $("#myfile").click();
+     });
+
+     $("#myfile").change(function (e) {
+            $.each(e.target.files, function (index, file) {
+                fd.append("files", file);
+            });
+     });
+
+</script>
+<script>
+    $("#save").click(function () {
+        $("#loading-message").css("display", "block");
+        fd.append("Description" , $("#description").val());
+        fd.append("IDd" , $(".parent").attr("id"));
+          $.ajax({
+            url: '@Url.Action("AcceptEquipmentMoalefeValue", "DefFacilitiesEquipment", new { area = "Contracts" })',
+            type: 'POST',
+            data: fd,
+            processData: false,
+            contentType: false,
+              success: function (resp) {
+                  $("#loading-message").css("display", "none");
+                  if (resp == "True") {
+                     alert("با موفقیت تایید شد");
+                          //$("#Div_"+idd).empty();
+                          //$("#Div_"+idd).html("تایید شد");
+                  } else {
+
+                  }
+              },
+              error: function (resp2) {
+    console.log(resp2);
+                  $("#loading-message").css("display", "none");
+                  Toast.fire({
+                      icon: 'success',
+                      background: '#35434A',
+                      color: 'white',
+                      title: "عملیات  با خطا مواجه شده است "
+                  }).then(() => {
+                     
+                  });
+              }
+          });
+
+
+    });
+</script>

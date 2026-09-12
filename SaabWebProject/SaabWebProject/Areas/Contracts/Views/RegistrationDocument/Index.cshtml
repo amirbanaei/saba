@@ -1,0 +1,164 @@
+﻿@using SaabWebProject.Models.Classes;
+
+@{
+
+    ViewBag.Title = "مستندات دریافتی";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+<link href="~/MyStyles/MyStyle.css" rel="stylesheet" />
+
+<div class="">
+
+    <ul class="nav nav-tabs nav-tabs-v2 ps-4 pe-4" id="pills-tab" style="margin-bottom:30px">
+        @if (UserStuf.PosID == "9" || UserStuf.PosID == "2175")
+        {
+
+            <li class="nav-item me-3">
+                <a class="nav-link active" id="" data-bs-toggle="pill" href="#TabBody_SelectUsers">
+                    <button class=" nav-btn">کابران مجاز</button>
+                </a>
+            </li>
+            <li class="nav-item me-3">
+                <a class="nav-link " id="" data-bs-toggle="pill" href="#TabBody_title">
+                    <button class=" nav-btn">تعریف عناوین مدارک</button>
+                </a>
+            </li>
+            <li class="nav-item me-3">
+                <a class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" href="#TabBody_register">
+                    <button class=" nav-btn">مجوز ثبت و تایید</button>
+                </a>
+            </li>
+            <li class="nav-item me-3">
+                <a class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" href="#SaveDocument">
+                    <button class=" nav-btn">ثبت مدارک</button>
+                </a>
+            </li>
+
+            <li class="nav-item me-3">
+                <a class="nav-link" id="pills-profile-tab1" data-bs-toggle="pill" href="#ControlDocument">
+                    <button class=" nav-btn">کنترل مدارک</button>
+                </a>
+            </li>
+        }
+        else if (UserStuf.PosID == "2180" || UserStuf.PosID == "2179")
+        {
+            <li class="nav-item me-3">
+                <a class="nav-link" id="pills-profile-tab1" data-bs-toggle="pill" href="#ControlDocument">
+                    <button class=" nav-btn">کنترل مدارک</button>
+                </a>
+            </li>
+        }
+        else
+        {
+            @*<li class="nav-item">
+                    <a class="nav-link" id="pills-profile-tab" data-bs-toggle="pill"
+                       href="#SaveDocument">ثبت مدارک</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="pills-profile-tab1" data-bs-toggle="pill"
+                       href="#ControlDocument">کنترل مدارک</a>
+                </li>*@
+
+            <li class="nav-item me-3">
+                <a class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" href="#SaveDocument">
+                    <button class=" nav-btn">ثبت مدارک</button>
+                </a>
+            </li>
+
+            <li class="nav-item me-3">
+                <a class="nav-link" id="pills-profile-tab1" data-bs-toggle="pill" href="#ControlDocument">
+                    <button class=" nav-btn">کنترل مدارک</button>
+                </a>
+            </li>
+        }
+    </ul>
+
+
+    <div class="tab-content " id="">
+        @if (UserStuf.PosID == "9" || UserStuf.PosID == "2175")
+        {
+            <div class="tab-pane fade show active" id="TabBody_SelectUsers" style="height:auto;">
+                @Html.Action("authorizedUsers_Manage", "RegistrationDocument")
+            </div>
+            <div class="tab-pane fade  " id="TabBody_title" style="height:auto;">
+                @Html.Action("DefinitionOfDocumentTitles_Manage", "RegistrationDocument")
+            </div>
+
+            <div class="tab-pane fade  " id="TabBody_register" style="height:auto;">
+                @Html.Action("LicenseRegistrationAndApproval_Manage", "RegistrationDocument")
+            </div>
+
+            <div class="tab-pane fade  " id="SaveDocument" style="height:auto;">
+                @Html.Action("RegistrationOfDocuments_Manage", "RegistrationDocument")
+            </div>
+
+            <div class="tab-pane fade  " id="ControlDocument" style="height:auto;">
+                @Html.Action("ControlDocuments_Manage", "RegistrationDocument")
+            </div>
+
+        }
+        else if (UserStuf.PosID == "2180" || UserStuf.PosID == "2179")
+        {
+            <div class="tab-pane fade  " id="ControlDocument" style="height:auto;">
+                @Html.Action("ControlDocuments_Manage", "RegistrationDocument")
+            </div>
+        }
+        else
+        {
+            <div class="tab-pane fade  " id="SaveDocument" style="height:auto;">
+                @Html.Action("RegistrationOfDocuments_Manage", "RegistrationDocument")
+            </div>
+
+            <div class="tab-pane fade  " id="ControlDocument" style="height:auto;">
+                @Html.Action("ControlDocuments_Manage", "RegistrationDocument")
+            </div>
+        }
+    </div>
+
+</div>
+
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+
+@*نمایش پیمان ها*@
+<script>
+      $("#peyman3" ).load('@Url.Content("/../Contracts/Peyman/_GetAllListPeymans_Select")',function(){
+          $("#select_peyman").attr("id", "select_peyman3");
+          $("#select_peyman3").removeAttr("multiple");
+      });
+</script>
+<script>
+    //ویوبسته ها
+    $('#basteh2').picker({ search: true });
+</script>
+@*نمایش گزارشات آماده*@
+<script>
+    $("#ReadyReports").on('change', function () {
+        var selectvalue = $(this).find(":selected").val();
+        if (selectvalue == 1 || selectvalue == 2 || selectvalue == 3) {
+            $("#show").css('display', 'none');
+        }
+        if (selectvalue == 0) {
+            $("#show").css('display', 'flex');
+        }
+    });
+</script>
+@*نمایش گزارشات آماده*@
+<script>
+    $("#Show_Report").click(function () {
+        var selectvalue = $("#ReadyReports").find(":selected").val();
+        if (selectvalue == 1) {
+            $("#pic1").css('display', 'block');
+            $("#pic2").css('display', 'none');
+        }
+        else if (selectvalue == 2) {
+            $("#pic1").css('display', 'none');
+            $("#pic2").css('display', 'block');
+        }
+        else {
+            $("#pic1").css('display', 'none');
+            $("#pic2").css('display', 'none');
+        }
+    });
+</script>

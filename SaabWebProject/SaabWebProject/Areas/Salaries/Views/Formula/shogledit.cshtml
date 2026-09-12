@@ -1,0 +1,72 @@
+﻿@model SaabWebProject.Models.DomainModels.tbdetailjob
+
+@{
+    Layout = null;
+}
+
+<div class="row">
+    <div class="col-xl-2">
+        <div class="row">
+            <div class="col-xl-12">
+                <label class="form-label">
+                    نام شغل
+                </label>
+
+            </div>
+            <div class="col-xl-12">
+                <input class="form-control" id="shoghleditedi" value="@Model.detail_title" />
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+<div class="row">
+    <div class="col-xl-11">
+    </div>
+    <div class="col-xl-1">
+
+        @*<button id="btnCreate" type="button" class="form-control buttonGeneral">
+                <i class="fa fa-info fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text"> <a data-bs-toggle="modal" data-bs-target="#modalLg1" class="Details ">جزئیات</a></span>
+
+            </button>*@
+        <button class="btn form-control buttonGeneral" id="shoghledit">
+            <i class="fa fa-eye fa-fw me-1 VecGeneral"></i>
+            <span class="bGeneral-text">ثبت شغل </span>
+        </button>
+    </div>
+</div>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Scripts/jquery-3.3.1.min.js" type="text/javascript"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#shoghledit').click(function () {
+            var shoghlcreat = $('#shoghleditedi').val();
+
+            var id1 = @Model.ID;
+
+
+            var url = `/Salaries/Formula/shoghledit?shoghlcreat=${shoghlcreat}&id=${id1}`;
+
+            $.ajax({
+                type: 'GET',
+                url: url,
+                success: function (response) {
+                    if (response === "true") {
+                        alert('عملیات موفق بود.');
+                    } else {
+                        alert('پاسخ: ' + response);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('خطا در انجام درخواست.');
+                }
+            });
+        });
+    });
+</script>

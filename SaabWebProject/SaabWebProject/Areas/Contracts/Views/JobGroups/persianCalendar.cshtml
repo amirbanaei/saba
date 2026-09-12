@@ -1,0 +1,237 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "نقشه";
+
+}
+
+
+
+<script src="https://cdn.staticfile.org/openlayers/2.13.1/OpenLayers.debug.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v10.4.0/ol.css">
+
+
+<style>
+    #footer {
+        display: none;
+    }
+
+    div.olMap {
+        z-index: 0;
+        padding: 0 !important;
+        margin: 0 !important;
+        cursor: default;
+    }
+
+    .smallmap {
+        width: 100%;
+        height: 616px;
+        border: 1px solid #ccc;
+        border-radius: 15px;
+        overflow: auto;
+    }
+
+    .mapTotal {
+        position: relative;
+    }
+
+    .selectMap {
+        position: absolute;
+        z-index: 1000000;
+        top: 8px;
+        right: 8px;
+        width: 50%;
+    }
+
+        .selectMap select {
+            backdrop-filter: brightness(.5) blur(2px);
+            border-color: #6b92ac !important;
+            color: var(--bs-heading-color) !important;
+            font-weight: bold;
+        }
+</style>
+<style>
+    #map {
+        margin: 0 !important;
+    }
+
+
+    .leaflet-layer,
+    .leaflet-control-zoom-in,
+    .leaflet-control-zoom-out,
+    .leaflet-control-attribution {
+        filter: var(--bs-map-open);
+    }
+    .leaflet-control-attribution {
+        display: none !important;
+    }
+</style>
+<div class="mapTotal">
+    <div class="selectMap">
+        <div class="row ">
+            <div class="col-xl-4">
+                <select class="form-select" id="ostan">
+                    <option value="ایران">ایران</option>
+                    <option value="استان خراسان شمالی">استان خراسان شمالی</option>
+                    <option value="استان خراسان رضوی">استان خراسان رضوی</option>
+                    <option value="استان خراسان جنوبی">استان خراسان جنوبی</option>
+                    <option value="استان سیستان و بلوچستان">استان سیستان و بلوچستان</option>
+                    <option value="استان تهران">استان تهران</option>
+                    <option value="استان قم">استان قم</option>
+                    <option value="استان البرز">استان البرز</option>
+                    <option value="استان آذربایجان شرقی">استان آذربایجان شرقی</option>
+                    <option value="استان یزد">استان یزد</option>
+                    <option value="استان هرمزگان">استان هرمزگان</option>
+                    <option value="استان خوزستان">استان خوزستان</option>
+                    <option value="استان کرمان">استان کرمان</option>
+                    <option value="استان ایلام">استان ایلام</option>
+                    <option value="استان لرستان">استان لرستان</option>
+                    <option value="استان مرکزی">استان مرکزی</option>
+                    <option value="استان چهارمحال و بختیاری">استان چهارمحال و بختیاری</option>
+                    <option value="استان کرمانشاه">استان کرمانشاه</option>
+                    <option value="استان همدان">استان همدان</option>
+                    <option value="استان قزوین">استان قزوین</option>
+                    <option value="استان گیلان">استان گیلان</option>
+                    <option value="استان زنجان">استان زنجان</option>
+                    <option value="استان سمنان">استان سمنان</option>
+                    <option value="استان اصفهان">استان اصفهان</option>
+                    <option value="استان کهگیلویه و بویر احمد">استان کهگیلویه و بویر احمد</option>
+                    <option value="استان کردستان">استان کردستان</option>
+                    <option value="استان آذربایجان غربی">استان آذربایجان غربی</option>
+                    <option value="استان فارس">استان فارس</option>
+                    <option value="استان بوشهر">استان بوشهر</option>
+                    <option value="استان اردبیل">استان اردبیل</option>
+                    <option value="استان مازندران">استان مازندران</option>
+                    <option value="استان گلستان">استان گلستان</option>
+                </select>
+            </div>
+            <div class="col-xl-4">
+                <select class="form-select" id="shahr"></select>
+            </div>
+        </div>
+    </div>
+
+    <div id="map" class="smallmap mt-2"></div>
+</div>
+
+
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Scripts/sweetalert2.js"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+@*<script>
+        $("#ostan").select2({
+            allowClear: true
+        });
+        $("#shahr").select2({
+            allowClear: true
+        });
+    </script>*@
+
+<script>
+    var map = L.map('map').setView([32.4279, 53.6880], 5);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    var provinceLayer = L.geoJSON().addTo(map);
+    var cityLayer = L.geoJSON().addTo(map);
+    var pointsLayer = L.layerGroup().addTo(map);
+
+    function loadProvincePolygon(provinceName) {
+        provinceLayer.clearLayers();
+        cityLayer.clearLayers();
+        pointsLayer.clearLayers();
+
+        if (provinceName === "ایران") {
+            map.setView([32.4279, 53.6880], 5);
+            $('#shahr').empty().append('<option value="">انتخاب شهر</option>');
+            return;
+        }
+
+        $.getJSON("/Areas/Contracts/Contents/Peymans/dataset_province.json", function (data) {
+            var provinceFeature = data.features.find(f => f.properties.province_name === provinceName);
+
+            if (provinceFeature) {
+                provinceLayer.addData(provinceFeature).setStyle({
+                    color: "#FF0000",
+                    fillColor: "#edf90029",
+                    fillOpacity: 0.3,
+                    weight: 3
+                });
+
+                map.fitBounds(provinceLayer.getBounds());
+                loadCities(provinceName);
+                generateRandomPoints(provinceLayer.getBounds().getCenter());
+            }
+        });
+    }
+
+    function loadCities(provinceName) {
+        $.getJSON("/Areas/Contracts/Contents/Peymans/dataset_county.json", function (data) {
+            var cities = data.features.filter(f => f.properties.province_name === provinceName);
+
+            var citySelect = $('#shahr');
+            citySelect.empty().append('<option value="">انتخاب شهر</option>');
+            cities.forEach(city => {
+                citySelect.append(`<option value="${city.properties.county_name}">${city.properties.county_name}</option>`);
+            });
+        });
+    }
+
+    function loadCityPolygon(cityName) {
+        cityLayer.clearLayers();
+
+        $.getJSON("/Areas/Contracts/Contents/Peymans/dataset_county.json", function (data) {
+            var cityFeature = data.features.find(f => f.properties.county_name === cityName);
+
+            if (cityFeature) {
+                cityLayer.addData(cityFeature).setStyle({
+                    color: "#0a6960",
+                    fillColor: "#00ff0029",
+                    fillOpacity: 0.3,
+                    weight: 3
+                });
+               map.fitBounds(cityLayer.getBounds());
+            }
+        });
+    }
+
+    function generateRandomPoints(center) {
+        pointsLayer.clearLayers();
+
+        for (var i = 0; i < 5; i++) {
+            var latOffset = (Math.random() - 0.5) * 0.2;
+            var lonOffset = (Math.random() - 0.5) * 0.2;
+
+            var point = L.circleMarker([center.lat + latOffset, center.lng + lonOffset], {
+                color: "#3399ff",
+                fillColor: "#ffff00",
+                fillOpacity: 0.8,
+                radius: 8
+            }).addTo(pointsLayer);
+            animatePoint(point);
+        }
+    }
+
+    function animatePoint(point) {
+        var grow = true;
+        setInterval(() => {
+            var radius = point.getRadius();
+            point.setRadius(grow ? radius + 2 : radius - 2);
+            grow = !grow;
+        }, 500);
+    }
+
+    $(function () {
+        $('#ostan').change(function () {
+            loadProvincePolygon($(this).val());
+        });
+        $('#shahr').change(function () {
+            loadCityPolygon($(this).val());
+        });
+    });
+</script>

@@ -1,0 +1,1039 @@
+﻿@using System.Globalization
+@using MimeKit.Encodings
+@model SaabWebProject.Models.DomainModels.tbUsers
+@using SaabWebProject.Models.DomainModels;
+
+@{
+
+    Layout = null;
+    SaabEntities db = new SaabEntities();
+
+}
+
+<style>
+
+    .modal-lg, .modal-xl {
+        margin-top: 8px;
+        max-width: 100%;
+    }
+    .kart {
+        display: flex;
+        align-items: flex-start;
+        flex-direction: row-reverse;
+    }
+
+    .bankKart {
+        margin: 0 3px;
+    }
+</style>
+<link href="~/Areas/Users/Styles/ShareStyle.css" rel="stylesheet" />
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+<link href="~/Assets/plugins/BootstrapPersianDateTimePicker/src/jquery.md.bootstrap.datetimepicker.style.css" rel="stylesheet" />
+
+@*<div class="form-group">
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" checked value="" id="staf" />
+            <label class="form-check-label" for="staf">اطلاعات کارکنان</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" value="" id="customer" />
+            <label class="form-check-label" for="customer">اطلاعات مشتریان</label>
+        </div>
+    </div>
+    <hr />*@
+
+<div class="card p-4">
+    @{ var Counter = 0;}
+    @using (Html.BeginForm("_EditUser", "Users", FormMethod.Post, new { id = "FormEditUser" }))
+    {
+        var res = Html.Action("_Cities_Select", "Users", new { area = "Users" });
+        <input type="hidden" value="@Model.usr_ID" name="usr_ID" />
+
+        if (Model.usr_ParentID != null)
+        {
+            <input type="hidden" value="@Model.usr_ParentID" name="usr_ParentID" />
+        }
+        if (Model.usr_Password != null)
+        {
+            <input type="hidden" value="@Model.usr_Password" name="usr_Password" />
+        }
+        if (Model.usr_Picture != null)
+        {
+            <input type="hidden" value="@Model.usr_Picture" name="usr_Picture" />
+        }
+        if (!string.IsNullOrEmpty(Model.usr_Email))
+        {
+            <input type="hidden" value="@Model.usr_Email" name="usr_Email" />
+        }
+        if (Model.usr_IsActive != null)
+        {
+            <input type="hidden" value="@Model.usr_IsActive.ToString()" name="usr_IsActive" />
+        }
+
+        <div id="info_staf">
+            <div class="row">
+                <div class="col-xl-2">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <label class="form-label">
+                                نام
+                                <span class="red-star">*</span>
+                            </label>
+
+                        </div>
+                        <div class="col-xl-12">
+                            <input class="form-control" value="@Model.usr_Name" type="text" name="usr_Name" onkeyup="ValidationInput(this)" />
+                            <div class="invalid-feedback">این فیلد مورد نیاز است !</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-2">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <label class="form-label">
+                                نام خانوادگی
+                                <span class="red-star">*</span>
+                            </label>
+
+                        </div>
+                        <div class="col-xl-12">
+                            <input class="form-control" type="text" value="@Model.usr_Family" name="usr_Family" onkeyup="ValidationInput(this)" />
+                            <div class="invalid-feedback">این فیلد مورد نیاز است !</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-2">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <label class="form-label">
+                                کدملی
+                                <span class="red-star">*</span>
+                            </label>
+
+                        </div>
+                        <div class="col-xl-12">
+                            <input class="form-control" type="number" value="@Model.usr_NationalCode" name="usr_NationalCode" onkeyup="ValidationInput(this)" />
+                            <div class="invalid-feedback">این فیلد مورد نیاز است !</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-2">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <label class="form-label">شماره شناسنامه</label>
+                        </div>
+                        <div class="col-xl-12">
+                            <input class="form-control" value="@Model.usr_SHCode" name="usr_SHCode" type="number" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-4">
+                    <div class="row" style="margin-top: 0px !important;">
+                        <div class="col-xl-12">
+                            <label class="form-label">تاریخ تولد</label>
+                        </div>
+                        <div class="row">
+
+                            <div class="col-xl-6">
+                                @{
+                                    var year = "";
+                                    var month = "";
+                                    var day = "";
+                                }
+                                @if (Model.usr_DateOfBrith != null)
+                                {
+                                    var pc = new PersianCalendar();
+                                    year = pc.GetYear((DateTime)Model.usr_DateOfBrith).ToString();
+                                    month = @pc.GetMonth((DateTime)Model.usr_DateOfBrith).ToString();
+                                    day = pc.GetDayOfMonth((DateTime)Model.usr_DateOfBrith).ToString();
+                                }
+                                <select id="year_edit" name="year_edit" class="form-control">
+                                    @{
+                                        System.Globalization.PersianCalendar c = new System.Globalization.PersianCalendar();
+
+                                        for (var i = 100; i >= 1; i--)
+                                        {
+                                            var s = DateTime.Now.AddYears(-i);
+                                            if (Model.usr_DateOfBrith != null)
+                                            {
+                                                if (s.Year == Model.usr_DateOfBrith.Value.Year)
+                                                {
+                                                    <option selected="selected" value="@c.GetYear(s)">@c.GetYear(s)</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@c.GetYear(s)">@c.GetYear(s)</option>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <option value="@c.GetYear(s)">@c.GetYear(s)</option>
+                                            }
+                                        }
+
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-xl-3">
+                                <select id="month_edit" name="month_edit" class="form-control">
+                                    @{
+                                        for (var i = 1; i <= 12; i++)
+                                        {
+                                            if (month != "")
+                                            {
+                                                if (month == i.ToString())
+                                                {
+                                                    <option selected="selected" value="@i">@i</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@i">@i</option>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <option value="@i">@i</option>
+                                            }
+                                        }
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-xl-3">
+                                <select id="day_edit" name="day_edit" class="form-control">
+                                    @{
+                                        for (var i = 1; i <= 31; i++)
+                                        {
+                                            if (day != "")
+                                            {
+                                                if (day == i.ToString())
+                                                {
+                                                    <option selected="selected" value="@i">@i</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@i">@i</option>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <option value="@i">@i</option>
+                                            }
+                                        }
+                                    }
+                                </select>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    @*<div class="row">
+                <div class="col-xl-12">
+                    <label class="form-label">تاریخ تولد</label>
+                </div>
+                <div class="col-xl-12">
+                    <input class="form-control" type="text" id="BrithDate" value="@Model.usr_DateOfBrith.ToString()" name="usr_DateOfBrith" />
+                    <input id="BrithDate_1" type="hidden" />
+                </div>
+            </div>*@
+                </div>
+
+                <div class="col-xl-2">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <label class="form-label">نام پدر</label>
+                        </div>
+                        <div class="col-xl-12">
+                            <input class="form-control" value="@Model.usr_FatherName" type="text" name="usr_FatherName" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-2">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <label class="form-label">
+                                محل تولد
+                                <span class="red-star"></span>
+                            </label>
+
+                        </div>
+                        <div class="col-xl-12" id="PlaceOfBrith_Div">
+                            @res
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-2">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <label class="form-label">محل صدور شناسنامه</label>
+                        </div>
+                        <div class="col-xl-12" id="PlaceOfIssue_Div">
+                            @res
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-2">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <label class="form-label">جنسیت</label>
+                        </div>
+                        <div class="col-xl-12">
+                            <select id="gender" name="usr_Gender" class="form-select">
+                                <option value="1">زن</option>
+                                <option value="2">مرد</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="col-xl-2">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <label class="form-label">وضعیت تاهل</label>
+                        </div>
+                        <div class="col-xl-12">
+                            <select id="marital" name="usr_MaritaIStatus" class="form-select">
+                                <option value="1">متاهل</option>
+                                <option value="2">مجرد</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-2">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <label class="form-label">نظام وظیفه</label>
+                        </div>
+                        <div class="col-xl-12">
+                            <select class="form-control" name="usr_Dutysystem" id="Dutysystem">
+                                <option value="1">مشمول</option>
+                                <option value="2">پایان خدمت</option>
+                                <option value="3">معاف</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-2">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <label class="form-label">شماره موبایل</label>
+                        </div>
+                        <div class="col-xl-12">
+                            <input class="form-control" value="@Model.usr_PhoneNumber" name="usr_PhoneNumber" type="number" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-2">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <label class="form-label">شماره ثابت</label>
+                        </div>
+                        <div class="col-xl-12">
+                            <input class="form-control" value="@Model.usr_RegistrationNumber" name="usr_RegistrationNumber" type="number" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-2">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <label class="form-label">کد پستی</label>
+                        </div>
+                        <div class="col-xl-12">
+                            <input class="form-control" value="@Model.usr_PostalCode" name="usr_PostalCode" type="number" onkeyup="ValidationInput(this)" />
+                            <div class="invalid-feedback">این فیلد مورد نیاز است !</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-2">
+                    <div class="col-xl-12">
+                        <label class="form-label">مدرک تحصیلی</label>
+                    </div>
+                    <div class="col-xl-12">
+                        <select class="form-control" name="usr_Degree" id="usr_Degree">
+                            <option value="1">بیسواد</option>
+                            <option value="2">سیکل</option>
+                            <option value="3">دیپلم</option>
+                            <option value="4">کاردانی</option>
+                            <option value="5">کارشناسی</option>
+                            <option value="6">کارشناسی ارشد</option>
+                            <option value="8">دکتری</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-xl-2">
+                    <div class="col-xl-12">
+                        <label class="form-label">مقطع تحصیلی</label>
+                    </div>
+                    <div class="col-xl-12">
+                        <select class="form-control" name="usr_Grade" id="usr_Grade">
+                            <option value="1">بیسواد</option>
+                            <option value="2">سیکل</option>
+                            <option value="3">دیپلم</option>
+                            <option value="4">کاردانی</option>
+                            <option value="5">کارشناسی</option>
+                            <option value="6">کارشناسی ارشد</option>
+                            <option value="8">دکتری</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-xl-2">
+                    <div class="row">
+
+                        <div class="col-xl-12">
+                            <label class="form-label">تعداد حق اولاد مشمول بیمه</label>
+                        </div>
+                        <div class="col-xl-12">
+                            <input class="form-control" type="number" min="1" max="10" name="usr_Child_Allowance" value="@Model.usr_Child_Allowance" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-1">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <label class="form-label">تعداد کل اولاد</label>
+                        </div>
+                        <div class="col-xl-12">
+                            <input class="form-control" type="number" name="usr_All_Child_Allowance" value="@Model.usr_All_Child_Allowance" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-2">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <label class="form-label">شغل لیست بیمه </label>
+                        </div>
+                        @{
+                            var ttjob = db.Link_User_And_Peyman.Where(p => p.FK_User_ID == Model.usr_ID && p.Status == true).FirstOrDefault();
+
+
+                        }
+                        <select class="form-select usr_typeshoghl" id="usr_typeshoghl" name="usr_typeshoghl">
+                            @if (Model.tbjob != null)
+                            {
+
+                                <option value="@Model.tbjob.ID">@Model.tbjob.Name</option>
+
+                            }
+
+                            else
+                            {
+                                <option hidden value="Select">انتخاب مورد</option>
+
+                            }
+                            @foreach (var item in db.tbjob.ToList())
+                            {
+                                <option value="@item.ID">@item.Name</option>
+                            }
+                        </select>
+                        @*<div class="col-xl-12">
+
+                    @Html.Action("_GetAllListPeymans_Select", "Peyman", new { area = "Contracts" })
+                </div>*@
+                    </div>
+                </div>
+
+
+                <div class="col-xl-2">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <label class="form-label">شغل اصلی </label>
+                        </div>
+                        @{
+                            //var ttjob = db.Link_User_And_Peyman.Where(p => p.FK_User_ID == Model.usr_ID && p.Status == true).FirstOrDefault();
+
+
+                        }
+                        <select class="form-select usr_typeshoghl" id="usr_typeshoghl" name="usr_typeshoghl">
+                            @if (Model.tbdetailjob != null)
+                            {
+
+                                <option value="@Model.tbdetailjob.ID">@Model.tbdetailjob.detail_title</option>
+
+                            }
+
+                            else
+                            {
+                                <option hidden value="Select">انتخاب مورد</option>
+
+                            }
+                            @foreach (var item in db.tbdetailjob.ToList())
+                            {
+                                <option value="@item.ID">@item.detail_title</option>
+                            }
+                        </select>
+                        @*<div class="col-xl-12">
+
+                    @Html.Action("_GetAllListPeymans_Select", "Peyman", new { area = "Contracts" })
+                </div>*@
+                    </div>
+                </div>
+
+
+                <div class="col-xl-2">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <label class="form-label">شهر محل خدمت</label>
+                        </div>
+                        <div class="col-xl-12">
+                            @res
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <label class="form-label">پیمان ها</label>
+                        </div>
+                        @{
+                            var tt = db.Link_User_And_Peyman.Where(p => p.FK_User_ID == Model.usr_ID && p.Status == true).FirstOrDefault();
+
+
+                        }
+                        <select class="form-select select_peyman" id="select_peyman" name="select_peyman">
+                            @if (tt != null)
+                            {
+
+                                <option value="@tt.tbPeymanContracts.pec_ID">@tt.tbPeymanContracts.pec_Title</option>
+
+                            }
+
+                            else
+                            {
+                                <option hidden value="Select">انتخاب مورد</option>
+
+                            }
+                            @foreach (var item in db.tbPeymanContracts.ToList())
+                            {
+                                <option value="@item.pec_ID">@item.pec_Title</option>
+                            }
+                        </select>
+                        @*<div class="col-xl-12">
+
+                    @Html.Action("_GetAllListPeymans_Select", "Peyman", new { area = "Contracts" })
+                </div>*@
+                    </div>
+                </div>
+                <div class="col-xl-4">
+                    <div class="row" style="margin-top: 0px !important;">
+                        <div class="col-xl-12">
+                            <label class="form-label">تاریخ پیمان</label>
+                        </div>
+                        <div class="row">
+
+                            <div class="col-xl-6">
+                                @{
+                                    string year_pymn = "";
+                                    string month_pymn = "";
+                                    string day_pymn = "";
+
+                                    if (tt != null && tt.datatime != null)
+                                    {
+                                        var pc = new System.Globalization.PersianCalendar();
+                                        var date = (DateTime)tt.datatime;
+
+                                        year_pymn = pc.GetYear(date).ToString();
+                                        month_pymn = pc.GetMonth(date).ToString();
+                                        day_pymn = pc.GetDayOfMonth(date).ToString();
+                                    }
+                                }
+
+                                <select id="year_pymn_edit" name="year_pymn_edit" class="form-control">
+                                    @{
+
+                                        for (var i = 100; i >= 0; i--)
+                                        {
+                                            var s = DateTime.Now.AddYears(-i);
+                                            if (year_pymn != null && tt != null && tt.datatime!=null)
+                                            {
+                                                if (s.Year == tt.datatime.Value.Year)
+                                                {
+                                                    <option selected="selected" value="@c.GetYear(s)">@c.GetYear(s)</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@c.GetYear(s)">@c.GetYear(s)</option>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <option value="@c.GetYear(s)">@c.GetYear(s)</option>
+                                            }
+                                        }
+
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-xl-3">
+                                <select id="month_pymn_edit" name="month_pymn_edit" class="form-control">
+                                    @{
+                                        for (var i = 1; i <= 12; i++)
+                                        {
+                                            if (month_pymn != "" && tt != null && tt.datatime != null)
+                                            {
+                                                if (month_pymn == i.ToString())
+                                                {
+                                                    <option selected="selected" value="@i">@i</option>
+                                                }
+                                            else
+                                            {
+                                                    <option value="@i">@i</option>
+                                                }
+                                        }
+                                            else
+                                        {
+                                                <option value="@i">@i</option>
+                                            }
+                                    }
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-xl-3">
+                                <select id="day_pymn_edit" name="day_pymn_edit" class="form-control">
+                                    @{
+                                        for (var i = 1; i <= 31; i++)
+                                        {
+                                            if (day_pymn != "" && tt != null && tt.datatime != null)
+                                            {
+                                                if (day_pymn == i.ToString())
+                                                {
+                                                    <option selected="selected" value="@i">@i</option>
+                                                }
+                                            else
+                                            {
+                                                    <option value="@i">@i</option>
+                                                }
+                                        }
+                                            else
+                                        {
+                                                <option value="@i">@i</option>
+                                            }
+                                    }
+                                    }
+                                </select>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    @*<div class="row">
+                <div class="col-xl-12">
+                    <label class="form-label">تاریخ تولد</label>
+                </div>
+                <div class="col-xl-12">
+                    <input class="form-control" type="text" id="BrithDate" value="@Model.usr_DateOfBrith.ToString()" name="usr_DateOfBrith" />
+                    <input id="BrithDate_1" type="hidden" />
+                </div>
+            </div>*@
+                </div>
+                <div class="col-xl-3">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <label class="form-label">
+                                سمت اصلی
+                                <span class="red-star">*</span>
+                            </label>
+
+                        </div>
+                        <div class="col-xl-12">
+                            @Html.Action("_GetAllBusinessSide_Select", "BusinessSide", new { area = "Users" })
+                            <div class="invalid-feedback">این فیلد مورد نیاز است !</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-2">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <label class="form-label">
+                                شماره پرسنلی
+                                <span class="red-star">*</span>
+                            </label>
+
+                        </div>
+                        <div class="col-xl-12">
+                            <input class="form-control" type="number" name="usr_Personal_ID" value="@Model.usr_Personal_ID" onkeyup="ValidationInput(this)" />
+                            <div class="invalid-feedback">این فیلد مورد نیاز است !</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-2">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <label class="form-label">پسورد</label>
+                        </div>
+                        <div class="col-xl-12">
+                            <input class="form-control" type="number" name="password" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-8">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <label class="form-label">
+                                آدرس
+                                <span class="red-star"></span>
+                            </label>
+
+                        </div>
+                        <div class="col-xl-12 ">
+                            <textarea class="form-control inputDiv" name="usr_Address" style="height: 50px;">
+                              @Model.usr_Address
+                    </textarea>
+                        </div>
+                    </div>
+                </div>
+                <div id="bankInfo"></div>
+                <div class="col-xl-12" style="margin-bottom:10px">
+                    <div class="row">
+                        <div class="col-xl-11">ورود اطلاعات بانکی</div>
+                        <div class="col-xl-1">
+                            <a href="#" class="btn form-control buttonGeneralPlus" onclick="AddNewHesab()" title="افزودن شماره حساب">
+                                <i class="fa fa-plus fa-fw me-1 VecGeneral"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <div class="col-xl-12" style="margin-bottom:10px">
+                    <div class="row">
+                        <div class="col-xl-11">
+
+                        </div>
+                        <div class="col-xl-1">
+                            <a href="#" class="btn form-control buttonGeneralPlus" onclick="AddNewMoalefe()" title="اضافه کردن مولفه کاربری جدید">
+                                <i class="fa fa-plus fa-fw me-1 VecGeneral"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="moalefeList">
+
+                    @foreach (var item in Model.Link_User_And_Moalefe.Where(p => p.Status == true).ToList())
+                    {
+                        Counter++;
+                        <div class='row moalefeItem' id='Level_@Counter'>
+                            <div class='col-xl-2 col-sm-6  col-6'>
+                                <div class='row'>
+                                    <div class='col-xl-12 div_slc_moalefe' id='#div_slc_moalefe_@Counter'>
+                                        @Html.Action("MoalefeKarbari_Select", "MoalefeDastMozdi", new { area = "Contracts" })
+                                    </div>
+                                </div>
+                            </div><div class='col-xl-6 col-sm-4 col-4'>
+                                <div class='row'>
+                                    <div class='col-xl-12'>
+                                        <input class='form-control' type='text' value="@item.Moalefe_Value" name="MoalefeValue" />
+                                    </div>
+                                </div>
+                            </div><div class='col-xl-2 col-sm-2 col-2'>
+                                <div class='row'>
+                                    <div class='col-xl-12 '>
+                                        <a href='#' onclick='RemoveLevel(this)' id='RemoveLevel_@Counter'>
+                                            <i class='fa fa-minus-circle text-danger' style='font-size:25px;'></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+    <hr />
+    <div class="row" style="margin-top:20px">
+        <div class="col-xl-11">
+
+        </div>
+        <div class="col-xl-1">
+            <button class="btn btn-success form-control buttonGeneral" id="SaveEdit">
+                <i class="fa fa-edit fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text"> ویرایش</span>
+
+            </button>
+        </div>
+    </div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+<script src="~/Scripts/popper.min.js"></script>
+<script src="/Scripts/jquery.unobtrusive-ajax.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script>
+    let nodesLength = 0;
+    function AddNewHesab(e) {
+        var a = 1;
+        nodesLength++;
+        a++;
+
+
+        $("#bankInfo").append(`
+          <div class="row bankItem" id="bank_${nodesLength}">
+                <div class="col-xl-2">
+                    <label class="form-label" >نام بانک</label>
+                    <input class="form-control"  id="ba_${nodesLength}"   ></div>
+                <div class="col-xl-3">
+                    <label class="form-label" >شماره کارت</label>
+                    <div class="kart">
+                        <input class="form-control bankKart" id="ka1_${nodesLength}" maxlength="4" oninput="moveToNext(this, 'ka2_${nodesLength}')" inputmode="numeric"/>
+                        <input class="form-control bankKart" id="ka2_${nodesLength}" maxlength="4" oninput="moveToNext(this, 'ka3_${nodesLength}')" inputmode="numeric"/>
+                        <input class="form-control bankKart" id="ka3_${nodesLength}" maxlength="4" oninput="moveToNext(this, 'ka4_${nodesLength}')" inputmode="numeric"/>
+                        <input class="form-control bankKart" id="ka4_${nodesLength}" maxlength="4" oninput="moveToNext(this, 'ka8_${nodesLength}')" inputmode="numeric" />
+                    </div>
+                </div>
+                <div class="col-xl-3">
+                    <label class="form-label" >شماره حساب</label>
+                    <input class="form-control "  id="he_${nodesLength}" type="number" inputmode="numeric" pattern="[0-9]*" placeholder=""></div>
+                <div class="col-xl-3">
+                    <label class="form-label" >شماره شبا</label>
+                    <input class="form-control shaba"  id="sh_${nodesLength}"  inputmode="numeric" pattern="[0-9]*" placeholder="بدون IR وارد شود">
+                </div>
+                <div class="col-xl-1">
+                    <a href="#" class="btn form-control buttonGeneralMins" onclick="clearInputs(this)" id="RemoveBank_${nodesLength}">
+                          <i class="fa fa-multiply fa-fw me-1 VecGeneral"></i>
+                    </a>
+                </div>
+           </div>
+
+
+        `);
+        const inputs = document.querySelectorAll('.bankKart')  // همه عناصر با کلاس kartt
+
+        inputs.forEach(input => {
+            input.addEventListener('input', () => {
+                input.value = input.value.replace(/\D/g, '');
+            });
+        })
+
+
+        //const inputs = document.querySelectorAll('.kartt')  // همه عناصر با کلاس kartt
+
+        //inputs.forEach(input => {
+        //    input.addEventListener('input', () => {
+        //        let rawValue = input.value.replace(/\D/g, '').slice(0, 16)
+        //        input.value = rawValue.match(/.{1,4}/g)?.join('-') || ''
+        //    });
+        //})
+        const inputSh = document.querySelectorAll('.shaba')
+
+        inputSh.forEach(input => {
+            input.addEventListener('input', () => {
+                let rawValue = input.value.replace(/\D/g, '').slice(0, 26)
+                let formattedValue = ''
+                if (rawValue.length > 0) formattedValue += rawValue.substring(0, 2)
+                if (rawValue.length > 2) formattedValue += '-' + rawValue.substring(2, 6)
+                if (rawValue.length > 6) formattedValue += '-' + rawValue.substring(6, 10)
+                if (rawValue.length > 10) formattedValue += '-' + rawValue.substring(10, 14)
+                if (rawValue.length > 14) formattedValue += '-' + rawValue.substring(14, 18)
+                if (rawValue.length > 18) formattedValue += '-' + rawValue.substring(18, 22)
+                if (rawValue.length > 22) formattedValue += '-' + rawValue.substring(22, 24)
+
+                input.value = formattedValue
+            })
+        })
+    }
+    function clearInputs(input) {
+        var RemoveId = input.id;
+        var Id = RemoveId.split('_')[1];
+        $("#bank_" + Id).remove();
+    }
+    function moveToNext(currentInput, nextInputId) {
+        if (currentInput.value.length >= currentInput.maxLength) {
+            if (nextInputId) {
+                document.getElementById(nextInputId).focus();
+            }
+        }
+    }
+
+</script>
+
+<script>
+    var Counter_level = @Counter;
+    $(function () {
+
+        if (Counter_level != 0) {
+            $("#ShowHeader").css("display", "flex");
+        }
+
+        @foreach(var item in Model.Link_User_And_Moalefe.ToList())
+            {
+                    @:$('.select_moalefeKarbari').picker('set', '@item.FK_Moalefe_ID');
+            }
+
+    });
+
+    /// Add New Level Moalefe
+
+    function AddNewMoalefe() {
+        Counter_level++;
+        console.log(Counter_level);
+
+        $.ajax({
+            url: "@Url.Action("AddNewLevelForCreateUser", "Users")",
+            type: "Get",
+            data: { Counter: Counter_level},
+            dataType: "html",
+            success: function (result) {
+                $("#ShowHeader").css("display", "flex");
+                var moalefeList = $(".moalefeList");
+                console.log(result);
+                moalefeList.append(result);
+                $('.select_moalefeKarbari').last().picker({ search: true });
+            }
+
+        });
+
+
+    }
+    /// Remove One Level Moalefe
+    function RemoveLevel(input) {
+        Counter_level--;
+        console.info($(".moalefeItem"));
+        var RemoveId = input.id;
+        var Id = RemoveId.split('_')[1];
+
+        $("#Level_" + Id).remove();
+        if ($(".moalefeItem").length == 0) {
+            $("#ShowHeader").css("display", "none");
+
+        }
+    }
+
+    $('#gender').picker();
+    $('#gender').picker('set', '@Model.usr_Gender');
+    $('#marital').picker();
+    $('#marital').picker('set', '@Model.usr_MaritaIStatus');
+    $('.PlaceOf').picker({ search: true });
+    $("#select_position").picker({ search: true });
+    $('#usr_Degree').picker({ search: true });
+    $('#usr_Degree').picker('set', '@Model.usr_Degree');
+    $('#usr_Grade').picker({ search: true });
+    $('#usr_Grade').picker('set', '@Model.usr_Grade');
+    $('#usr_Grade').picker('set', '@Model.usr_Grade');
+    @foreach (var item in Model.tbUser_link_BusinessSide.Where(p => p.Status == true).ToList())
+    {
+        @:$("#select_position").picker('set', '@item.tbBusinessSide.up_Id');
+    }
+    @*@foreach (var item in Model.Link_User_And_Peyman.Where(p => p.Status == true).ToList())
+    {
+        @:$("#select_peyman").picker('set', '@item.FK_Peyman_ID');
+    }*@
+
+    $("#type").picker();
+    $("#type").picker('set', '@Model.usr_type');
+    $("#Dutysystem").picker();
+    $("#Dutysystem").picker('set', '@Model.usr_Dutysystem');
+    $("#usr_City_Dutysystem").picker();
+    //$("#select_peyman").picker({ search: true });
+    $("#year_edit").picker({search:true});
+    $("#month_edit").picker({ search: true });
+    $("#day_edit").picker({ search: true });
+
+
+    $(function () {
+        @if (Model.tbUser_link_BusinessSide.Count == 1)
+        {
+            @: $("#select_position").val();
+        }
+        $(".PlaceOf")[0].attributes.getNamedItem("id").value = "usr_PlaceOfBrith";
+
+        $("#usr_PlaceOfBrith").picker('set', '@Model.usr_PlaceOfBrith');
+
+        $(".PlaceOf")[1].attributes.getNamedItem("id").value = "usr_PlaceOfIssue";
+
+        $("#usr_PlaceOfIssue").picker('set', '@Model.usr_PlaceOfIssue');
+
+        $(".PlaceOf")[0].attributes.getNamedItem("name").value = "usr_PlaceOfBrith";
+
+        $(".PlaceOf")[1].attributes.getNamedItem("name").value = "usr_PlaceOfIssue";
+
+        $(".PlaceOf")[2].attributes.getNamedItem("name").value = "usr_City_Dutysystem";
+        $(".PlaceOf")[2].attributes.getNamedItem("id").value = "usr_City_Dutysystem";
+        var el = $("#select_position");
+        el[0].attributes.getNamedItem("name").value = "PositionID";
+        $("#usr_City_Dutysystem").picker('set', '@Model.usr_City_Dutysystem');
+
+
+    });
+
+    ///Validation Input Required
+    function ValidationInput(inp) {
+        var input = $(inp);
+        if (input.val() != "") {
+            input.removeClass("is-invalid");
+        }
+        else {
+            input.addClass("is-invalid");
+        }
+    }
+
+    $("#SaveEdit").click(function (){
+       var Name = $("input[name='usr_Name']");
+       var Family = $("input[name='usr_Family']");
+       var NationalCode = $("input[name='usr_NationalCode']");
+       var Personal_ID = $("input[name='usr_Personal_ID']");
+       var Position = $("#select_position");
+       if (Name.val() == "") {
+           Name.addClass("is-invalid");
+       }else
+       if (Family.val() == "") {
+           Family.addClass("is-invalid");
+       } else
+           if (NationalCode.val().length !=10) {
+               NationalCode.next().text("کد ملی باید شامل 10 رقم باشد");
+               NationalCode.addClass("is-invalid");
+       }else
+       if (Personal_ID.val() == "") {
+           Personal_ID.addClass("is-invalid");
+       }else
+       if (Position.val() == "" || Position.val() == "0" || Position.val() == null) {
+           Position.addClass("is-invalid");
+       }
+       else{
+           document.getElementById("loading-message").style.display = "block";
+           var MoalefeList = $(".moalefeItem");
+
+           for (var i = 0; i < MoalefeList.length; i++) {
+               var item = $(".moalefeItem")[i];
+
+               try {
+                   var slc = item.children[0].children[0].children[0].children[0];
+                   var s = slc.nodeValue;
+               }
+               catch {
+                   Toast.fire({
+                       icon: 'warning',
+                       background: '#35434A',
+                       color: 'white',
+                       title: "لطفا  مولفه را انتخاب کنید"
+                   });
+                   return false;
+               }
+               var inputValue = item.children[1].children[0].children[0].children[0];
+               if (inputValue.value.length == 0) {
+                   Toast.fire({
+                       icon: 'warning',
+                       background: '#35434A',
+                       color: 'white',
+                       title: "لطفا  مقدار مولفه " + (i + 1) + " را وارد کنید"
+                   });
+                   return false;
+               }
+
+           }
+             $("#FormEditUser").submit();
+
+       }
+
+
+    });
+
+</script>

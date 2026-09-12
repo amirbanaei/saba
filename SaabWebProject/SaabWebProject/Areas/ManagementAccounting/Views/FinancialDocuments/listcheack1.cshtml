@@ -1,0 +1,252 @@
+﻿@model List<SaabWebProject.Models.DomainModels.dbAsnadCheack1>
+@using SaabWebProject.Models.Classes;
+@using SaabWebProject.Models.DomainModels;
+
+@{
+
+    ViewBag.Title = "ثبت دستورات";
+    Layout = null;
+    SaabEntities db = new SaabEntities();
+}
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+<style>
+
+    .tableH_Lock {
+        max-height: 533px;
+        /*height: 260px;*/
+    }
+
+    thead {
+        position: sticky;
+        top: 0;
+        text-align: center;
+        z-index: 2;
+    }
+
+    .inputFilter {
+        margin-bottom: 0px !important;
+    }
+
+    thead th {
+        vertical-align: middle;
+    }
+</style>
+<div class="card" style="width: 100%">
+    <div class="table-content p-4">
+        <div class="tab-pane fade show active" id="allTab">
+            <div class="table-responsive tableH_Lock">
+
+                <table class="table table-hover" style="text-align:center;">
+                    <thead>
+
+                        <tr>
+                            <th>عملیات</th>
+                            <th>
+                                نام @*و نام خانوادگی*@
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter01-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            @*<th>
+                                    کدملی
+                                    <div class="inputWithFilterIcon">
+                                        <input type="text" id="filter02-filter" class="inputFilter form-control" placeholder="">
+                                        <span><i class="fas fa-filter"></i></span>
+                                    </div>
+                                </th>
+                                <th>
+                                    سمت شغلی
+                                    <div class="inputWithFilterIcon">
+                                        <input type="text" id="filter03-filter" class="inputFilter form-control" placeholder="">
+                                        <span><i class="fas fa-filter"></i></span>
+                                    </div>
+                                </th>
+                                <th>
+                                    شماره پرسنلی
+                                    <div class="inputWithFilterIcon">
+                                        <input type="text" id="filter04-filter" class="inputFilter form-control" placeholder="">
+                                        <span><i class="fas fa-filter"></i></span>
+                                    </div>
+                                </th>
+                                <th>
+                                    وضعیت
+                                </th>*@
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{ string nameH = "";
+                            string codemeliH = "";
+                            string semH = "";
+                            string codeperH = "";
+
+                        }
+                        @foreach (var item in Model)
+                        {
+                            nameH = item.Name;
+                            @*if (item.FullName != null)
+                                {
+                                    nameH = item.FullName;
+                                }
+                                else
+                                {
+                                    nameH = "ثبت نشده";
+                                }
+                                //====================================
+                                if (item.usr_NationalCode != null)
+                                {
+                                    codemeliH = item.usr_NationalCode;
+                                }
+                                else
+                                {
+                                    codemeliH = "ثبت نشده";
+                                }
+                                //====================================
+                                if (item.tbUser_link_BusinessSide.Where(p => p.Status == true).Count() > 1)
+                                {
+                                    var counter = 1;
+                                    foreach (var link in item.tbUser_link_BusinessSide.Where(p => p.Status == true).ToList())
+                                    {
+                                        @counter
+                                        <span>-</span>
+                                        <span>@link.tbBusinessSide.up_name</span>
+                                        <br />
+
+                                        counter += 1;
+                                    }
+                                }
+                                else if (item.tbUser_link_BusinessSide.Where(p => p.Status == true).Count() == 1)
+                                {
+                                    semH = @item.tbUser_link_BusinessSide.Where(p => p.Status == true).FirstOrDefault().tbBusinessSide.up_name;
+                                }
+                                else
+                                {
+                                    semH = "ثبت نشده";
+                                }
+                                //====================================
+                                if (item.usr_Personal_ID != null)
+                                {
+                                    codeperH = item.usr_Personal_ID.ToString();
+                                }
+                                else
+                                {
+                                    codeperH = "ثبت نشده";
+                                }*@
+                            <tr class="task-list-row "
+                                data-filter01="@nameH"
+                                @*data-filter02="@codemeliH"
+                                data-filter03="@semH"
+                                data-filter04="@codeperH"*@>
+                                <td>
+                                    <div class="ms-sm-4 mt-sm-0 mt-2 dropdown-toggle">
+                                        <a href="#" data-bs-toggle="dropdown" class="text-white text-opacity-75 text-decoration-none">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                        <div class="dropdown-menu">
+                                            <a style="cursor:pointer" data-bs-toggle="modal" data-bs-target="#modalLg" class="dropdown-item EditUser" id="U_@item.ID">
+                                                ویرایش
+                                            </a>
+                                            @*@if (item.usr_IsActive != null && (bool)item.usr_IsActive)
+                                                {
+                                                    <a data-bs-toggle="modal" style="cursor:pointer" class="dropdown-item" onclick="DeActiveUser('@Url.Action("DeActiveUser", "Users", new { area = "Users" })',this,false)" id="U_@item.usr_ID">غیرفعال کردن</a>
+                                                }
+                                                else
+                                                {
+                                                    <a data-bs-toggle="modal" style="cursor:pointer" class="dropdown-item" onclick="DeActiveUser('@Url.Action("DeActiveUser", "Users", new { area = "Users" })',this,true)" id="U_@item.usr_ID">فعال کردن</a>
+                                                }      @if (UserStuf.PosID == "9")
+                                                {
+                                                    <a data-bs-toggle="modal" style="cursor:pointer" data-bs-target="#modalLg" class="dropdown-item SetAccessLevel" id="A_@item.usr_ID">
+                                                        تخصیص دسترسی
+                                                    </a>}*@
+                                        </div>
+
+                                    </div>
+
+                                </td>
+                                <td>
+                                    @nameH
+                                </td>
+                                @*<td>
+                                        @codemeliH
+                                    </td>
+                                    <td>
+                                        @semH
+                                    </td>
+                                    <td>
+                                        @codeperH
+                                    </td>
+                                    <td>
+                                        @if ((bool)item.usr_IsActive == true)
+                                        {
+                                            <i class="far fa-lg fa-fw me-2 fa-check-square" style="color:green"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="far fa-lg fa-fw me-2 fa-window-close" style="color:red"></i>
+                                        }
+                                    </td>*@
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+<script src="~/Scripts/sweetalert2.js" type="text/javascript"></script>
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script>
+        $(".EditUser").click(function () {
+$("#big_modal_body").html(null);
+        var id = $(this).attr("id").split('_')[1];
+
+
+$("#big_modal_body").load('@Url.Content("/Users/Users/_EditUser")?id='+id);
+
+
+
+    });
+    var
+        filters = {
+            filter01: null,
+            //filter02: null,
+            //filter03: null,
+            //filter04: null,
+        };
+
+    function updateFilters() {
+        $('.task-list-row').hide().filter(function () {
+            var self = $(this),
+                result = true;
+
+            Object.keys(filters).forEach(function (filter) {
+                var filterData = self.data(filter);
+                if (filters[filter] && (filters[filter] != 'None') && (filters[filter] != 'همه')) {
+                    // تبدیل داده به رشته و بررسی مقدار
+                    result = result && (filterData && filterData.toString().indexOf(filters[filter]) !== -1);
+                }
+            });
+
+            return result;
+        }).show();
+    }
+
+    function changeFilter(filterName) {
+        filters[filterName] = this.value;
+        updateFilters();
+    }
+
+    // Assigned User Dropdown Filter
+    $('#filter01-filter').on('input', function () {
+        changeFilter.call(this, 'filter01');
+    });
+
+
+</script>

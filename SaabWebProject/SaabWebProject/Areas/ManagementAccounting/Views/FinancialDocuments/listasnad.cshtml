@@ -1,0 +1,428 @@
+﻿@using SaabWebProject.Models.DomainModels;
+
+
+@using SaabWebProject.Models.Classes;
+@{
+    Layout = null;
+    SaabEntities db = new SaabEntities();
+
+}
+@model IEnumerable<SaabWebProject.Models.DomainModels.dbAsnadshomrehsanad>
+
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+<style>
+    .tableH_LockTS {
+        max-height: 412px;
+        /*height: 412px;*/
+    }
+
+    thead {
+        position: sticky;
+        top: 0;
+        text-align: center;
+        z-index: 2;
+    }
+
+    .inputFilter {
+        margin-bottom: 0px !important;
+    }
+
+    thead th {
+        vertical-align: middle;
+    }
+</style>
+<div class="card">
+    <div class="table-content p-4">
+        <div class="tab-pane fade show active" id="allTab">
+            <div class="table-responsive tableH_LockTS">
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr style="text-align:center">
+                            @*<a href="~/Areas/Contracts/Views/Functions/Py_Accept.cshtml">~/Areas/Contracts/Views/Functions/Py_Accept.cshtml></a>*@
+
+                            <th>
+                                @Html.DisplayName("فعالیت")
+                            </th>
+                            @*<th>
+                                    @Html.DisplayName("#")
+                                </th>*@
+                        <th>
+                            @Html.DisplayName("شماره سند مالی")
+                            <div class="inputWithFilterIcon">
+                                <input type="text" id="filter01-filter" class="inputFilter form-control" placeholder="">
+                                <span><i class="fas fa-filter"></i></span>
+                            </div>
+                        </th>
+                        <th>
+                            @Html.DisplayName("سال مالی")
+                            <div class="inputWithFilterIcon">
+                                <input type="text" id="filter02-filter" class="inputFilter form-control" placeholder="">
+                                <span><i class="fas fa-filter"></i></span>
+                            </div>
+                        </th>
+                        <th>
+                            @Html.DisplayName("بدهکار")
+                            <div class="inputWithFilterIcon">
+                                <input type="text" id="filter03-filter" class="inputFilter form-control" placeholder="">
+                                <span><i class="fas fa-filter"></i></span>
+                            </div>
+                        </th>
+                        <th>
+                            @Html.DisplayName("بستانکار")
+                            <div class="inputWithFilterIcon">
+                                <input type="text" id="filter04-filter" class="inputFilter form-control" placeholder="">
+                                <span><i class="fas fa-filter"></i></span>
+                            </div>
+                        </th>
+                        <th>
+                            @Html.DisplayName("تشخیص ")
+                            <div class="inputWithFilterIcon">
+                                <input type="text" id="filter05-filter" class="inputFilter form-control" placeholder="">
+                                <span><i class="fas fa-filter"></i></span>
+                            </div>
+
+                        </th>
+
+                            @*<th>
+                                    @Html.DisplayName("پیوست مدرک")
+                                </th>
+                                <th>
+                                </th>
+
+                                <th>
+                                    @Html.DisplayName("شرح")
+                                </th>*@
+
+
+
+
+
+                        </tr>
+
+
+
+                    </thead>
+                    <tbody style="text-align:center">
+
+                        @if (Model != null)
+                        {
+
+                            var i = 0;
+                            foreach (var item in Model)
+                            {
+                                if (item != null)
+                                {
+
+
+                                    i++;
+
+
+                                    var find = db.dbAsnafsherkatsanad.Where(p => p.FK_shmoareh == item.ID).ToList();
+                                    long bestankar = 0;
+                                    long bedehkar = 0;
+                                    foreach (var t in find)
+                                    {
+                                        bestankar += (long)t.bestankar;
+                                        bedehkar += (long)t.bedehkar;
+                                    }
+                                    long summmbedh = 0;
+                                    foreach (var it1 in db.dbAsnadcratasnad.Where(p => p.sanadmalyy == item.shomarehsanad && p.year == item.Year && p.taeed == true).ToList())
+                                    {
+                                        if (!string.IsNullOrEmpty(it1.sumstring) && double.TryParse(it1.sumstring, out double result))
+                                        {
+                                            bedehkar += (int)result; // اگر می‌خواهید اعشار حفظ شود
+                                                                     //bestankat += (int)result;
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine($"Invalid sumstring value: {it1.sumstring}");
+                                        }
+                                        var find222 = db.dbAsnadcratasnadrelatin.Where(p => p.FK_asliasnad == it1.ID && p.count == null && p.arzish != null).FirstOrDefault();
+                                        if (find222 != null)
+                                        {
+                                            bedehkar += (int)find222.arzish; // اگر می‌خواهید اعشار حفظ شود
+
+                                        }
+                                        bestankar += (long)it1.pardaght;
+                                    }
+                                    string badbas = "";
+                                    if (@bedehkar > @bestankar)
+                                    {
+                                        badbas = "بد";
+                                    }
+                                    else
+                                    {
+                                        badbas = "بس";
+                                    }
+
+                                    <tr class="task-list-row "
+                                        data-filter01="@item.shomarehsanad"
+                                        data-filter02="@item.Year"
+                                        data-filter03="@String.Format("{0:N0}", @bedehkar).Replace(",","")"
+                                        data-filter04="@String.Format("{0:N0}", @bestankar).Replace(",","")"
+                                        data-filter05="@badbas">
+
+                                        @if (UserStuf.PosID == "9")
+                                        {
+                                            <td>
+                                                <div class="ms-sm-4 mt-sm-0 mt-2 dropdown-toggle">
+                                                    <a href="#" data-bs-toggle="dropdown" class="text-white text-opacity-75 text-decoration-none">
+                                                        <i class="fa fa-edit"></i>
+                                                    </a>
+                                                    <div class="dropdown-menu">
+
+                                                        <a data-bs-toggle="modal" data-bs-target="#modalLg1" class="dropdown-item edit" id="Edit_@item.ID">ویرایش</a>
+                                                        @*<a class="dropdown-item Delete" id="Delete_@item.ID">حذف</a>*@
+
+                                                        <a data-bs-toggle="modal" data-bs-target="#modalLg1" class="dropdown-item Details" id="Detail_@item.ID">جزئیات</a>
+                                                        <a class="dropdown-item uploadSummery" id="uploadSummery_@item.ID">
+                                                            @if (item.File_SystemName != null)
+                                                            {
+                                                                <span>ویرایش سند آپلود شده  </span>
+
+                                                            }
+                                                            else
+                                                            {
+                                                                <span>بارگزاری سند </span>
+
+                                                            }
+                                                        </a>                                                        <input id="summery_file5" style="display:none" type="file" class="form-control" value="" />
+
+
+                                                        @*<a data-bs-toggle="modal" data-bs-target="#modalLg" class="dropdown-item edit" id="Edit_@item.ID">ویرایش</a>
+                                                            <a data-bs-toggle="modal" data-bs-target="#modalLg" class="dropdown-item Details">جزئیات</a>
+                                                            <a class="dropdown-item Delete" id="Delete_@item.ID">حذف</a>*@
+
+
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        }
+                                        else if (UserStuf.PosID == "2175")
+                                        {
+                                            <td>
+                                                <div class="ms-sm-4 mt-sm-0 mt-2 dropdown-toggle">
+                                                    <a href="#" data-bs-toggle="dropdown" class="text-white text-opacity-75 text-decoration-none">
+                                                        <i class="fa fa-edit"></i>
+                                                    </a>
+                                                    <div class="dropdown-menu">
+
+                                                        <a data-bs-toggle="modal" data-bs-target="#modalLg1" class="dropdown-item edit" id="Edit_@item.ID">ویرایش</a>
+                                                        <a data-bs-toggle="modal" data-bs-target="#modalLg1" class="dropdown-item Details" id="Detail_@item.ID">جزئیات</a>
+
+                                                        <a class="dropdown-item uploadSummery" id="uploadSummery_@item.ID">
+                                                            @if (item.File_SystemName != null)
+                                                            {
+                                                                <span>ویرایش سند آپلود شده  </span>
+
+                                                            }
+                                                            else
+                                                            {
+                                                                <span>بارگزاری سند </span>
+
+                                                            }
+                                                        </a>
+
+                                                        <input id="summery_file5" style="display:none" type="file" class="form-control" value="" />
+
+
+                                                        @*<a data-bs-toggle="modal" data-bs-target="#modalLg" class="dropdown-item edit" id="Edit_@item.ID">ویرایش</a>
+                                                            <a data-bs-toggle="modal" data-bs-target="#modalLg" class="dropdown-item Details">جزئیات</a>
+                                                            <a class="dropdown-item Delete" id="Delete_@item.ID">حذف</a>*@
+
+
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        }
+                                        @*<td>
+                                                @i
+                                            </td>*@
+
+                                        <td>@item.shomarehsanad</td>
+                                        <td>@item.Year</td>
+
+
+                                        <td> @String.Format("{0:N0}", @bedehkar)</td>
+
+                                        <td>@String.Format("{0:N0}", @bestankar)</td>
+
+                                        <td>@badbas</td>
+
+                                    </tr>
+                                }
+
+                            }
+
+                            // Your foreach loop code here
+                        }
+
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+<script>
+
+    var
+        filters = {
+            filter01: null,
+            filter02: null,
+            filter03: null,
+            filter04: null,
+            filter05: null,
+
+        };
+
+    function updateFilters() {
+        $('.task-list-row').hide().filter(function () {
+            var self = $(this),
+                result = true;
+
+            Object.keys(filters).forEach(function (filter) {
+                var filterData = self.data(filter);
+                if (filters[filter] && (filters[filter] != 'None') && (filters[filter] != 'همه')) {
+                    // تبدیل داده به رشته و بررسی مقدار
+                    result = result && (filterData && filterData.toString().indexOf(filters[filter]) !== -1);
+                }
+            });
+
+            return result;
+        }).show();
+    }
+
+    function changeFilter(filterName) {
+        filters[filterName] = this.value;
+        updateFilters();
+    }
+
+    // Assigned User Dropdown Filter
+    $('#filter01-filter').on('input', function () {
+        changeFilter.call(this, 'filter01');
+    });
+    $('#filter02-filter').on('input', function () {
+        changeFilter.call(this, 'filter02');
+    });
+    $('#filter03-filter').on('input', function () {
+        changeFilter.call(this, 'filter03');
+    });
+    $('#filter04-filter').on('input', function () {
+        changeFilter.call(this, 'filter04');
+    });
+    $('#filter05-filter').on('input', function () {
+        changeFilter.call(this, 'filter05');
+    });
+
+</script>
+<script>
+    // Convert Gregorian date to jaali in the table
+    var tds = document.querySelectorAll("[cont-date]");
+    var valueD, id, target;
+    var options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    tds.forEach(td => {
+        valueD = new Date(td.textContent).toLocaleDateString('fa-IR-u-nu-latn', options).replace(',', '').replace(" ", "");
+        valueD = valueD.slice(0, 10) + " " + td.textContent.slice(10, 30)
+        id = td.getAttribute("cont-date");
+        target = document.getElementById(id);
+        target.textContent = valueD;
+    });
+</script>
+<script>
+
+$(".edit").click(function () {
+    var idd = $(this).attr("id").split("_")[1];
+    console.log(idd);
+
+    var url = "/FinancialDocuments/viewmodalsanadmallyybbynumberedit?id=" + idd;
+    $("#big_modal_body1").load(url);
+});
+
+    $(".Details").click(function () {
+
+        var idd = $(this).attr("id").split("_")[1];
+        console.log(idd);
+
+        var url = "/FinancialDocuments/datailfk?id=" + idd;
+        $("#big_modal_body1").load(url)
+        @*var idd = $(this).attr("id").split("_")[1];
+$("#big_modal_body1").load('@Url.Content("/FinancialDocuments/Detail")?id=' + idd);*@
+    });
+         var obj = new FormData();
+
+  $(".uploadSummery").click(function () {
+    FK_DDOfTitle = $(this).attr("id").split("_")[2];
+    ID = $(this).attr("id").split("_")[1];
+      $("#summery_file5").click();
+});
+
+ $("#summery_file5").change(function (e) {
+    $.each(e.target.files, function (index, file) {
+        obj.append("files", file);
+    });
+         sendAjax2('@Url.Action("upload", "FinancialDocuments", new { area = "ManagementAccounting" })', obj);
+ });
+
+
+ function sendAjax2(url2, fd2) {
+     obj.append("ID", ID);
+
+
+
+
+     $.ajax({
+         url: url2,
+         type: 'POST',
+         data: fd2,
+         processData: false,
+         contentType: false,
+         success: function (resp1) {
+             console.log("okeye");
+             console.log(resp1);
+             $("#loading-message").css("display", "none");
+             fd = new FormData();
+             if (resp1 == "True") {
+                 alert("با موفقیت ثبت شد");
+                 setTimeout(function () {
+                     location.reload(); // یا می‌توانید از location.reload(true) هم استفاده کنید
+                 }, 2000); // بازه زمانی به میلی‌ثانیه، اینجا 2000 میلی‌ثانیه (یعنی 2 ثانیه)
+             }
+             else {
+                 $("#loading-message").css("display", "none");
+                 console.log("jlk;;kkj");
+                 Toast.fire({
+
+                     icon: 'success',
+                     background: '#35434A',
+                     color: 'white',
+                     title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                 }).then(() => {
+                     $("#loading-message").css("display", "none");
+                 });
+             }
+
+         },
+         error: function (resp1) {
+             console.log(resp1);
+             console.log("Nokeye");
+             $("#loading-message").css("display", "none");
+             Toast.fire({
+                 icon: 'success',
+                 background: '#35434A',
+                 color: 'white',
+                 title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+             }).then(() => {
+                 $("#loading-message").css("display", "none");
+             });
+         }
+     });
+ }
+</script>
+

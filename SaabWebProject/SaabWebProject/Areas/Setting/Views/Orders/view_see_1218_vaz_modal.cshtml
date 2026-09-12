@@ -1,0 +1,577 @@
+﻿
+@{
+    Layout = null;
+}
+@model SaabWebProject.Models.ViewModels.Contracts.Function.FunctionModel
+@using SaabWebProject.Models.DomainModels;
+
+@{ SaabEntities db = new SaabEntities();
+
+    ViewBag.Title = "گزارش غیر سیستمی";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>modal1_nemoodarjadid</title>
+    <style>
+
+        .cols-modal {
+            width: 100%;
+        }
+
+        .rotate .cols-modal {
+            border-radius: 1vh 1vh 0 0;
+            height: 45vh;
+            margin-bottom: 1vh;
+        }
+
+            .rotate .cols-modal .cols-txt {
+                transform: rotate(-90deg);
+            }
+
+
+        .tiz-amoodi {
+            position: absolute;
+            top: 42.5vh;
+            width: 100%;
+            height: 5vh;
+            background: #004f9d;
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+        }
+
+        .tiz-ofoghi {
+            position: absolute;
+            width: 5vh;
+            height: 100%;
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+        }
+
+        .container-sotoon {
+            display: grid;
+            grid-template-columns: 2fr 3fr;
+            width: 100%;
+            height: 100%;
+            gap: 1vh;
+        }
+
+        .arrow-right-simple {
+            position: absolute;
+            right: -2.5vh;
+            top: 3vh;
+            width: 0;
+            height: 0;
+            border-top: 15px solid transparent;
+            border-bottom: 15px solid transparent;
+            border-left: 25px solid var(--water-color);
+            display: inline-block;
+            z-index: 10;
+        }
+
+        .khat1 {
+            display: flex;
+            background-color: red;
+            width: 1vh;
+            height: 1vh;
+            position: absolute;
+            z-index: 2;
+        }
+
+        .water {
+            right: 0;
+            background-color: var(--water-color);
+            position: absolute;
+            border-radius: 1vh 1vh 0vh 1vh;
+            height: 100%;
+        }
+
+        .legend-sotoon {
+            display: flex;
+            flex-direction: column;
+            border: 1px dashed aqua;
+            width: 100%;
+            height: fit-content;
+            border-radius: 1vh;
+            padding: 1vh;
+            gap: 1vh;
+        }
+
+        .legend-item {
+            display: flex;
+            width: 100%;
+            height: 2.5vh;
+            /*            background-color: var(--water-color);*/
+            border-radius: .5vh;
+            align-items: center;
+            gap: 1vh;
+            padding-right: 1vh;
+        }
+
+        .legend-circle {
+            width: 2vh;
+            height: 2vh;
+            background-color: aqua;
+            border-radius: 100%;
+        }
+
+        .legend-txt {
+            font-size: 1.8vh;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <!--<div class="tab-content" id="pills-tabContent">
+        <div class="container-col" style="margin-bottom: 1vh; justify-content: end; ">
+
+            <div class="cols cols-modal" style="height: 10vh; width: 70%; border-radius: 1vh 1vh 0vh 1vh; position: relative;">-->
+                @*<div class="arrow-right-simple"></div>*@
+                <!--<div class="water" style="width: 13vh;"></div>
+                <div class="cols-txt">
+                    <p>
+                        لیست تلفنی
+                    </p>
+                    <p>
+                        تعداد :                        @Model.countmablaghtabletelephon.ToString("N0")
+                        (7%)
+                    </p>
+                    <p>
+                        بدهی :                         @Model.mablaghtabletelephon.ToString("N0")
+                        (46%)
+                    </p>
+                </div>
+                <div style="display: flex; position: absolute; bottom: -2vh; right: 0; height: 2vh; width: 13vh; background-color: var(--water-color); border-radius: 0vh 0vh 0vh 1vh;"></div>
+                <div style="display: flex; position: absolute; bottom: -2vh; right: -5vh; height: 2vh; width: 5vh; background-color: var(--water-color); border-radius: 0vh 0vh 0vh 0vh;"></div>
+                <div class="tiz-amoodi" style="right: -6.5vh; top: 10vh; background-color: var(--water-color); width: 3%; height: 2vh;"></div>
+                <div class="container-col" style="margin-bottom:1vh;">
+                    <div class="cols cols-modal " style="border: 1px solid aqua; height: 15vh; top: -1vh; right: -34vh; width: 25vh; border-radius: 1vh; position: absolute; background-color: transparent;">
+                        <div class="cols-txt">
+                            <p>
+                                کسر از لیست تلفنی (کمبود نیرو)
+                            </p>
+                            <p>
+                                تعداد:                                 @Model.countbletelephonnot.ToString("N0")
+                                (%2)
+                            </p>
+                            <p>
+                                بدهى:                                 @Model.mablaghtabletelephonnot.ToString("N0")
+                                (%14)
+                            </p>
+                        </div>-->
+                        @*<div class="tiz-ofoghi" style="left: 29.5vh; background-color: var(--bs-tab-content-bg); "></div>*@
+
+                    <!--</div>-->
+
+                    @*<div class="tiz-ofoghi" style="right: 66.8vh; background-color: #004f9d;"></div>*@
+
+                <!--</div>
+
+            </div>
+        </div>-->
+        <div class="container-sotoon">
+
+            <div class="sotoon" style="padding-top: 13vh;">
+                <div class="legend-sotoon">
+                    <div class="legend-item">
+                        <div class="legend-circle" style="background-color: #ff6969;"></div>
+                        <div class="legend-txt">
+                            عدم ثبت بازخورد (ارجاع به کمیته)
+                        </div>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-circle" style=" background-color: #adb9ca;"></div>
+                        <div class="legend-txt">
+                            مهلت مراجعه (درانتظار)
+                        </div>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-circle" style=" background-color: #f4b183;"></div>
+                        <div class="legend-txt">
+                            ممانعت از قطع يا وصل خودسرانه (ارجاع به حقوقى)
+                        </div>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-circle" style="background-color: #a9a9a9;"></div>
+                        <div class="legend-txt">
+                            اعتراض به قبض (ارجاع به امور)
+                        </div>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-circle" style="background-color: #e9b000;"></div>
+                        <div class="legend-txt">
+                            امتناع از يرداخت (قطع)
+                        </div>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-circle" style="background-color: #d1bc7b;"></div>
+                        <div class="legend-txt">
+                            عدم حضور مشترك (قطع)
+                        </div>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-circle" style="background-color: #c5c363;"></div>
+                        <div class="legend-txt">
+                            درخواست تقسيط (ارجاع به امور)
+                        </div>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-circle" style="background-color: #a5d2f9"></div>
+                        <div class="legend-txt">
+                            تقسيط توسط مامور (ارجاع كنترل سيستمى)
+                        </div>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-circle" style="background-color: #abd590;"></div>
+                        <div class="legend-txt">
+                            وصول توسط مامور (ارجاع كنترل سيستمى)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="sotoon">
+                @*@{
+                    Model.countreason2 = 77400;
+                    Model.mablagreson2 = 1940882018777;
+                    Model.countreason1 = 24615;
+                    Model.mablagreson1 = 810849389326;
+                    Model.countmablaghtabletelephon = 102015
+                                                ;
+                    Model.mablaghtabletelephon = 2751731408103;
+
+                }*@
+                <div class="container-col" style="margin-bottom:3vh;">
+                    <div class="cols cols-modal" style="height:10vh; width:100%;">
+                        <div class="cols-txt">
+                            <p>
+                                لیست حضوری ارجاع شده
+                            </p>
+                            <p>
+                                تعداد :                        @Model.countmablaghtabletelephon.ToString("N0")
+                                (10%)
+                            </p>
+                            <p>
+                                بدهی :                         @Model.mablaghtabletelephon.ToString("N0")
+                                (12.63%)
+                            </p>
+                        </div>
+                        <div class="tiz-amoodi" style="background-color: #004f9d; top: 7.5vh; width: 40%; "></div>
+                    </div>
+
+                </div>
+                <div class="container-col rotate" style="margin-bottom:1vh;">
+                    <div class="cols cols-modal" style="width: 140%; background-color: #ff6969;">
+                        @*عدم ثبت بازخورد (ارجاع به كمیته))*@
+
+                        <div class="cols-txt">
+                            <p>
+                                عدم ثبت بازخورد (ارجاع به کمیته)
+                            </p>
+                            <!--<p>
+                    @Model.countreason1.ToString("N0")-->
+                            @*تعداد: 19,340 (%2)*@
+                            <!--</p>
+                <p>
+                    @Model.mablagreson1.ToString("N0")-->
+                            @*بدهى: 2,409,007 (%14)*@
+                            <!--</p>-->
+                            <p>
+                                تعداد: @Model.countreason2.ToString("N0") (%7.6)
+                            </p>
+                            <p>
+                                بدهى: @Model.mablagreson2.ToString("N0") (%8.52)
+                            </p>
+                        </div>
+                        <div class="tiz-amoodi" style="background-color: #ff6969;"></div>
+                    </div>
+                    <div class="cols cols-modal" style="width: 100%; background-color: #adb9ca;">
+
+                        <div class="cols-txt">
+                            <p>
+                                مهلت مراجعه (درانتظار)
+                            </p>
+
+                            <p>
+                                تعداد: @Model.countreason3.ToString("N0") (%0.3)
+                            </p>
+                            <p>
+                                بدهى: @Model.countreason3.ToString("N0") (%2)
+                            </p>
+                        </div>
+                        <div class="tiz-amoodi" style="background-color: #adb9ca;"></div>
+
+                    </div>
+                    <div class="cols cols-modal" style="width: 100%; background-color: #f4b183; ">
+
+
+                        <div class="cols-txt">
+
+                            <p>
+                                ممانعت از قطع يا وصل خودسرانه (ارجاع به حقوقى)
+                            </p>
+                            <p>
+                                تعداد: @Model.countreason1.ToString("N0") (%2.4)
+                            </p>
+                            <p>
+                                بدهى: @Model.mablagreson1.ToString("N0") (%3.29)
+                            </p>
+                        </div>
+                        <div class="tiz-amoodi" style="background-color: #f4b183; "></div>
+
+                    </div>
+                    <div class="cols cols-modal" style="width: 100%; background-color: #a9a9a9; ">
+
+                        <div class="cols-txt">
+                            <p>
+                                اعتراض به قبض (ارجاع به امور)
+                            </p>
+                            <p>
+                                تعداد: 1,504 (%0.2)
+                            </p>
+                            <p>
+                                بدهى: 187,367 (%1)
+                            </p>
+                        </div>
+                        <div class="tiz-amoodi" style="background-color: #a9a9a9; "></div>
+
+                    </div>
+                    <div class="cols cols-modal" style="width: 225%; background-color: #e9b000; ">
+
+                        <div class="cols-txt">
+                            <p>
+                                امتناع از يرداخت (قطع)
+                            </p>
+                            <p>
+                                تعداد: 6,017 (%0.6)
+                            </p>
+                            <p>
+                                بدهى: 749,469 (%4)
+                            </p>
+                        </div>
+                        <div class="tiz-amoodi" style="background-color: #e9b000; "></div>
+
+                    </div>
+                    <div class="cols cols-modal" style="width: 100%; background-color: #d1bc7b; ">
+
+                        <div class="cols-txt">
+                            <p>
+                                عدم حضور مشترك (قطع)
+                            </p>
+                            <p>
+                                تعداد: 1,504 (%0.2)
+                            </p>
+                            <p>
+                                بدهى: 187,367 (%1)
+                            </p>
+                        </div>
+                        <div class="tiz-amoodi" style="background-color: #d1bc7b; "></div>
+
+                    </div>
+                    <div class="cols cols-modal" style="width: 180%; background-color: #c5c363; ">
+
+                        <div class="cols-txt">
+                            <p>
+                                درخواست تقسيط (ارجاع به امور)
+                            </p>
+                            <p>
+                                تعداد: 1,504 (%0.2)
+                            </p>
+                            <p>
+                                بدهى: 187,367 (%1)
+                            </p>
+                        </div>
+                        <div class="tiz-amoodi" style="background-color: #c5c363; "></div>
+
+                    </div>
+                    <div class="cols cols-modal" style="width: 115%; background-color: #a5d2f9; ">
+
+                        <div class="cols-txt">
+                            <p>
+                                تقسيط توسط مامور (ارجاع كنترل سيستمى)
+                            </p>
+                            <p>
+                                تعداد: 3,009 (%0.3)
+                            </p>
+                            <p>
+                                بدهى: 374,735 (%2)
+                            </p>
+                        </div>
+                        <div class="tiz-amoodi" style="background-color: #a5d2f9; "></div>
+
+                    </div>
+                    <div class="cols cols-modal" style="width: 115%; background-color: #abd590; ">
+
+                        <div class="cols-txt">
+                            <p>
+                                وصول توسط مامور (ارجاع كنترل سيستمى)
+                            </p>
+                            <p>
+                                تعداد: 10,530 (%1.1)
+                            </p>
+                            <p>
+                                بدهى: 1,311,571 (%7)
+                            </p>
+                        </div>
+                        <div class="tiz-amoodi" style="background-color: #abd590; "></div>
+
+                    </div>
+
+
+
+
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+
+    <script src="~/Scripts/leader-line.min.js"></script>
+    <script src="~/Scripts/jquery-3.3.1.js"></script>
+    <script src="~/Scripts/jquery-ui.js"></script>
+    <script>
+        let allLines2 = [];
+
+        $(document).ready(function () {
+            function createLine(from, to) {
+                const line = new LeaderLine(from, to, {
+                    color: 'var(--water-color)',
+                    size: 8,
+                    endPlug: 'arrow2',
+                    endPlugSize: 0.4,
+                    startSocket: 'bottom',
+                    endSocket: 'top',
+                    path: 'straight'
+                });
+                allLines.push(line);
+                return line;
+            }
+
+            // خطوط خاص هر ستون
+            createLine(document.querySelector('.khat1'));
+
+
+            // MutationObserver برای انیمیشن آب
+            const observer = new MutationObserver(() => {
+                setTimeout(() => allLines.forEach(l => l.position()), 1100);
+            });
+            observer.observe(document.querySelector('.water-level1'), { attributes: true });
+
+            // Ultra-safe resize handler
+            let resizeTimer;
+            const updateAll = () => {
+                allLines.forEach(line => {
+                    try { line.position(); } catch (e) { }
+                });
+            };
+
+            $(window).on('resize zoom orientationchange', () => {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(updateAll, 150);
+            });
+
+            // هر 2 ثانیه چک اضافی (برای safety)
+            setInterval(updateAll, 1000);
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            // ۸ متغیر - مقدار اولیه ۰ = legend نمایش، main مخفی
+            let elem1 = 1, elem2 = 0, elem3 = 1, elem4 = 0,
+                elem5 = 0, elem6 = 0, elem7 = 0, elem8 = 0; elem9 = 0;
+
+            // تابع نمایش/مخفی بر اساس متغیرها
+            function updateVisibility() {
+                // elem1
+                if (elem1 === 0) {
+                    $('.legend-item').eq(0).show();
+                    $('.rotate .cols-modal').eq(0).hide(); // اولین ستون rotate
+                } else {
+                    $('.legend-item').eq(0).hide();
+                    $('.rotate .cols-modal').eq(0).show();
+                }
+
+                // elem2
+                if (elem2 === 0) {
+                    $('.legend-item').eq(1).show();
+                    $('.rotate .cols-modal').eq(1).hide();
+                } else {
+                    $('.legend-item').eq(1).hide();
+                    $('.rotate .cols-modal').eq(1).show();
+                }
+
+                // elem3
+                if (elem3 === 0) {
+                    $('.legend-item').eq(2).show();
+                    $('.rotate .cols-modal').eq(2).hide();
+                } else {
+                    $('.legend-item').eq(2).hide();
+                    $('.rotate .cols-modal').eq(2).show();
+                }
+
+                // elem4
+                if (elem4 === 0) {
+                    $('.legend-item').eq(3).show();
+                    $('.rotate .cols-modal').eq(3).hide();
+                } else {
+                    $('.legend-item').eq(3).hide();
+                    $('.rotate .cols-modal').eq(3).show();
+                }
+
+                // elem5
+                if (elem5 === 0) {
+                    $('.legend-item').eq(4).show();
+                    $('.rotate .cols-modal').eq(4).hide();
+                } else {
+                    $('.legend-item').eq(4).hide();
+                    $('.rotate .cols-modal').eq(4).show();
+                }
+
+                // elem6
+                if (elem6 === 0) {
+                    $('.legend-item').eq(5).show();
+                    $('.rotate .cols-modal').eq(5).hide();
+                } else {
+                    $('.legend-item').eq(5).hide();
+                    $('.rotate .cols-modal').eq(5).show();
+                }
+
+                // elem7
+                if (elem7 === 0) {
+                    $('.legend-item').eq(6).show();
+                    $('.rotate .cols-modal').eq(6).hide();
+                } else {
+                    $('.legend-item').eq(6).hide();
+                    $('.rotate .cols-modal').eq(6).show();
+                }
+
+                // elem8
+                if (elem8 === 0) {
+                    $('.legend-item').eq(7).show();
+                    $('.rotate .cols-modal').eq(7).hide();
+                } else {
+                    $('.legend-item').eq(7).hide();
+                    $('.rotate .cols-modal').eq(7).show();
+                }
+                // elem8
+                if (elem9 === 0) {
+                    $('.legend-item').eq(8).show();
+                    $('.rotate .cols-modal').eq(8).hide();
+                } else {
+                    $('.legend-item').eq(8).hide();
+                    $('.rotate .cols-modal').eq(8).show();
+                }
+            }
+
+            // اجرا در ابتدا
+            updateVisibility();
+
+            // برای تغییر متغیرها از جاهای دیگه:
+            // elem1 = 1; updateVisibility(); // legend مخفی، ستون نمایش
+        });
+    </script>
+</body>
+</html>

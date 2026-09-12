@@ -1,0 +1,340 @@
+﻿@{
+    ViewBag.Title = "ثبت ورودی شغل";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="tab-content">
+
+    <div class="row">
+
+        <div class="col-xl-2">
+            <label class="form-label">شغل</label>
+            <select id="FK_job" class="form-select">
+                <option value="">انتخاب کنید</option>
+                <option value="1">نصب</option>
+                <option value="2">اصلاح</option>
+                <option value="56">وصول</option>
+            </select>
+        </div>
+
+        <div class="col-xl-2">
+            <label class="form-label">نام فیلد</label>
+            <input id="group-member-name" class="form-control" type="text" />
+        </div>
+
+        <div class="col-xl-2">
+            <label class="form-label">نوع فیلد</label>
+            <select id="typeSelect" class="form-select">
+                <option value="">انتخاب کنید</option>
+                <option value="1">input</option>
+                <option value="2">checkbox</option>
+                <option value="3">radio</option>
+                <option value="4">selector</option>
+            </select>
+        </div>
+
+        <div class="col-xl-2" id="modelDiv" style="display:none">
+            <label class="form-label">مدل</label>
+            <select id="modelSelect" class="form-select">
+                <option value="">انتخاب کنید</option>
+                <option value="1">text</option>
+                <option value="2">number</option>
+                <option value="3">date</option>
+            </select>
+        </div>
+
+        <div class="col-xl-2">
+            <label class="form-label">اجباری</label>
+            <select id="isRequired" class="form-select">
+                <option value="0">خیر</option>
+                <option value="1">بله</option>
+            </select>
+        </div>
+
+    </div>
+
+    <hr>
+
+    <div id="optionsSection" style="display:none">
+
+        <label>گزینه ها</label>
+
+        <div id="optionsContainer"></div>
+
+        <button id="addOptionBtn" class="btn btn-success mt-2">افزودن گزینه</button>
+
+    </div>
+
+    <hr>
+
+    <div class="row">
+
+        <div class="col-xl-2">
+            <label>وابستگی</label>
+            <select id="hasDependency" class="form-select">
+                <option value="0">ندارد</option>
+                <option value="1">دارد</option>
+            </select>
+        </div>
+
+        <div class="col-xl-10" id="dependencySection" style="display:none">
+
+            <label>وابستگی ها</label>
+
+            <div id="dependencyContainer"></div>
+
+            <button class="btn btn-success mt-2" id="addDependencyBtn">
+                افزودن وابستگی
+            </button>
+
+        </div>
+
+    </div>
+
+    <hr>
+
+    <button id="AfzoodanInput" class="btn btn-primary">ثبت</button>
+
+</div>
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+<script src="~/Assets/js/jalalidatepicker.min.js"></script>
+<link href="~/Assets/css/jalalidatepicker.min.css" rel="stylesheet" />
+<script src="~/Assets/js/jalaali.min.js"></script>
+<link href="~/MyStyles/jalalidatepicker.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="@Url.Content("~/Scripts/jquery-3.3.1.js")"></script>
+<script src="@Url.Content("~/Scripts/jquery-ui.js")"></script>
+<script src="@Url.Content("~/Assets/plugins/select-picker/dist/picker.min.js")"></script>
+<script src="@Url.Content("~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js")"></script> 
+<script>
+    $(document).ready(function () {
+
+        let optionsContainer = $("#optionsContainer");
+        let dependencyContainer = $("#dependencyContainer");
+
+        $("#typeSelect").change(function () {
+
+            let type = $(this).val();
+
+            $("#modelDiv").hide();
+            $("#optionsSection").hide();
+            optionsContainer.empty();
+
+            if (type == "1")
+                $("#modelDiv").show();
+
+            if (type == "3" || type == "4") {
+
+                $("#optionsSection").show();
+
+                addOptionRow();
+                addOptionRow();
+
+            }
+
+        });
+
+        function addOptionRow(val = "") {
+
+            let html = `
+<div class="d-flex mb-2 option-row">
+<input class="form-control option-input" value="${val}">
+<button class="btn btn-danger removeOption">حذف</button>
+</div>
+`;
+
+            optionsContainer.append(html);
+
+        }
+
+        $("#addOptionBtn").click(function () {
+
+            addOptionRow();
+
+        });
+
+        $(document).on("click", ".removeOption", function () {
+
+            $(this).parent().remove();
+
+        });
+
+        $("#hasDependency").change(function () {
+
+            if ($(this).val() == "1") {
+
+                $("#dependencySection").show();
+                dependencyContainer.empty();
+                addDependencyRow();
+
+            }
+            else {
+
+                $("#dependencySection").hide();
+                dependencyContainer.empty();
+
+            }
+
+        });
+
+        $("#addDependencyBtn").click(function () {
+
+            addDependencyRow();
+
+        });
+
+        function addDependencyRow() {
+
+            let html = `
+<div class="row dependency-row mb-2">
+
+<div class="col-xl-5">
+<select class="form-select dependency-field">
+<option value="">فیلد وابسته</option>
+</select>
+</div>
+
+<div class="col-xl-5">
+<select class="form-select dependency-value">
+<option value="">گزینه</option>
+</select>
+</div>
+
+<div class="col-xl-2">
+<button class="btn btn-danger removeDependency">حذف</button>
+</div>
+
+</div>
+`;
+
+            dependencyContainer.append(html);
+
+            loadFields();
+
+        }
+
+        function loadFields() {
+
+            let shoghl = $("#FK_job").val();
+
+            $.get('/Setting/Orders/GetParentFields',
+                { fk_shooghl: shoghl },
+
+                function (res) {
+
+                    $(".dependency-field").last().empty()
+                        .append('<option value="">انتخاب کنید</option>');
+
+                    res.data.forEach(function (x) {
+
+                        $(".dependency-field").last().append(
+                            `<option value="${x.ID}">${x.Nam}</option>`
+                        );
+
+                    });
+
+                });
+
+        }
+
+        $(document).on("change", ".dependency-field", function () {
+
+            let fieldId = $(this).val();
+            let valueSelect = $(this).closest(".dependency-row").find(".dependency-value");
+
+            valueSelect.empty();
+
+            $.get('/Setting/Orders/GetFieldOptions',
+
+                { fieldId: fieldId },
+
+                function (res) {
+
+                    res.data.forEach(function (x) {
+
+                        valueSelect.append(
+                            `<option value="${x.numeber}">${x.value}</option>`
+                        );
+
+                    });
+
+                });
+
+        });
+
+        $(document).on("click", ".removeDependency", function () {
+
+            $(this).closest(".dependency-row").remove();
+
+        });
+
+        $("#AfzoodanInput").click(function () {
+
+            let options = [];
+
+            $(".option-input").each(function () {
+
+                options.push($(this).val());
+
+            });
+
+            let dependencies = [];
+
+            $(".dependency-row").each(function () {
+
+                let field = $(this).find(".dependency-field").val();
+                let value = $(this).find(".dependency-value").val();
+
+                if (field && value) {
+
+                    dependencies.push({
+
+                        field: parseInt(field),
+                        value: parseInt(value)
+
+                    });
+
+                }
+
+            });
+
+            $.ajax({
+
+                url: '/Setting/Orders/SaveErjaOmomiEdit',
+                type: 'POST',
+
+                data: {
+
+                    Nam: $("#group-member-name").val(),
+                    Model: $("#modelSelect").val(),
+                    Type: $("#typeSelect").val(),
+                    Fk_Shooghl: $("#FK_job").val(),
+                    IsRequired: $("#isRequired").val(),
+
+                    Options: options,
+                    DependenciesJson: JSON.stringify(dependencies)   // ⬅⬅ مهم
+
+                },
+
+                traditional: true,
+
+                success: function (res) {
+
+                    alert(res.message);
+
+                }
+
+            });
+
+        });
+
+    });
+
+</script>

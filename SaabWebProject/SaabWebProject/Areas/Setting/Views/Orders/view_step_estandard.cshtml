@@ -1,0 +1,159 @@
+﻿@using SaabWebProject.Models.DomainModels;
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "پله های کارکردی";
+}
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+<div class="row">
+    <div class="col-xl-3">
+        <label class="form-label">شماره پله</label>
+        <input id="StepNumber" name="StepNumber" class="form-control" type="number" required />
+    </div>
+
+    <div class="col-xl-3">
+        <label class="form-label">شماره شروع مبلغ</label>
+        <input id="StartAmount" name="StartAmount" class="form-control money-input" type="text" required />
+    </div>
+
+    <div class="col-xl-3">
+        <label class="form-label">پایان مبلغ</label>
+        <input id="EndAmount" name="EndAmount" class="form-control money-input" type="text" required />
+    </div>
+
+    <div class="col-xl-3">
+        <label class="form-label">استاندارد</label>
+        <input id="Standard" name="Standard" class="form-control" type="number" required />
+    </div>
+
+    <div class="col-xl-3 mt-2">
+        <label class="form-label">نوع</label>
+        <select id="Type" name="Type" class="form-control">
+            <option value="1">دیماندی</option>
+            <option value="2">عادی</option>
+        </select>
+    </div>
+</div>
+
+<button id="submitBtn" class="btn btn-primary mt-3">ثبت</button>
+
+<hr />
+
+<h4>لیست رکوردها</h4>
+<table class="table table-bordered text-center" id="recordsTable">
+    <thead>
+        <tr>
+            <th>شماره پله</th>
+            <th>شروع مبلغ</th>
+            <th>پایان مبلغ</th>
+            <th>استاندارد</th>
+            <th>نوع</th>
+            <th>حذف</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model ?? Enumerable.Empty<tbgozaresh_1275_Fish_estandard>())
+        {
+            <tr data-id="@item.ID">
+                <td>@item.count</td>
+                <td>@String.Format("{0:n0}", item.startvalue)</td>
+                <td>@String.Format("{0:n0}", item.endvalue)</td>
+                <td>@item.estandard</td>
+                <td>@item.type</td>
+                <td><button class="btn btn-danger btn-sm deleteBtn">X</button></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    // سه رقم سه رقم
+
+
+  // سه رقم سه رقم برای اعداد بزرگ
+$('.money-input').on('input', function () {
+    let value = $(this).val().replace(/,/g, '');
+    if (/^\d*$/.test(value)) { // فقط اعداد
+        // فرمت بدون تبدیل به Number
+        let parts = value.split('');
+        let result = '';
+        let count = 0;
+        for (let i = parts.length - 1; i >= 0; i--) {
+            result = parts[i] + result;
+            count++;
+            if (count % 3 === 0 && i !== 0) result = ',' + result;
+        }
+        $(this).val(result);
+    } else {
+        $(this).val(value.replace(/[^\d]/g, ''));
+    }
+});
+
+// حذف کاماها قبل از Submit
+$('#submitBtn').click(function (e) {
+    e.preventDefault();
+
+    let data = {
+        StepNumber: parseInt($('#StepNumber').val()),
+        StartAmount: parseInt($('#StartAmount').val().replace(/,/g, '')),
+        EndAmount: parseInt($('#EndAmount').val().replace(/,/g, '')),
+        Standard: parseInt($('#Standard').val()),
+        Type: parseInt($('#Type').val())
+    };
+
+    $.ajax({
+        url: '@Url.Action("AddAjax","Orders", new { area = "Setting" })',
+        type: 'POST',
+        data: data,
+        success: function (res) {
+            if (res.success) {
+                // افزودن به جدول
+                let newRow = `<tr data-id="${res.data.id}">
+                    <td>${res.data.count}</td>
+                    <td>${res.data.startvalue.toLocaleString('fa-IR')}</td>
+                    <td>${res.data.endvalue.toLocaleString('fa-IR')}</td>
+                    <td>${res.data.estandard}</td>
+                    <td>${res.data.type}</td>
+                    <td><button class="btn btn-danger btn-sm deleteBtn">X</button></td>
+                </tr>`;
+                $('#recordsTable tbody').append(newRow);
+                alert('ثبت با موفقیت انجام شد!');
+                $('input').val(''); // پاک کردن فرم
+            } else {
+                alert(res.message);
+            }
+        },
+        error: function () {
+            alert('خطا در ارسال اطلاعات!');
+        }
+    });
+});
+
+
+    // حذف با AJAX
+    $(document).on('click', '.deleteBtn', function () {
+        if (!confirm('آیا مطمئن هستید؟')) return;
+
+        let row = $(this).closest('tr');
+        let id = row.data('id');
+
+        $.ajax({
+            url: '@Url.Action("DeleteAjax","Orders", new { area = "Setting" })',
+            type: 'POST',
+            data: { id: id },
+            success: function (res) {
+                if (res.success) {
+                    row.remove();
+                    alert('رکورد حذف شد!');
+                } else {
+                    alert(res.message);
+                }
+            },
+            error: function () {
+                alert('خطا در حذف رکورد!');
+            }
+        });
+    });
+</script>

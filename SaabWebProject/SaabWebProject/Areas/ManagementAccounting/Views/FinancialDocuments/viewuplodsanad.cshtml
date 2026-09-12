@@ -1,0 +1,154 @@
+﻿@{
+    ViewBag.Title = "ثبت مورد";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section Styles{
+    <link href="~/Assets/plugins/BootstrapPersianDateTimePicker/src/jquery.md.bootstrap.datetimepicker.style.css" rel="stylesheet" />
+}
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+<div class="tab-content">
+    <div class="row" id="manageqarardad" style="margin-top:10px">
+        <span style="display:none">
+
+        </span>
+        @*<div class="col-xl-3">
+            <div class="col-xl-3">
+                <label class="form-label">کاربر را انتخاب کنید<span class="text-danger">*</span></label>
+                <select class="form-select installmentAmountInputManually" onchange="updateIntervalField(${nodesLength})">
+                    <option>انتخاب کنید</option>
+                    @Html.Action("viewfortariasnalvasil", "FinancialDocuments", new { area = "ManagementAccounting" })
+                </select>
+            </div>
+
+        </div>*@
+        <div class="col-xl-3">
+            <label class="form-label">کاربر را انتخاب کنید<span class="text-danger">*</span></label>
+            <div id="div_users"></div>
+        </div>
+        <div class="col-xl-5">
+            <label class="form-label">محل ذخیره<span class="text-danger">*</span></label>
+            <input class=""  value="" id="IsFirst" />
+
+
+
+        </div>
+
+        <div class="col-xl-1">
+            <button class="btn form-control buttonGeneral" id="showContract">
+                <i class="fa fa-eye fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text">نمایش </span>
+            </button>
+        </div>
+        @*<div class="col-xl-1">
+            <a href="#" id="createJobGroupsButtonModal" class="btn form-control buttonGeneral" data-bs-toggle="modal" data-bs-target="#modalLg1">
+                <i class="fa fa-plus-circle fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text">تعریف قرارداد جدید</span>
+            </a>
+        </div>
+        <div class="col-xl-1">
+            <a href="#" class=" btn form-control buttonGeneral" id="dwn">
+                <i class="bi bi-download  fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text">دانلود فایل نمونه</span>
+            </a>
+        </div>
+
+        <div class="col-xl-1">
+            <a href="#" onclick="ShowDialogFile()" class=" btn btn-outline-info form-control buttonGeneral" style="margin-bottom:5px;">
+                <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text">بارگذاری فایل</span>
+            </a>
+        </div>*@
+
+    </div>
+
+    @*<div class="row">
+        <div class="col-xl-12" id="myTable" style=" z-index: 2 !important;margin-bottom:10px"></div>
+    </div>*@
+
+    <div class="row">
+        <div class="tab-content p-1">
+            <div class="iddd">
+            </div>
+        </div>
+    </div>
+    <input name="MyExcelStream" type="file" style="display:none" />
+
+</div>
+
+
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/js/jquery3.6.0.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script>
+    $('.installmentAmountInputManually').picker({ search: true });
+</script>
+<script src="~/Scripts/popper.min.js"></script>
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Scripts/sweetalert2.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Scripts/popper.min.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/src/jquery.md.bootstrap.datetimepicker.js"></script>
+<script>
+        $("#showContract").click(function () {
+    // پیدا کردن رادیوباکس انتخاب‌شده
+    //var selectedRadio = $("input[type='radio'][name^='groupRadio_']:checked");
+    //console.log(selectedRadio);
+
+    //if (selectedRadio.length === 0) {
+    //    alert("هیچ موردی انتخاب نشده است!");
+    //    return;
+    //}
+
+    //var idParts = selectedRadio.attr("id").split("_");
+    //var idd = idParts[1]; // IDMOalfeh
+    //var idd1 = idParts[2]; // ماه
+    //var idd2 = idParts[3]; // سال
+            var idd4 = $("#users1").val();
+
+   /* var idd5 = $("#year_usr").val();*/
+
+    //if ($("#month_usr").val() == 0) {
+    //    alert("لطفا ماه را انتخاب نمایید");
+    //    return;
+    //}
+
+        if ($("#users1").val() == 0) {
+        alert("لطفا سال را انتخاب نمایید");
+        return;
+    }
+
+    console.log("adssd");
+
+    // استخراج مقادیر از ID رادیوباکس انتخاب‌شده
+        console.log(idd4);
+    //console.log(idd1);
+    //console.log(idd2);
+
+    // ساختن URL و ارسال اطلاعات
+    var url = '@Url.Content("/ManagementAccounting/FinancialDocuments/viewupload2")';
+        var queryString = "?id=" + encodeURIComponent(idd4);
+    var url2 = '@Url.Content("/Contracts/RegistrationAndConfirmationProcedures/viewmonthyearmahdodatmahdodatasliforkenarsafhe")';
+
+     $("#loading-circle .loadingText1").text("لطفا منتظر نمایش اطلاعات بمانید ...");
+     $("#loading-circle").css("display", "flex");
+
+    // بارگذاری محتوا در بخش‌های موردنظر
+     //$(".iddd22").load(url2 + queryString);
+
+    // بارگذاری محتوا برای iddd22 و مخفی کردن لودینگ پس از اتمام بارگذاری
+     $(".iddd").load(url + queryString, function() {
+        // پس از بارگذاری کامل، لودینگ را مخفی می‌کنیم
+         $("#loading-circle").css("display", "none");
+    });
+});
+         $(function () {
+            $("#div_users").load('@Url.Content("/../ManagementAccounting/FinancialDocuments/viewfortariasnalvasilupload")', function () {
+                $("#select_users1").attr("id", "users1");
+
+            });
+        });
+</script>

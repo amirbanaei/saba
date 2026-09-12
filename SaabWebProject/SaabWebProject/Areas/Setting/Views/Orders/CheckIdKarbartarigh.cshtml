@@ -1,0 +1,319 @@
+﻿@using SaabWebProject.Models.DomainModels;
+@{
+    SaabEntities db = new SaabEntities();
+    ViewBag.Title = "جزییات گزارشات پویا";
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    System.Globalization.PersianCalendar cs2 = new System.Globalization.PersianCalendar();
+    int currentYear = cs2.GetYear(DateTime.Now);
+}
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+@using System.Globalization
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>TableTarikh</title>
+
+    <style>
+        @@media (max-width: 768px) {
+            .sticky-col {
+                position: sticky;
+                right: -5px;
+                background: #fff;
+                z-index: 2000;
+                min-width: 120px;
+            }
+
+            .sticky-col-header {
+                z-index: 3;
+            }
+
+            table {
+                overflow-x: auto !important;
+            }
+
+            .btn-small {
+                width: 20px !important;
+                height: 20px !important;
+            }
+
+                .btn-small i {
+                    font-size: 10px;
+                }
+
+            .title {
+                padding-right: 0 !important;
+                flex-direction: column !important;
+                gap: 10px !important;
+            }
+
+            .title-page {
+                display: none !important;
+            }
+
+            #SaatKhateme, #SaatShoroo {
+                width: 80px;
+            }
+        }
+
+        .TextCenter {
+            align-content: center;
+            align-items: center;
+            justify-content: center;
+            border-left: 1px solid white;
+            width: calc(100% / 7);
+        }
+
+        tbody tr td:first-child {
+            border-left: 1px solid white;
+            border-bottom: 1px solid white !important;
+        }
+
+        td input {
+            margin: 0 !important;
+            width: 200px;
+        }
+
+        .TdInput {
+            width: 100%;
+            text-align: center;
+        }
+
+        .form-select {
+            margin-bottom: 0px !important;
+        }
+
+        .btn-small {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(129deg, rgba(29,29,27,1) 0%, rgba(29,113,184,1) 53%, rgba(54,169,225,1) 100%);
+            border: none;
+            border-radius: 8px;
+            padding: 3px;
+            margin: auto;
+        }
+
+            .btn-small i {
+                font-size: 14px;
+            }
+    </style>
+</head>
+
+<body>
+    <div class="tab-content" style="padding:20px; background:#f7f7f7;">
+
+        <div class="tab-pane fade show active">
+            <div class="table-responsive" style="overflow-x: auto; height: 300px;">
+
+                <table class="table table-hover" style="text-align:center; border-radius:10px;">
+                    <thead>
+                        <tr>
+                            <th class="TextCenter">آیدی</th>
+                            <th class="TextCenter">از تاریخ</th>
+                            <th class="TextCenter">تا تاریخ</th>
+                            <th class="TextCenter">ماه</th>
+                            <th class="TextCenter">سال</th>
+                            <th class="TextCenter">حذف</th>
+                            <th class="TextCenter">پردازش</th>
+                            <th class="TextCenter">دانلود فایل پردازش</th>
+
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @{
+                            var rowIndex = 0;
+                        }
+
+                        @foreach (var item in db.dbergharelinsert_6.ToList())
+                        {
+                            rowIndex++;
+
+                            PersianCalendar pc = new PersianCalendar();
+                            DateTime? asDate = item.astime as DateTime?;
+                            DateTime? taDate = item.tatime as DateTime?;
+
+                            string tarighStart = asDate.HasValue
+                                ? $"{pc.GetYear(asDate.Value)}/{pc.GetMonth(asDate.Value):00}/{pc.GetDayOfMonth(asDate.Value):00}"
+                                : "";
+
+                            string tarighEnd = taDate.HasValue
+                                ? $"{pc.GetYear(taDate.Value)}/{pc.GetMonth(taDate.Value):00}/{pc.GetDayOfMonth(taDate.Value):00}"
+                                : "";
+
+                            <tr>
+                                <td class="sticky-col">@item.dbergharel_4.dbergharel_4_4.name</td>
+
+                                <td>@tarighStart</td>
+                                <td>@tarighEnd</td>
+
+                                <!-- ماه -->
+                                <td>
+                                    <select class="form-select" id="Month_@rowIndex">
+                                        <option value="0">انتخاب مورد</option>
+                                        <option value="1">فروردین</option>
+                                        <option value="2">اردیبهشت</option>
+                                        <option value="3">خرداد</option>
+                                        <option value="4">تیر</option>
+                                        <option value="5">مرداد</option>
+                                        <option value="6">شهریور</option>
+                                        <option value="7">مهر</option>
+                                        <option value="8">آبان</option>
+                                        <option value="9">آذر</option>
+                                        <option value="10">دی</option>
+                                        <option value="11">بهمن</option>
+                                        <option value="12">اسفند</option>
+                                    </select>
+                                </td>
+
+                                <!-- سال -->
+                                <td>
+                                    <select class="form-select" id="Year_@rowIndex">
+                                        <option value="0">انتخاب کنید</option>
+                                        @for (var i = 4; i >= 0; i--)
+                                        {
+                                            var s = DateTime.Now.AddYears(-i);
+                                            <option>@cs2.GetYear(s)</option>
+                                        }
+                                    </select>
+                                </td>
+
+                                <!-- دکمه ثبت -->
+                                <td>
+                                    <a href="#"
+                                       class="btn form-control btn-small ZakhirehBtn"
+                                       data-id="@item.ID"
+                                       title="حذف رکوردهای مرتبط">
+                                        <i class="bi bi-x-circle"></i>
+                                    </a>
+                                </td>
+
+                                <!-- دکمه پردازش -->
+                                <td>
+                                    <a href="#"
+                                       class="btn form-control btn-small PardazeshBtn"
+                                       data-id="@item.ID"
+                                       data-fk="@item.dbergharel_4.FK_namegozarwsh"
+                                       data-start="@tarighStart"
+                                       data-end="@tarighEnd"
+                                       data-row="@rowIndex">
+                                        <i class="bi bi-gear"></i>
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="#"
+                                       class="btn form-control btn-small downloadpardazesh"
+                                       data-id="@item.ID"
+                                       data-fk="@item.dbergharel_4.FK_namegozarwsh"
+                                       data-start="@tarighStart"
+                                       data-end="@tarighEnd"
+                                       data-row="@rowIndex">
+                                        <i class="bi bi-download  fa-fw me-1 VecGeneral"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- اسکریپت پردازش -->
+    @*<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>*@
+    <script src="~/Scripts/jquery-3.3.1.js"></script>
+
+    <script>
+        console.log("JS Loaded");
+
+        $(document).ready(function () {
+            $(document).on("click", ".PardazeshBtn", function (e) {
+                e.preventDefault();   // ⭐ خیلی مهم
+
+                //$(".PardazeshBtn").click(function () {
+                var row = $(this).data("row");
+                $("#loading-circle .loadingText1").text("لطفا منتظر نمایش اطلاعات بمانید ...");
+                $("#loading-circle").css("display", "flex");
+                console.log("amadeh");
+                var month = $("#Month_" + row).val();
+                var year = $("#Year_" + row).val();
+
+                var id = $(this).data("id");
+                var fk = $(this).data("fk");
+                var start = $(this).data("start");
+                var end = $(this).data("end");
+
+                var url = `/Setting/Orders/gozarwesh?tarighstart=${start}&tarighend=${end}&ID=${id}&FK_gozaresh=${fk}&month=${month}&year=${year}`;
+
+                $.get(url, function (response) {
+                    $("#loading-circle").css("display", "none"); // پنهان کردن لودینگ
+                    console.log("amadeh1");
+                    console.log(response);
+
+                    alert(response);
+                }).fail(function (xhr, status, error) {
+                    $("#loading-circle").css("display", "none"); // پنهان کردن لودینگ
+                    console.log("naamadeh");
+                    console.log(response);
+
+                    alert("خطا در درخواست: " + error);
+                });
+            });
+            $(document).on("click", ".downloadpardazesh", function (e) {
+                e.preventDefault();
+                //$(".downloadpardazesh").click(function () {
+
+                var row = $(this).data("row");
+                var month = $("#Month_" + row).val();
+                var year = $("#Year_" + row).val();
+
+                var id = $(this).data("id");
+                var start = $(this).data("start");
+                var end = $(this).data("end");
+
+                window.location = `/Setting/Orders/Excel_gozaresh?tarighstart=${start}&tarighend=${end}&ID=${id}&month=${month}&year=${year}`;
+            });
+
+            $(document).on("click", ".ZakhirehBtn", function (e) {
+                e.preventDefault();
+                //$(".ZakhirehBtn").click(function () {
+                var id = $(this).data("id");
+
+                if (!confirm("آیا مطمئن هستید؟ تمام رکوردهای مربوط به این آیتم حذف می‌شود.")) {
+                    return;
+                }
+                $("#loading-circle .loadingText1").text("لطفا منتظر نمایش اطلاعات بمانید ...");
+                $("#loading-circle").css("display", "flex");
+
+                var url = `/Setting/Orders/DeleteDetails?D=${id}`;
+
+                $.get(url, function (response) {
+                    alert(response);
+                    if (response.includes("با موفقیت")) {
+                        $("#loading-circle").css("display", "none"); // پنهان کردن لودینگ
+
+                        // اگر حذف موفق بود، ردیف جدول را هم پاک کن
+                        $(this).closest("tr").remove();
+                    }
+                }.bind(this)).fail(function (xhr, status, error) {
+                    $("#loading-circle").css("display", "none"); // پنهان کردن لودینگ
+
+                    alert("خطا در درخواست: " + error);
+                });
+            });
+
+        });
+
+    </script>
+
+</body>
+</html>

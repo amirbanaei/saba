@@ -1,0 +1,353 @@
+﻿@{ Layout = null;}
+@model  SaabWebProject.Models.DomainModels.tbSavedFunctions
+
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="form-group mb-12">
+                <div class="table-responsive">
+                    <table class="table table-hover text-nowrap">
+                        <thead>
+                            <tr style="text-align:center;margin:auto">
+                                <th>
+                                    @Html.DisplayName("عملیات")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("ردیف")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("نوع فعالیت")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("پیمان")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("بسته")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("تاریخ ذخیره")
+                                </th>
+                                <th>
+                                    @Html.DisplayName(" کاربر")
+                                </th>
+                                <th>
+                                    @Html.DisplayName(" دانلود")
+                                </th>
+                                <th>
+                                    @Html.DisplayName(" دانلود پیوست")
+                                </th>
+
+
+                        </thead>
+                        <tbody>
+
+                            @if (Model != null)
+                            {
+                                <tr style="text-align:center;">
+                                    <td>
+                                        <div class="ms-sm-4 mt-sm-0 mt-2 dropdown-toggle">
+                                            <a href="#" data-bs-toggle="dropdown" class="text-white text-opacity-75 text-decoration-none">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                            <div class="dropdown-menu">
+                                                @if (Model.svdfunc_FileSystemName == null)
+                                                {
+
+                                                    <a class="dropdown-item uploadSummery2" id="uploadSummery_@Model.svdfunc_ID">
+                                                        <span>بارگذاری خلاصه مدرک </span>
+                                                    </a>
+
+                                                }
+
+                                                <input id="summery_file6" style="display:none" type="file" class="form-control" value="" />
+
+
+
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>1</td>
+                                    @if (Model.For_Accept == true)
+                                    {
+                                        <td>تایید </td>
+                                    }
+                                    else
+                                    {
+                                        <td>ثبت</td>
+                                    }
+
+                                    <td id="py">@Model.tbPeymanContracts.pec_Title</td>
+                                    <td id="baste">@Model.tbReffrenceSaveLevel.Title</td>
+                                    @*<td>@Model.svdfunc_SavedDateTime</td>*@
+                                    @*------------------------------------------------[1402/09/20]-|KH|-*@
+                                    <td cont-date3="dateS1_1" hidden>@Model.svdfunc_SavedDateTime.Value.ToString("MM/dd/yyyy")</td>
+                                    <td id="dateS1_1"></td>
+                                    @*-------------------------------------------------------------|KH|-*@
+                                    <td id="user">@Model.tbUsers.FullName</td>
+                                    <td style="display:none" id="usr2">@Model.tbUsers.usr_ID</td>
+                                    <td style="display:none" id="id">@Model.svdfunc_ID</td>
+                                    <td id="click">
+                                        <a href="#" class=" btn form-control buttonGeneral" style="font-size:10px;margin-bottom:10px;" id="dwn">
+                                            <i class="bi bi-download  fa-fw me-1 VecGeneral"></i>
+                                            <span class="bGeneral-text">دانلود فایل </span>
+                                        </a>
+
+                                    </td>
+                                    @if (Model.svdfunc_FileName != null)
+                                    {
+                                        <td>
+                                            <a href="~/Areas/Salaries/Content/UserFunctionsFile/@Model.svdfunc_FileSystemName">
+                                                <i class="bi bi-download  DownloadExcelFunction" style="cursor:pointer"></i>
+                                            </a>
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td>
+                                            پیوستی ثبت نشده
+                                        </td>
+                                    }
+
+                                </tr>
+
+
+
+                            }
+
+
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    @*توجه شود که هر کاربر یک بار فقط قابلیت آپلود برای یک پیمان و یک بسته در تاریخ شروع و تاریخ پایان را دارد بدین معنی که ابتدا سوال شود که مطمین هستید
+        در صورت اطمینان یکبار عملکردها تایید می شوند و برای پیمان ، بسته در این تاریخ ها (از تاریخ تا تاریخ ) می تواند تایید کند*@
+
+
+    @*TODO: send data to back for download and upload excel for any type of users(first time user or last time or middle) and check that user is not submited before*@
+
+
+
+
+
+
+
+    @*------------------------------------------------[1402/09/20]-|KH|-*@
+    <script>
+        // Convert Gregorian date to jaali in the table
+        var tds = document.querySelectorAll("[cont-date3]");
+        var valueD, id, target;
+        var options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+        tds.forEach(td => {
+            valueD = new Date(td.textContent).toLocaleDateString('fa-IR-u-nu-latn', options).replace(',', '').replace(" ", "");
+            valueD = valueD.slice(0, 10) + " " + td.textContent.slice(10, 30)
+            id = td.getAttribute("cont-date3");
+            target = document.getElementById(id);
+            target.textContent = valueD;
+        });
+    </script>
+    @*-------------------------------------------------------------|KH|-*@
+    <script>
+
+    var obj = new FormData();
+
+     $(".uploadSummery2").click(function () {
+       FK_DDOfTitle = $(this).attr("id").split("_")[2];
+       ID = $(this).attr("id").split("_")[1];
+         $("#summery_file6").click();
+   });
+
+    $("#summery_file6").change(function (e) {
+       $.each(e.target.files, function (index, file) {
+           obj.append("files", file);
+       });
+            sendAjax2('@Url.Action("pavastperson", "Functions", new { area = "Contracts" })', obj);
+    });
+
+
+    function sendAjax2(url2, fd2) {
+        obj.append("id", ID);
+
+
+
+
+        $.ajax({
+            url: url2,
+            type: 'POST',
+            data: fd2,
+            processData: false,
+            contentType: false,
+            success: function (resp1) {
+                console.log("okeye");
+                console.log(resp1);
+                $("#loading-message").css("display", "none");
+                fd = new FormData();
+                if (resp1 == "True") {
+                    alert("با موفقیت ثبت شد");
+
+                        location.reload(); // یا می‌توانید از location.reload(true) هم استفاده کنید
+                     // بازه زمانی به میلی‌ثانیه، اینجا 2000 میلی‌ثانیه (یعنی 2 ثانیه)
+                }
+                else {
+                    $("#loading-message").css("display", "none");
+                    console.log("jlk;;kkj");
+                    Toast.fire({
+
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                    }).then(() => {
+                        $("#loading-message").css("display", "none");
+                    });
+                }
+
+            },
+            error: function (resp1) {
+                console.log(resp1);
+                console.log("Nokeye");
+                $("#loading-message").css("display", "none");
+                Toast.fire({
+                    icon: 'success',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                }).then(() => {
+                    $("#loading-message").css("display", "none");
+                });
+            }
+        });
+    }
+
+
+    </script>
+
+
+
+    <script>
+        var Toast = Swal.mixin({
+            toast: true,
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+    </script>
+    <script>
+
+
+
+
+
+
+
+    $("#click").click(function () {
+        console.log($("#usr2").val());
+                    console.log($("#user").val());
+        var aa = $("#usr2").text();
+                    var Basteh = $('#baste').text();
+        var py = $('#py').text();
+        var id2 = $('#id').text();
+                    console.log(aa);
+                    console.log(py);
+                    console.log(Basteh); // این فایل درست هست مگر نه ؟نهاون یکی دیگه است سمت راستی
+
+                    $.ajax({
+                        beforeSend: function () {
+                            document.getElementById("loading-message").style.display = "block";
+                        },
+                        @*url: '@Url.Action("ExportMoalefeExcel2", "Moalefe", new { area = "Salaries" })?idd=' + aa + ' &PeymanID=' + py + '&Baste2=' + Basteh + '&id=' + id2,*@
+                        type: 'GET',
+                        dataType: 'html',
+
+                        success: function (res) {
+                            document.getElementById("loading-message").style.display = "none";
+                            window.location = '@Url.Action("ExportMoalefeExcel2", "Moalefe", new { area = "Salaries" })?idd=' + aa + ' &PeymanID=' + py + '&Baste2=' + Basteh + '&id=' + id2;
+                        },
+                        error: function (res) {
+                            console.log(res);
+                        }
+                    });
+});
+
+    </script>
+
+
+    <script>
+
+        var fd = new FormData();
+
+        //بارگذاری فایل مدرک
+        $(".UploadAttachment").click(function () {
+            $("#inp_file").click();
+        });
+    </script>
+
+    <script>
+       $("#inp_file").change(function (e) {
+                   $.each(e.target.files, function (index, file) {
+                      fd.append("files", file);
+                   });
+                   sendAjax1('@Url.Action("UploadAcceptFile", "Functions", new { area = "Contracts" })', fd);
+      });
+    </script>
+    <script>
+
+    function sendAjax1(url2, fd2) {
+        $("#loading-message").css("display", "block");
+        fd2.append("SaveFunction_ID", @Model.svdfunc_ID);
+
+        $.ajax({
+            url: url2,
+            type: 'POST',
+            data: fd2,
+            processData: false,
+            contentType: false,
+            success: function (resp1) {
+                $("#loading-message").css("display", "none");
+                fd = new FormData();
+                if (resp1 == "True") {
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "اطلاعات با موفقیت ثبت شد"
+                    }).then(() => {
+                        location.reload();
+                    });
+                } else {
+                    $("#loading-message").css("display", "none");
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                    }).then(() => {
+                        $("#loading-message").css("display", "none");
+                    });
+
+
+                }
+
+            },
+            error: function (resp1) {
+                $("#loading-message").css("display", "none");
+                Toast.fire({
+                    icon: 'success',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                }).then(() => {
+                    $("#loading-message").css("display", "none");
+                });
+            }
+        });
+    }
+    </script>

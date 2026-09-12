@@ -1,0 +1,252 @@
+﻿
+@{
+    ViewBag.Title = "تعریف تعطیلات";
+    Layout = null;
+}
+@model SaabWebProject.Models.DomainModels.tbcraettatel
+
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+<script src="~/Assets/js/jalalidatepicker.min.js"></script>
+<link href="~/Assets/css/jalalidatepicker.min.css" rel="stylesheet" />
+<script src="~/Assets/js/jalaali.min.js"></script>
+<link href="~/MyStyles/jalalidatepicker.css" rel="stylesheet" />
+@using System.Globalization
+@{
+    // چک کردن مقدار تاریخ
+    var gregorianDate = Model.Dtatime;
+    string persianDate = "";
+    string persianDate2 = "";
+
+    if (gregorianDate.HasValue)
+    {
+        // ایجاد شی PersianCalendar
+        PersianCalendar persianCalendar = new PersianCalendar();
+
+        // تبدیل تاریخ میلادی به شمسی
+        int year = persianCalendar.GetYear(gregorianDate.Value);
+        int month = persianCalendar.GetMonth(gregorianDate.Value);
+        int day = persianCalendar.GetDayOfMonth(gregorianDate.Value);
+
+        persianDate = $"{year}/{month:D2}/{day:D2}";
+        persianDate2 = gregorianDate.Value.ToString("yyyy/MM/dd");
+
+    }
+}
+
+<style>
+    #dateDisplay {
+        float: left;
+    }
+
+    h5 {
+        margin-bottom: 0;
+    }
+</style>
+
+<div class="tab-content">
+
+    <div class="row p-2">
+        <div class="col-xl-8">
+            <h5>تعریف تعطیلات</h5>
+        </div>
+        <div class="col-xl-4">
+            <h5 id="dateDisplay"></h5>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-xl-3">
+            <label class="form-label">تاریخ</label>
+            @*------------------------------------------------[1402/09/20]-|KH|-*@
+            <input data-jdp jdp-btn-close data-jdp-miladi-input="datepickerFromEn_usr2" id="datepickerFrom_usr2" class="form-control" value="@persianDate" >
+            <input id="datepickerFromEn_usr2"  value="@(Model.Dtatime?.ToString("MM/dd/yyyy") ?? "")" type="hidden" />
+            @*-------------------------------------------------------------|KH|-*@
+        </div>
+        <div class="col-xl-2">
+            <label class="form-label">روز هفته</label>
+            <input class="form-control" id="weekDay2" disabled value="@Model.day" />
+        </div>
+        <div class="col-xl-2">
+            <label class="form-label">تعطیل رسمی/غیر رسمی</label>
+            <select class="form-select" id="tael2">
+                @if (Model.Title == 1)
+                {
+                    <option value="1">رسمی</option>
+
+                    <option value="0" hidden>انتخاب مورد</option>
+                    <option value="2">غیر رسمی</option>
+
+                }
+                else
+                {
+                    <option value="2">غیر رسمی</option>
+                    <option value="0" hidden>انتخاب مورد</option>
+
+                    <option value="1">رسمی</option>
+
+                }
+            </select>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-md-11">
+        </div>
+        <div class="col-md-1">
+            <button id="btnTatilat2" type="button" class="btn form-control buttonsabt">
+                <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                <span class="bSabt-text">ثبت</span>
+            </button>
+        </div>
+    </div>
+
+</div>
+<script src="~/Scripts/sweetalert2.js" type="text/javascript"></script>
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/src/jquery.md.bootstrap.datetimepicker.js"></script>
+<script>
+    var options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+    var dateString = new Date().toLocaleDateString('fa-IR-u-nu-latn', options);
+    document.getElementById('dateDisplay').textContent = "تاریخ امروز : " + dateString;
+</script>
+<script>
+    date = document.getElementById("datepickerFromEn_usr2").value.replace(" ", "")
+    valueD = new Date(date.slice(0, 10)).toLocaleDateString('fa-IR-u-nu-latn', { year: 'numeric', month: '2-digit', day: '2-digit' })
+    valueD = valueD + " " + date.slice(10, 30)
+    document.getElementById("datepickerFromEn_usr2").value = valueD
+    jalaliDatepicker.startWatch({
+        time: false,
+        days: ["شنبه", "1شنبه", "2شنبه", "3شنبه", "4شنبه", "5شنبه", "جمعه"],
+        persianDigits: true,
+        autoClose: true,
+        autocomplete: true,
+        showCloseBtn: true,
+        showEmptyBtn: false,
+        showCloseBtn: true,
+        zIndex: 100000,
+    });
+    //-----------------------------------------------------------------
+    var inputs = document.querySelectorAll("[data-jdp-miladi-input]");
+    for (var i = 0; i < inputs.length; i++) {
+        inputs[i].addEventListener("jdp:change", function (e) {
+            var miladiInput = document.getElementById(this.getAttribute("data-jdp-miladi-input"));
+            var date = this.value.replace(' ', '').slice(0, 10).split('/');
+            date = jalaali.toGregorian(parseInt(date[0]), parseInt(date[1]), parseInt(date[2]),)
+            // If it was empty
+            if (!this.value) {
+                date = "";
+            }
+            // If it was only history
+            else if (this.value.replace(' ', '').length < 11) {
+                date = date.gy + '-' + date.gm + '-' + date.gd
+            }
+            // If it was the date and time
+            else {
+                date = date.gy + '-' + date.gm + '-' + date.gd + ' ' + this.value.replace(' ', '').slice(10, 30)
+            }
+            miladiInput.value = date
+            var weekDay2 = getDayOfWeek(document.querySelector("#datepickerFromEn_usr2").value.slice(0, 10))
+            document.querySelector("#weekDay2").value = weekDay2
+        });
+    }
+
+    //-----------------------------------------------------------------
+    function getDayOfWeek(gregorianDate) {
+        const [year, month, day] = gregorianDate.split('-').map(Number);
+        const date = new Date(year, month - 1, day);
+        const dayOfWeek = date.getDay();
+        const days = ['یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه', 'شنبه'];
+        return days[dayOfWeek];
+    }
+
+
+
+
+    $("#btnTatilat2").click(function () {
+              var Filters  = [];
+          var obj = new Object();
+
+
+         console.log("djkjsdkl");
+          var val2 = $('#datepickerFromEn_usr2').val();
+          var val22 = $('#tael2').val();
+        var val24 = $('#weekDay2').val();
+        var val55 =@Model.ID;
+          console.log(val22);
+          console.log(val24);
+          console.log(val2);
+
+          obj.DataDocument = val2;
+          obj.creditline = val22;
+          obj.titr = val24;
+          console.log(obj);
+
+        obj.ID = val55
+
+
+
+
+
+
+
+          sendAjax('@Url.Action("crattattariledit", "FinancialDocuments", new { area = "ManagementAccounting" })', obj);
+
+
+
+       ;
+
+  });
+
+
+    $(".edit").click(function () {
+       var idd = $(this).attr("id").split("_")[1];
+       console.log(idd);
+           $("#big_modal_body1").load('@Url.Content("/Reporter/Dashboard/ModiriyatFaaliat_TarifeMovazafiedit")?id='+idd);
+       });
+
+
+    function sendAjax(url, data) {
+        console.log(url);
+
+        $.ajax({
+            beforeSend: function () {
+                document.getElementById("loading-message").style.display = "block";
+            },
+            url: url,
+            data: data,
+            type: "POST",
+            dataType: "html",
+            success: function (resp) {
+                console.log(resp);
+                document.getElementById("loading-message").style.display = "none";
+                if (resp == "True") {
+                    alert("با موفقیت ثبت شد");
+                    location.reload();
+                }
+
+                else {
+                    alert("resp")
+                }
+            },
+            error: function (resp) {
+                document.getElementById("loading-message").style.display = "none";
+                alert("دچار مشکل شده است ");
+                console.log(resp);
+            }
+        });
+    }
+</script>
+<script>
+    // Convert Gregorian date to jaali in the table
+    var tds = document.querySelectorAll("[cont-date]");
+    var valueD, id, target;
+    var options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    tds.forEach(td => {
+        valueD = new Date(td.textContent).toLocaleDateString('fa-IR-u-nu-latn', options).replace(',', '').replace(" ", "");
+        valueD = valueD.slice(0, 10) + " " + td.textContent.slice(10, 30)
+        id = td.getAttribute("cont-date");
+        target = document.getElementById(id);
+        target.textContent = valueD;
+    });
+</script>

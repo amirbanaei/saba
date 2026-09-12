@@ -1,0 +1,160 @@
+﻿@model List<SaabWebProject.Models.DomainModels.tbDocumentsAuthorizedUsers>
+@{
+    Layout = null;
+}
+<style>
+    .tableH_Lock {
+        max-height: 483px;
+        /*height: 260px;*/
+    }
+
+    thead {
+        position: sticky;
+        top: 0;
+        text-align: center;
+        z-index: 2;
+    }
+
+    .inputFilter {
+        margin-bottom: 0px !important;
+    }
+
+    thead th {
+        vertical-align: middle;
+    }
+</style>
+<div class="card">
+    <div class="table-content p-4">
+        <div class="tab-pane fade show active" id="allTab">
+            <div class="table-responsive tableH_Lock">
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr style="text-align:center">
+                            <th>
+                                @Html.DisplayName("فعالیت")
+                            </th>
+                            <th>
+                                @Html.DisplayName("#")
+                            </th>
+                            <th>
+                                @Html.DisplayName("پیمان")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter01-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            <th>
+                                @Html.DisplayName("افراد")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter02-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+
+
+                        </tr>
+                    </thead>
+                    <tbody style="text-align:center;">
+                        @{ var counter = 0;
+                            var str = "";
+                            string peymanK = "";
+                        }
+                        @foreach (var item in Model)
+                        {
+                            if (str != item.tbPeymanContracts.pec_Title)
+                            {
+                                peymanK = @item.tbPeymanContracts.pec_Title;
+                            }
+                            else
+                            {
+                                peymanK = "";
+                            }
+                            <tr class="task-list-row"
+                                data-filter01="@peymanK"
+                                data-filter02="@item.tbUsers.FullName">
+                                @if (str != item.tbPeymanContracts.pec_Title)
+                                {
+                                    counter++;
+                                    str = item.tbPeymanContracts.pec_Title;
+                                    <td>
+                                        <div class="ms-sm-4 mt-sm-0 mt-2 dropdown-toggle">
+                                            <a href="#" data-bs-toggle="dropdown" class="text-white text-opacity-75 text-decoration-none">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                            <div class="dropdown-menu">
+                                                <a data-bs-toggle="modal" data-bs-target="#modalLg" class="dropdown-item edit" id="Edit_@item.ID">ویرایش</a>
+                                            </div>
+
+                                        </div>
+                                    </td>
+                                    <td>@counter</td>
+                                    <td>@item.tbPeymanContracts.pec_Title</td>
+                                }
+                                else
+                                {
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                }
+
+                                <td>@item.tbUsers.FullName</td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+<script>
+
+    var
+        filters = {
+            filter01: null,
+            filter02: null,
+        };
+
+    function updateFilters() {
+        $('.task-list-row').hide().filter(function () {
+            var self = $(this),
+                result = true;
+
+            Object.keys(filters).forEach(function (filter) {
+                var filterData = self.data(filter);
+                if (filters[filter] && (filters[filter] != 'None') && (filters[filter] != 'همه')) {
+                    // تبدیل داده به رشته و بررسی مقدار
+                    result = result && (filterData && filterData.toString().indexOf(filters[filter]) !== -1);
+                }
+            });
+
+            return result;
+        }).show();
+    }
+
+    function changeFilter(filterName) {
+        filters[filterName] = this.value;
+        updateFilters();
+    }
+
+    // Assigned User Dropdown Filter
+    $('#filter01-filter').on('input', function () {
+        changeFilter.call(this, 'filter01');
+    });
+    $('#filter02-filter').on('input', function () {
+        changeFilter.call(this, 'filter02');
+    });
+</script>
+<script>
+      $(".edit").click(function () {
+        var idd = $(this).attr("id").split("_")[1];
+        $("#big_modal_body").load('@Url.Content("/RegistrationDocument/authorizedUsers_Update")?ID='+idd);
+    });
+</script>

@@ -1,0 +1,257 @@
+﻿@model SaabWebProject.Areas.Contracts.Models.Classes.EquipmentVM
+<link href="~/Areas/Users/Styles/ShareStyle.css" rel="stylesheet" />
+
+@section Styles{
+    <link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+    <link href="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.style.css" rel="stylesheet" />
+}
+
+<div class="line-container">
+    <div class="row" data-row-id="@Model.Counter">
+        @if (Model.listEquip.Count >= 1)
+        {
+            <h5 id="Title_1">تجهیز @Model.Counter :</h5>
+
+            for (var i = 0; i < Model.listEquip.Count;)
+            {
+                <div class="col-xl-3 Spec">
+                    <label class="form-label SpecTitle" style="">@Model.listEquip[i].sp_SpecTitle</label>
+                    <input id="Spc_@Model.listEquip[i].sp_ID _@Model.Counter" class="form-control SpecData SpecData_@Model.Counter" placeholder="" style="" />
+                </div>
+                i += 1;
+            }
+
+
+            <div class="col-xl-3">
+                <label class="form-label">کد تجهیز </label>
+                <input class="form-control col_mablaq" id="codtaghiz_@Model.Counter" />
+            </div>
+
+            <div class="col-xl-3">
+                <label class="form-label">مدل </label>
+                <input class="form-control col_mablaq" id="model_@Model.Counter" />
+            </div>
+            <div class="col-xl-3">
+                <label class="form-label">کل مبلغ</label>
+                <input class="form-control col_mablaq" id="col_mablagh_@Model.Counter" />
+            </div>
+            <div class="col-xl-3">
+                <label class="form-label">واحد</label>
+
+                <select class="form-select" id="vahed_@Model.Counter">
+                    <option value="1">ساعتی</option>
+                    <option value="2">روزانه</option>
+                    <option value="3">ماهیانه</option>
+                    <option value="4">سالانه</option>
+                </select>
+            </div>
+            <div class="col-xl-3">
+                <label class="form-label">تعداد واحد</label>
+                <input class="form-control tedad_vahed" type="number" id="tedad_vahed_@Model.Counter" />
+            </div>
+            <div class="col-xl-3">
+                <label class="form-label"> مقدار واحد</label>
+                <input class="form-control vahed_harozv" disabled="disabled" id="vahed_harozv_@Model.Counter" />
+            </div>
+            <div class="col-xl-3">
+                <label class="form-label">سهم سوخت</label>
+                <input class="form-control col_mablaq" oninput="formatCurrency(this)" id="soght_@Model.Counter" />
+            </div>
+            <div class="col-xl-3">
+                <label class="form-label"> سهم اجاره</label>
+                <input class="form-control col_mablaq" oninput="formatCurrency(this)" id="egareh_@Model.Counter" />
+            </div>
+            <div class="col-xl-3">
+                <label class="form-label"> سهم یونیفرم</label>
+                <input class="form-control col_mablaq" oninput="formatCurrency(this)" id="uniform_@Model.Counter" />
+            </div>
+            <div class="col-xl-3 tedad_inQarardad" style="display:none">
+                <label class="form-label">تعداد مندرج در قرارداد</label>
+                <input class="form-control tedad_vahed" type="number" id="Tedad_InQardad_@Model.Counter" />
+            </div>
+
+
+            <div class="col-xl-3">
+                <label class="form-label">تحویل گیرندگان</label>
+                @Html.Action("_PartialViewUsersListWithSearchAndMultiple", "Users", new { area = "Users" })
+            </div>
+            <div class="col-xl-3">
+                <label class="form-label"> نوع تضمین</label>
+                <select class="form-select" id="TazminType_@Model.Counter">
+                    <option style="background-color:#0D1117" value="0">انتخاب کنید </option>
+                    <option style="background-color:#0D1117" value="1">چک</option>
+                    <option style="background-color:#0D1117" value="2">سفته</option>
+                    <option style="background-color:#0D1117" value="3">ضمانت نامه بانکی</option>
+                    <option style="background-color:#0D1117" value="4">وجه نقد</option>
+                    <option style="background-color:#0D1117" value="5">نامه ضمانت</option>
+                </select>
+            </div>
+            <div class="col-xl-3">
+                <label class="form-label">نوع مالکیت</label>
+
+                <select class="form-select" id="malk_@Model.Counter">
+                    <option value="0">کارگزاری</option>
+                    <option value="1">پرسنلی</option>
+
+                </select>
+            </div>
+            <div class="col-xl-3">
+                <label class="form-label"> کاربر </label>
+                @Html.Action("_GetAllUsers_Select", "Users", new { area = "Users" })
+
+            </div>
+            <div class="col-xl-3">
+                <label class="form-label">نوع وسیله </label>
+
+                <select class="form-select" id="noe_@Model.Counter">
+                    <option value="1">تیرسان</option>
+                    <option value="3">بدون یونیفرم</option>
+                    <option value="2">یونیفرم ساده</option>
+                </select>
+            </div>
+            <div class="col-xl-3">
+                <label class="form-label">مبلغ تضمین</label>
+                <input class="form-control TazminMoney" id="TazminMoney_@Model.Counter" />
+            </div>
+            <div class="col-xl-3">
+                <label class="form-label"> تاریخ اعتبار تضمین</label>
+                <input class="form-control" id="datepickerFrom_Eq_@Model.Counter" />
+                <input class="form-control" type="hidden" id="datepickerFromEn_Eq_@Model.Counter" />
+            </div><div class="col-xl-12">
+                <button type="button" class="btn btn-outline-danger delete-btn form-control buttonGeneralMins ">
+                    <i class="fa fa-multiply VecGeneral"></i>
+
+                </button>
+            </div><hr />
+
+        }
+
+    </div>
+
+
+        </div>
+    <script src="~/Scripts/popper.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+    <script>
+        function formatCurrency(input) {
+            // حذف همه کاراکترهای غیر از اعداد و "." (جداکننده اعشاری)
+            let value = input.value.replace(/[^\d.]/g, '');
+
+            // تبدیل مقدار به عدد اعشاری
+            let number = parseFloat(value);
+
+            // اگر عدد معتبر باشد، آن را به صورت سه رقمی جداکنده کنید
+            if (!isNaN(number)) {
+                let formattedValue = number.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+                // قرار دادن مقدار فرمت شده در ورودی
+                input.value = formattedValue;
+            }
+        }
+    </script>
+<script>
+
+    $("#select_users").attr("id", "UserID_@Model.Counter");
+</script>
+<script>
+
+
+
+
+
+
+    $(document).ready(function () {
+        $('.delete-btn').click(function () {
+            // دریافت شناسه سطر که باید حذف شود
+            var rowId = $(this).closest('.row').data('row-id');
+
+            // حذف سطر با استفاده از شناسه مورد نیاز
+            $('[data-row-id="' + rowId + '"]').remove();
+            Count--;
+            console.log(Count);
+
+        });
+    });
+</script>
+<script>
+    $("#tedad_vahed_@Model.Counter").change(function () {
+
+        var col_mablagh = $("#col_mablagh_@Model.Counter").val();
+
+        var sp = col_mablagh.split(',').length;
+
+        for (var i = 1; i < sp; i++) {
+            col_mablagh = col_mablagh.replace(',', "");
+        }
+
+        if (col_mablagh > 0) {
+            var tedad = this.value;
+            if (tedad > 0) {
+                var final = col_mablagh / tedad;
+                final = Math.round(final);
+                var final1 = numberWithCommas(final);
+
+                $("#vahed_harozv_@Model.Counter").val(final1);
+            }
+
+        }
+
+
+    });
+
+    $("#col_mablagh_@Model.Counter").change(function () {
+        this.value = numberWithCommas(this.value);
+    });
+
+    function numberWithCommas(x) {
+        x = x.toString();
+        var pattern = /(-?\d+)(\d{3})/;
+        while (pattern.test(x))
+            x = x.replace(pattern, "$1,$2");
+        return x;
+    }
+    $(function () {
+        $.each($("#TazminMoney_@Model.Counter"), function (index, item) {
+
+            var amount = $(this).val().replace(/[\D\s\._\-]+/g, "");
+            amount = amount ? parseInt(amount, 10) : 0;
+            $(this).val(function () {
+                return (amount === 0) ? "" : amount.toLocaleString("en-US");
+            });
+        });
+
+    });
+
+
+
+    $("#TazminMoney_@Model.Counter").keyup(function () {
+        var amount = $(this).val().replace(/[\D\s\._\-]+/g, "");
+        amount = amount ? parseInt(amount, 10) : 0;
+        $(this).val(function () {
+            return (amount === 0) ? "" : amount.toLocaleString("en-US");
+        });
+    });
+</script>
+
+<script>
+     $("#select_users1").attr("id", "select_users_@Model.Counter");
+</script>
+<script>
+      $('#datepickerFrom_Eq_@Model.Counter').MdPersianDateTimePicker({
+            targetTextSelector: '#datepickerFrom_Eq_@Model.Counter',
+            targetDateSelector: '#datepickerFromEn_Eq_@Model.Counter',
+            dateFormat: 'yyyy-MM-dd',
+            isGregorian: false,
+            enableTimePicker: true,
+            disableBeforeToday: false
+        });
+
+</script>
+
+
+
+<script>
+    if ($("#select_EquipmentGroupForBunch2").val() == 4) {
+        $(".tedad_inQarardad").css("display", "block");
+    }
+</script>

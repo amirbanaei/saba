@@ -1,0 +1,73 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+<link href="~/MyStyles/inputstyleandformstyle.css" rel="stylesheet" />
+<div>
+    <div class="row" id="PymnAccept">
+
+
+    </div>
+    <br />
+    <div class="row">
+
+        <div class="col-xl-2">
+            <div class="row">
+                <div class="col-xl-12">
+                    <label class="form-label">سال</label>
+                    
+                </div>
+                <div class="col-xl-12">
+                    <select id="year_usr">
+                        @{
+                            System.Globalization.PersianCalendar cs2 = new System.Globalization.PersianCalendar();
+
+                            for (var i = 5; i >= 0; i--)
+                            {
+                                var s = DateTime.Now.AddYears(-i);
+                                <option selected="selected" value="@cs2.GetYear(s)">@cs2.GetYear(s)</option>
+                            }
+                        }
+                    </select>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-2">
+            <div class="row">
+                <div class="col-xl-12">
+                    <label class="form-label">ماه</label>
+                    
+                </div>
+                <div class="col-xl-12">
+                    <select id="month_usr">
+                        <option value="1">فروردین</option>
+                        <option value="2">اردیبهشت</option>
+                        <option value="3">خرداد</option>
+                        <option value="4">تیر</option>
+                        <option value="5">مرداد</option>
+                        <option value="6">شهریور</option>
+                        <option value="7">مهر</option>
+                        <option value="8">آبان</option>
+                        <option value="9">آذر</option>
+                        <option value="10">دی</option>
+                        <option value="11">بهمن</option>
+                        <option value="12">اسفند</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Scripts/sweetalert2.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+@*<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>*@
+<script>
+    $("#PymnAccept").load('@Url.Content("/Functions/Pyman_forAccept")');
+</script>

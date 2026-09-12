@@ -1,0 +1,154 @@
+﻿@{
+    Layout =  "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .page {
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: white;
+        z-index: 9999;
+        overflow: hidden;
+        animation-duration: 1s;
+    }
+
+    .show-page {
+        display: block;
+        animation-name: slide-in;
+    }
+
+    @@keyframes slide-in {
+        from {
+            opacity: 0;
+            transform: translateX(-100%);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+</style>
+
+<!-- Page 1 -->
+<div id="page1" class="page">
+    <h2>Page 1</h2>
+    <p>This is the content for page 1.</p>
+</div>
+
+<!-- Page 2 -->
+<div id="page2" class="page">
+    @Html.Action("Dashboard2", "Dashboard", new { area = "Reporter" })
+</div>
+
+<!-- Page 3 -->
+<div id="page3" class="page">
+    @Html.Action("Result_dashboard", "Dashboard", new { area = "Reporter" })
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    let timer;
+    let pages = ['#page3', '#page2']
+    let currentPage = 0;
+
+    function showPages() {
+        $(pages[currentPage]).addClass("show-page");
+        setTimeout(function () {
+            $(pages[currentPage]).removeClass("show-page");
+            currentPage++;
+            if (currentPage >= pages.length) {
+                currentPage = 0;
+            }
+            showPages();
+        }, 5000 + 10000); // Change this value to adjust page duration
+    }
+
+    function hidePages() {
+        for (let i = 0; i < pages.length; i++) {
+            $(pages[i]).removeClass("show-page");
+        }
+    }
+
+    // Hide the pages when the page first loads
+    hidePages();
+
+    // Set up the mousemove event listener
+    $(document).mousemove(function () {
+        clearTimeout(timer);
+        hidePages();
+        console.log("here");
+        timer = setTimeout(showPages, 10 * 1000); // Set timer for 10 seconds
+    });
+
+    // Set timer to show pages after 10 seconds
+    timer = setTimeout(showPages, 10 * 1000);
+</script>
+
+
+
+
+
+
+
+
+
+
+@*let timer;
+    let pages = ['#page1', '#page3']
+    let currentPage = 0;
+
+    function showPages() {
+        $(pages[currentPage]).addClass("show-page");
+        let mouseMoved = false;
+        let interval = setInterval(function () {
+            if (mouseMoved) {
+                clearInterval(interval);
+                hidePages();
+                clearTimeout(timer);
+                timer = setTimeout(showPages, 10 * 1000); // Set timer for 10 seconds after the last mouse movement
+            }
+            mouseMoved = true;
+        }, 2000); // Change this value to adjust how long to wait before showing the next slide
+
+        setTimeout(function () {
+            clearInterval(interval);
+            if (!mouseMoved) {
+                $(pages[currentPage]).removeClass("show-page");
+                currentPage++;
+                if (currentPage >= pages.length) {
+                    currentPage = 0;
+                }
+                showPages();
+            }
+        }, 2100); // Change this value to adjust how long to wait before showing the next slide
+    }
+
+    function hidePages() {
+        for (let i = 0; i < pages.length; i++) {
+            $(pages[i]).removeClass("show-page");
+        }
+    }
+
+    // Hide the pages when the page first loads
+    hidePages();
+
+    // Set up the mousemove event listener
+    $(document).mousemove(function () {
+        clearTimeout(timer);
+        hidePages();
+        console.log("here");
+        timer = setTimeout(showPages, 10 * 1000); // Set timer for 10 seconds
+    });
+
+    // Set timer to show pages after 10 seconds
+    timer = setTimeout(showPages, 10 * 1000);*@
+
+
+
+
+
+<!-- Dashboard2 Layout -->

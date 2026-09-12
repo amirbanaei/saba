@@ -1,0 +1,420 @@
+﻿
+@{
+    ViewBag.Title = "جدول 50 50";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model SaabWebProject.Models.ViewModels.Contracts.Function.FunctionModel
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <style>
+
+        .col-xl-1,
+        .col-xl-2,
+        .col-xl-3,
+        .col-xl-4,
+        .col-xl-5,
+        .col-xl-6 {
+            position: relative !important;
+        }
+
+
+        .ModalAG {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 49vw;
+            padding-top: 50px;
+            background: #00000075;
+            backdrop-filter: blur(5px);
+        }
+
+        .ContentModalAG {
+            margin: 5% auto;
+            padding: 10px;
+            border: 1px dashed aqua;
+            border-top: 3px solid aqua;
+            border-radius: 0px 0px 10px 10px;
+            width: 80%;
+            max-width: 100%;
+            max-height: 800px;
+            /*            overflow-y: auto;*/
+            position: relative;
+        }
+
+        #BodyModalAG .tab-content {
+            border-radius: 0px 0px 10px 10px !important;
+            border: 1px solid aqua !important;
+            padding-top: 15px !important;
+            max-height: 500px !important;
+            overflow-y: auto !important;
+        }
+
+            /* ۱. تنظیم پهنای اسکرول‌بار برای این بخش خاص */
+            #BodyModalAG .tab-content::-webkit-scrollbar {
+                width: 10px; /* یکم باریک‌تر که ظریف بشه */
+            }
+
+            /* ۲. مسیر حرکت اسکرول (Track) */
+            #BodyModalAG .tab-content::-webkit-scrollbar-track {
+                background: rgba(0, 255, 255, 0.05); /* یه هاله خیلی کم‌رنگ Aqua زیرش باشه */
+                border-radius: 10px;
+            }
+
+            /* ۳. خودِ لغزنده (Thumb) با تم Aqua */
+            #BodyModalAG .tab-content::-webkit-scrollbar-thumb {
+                background: linear-gradient(180deg, #00ffff 0%, #00ced1 100%); /* گرادینت از آبی روشن به تیره */
+                border-radius: 10px;
+                border: 2px solid transparent; /* ایجاد فاصله ظریف */
+                background-clip: content-box; /* باعث میشه حاشیه شفاف دیده بشه و اسکرول‌بار لاغرتر به نظر بیاد */
+            }
+
+                /* ۴. حالت هاور برای فیدبک به کاربر */
+                #BodyModalAG .tab-content::-webkit-scrollbar-thumb:hover {
+                    cursor: pointer; /* وقتی موس میره روش یکم سنگین‌تر و تیره‌تر شه */
+                }
+
+            #BodyModalAG .tab-content .table-responsive::-webkit-scrollbar {
+                width: 10px; /* یکم باریک‌تر که ظریف بشه */
+            }
+
+            /* ۲. مسیر حرکت اسکرول (Track) */
+            #BodyModalAG .tab-content .table-responsive::-webkit-scrollbar-track {
+                background: rgba(0, 255, 255, 0.05); /* یه هاله خیلی کم‌رنگ Aqua زیرش باشه */
+                border-radius: 10px;
+            }
+
+            /* ۳. خودِ لغزنده (Thumb) با تم Aqua */
+            #BodyModalAG .tab-content .table-responsive::-webkit-scrollbar-thumb {
+                background: linear-gradient(180deg, #00ffff 0%, #00ced1 100%); /* گرادینت از آبی روشن به تیره */
+                border-radius: 10px;
+                border: 2px solid transparent; /* ایجاد فاصله ظریف */
+                background-clip: content-box; /* باعث میشه حاشیه شفاف دیده بشه و اسکرول‌بار لاغرتر به نظر بیاد */
+            }
+
+                /* ۴. حالت هاور برای فیدبک به کاربر */
+                #BodyModalAG .tab-content .table-responsive::-webkit-scrollbar-thumb:hover {
+                    cursor: pointer; /* وقتی موس میره روش یکم سنگین‌تر و تیره‌تر شه */
+                }
+
+
+        .BtnCloseAG {
+            color: aqua;
+            border: 1px dashed aqua;
+            border-bottom: 2px solid aqua;
+            font-size: 21px;
+            text-align: center;
+            width: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            position: absolute;
+            top: -35px;
+            left: -1px;
+            border-radius: 10px 10px 0px 0px;
+            height: 30px;
+            transition: .2s;
+        }
+
+            .BtnCloseAG i {
+                transition: .2s;
+            }
+
+            .BtnCloseAG:hover {
+                border-color: red;
+                box-shadow: inset 0 0 10px red;
+            }
+
+                .BtnCloseAG:hover i {
+                    color: red;
+                }
+    </style>
+</head>
+<body>
+    <div class="tab-content" id="pills-tabContent">
+        <div class="row">
+            <div class="col-xl-2">
+                <div class="form-group mb-3">
+                    <label class="form-label"> ماه </label>
+                    <select class="form-select my_Select" id="Month">
+                        <option value="0">انتخاب کنید..</option>
+                        <option value="1">فروردین</option>
+                        <option value="2">اردیبهشت</option>
+                        <option value="3">خرداد</option>
+                        <option value="4">تیر</option>
+                        <option value="5">مرداد</option>
+                        <option value="6">شهریور</option>
+                        <option value="7">مهر</option>
+                        <option value="8">آبان</option>
+                        <option value="9">آذر</option>
+                        <option value="10">دی</option>
+                        <option value="11">بهمن</option>
+                        <option value="12">اسفند</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-xl-2">
+                <label class="form-label">سال</label>
+
+                <select id="Year" name="year_Eq" class="form-select">
+                    <option value="0">انتخاب کنید</option>
+
+                    @{
+                        System.Globalization.PersianCalendar cs2 = new System.Globalization.PersianCalendar();
+                        int currentYear = cs2.GetYear(DateTime.Now);
+
+                        for (var i = 4; i >= 0; i--)
+                        {
+                            var s = DateTime.Now.AddYears(-i);
+
+                            <option value="@cs2.GetYear(s)">@cs2.GetYear(s)</option>
+                        }
+
+
+                    }
+                </select>
+
+            </div>
+            <div class="col-xl-2">
+                <label class="form-label"></label>
+                <select class="form-select" id="select1">
+                    <option value="0">انتخاب کنید..</option>
+                    <option value="1">شهرستان</option>
+                    <option value="2">پیمان</option>
+                    @if (Model.IDIDID == 3)
+                    {
+                        <option value="3">استان</option>
+
+                    }
+                </select>
+            </div>
+            <div class="col-xl-2" id="div-city" style="display:none;">
+                <label class="form-label" id="label-city">شهرستان</label>
+                <select class="form-select" id="select-city">
+                    <option value="-1">انتخاب کنید..</option>
+                    <option value="0">همه</option>
+                    @foreach (var it in Model.Citys)
+                    {
+                        <option value="@it.ID">@it.Name</option>
+                    }
+                </select>
+            </div>
+
+            <div class="col-xl-2" id="div-peyman" style="display:none;">
+                <label class="form-label" id="label-peyman">پیمان</label>
+                <select class="form-select" id="select-peyman">
+                    <option value="-1">انتخاب کنید..</option>
+                    <option value="0">همه</option>
+                    @foreach (var it in Model.tbPeymanContracts)
+                    {
+                        <option value="@it.pec_ID">@it.pec_Title</option>
+                    }
+                </select>
+            </div>
+            <div class="col-xl-2">
+                <label class="form-label"></label>
+                <select class="form-select" id="select2">
+                    <option value="0">انتخاب کنید..</option>
+                    <option value="1">ماب التفاوت</option>
+                    <option value="2">پرداختی</option>
+                </select>
+            </div>
+            <div class="col-xl-2">
+                <label class="form-label"></label>
+                <select class="form-select" id="select3">
+                    <option value="0">انتخاب کنید..</option>
+                    <option value="1">ریز نفرات</option>
+                    <option value="2">sum</option>
+                </select>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-xl-10"></div>
+            <div class="col-xl-1">
+                <button id="download" type="button" class="btn form-control buttonsabt">
+                    <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                    <span class="bSabt-text">دانلود</span>
+                </button>
+            </div>
+            <div class="col-xl-1">
+                <button id="moshahede" type="button" class="btn form-control buttonsabt moshahede">
+                    <i class="bi bi-eye fa-fw me-1 VecGeneral"></i>
+                    <span class="bSabt-text">مشاهده</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div id="MyModalAG" class="ModalAG">
+        <div class="ContentModalAG">
+            <div class="BtnCloseAG">
+                <i class="bi bi-x"></i>
+            </div>
+            @*<i class="BtnCloseAG fa fa-window-close"></i>*@
+            <div id="BodyModalAG">
+
+
+            </div>
+        </div>
+    </div>
+    <script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+    <script src="~/Scripts/jquery-ui.js"></script>
+    <script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+    <script src="~/Scripts/jquery-ui.js"></script>
+    <script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+    <script src="~/Assets/js/jalalidatepicker.min.js"></script>
+    <link href="~/Assets/css/jalalidatepicker.min.css" rel="stylesheet" />
+    <script src="~/Assets/js/jalaali.min.js"></script>
+    <link href="~/MyStyles/jalalidatepicker.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+
+
+
+    <script>
+
+$(document).ready(function() {
+    $("#download").click(function () {
+        var select1 = $("#select1").val(); // 1=شهرستان, 2=پیمان
+        var Year = $("#Year").val();
+        var Month = $("#Month").val();
+        var select3 = $("#select3").val();
+        var select2 = $("#select2").val();
+        var select_pymb = $("#select-peyman").val();
+        var select_city = $("#select-city").val();
+
+        if (!Year || !Month) {
+            alert("لطفاً بازه تاریخ را انتخاب کنید");
+            return;
+        }
+
+        // تعیین مقدار compain یا city بر اساس انتخاب select1
+        var compain = -2;
+        var city = -2;
+        if (select1 == "1") { // شهرستان
+            city = select_city;
+        } else if (select1 == "2") { // پیمان
+            compain = select_pymb;
+        }
+
+        // انتقال به اکشن با query string
+        var url = '@Url.Action("SetDataExcel_AddMobpardaght_0_1", "Orders", new { area = "Setting" })';
+        url += '?month=' + Month + '&year=' + Year + '&select1=' + select1 + '&compain=' + compain + '&city=' + city + '&select2=' + select2 + '&select3=' + select3;
+
+        window.location = url;
+    });
+});
+        $(document).ready(function () {
+            $("#select-peyman").picker({ search: true });
+
+        });
+        $(document).ready(function () {
+            $("#select-city").picker({ search: true });
+
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#select1').change(function () {
+                var selectedValue = $(this).val();
+
+                // مخفی کردن هر دو ابتدا
+                $('#div-city, #div-peyman').hide();
+
+                if (selectedValue == "1") { // شهرستان
+                    $('#div-city').fadeIn();
+                } else if (selectedValue == "2") { // پیمان
+                    $('#div-peyman').fadeIn();
+                }
+                // اگر استان یا "انتخاب کنید" بود، هیچکدام نمایش داده نشه
+            });
+        });
+    </script>
+    <script>
+
+    $(document).ready(function () {
+
+        // وقتی روی هر سلول یا دکمه click2 کلیک شد، مودال باز بشه
+        $(".moshahede").click(function () {
+            var $this = $(this);
+
+            // موقعیت المان کلیک‌شده
+            var offset = $this.offset();
+            var elementHeight = $this.outerHeight();
+            $("#hiddenID").val(idd);
+            // نمایش مودال
+            $("#MyModalAG")
+                .addClass("fade-in")
+                .css({
+                    "display": "block",
+                    "position": "absolute",   // لازم
+                    "top": offset.top - elementHeight - 100 + "px", // ۵px فاصله پایین المان
+                });
+
+            // گرفتن data-id یا هر چیزی که نیاز داری
+            var idd = $this.data("id");
+            console.log("Clicked ID:", idd);
+
+            // لود محتوا
+            $("#BodyModalAG").load('@Url.Content("/Setting/Orders/Modal_table50")?id=' + 0);
+        });
+
+        // بستن مودال با آیکون
+        $(".BtnCloseAG").click(function () {
+            $("#MyModalAG").fadeOut();
+        });
+
+        // بستن مودال وقتی روی بک‌گراند کلیک شد
+        //$("#MyModalAG").click(function (e) {
+        //    if (e.target === this) {
+        //        $(this).fadeOut();
+        //    }
+        //});
+
+    });
+    $(document).ready(function () {
+        $("#expandButton2").click(function () {
+            $("#MyModalAG").addClass("fade-in"); // Add the fade-in class
+            $("#MyModalAG").css("display", "block");
+        });
+
+        $(".close").click(function () {
+            $("#MyModalAG").removeClass("fade-in"); // Remove the fade-in class
+            $("#MyModalAG").css("display", "none");
+            location.reload();
+        });
+
+        //$(window).click(function (event) {
+        //    if (event.target == $("#MyModalAG")[0]) {
+        //        $("#MyModalAG").removeClass("fade-in"); // Remove the fade-in class
+        //        $("#MyModalAG").css("display", "none");
+        //    }
+        //});
+    })
+    // بستن مودال با آیکون
+    $(".BtnCloseAG").click(function () {
+        $("#MyModalAG").fadeOut(200, function () {
+            location.reload();
+        });
+    });
+
+    // بستن مودال با کلیک روی بک‌گراند
+    //$("#MyModalAG").click(function (e) {
+    //    if (e.target === this) {
+    //        $(this).fadeOut(200, function () {
+    //            location.reload();
+    //        });
+    //    }
+    //});
+
+    </script>
+</body>
+</html>

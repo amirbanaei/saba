@@ -1,0 +1,256 @@
+﻿@{
+    Layout = null;
+}
+@model SaabWebProject.Models.DomainModels.tbReffrenceSave
+
+<div class="mb-5">
+    <div class="card">
+        <div class="card-body pb-2">
+            <div class="row" style="margin-top:20px">
+                <div class="col-xl-6">
+                    <label class="form-label"> پیمان </label>
+                    <inputDiv class="form-control">@Model.tbPeymanContracts.pec_Title</inputDiv>
+                </div>
+                <div class="col-xl-3">
+                    <label class="form-label"> دوره گزارش گیری </label>
+                    @switch (Model.Duration)
+                    {
+                        case 1:
+                            <inputDiv class="form-control">ماهیانه</inputDiv>
+                            break;
+                        case 2:
+                            <inputDiv class="form-control">دوماهه</inputDiv>
+                            break;
+                        case 3:
+                            <inputDiv class="form-control">فصلی</inputDiv>
+                            break;
+                        default:
+                            <inputDiv class="form-control">نامعلوم</inputDiv>
+                            break;
+                    }
+
+                </div>
+
+                <div class="col-xl-3">
+                    <label class="form-label"> نوع بارگذاری داده </label>
+                    @switch (Model.TypeOfUpload)
+                    {
+                        case 1:
+                            <inputDiv class="form-control">تجمیعی</inputDiv>
+                            break;
+                        case 2:
+                            <inputDiv class="form-control">متوالی</inputDiv>
+                            break;
+                        default:
+                            <inputDiv class="form-control">نامعلوم</inputDiv>
+                            break;
+                    }
+
+                </div>
+            </div>
+            @foreach (var lvl in Model.tbReffrenceSaveLevel.Where(p => p.Deleted != true).ToList())
+            {
+                <hr class="hr-bg" />
+                <div class="row" style="margin-top:20px;">
+                    <div class="col-xl-8">
+                        <label class="form-label"> بسته </label>
+                        <inputDiv class="form-control">@lvl.Title</inputDiv>
+                    </div>
+                    <div class="col-xl-2">
+                        <label class="form-label"> شروع </label>
+                        <inputDiv class="form-control">@lvl.StartDaysInMonth</inputDiv>
+                    </div>
+                    <div class="col-xl-2">
+                        <label class="form-label"> مهلت(روز) </label>
+                        <inputDiv class="form-control">@lvl.DeadLine</inputDiv>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xl-10">
+                    </div>
+                    <div class="col-xl-1">
+ 
+                            <a data-bs-toggle="modal" data-bs-target="#modalLg1" class="edit345  btn form-control buttonGeneral" id="Edit_@lvl.ID">
+                                <i class="fa fa-edit fa-fw me-1 VecGeneral"></i>
+                                <span class="bGeneral-text">ویرایش</span>
+                            </a>
+                    </div>
+
+
+                    <div class="col-xl-1">
+                        <a href="#" onclick="ShowDialogFile()" class=" btn btn-outline-info form-control buttonGeneral uploadSummery" style="margin-bottom:5px;" id="uploadSummery_@lvl.ID">
+                            <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                            <span class="bGeneral-text">بارگذاری فایل</span>
+                        </a>
+                        <input id="summery_file5" style="display:none" type="file" class="form-control" value="" />
+                    </div>
+                </div>
+
+                <div class="row" style="margin-top:20px">
+                    <div class="col-md-6">
+                        <div class="table-responsive">
+                            <table class="table table-hover text-nowrap">
+                                <thead>
+                                    <tr style="text-align:center">
+
+                                        <th>
+                                            @Html.DisplayName("عنوان مولفه")
+                                        </th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in lvl.tbReffrenceSaveLevelMoalefe.Where(p => p.Deleted2 != true).ToList())
+                                    {
+                                        <tr style="text-align:center;">
+
+                                            <td>
+                                                @item.tbContractMoalefeDastmozdi.md_Title
+                                            </td>
+
+                                        </tr>
+
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="table-responsive">
+                            <table class="table table-hover text-nowrap">
+                                <thead>
+                                    <tr style="text-align:center">
+
+                                        <th>
+                                            @Html.DisplayName("نام ثبت کننده")
+                                        </th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in lvl.tbReffrenceSaveLevelUser.ToList())
+                                    {
+                                        <tr style="text-align:center;">
+
+                                            <td>
+                                                @item.tbUsers.FullName
+                                            </td>
+
+                                        </tr>
+
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+
+
+                </div>
+            }
+            <div class="row">
+                <div class="col-xl-8"></div>
+                <div class="col-xl-2" id="marahelTaed" style="display:none">
+                    <div class="form-group mb-3">
+                        <label class="form-label"> اتمام روز مراحل تایید </label>
+                        @*<input class="form-control" id="زهرا ثبت کن" disabled />*@
+                    </div>
+                </div>
+
+
+            </div>
+
+        </div>
+
+        <div class="card-arrow">
+            <div class="card-arrow-top-left"></div>
+            <div class="card-arrow-top-right"></div>
+            <div class="card-arrow-bottom-left"></div>
+            <div class="card-arrow-bottom-right"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+      $(".edit345").click(function () {
+          var idd = $(this).attr("id").split("_")[1];
+          console.log(idd);
+        $("#big_modal_body1").load('@Url.Content("/RegistrationAndConfirmationProcedures/edit")?ID='+idd);
+    });
+</script>
+<script>
+     var obj = new FormData();
+
+  $(".uploadSummery").click(function () {
+    FK_DDOfTitle = $(this).attr("id").split("_")[2];
+    ID = $(this).attr("id").split("_")[1];
+      $("#summery_file5").click();
+});
+
+ $("#summery_file5").change(function (e) {
+    $.each(e.target.files, function (index, file) {
+        obj.append("MyExcelStream", file);
+
+    });
+         sendAjax2('@Url.Action("ImportExcel_AddSabtmarahel", "Moalefe", new { area = "Salaries" })', obj);
+ });
+
+
+ function sendAjax2(url2, fd2) {
+     obj.append("Basteh", ID);
+
+
+
+
+     $.ajax({
+         url: url2,
+         type: 'POST',
+         data: fd2,
+         processData: false,
+         contentType: false,
+         success: function (resp1) {
+             console.log("okeye");
+             console.log(resp1);
+             $("#loading-message").css("display", "none");
+             fd = new FormData();
+             if (resp1 == "با موفقیت انجام شد") {
+                 alert("با موفقیت ثبت شد");
+                 setTimeout(function () {
+                     location.reload(); // یا می‌توانید از location.reload(true) هم استفاده کنید
+                 }, 2000); // بازه زمانی به میلی‌ثانیه، اینجا 2000 میلی‌ثانیه (یعنی 2 ثانیه)
+             }
+             else {
+                 $("#loading-message").css("display", "none");
+                 console.log("jlk;;kkj");
+                 Toast.fire({
+
+                     icon: 'success',
+                     background: '#35434A',
+                     color: 'white',
+                     title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                 }).then(() => {
+                     $("#loading-message").css("display", "none");
+                 });
+             }
+
+         },
+         error: function (resp1) {
+             console.log(resp1);
+             console.log("Nokeye");
+             $("#loading-message").css("display", "none");
+             Toast.fire({
+                 icon: 'success',
+                 background: '#35434A',
+                 color: 'white',
+                 title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+             }).then(() => {
+                 $("#loading-message").css("display", "none");
+             });
+         }
+     });
+ }
+</script>

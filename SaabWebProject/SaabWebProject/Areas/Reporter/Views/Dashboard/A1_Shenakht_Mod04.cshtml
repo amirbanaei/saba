@@ -1,0 +1,397 @@
+﻿@using SaabWebProject.Models.DomainModels;
+@model SaabWebProject.Models.DomainModels.tbNamshnaght
+
+@{
+    SaabEntities db = new SaabEntities();
+
+
+    Layout = null;
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    var ty = db.tbshaghes.Where(p=>p.FK_name==Model.ID).ToList();
+}
+<style>
+
+
+    table th, table td {
+        vertical-align: middle;
+    }
+
+    th, td {
+        padding: 3px 6px !important;
+    }
+
+    .WTH {
+        width: 10%;
+        padding: 0 !important;
+    }
+
+    select.form-select, input.form-control {
+        margin-bottom: 0 !important;
+    }
+
+    input.form-control {
+        border-width: 1px !important;
+    }
+
+    .btn {
+        margin-bottom: 10px !important;
+    }
+
+    .TitelL {
+        border-radius: 10px;
+        background-color: #146792 !important;
+    }
+
+    .TitelC {
+        border-radius: 0 10px 10px 0;
+        background-color: #146792 !important;
+    }
+
+    .Titel3 {
+        border-radius: 10px 0 0 10px;
+        background-color: #146792 !important;
+    }
+
+    .Titel1 {
+        border-radius: 10px;
+        background-color: #1469a18f !important;
+    }
+
+    .Titel2 {
+        border-radius: 0 10px 10px 0;
+        background-color: #1469a18f !important;
+    }
+
+    .Titel4 {
+        border-radius: 10px;
+        background-color: #1469a18f !important;
+    }
+
+    .Titel5 {
+        border-radius: 10px;
+        background-color: #00eaff7d !important;
+    }
+
+    tbody, td, tfoot, th, thead, tr {
+        border-color: var(--bs-tab-content-bg) !important;
+        border-style: solid !important;
+        border-width: 1px !important;
+        text-align: center
+    }
+
+   /*     tbody tr:nth-child(even) td:not(.Titel1,.Titel2,.Titel6) {
+            background-color: #4a8fbc63 !important;
+        }
+
+        tbody tr:nth-child(even) td:last-child {
+            border-radius: 10px 0 0 10px;
+            background-color: #4a8fbc63 !important;
+        }
+
+    .table1 td {
+        border-radius: 10px !important;
+        background-color: #1469a18f !important;
+    }*/
+
+    input {
+        text-align: center;
+    }
+
+    #table_First04 tr:nth-child(1) th {
+        padding: 15px 6px !important;
+    }
+</style>
+<style>
+    .modal-dialog {
+        max-width: 80% !important;
+    }
+
+
+    .modal2 {
+        display: none;
+        position: absolute; /* Change this from fixed */
+        z-index: 1000; /* Adjust z-index as needed */
+        left: 0;
+        top: 0;
+        width: 65%;
+        height: auto;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content2 {
+        background-color: black;
+        position: relative; /* Add relative positioning */
+        /*  margin: 15% auto;*/
+        padding: 20px;
+        border: 4px solid aqua;
+        border-radius: 30px;
+        width: 100%;
+        max-height: 100%;
+        overflow-y: auto;
+    }
+
+    .modal3 {
+        display: none;
+        position: absolute; /* Change this from fixed */
+        z-index: 1000; /* Adjust z-index as needed */
+        left: 0;
+        top: 0;
+        width: 65%;
+        height: auto;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content3 {
+        background-color: black;
+        position: relative; /* Add relative positioning */
+        margin: 65% auto;
+        padding: 20px;
+        border: 4px solid aqua;
+        border-radius: 30px;
+        width: 100%;
+        max-height: 100%;
+        overflow-y: auto;
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+    .fade-in {
+        animation: fadeIn 1s ease-in-out; /* Adjust duration and timing function as needed */
+    }
+</style>
+
+<div class="card p-2">
+    <div class="card-body">
+        <div class="row">
+            <h5>تعریف شاخص های کلیدی >>@Model.Name</h5>
+        </div>
+        <hr />
+
+        <div class="row" style="margin-top:20px">
+            <div class="col-xl-10">
+                <table class="table table-bordered" id="table_First04">
+                    <thead>
+                        <tr style="text-align:center;margin:auto">
+                            <th class="TitelL" colspan="2" rowspan="1">
+                                @Html.DisplayName("عنوان شاخص")
+                            </th>
+                            <th class="TitelL" colspan="1" rowspan="1">
+                                @Html.DisplayName("مقدار")
+                            </th>
+                            <th class="TitelL" colspan="2" rowspan="1">
+                                @Html.DisplayName("واحد اندازه گیری")
+                            </th>
+                            <th class="TitelL" colspan="3" rowspan="1">
+                                @Html.DisplayName("شرح مختصر")
+                            </th>
+                        </tr>
+                        <tr>
+                            <th class="WTH"></th>
+                            <th class="WTH"></th>
+                            <th class="WTH"></th>
+                            <th class="WTH"></th>
+                            <th class="WTH"></th>
+                            <th class="WTH"></th>
+                            <th class="WTH"></th>
+                            <th class="WTH"></th>
+                        </tr>
+
+                    </thead>
+                    <tbody style="text-align:center">
+                        @foreach (var it in ty)
+                        {
+                            <tr>
+                                <td colspan="2" rowspan="1" class="">@it.Name</td>
+                                <td colspan="1" rowspan="1"><input class="form-control form-control10" id="@it.ID" value="@it.value" /></td>
+                                <td colspan="2" rowspan="1">@it.vahed</td>
+                                <td colspan="3" rowspan="1">@ty.Where(p => p.ID == it.ID).Select(s => s.Title).FirstOrDefault()</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <div class="row">
+                    <div class="col-xl-1">
+                        <button class="btn form-control buttonGeneralMins" onclick="Geeks()">
+                            <i class="fa fa-multiply VecGeneral" style="font-size:1rem"></i>
+                        </button>
+                    </div>
+                    <div class="col-xl-10"></div>
+                    <div class="col-xl-1">
+                        <button id="btn_SaveMovaqat" class="btn form-control buttonGeneralPlus">
+                            <i class="fa fa-plus VecGeneral" style="font-size:1rem"></i>
+
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-2">
+                <div class="row" style=" position: relative; height: 100%;">
+                    <div class="col-xl-8"></div>
+                    <div class="col-xl-4" style="position: absolute; left: 0; bottom: 0;">
+                        <div>
+
+                            <button id="btnSaveDastor" type="button" class="btn form-control buttonGeneral">
+                                <i class="bi bi-card-checklist fa-fw  me-1 VecGeneral"></i>
+                                <span class="bGeneral-text">دستور کار</span>
+                            </button>
+                            <button id="btnSaveContract" type="button" class="btn form-control buttonsabt">
+                                <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                                <span class="bSabt-text">ثبت</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+@*<div id="myModal3" class="modal3" style="margin-left:25% !important;">
+        <div class="modal-content3">
+            <div class="row">
+                <i class="close fa fa-window-close"></i>
+            </div>
+
+            <div id="ss2">
+
+            </div>
+
+        </div>
+    </div>*@
+
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+
+<script>
+    function Geeks() {
+        var table = document.getElementById("table_First04");
+        var rowCount = table.rows.length;
+        console.log(rowCount)
+        if (rowCount > 5) {
+            table.deleteRow(rowCount - 1);
+        }
+    }
+</script>
+
+
+<script>
+    var counter = 1;
+    $("#btn_SaveMovaqat").click(function () {
+        var tbodyRef = document.getElementById('table_First04').getElementsByTagName('tbody')[0];
+        var newRow = tbodyRef.insertRow();
+
+        var newCell = newRow.insertCell();
+        newCell.colSpan = 2
+        newCell.classList = [""]
+        var newInput = document.createElement("input");
+        newInput.classList = ["form-control numbers"]
+        newInput.style = "margin-bottom: 0 !important;"
+        newCell.appendChild(newInput);
+
+        var newCell = newRow.insertCell();
+        newCell.colSpan = 1
+        var newInput = document.createElement("input");
+        newInput.classList = ["form-control "]
+        newInput.style = "margin-bottom: 0 !important;"
+        newCell.appendChild(newInput);
+
+        var newCell = newRow.insertCell();
+        newCell.colSpan = 2
+        var newInput = document.createElement("input");
+        newInput.classList = ["form-control numbers"]
+        newInput.style = "margin-bottom: 0 !important;"
+        newCell.appendChild(newInput);
+
+        var newCell = newRow.insertCell();
+        newCell.colSpan = 3
+        var newInput = document.createElement("input");
+        newInput.classList = ["form-control numbers"]
+        newInput.style = "margin-bottom: 0 !important;"
+        newCell.appendChild(newInput);
+
+
+
+        counter++;
+
+
+    });
+</script>
+
+<script>
+    $("#btnSaveContract").click(function () {
+        console.log("dsajd;s");
+
+        // جمع‌آوری داده‌ها
+        var dataList = [];
+
+        $("input.form-control10").each(function () {
+            var inputId = $(this).attr("id");
+            var value = $(this).val();
+            console.log(inputId);
+            console.log(value);
+
+            if (value) { // اگر ورودی پر شده است
+                // مثلا 'shahri'
+                var id = inputId;     // ID رکورد در دیتابیس
+                dataList.push({
+                    ID: id,
+                    Name: "df",
+                    Title: "ds",
+                    FK_name: 1,
+                    vahed: "dsf",
+                    value: value
+                });
+                // ارسال داده‌ها به سرور
+            }
+        });
+        if (dataList.length > 0) {
+            updateDatabase(dataList);
+            console.log(dataList);
+        }
+    });
+    function updateDatabase(dataList) {
+        $.ajax({
+            url: '/Reporter/Dashboard/UpdateRecord7', // آدرس اکشن کنترلر شما
+            method: 'POST',
+            data: JSON.stringify(dataList), // ارسال آرایه به سرور
+
+            contentType: 'application/json',
+            success: function (response) {
+                console.log("Record updated successfully.");
+                if (response == "true") {
+                    alert("با موفقیت ثبت شد");
+                    location.reload();
+
+                }
+            },
+            error: function (error) {
+                console.error("Error updating record:", error);
+            }
+        });
+    }
+
+</script>

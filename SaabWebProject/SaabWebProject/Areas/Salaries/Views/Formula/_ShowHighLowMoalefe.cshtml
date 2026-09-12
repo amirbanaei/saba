@@ -1,0 +1,692 @@
+﻿
+@model IEnumerable<SaabWebProject.Models.ViewModels.Salaries.Formula.HighLowMoalefe>
+@{
+    Layout = null;
+}
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+<style>
+    td input, td input[class="form-control"] {
+        margin-bottom: 0px !important;
+    }
+
+    td {
+        padding: 3px !important;
+    }
+</style>
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-xl-6">
+                <label class="form-label"> مولفه </label>
+                @Html.Action("AllMoalefeList_MultiSelect", "MoalefeDastMozdi", new { area = "Contracts" })
+            </div>
+            <div class="col-xl-1"></div>
+            <div class="col-xl-1">
+                <a href="#" class=" btn form-control buttonGeneral" style="margin-bottom:10px;" id="dwn22" onclick="DownloadExcel236() ">
+                    <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                    <span class="bGeneral-text">دانلود فایل هایلو کارکرد هاورژن قبلی </span>
+                </a>
+            </div>
+
+            <div class="col-xl-1">
+                <a href="#" class=" btn form-control buttonGeneral" style="margin-bottom:10px;" id="dwn22" onclick="DownloadExcel236forcontrol() ">
+                    <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                    <span class="bGeneral-text">دانلود فایل هایلو کنترل محدودیت </span>
+                </a>
+            </div>
+
+            <div class="col-xl-1">
+                <a href="#" class=" btn form-control buttonGeneral" style="margin-bottom:10px;" id="dwn22" onclick="DownloadExcel236forcontrolversionasli() ">
+                    <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                    <span class="bGeneral-text">دانلود فایل هایلو ورژن اصلی  </span>
+                </a>
+            </div>
+            <div class="col-xl-1">
+                <a href="#" class=" btn form-control buttonGeneral" style="margin-bottom:10px;" id="dwn22" onclick="DownloadExcel236forcontrolversionasliselect() ">
+                    <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                    <span class="bGeneral-text">دانلود فایل هایلو   انتخاب   </span>
+                </a>
+            </div>
+            <div class="col-xl-1">
+                <a href="#" class=" btn form-control buttonGeneral" style="margin-bottom:10px;" id="dwn22" onclick="DownloadExcel236forcontrolversionasliselect_mahdodyat() ">
+                    <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                    <span class="bGeneral-text">دانلود فایل هایلو   محدودیت   </span>
+                </a>
+            </div>
+            <div class="col-xl-1">
+                <a href="#" class=" btn form-control buttonGeneral" style="margin-bottom:10px;" id="dwn22" onclick="DownloadExcel236_moadel() ">
+                    <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                    <span class="bGeneral-text">معادل کارفایل هایلو کارکرد هاورژن قبلی </span>
+                </a>
+            </div>
+            <div class="col-xl-1">
+                <a href="#" class=" btn form-control buttonGeneral" style="margin-bottom:10px;" id="dwn22" onclick="DownloadExcel236forcontrol_____magsos() ">
+                    <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                    <span class="bGeneral-text">جدید </span>
+                </a>
+            </div>
+            <div class="col-xl-1">
+                <a href="#" class=" btn form-control buttonGeneral" style="margin-bottom:10px;" id="dwn1122" onclick="DownloadExcel2366788() ">
+                    <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                    <span class="bGeneral-text">دانلود فایل لیست کنترل ها </span>
+                </a>
+            </div>
+            <div class="col-xl-1">
+                <a href="#" class=" btn form-control buttonGeneral" style="margin-bottom:10px;" id="dwn" onclick="DownloadExcel3() ">
+                    <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+
+                    <span class="bGeneral-text">دانلود فایل هایلو مولفه </span>
+                </a>
+            </div>
+            <div class="col-xl-1">
+                <a href="#" class=" btn form-control buttonGeneral" style="margin-bottom:10px;" id="dwn" onclick="DownloadExcel2() ">
+                    <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                    <span class="bGeneral-text">دانلود فایل کارکردها </span>
+                </a>
+            </div>
+            <div class="col-xl-1">
+                <a href="#" class=" btn form-control buttonGeneral" style="margin-bottom:10px;" id="dwn2" onclick="DownloadExcel26() ">
+                    <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                    <span class="bGeneral-text">دانلود فایل کارکردها </span>
+                </a>
+            </div>
+        </div>
+
+        <div class="row" >
+            <div class="col-xl-3">
+
+
+            </div>
+            <div class="col-xl-6">
+                <div class="card" style="width: 100%">
+                    <div class="table-content p-4">
+                        <div class="table-responsive tableH_Lock">
+                            <table class="table table-hover text-nowrap">
+                                <thead>
+                                    <tr>
+                                        <th>نام کاربر</th>
+                                        <th>مقدار مولفه</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model != null)
+                                    {
+                                        foreach (var item in Model)
+                                        {
+                                            <tr>
+                                                <td>@item.FullName</td>
+                                                <td><input id="@item.UserID" class="form-control" value="@item.Value" onchange="markAsChanged(this)" title="@item.Value.ToString("2")" /></td>
+                                                <span hidden>@item.Year</span>
+                                                <span hidden>@item.Month</span>
+                                                <span hidden>@item.MoalefeID</span>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card-arrow">
+                        <div class="card-arrow-top-left"></div>
+                        <div class="card-arrow-top-right"></div>
+                        <div class="card-arrow-bottom-left"></div>
+                        <div class="card-arrow-bottom-right"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3"></div>
+        </div>
+        <hr />
+        <div class="row" style="margin-top:20px">
+            <div class="col-xl-11"></div>
+            <div class="col-xl-1">
+                <button class="btn form-control buttonGeneral" id="ButtonRe">
+                    <i class="fa fa-calculator fa-fw me-1 VecGeneral"></i>
+                    <span class="bGeneral-text">محاسبه دوباره فیش</span>
+
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- arrow -->
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Scripts/popper.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script>
+    function DownloadExcel236() {
+        var PeymanArr = [];
+        $.each($("#select_Allmoalefe_").val().toString().split(","), function (index, item) {
+            if (item !== "") {
+                if (item != 'Select') {
+                    PeymanArr.push(item);
+                    console.log(item);
+                }
+            }
+
+        });
+        console.log(PeymanArr);
+        $.ajax({
+
+        beforeSend: function () {
+                //============================================[loading...]
+                $("#loading-circle .loadingText1").text('لطفا منتظر دانلود " فایل هایلو کارکرد ها " بمانید ...');
+                $("#loading-circle").css("display", "flex");
+                //============================================[loading...]
+            },
+
+        // از داده‌های دریافتی با Ajax استفاده کنید
+        @*url: '@Url.Action("ExportMoalefeExcel4", "Moalefe", new { area = "Salaries" })',*@
+        type: 'GET',
+        dataType: 'html',
+        success: function (res) {
+
+
+            // از داده‌های دریافتی با Ajax استفاده کنید
+            var url = '@Url.Action("ExportMoalefeExcel81223", "Moalefe", new { area = "Salaries" })';
+
+
+            url += '?MoalefeID=' + PeymanArr + '&Year=' + $("#Year345").val() + '&Month=' + $("#Month455").val();
+            console.log(url);
+
+            window.location = url;
+
+
+            console.log(res)
+            //============================================[stop loading...]
+            setTimeout(() => {
+                $("#loading-circle").css("display", "none");
+            }, 40000);
+            //============================================[stop loading...]
+
+        },
+        error: function (res) {
+            alert("fdslsfdk"); // تغییر از alart به alert
+            console.log(res);
+        }
+    });
+    }
+
+    function DownloadExcel236forcontrol() {
+        var PeymanArr = [];
+        $.each($("#select_Allmoalefe_").val().toString().split(","), function (index, item) {
+            if (item !== "") {
+                if (item != 'Select') {
+                    PeymanArr.push(item);
+                    console.log(item);
+                }
+            }
+
+        });
+        console.log(PeymanArr);
+        $.ajax({
+
+        beforeSend: function () {
+                //============================================[loading...]
+                $("#loading-circle .loadingText1").text('لطفا منتظر دانلود " فایل هایلو کارکرد ها " بمانید ...');
+                $("#loading-circle").css("display", "flex");
+                //============================================[loading...]
+            },
+
+        // از داده‌های دریافتی با Ajax استفاده کنید
+        @*url: '@Url.Action("ExportMoalefeExcel4", "Moalefe", new { area = "Salaries" })',*@
+        type: 'GET',
+        dataType: 'html',
+        success: function (res) {
+
+
+            // از داده‌های دریافتی با Ajax استفاده کنید
+            var url = '@Url.Action("ExportMoalefeExcel81223forcontrol", "Moalefe", new { area = "Salaries" })';
+
+
+            url += '?MoalefeID=' + PeymanArr + '&Year=' + $("#Year345").val() + '&Month=' + $("#Month455").val();
+            console.log(url);
+
+            window.location = url;
+
+
+            console.log(res)
+            //============================================[stop loading...]
+            setTimeout(() => {
+                $("#loading-circle").css("display", "none");
+            }, 40000);
+            //============================================[stop loading...]
+
+        },
+        error: function (res) {
+            alert("fdslsfdk"); // تغییر از alart به alert
+            console.log(res);
+        }
+    });
+    }
+        function DownloadExcel236_moadel() {
+        var PeymanArr = [];
+        $.each($("#select_Allmoalefe_").val().toString().split(","), function (index, item) {
+            if (item !== "") {
+                if (item != 'Select') {
+                    PeymanArr.push(item);
+                    console.log(item);
+                }
+            }
+
+        });
+        console.log(PeymanArr);
+        $.ajax({
+
+        beforeSend: function () {
+                //============================================[loading...]
+                $("#loading-circle .loadingText1").text('لطفا منتظر دانلود " فایل هایلو کارکرد ها " بمانید ...');
+                $("#loading-circle").css("display", "flex");
+                //============================================[loading...]
+            },
+
+        // از داده‌های دریافتی با Ajax استفاده کنید
+        @*url: '@Url.Action("ExportMoalefeExcel4", "Moalefe", new { area = "Salaries" })',*@
+        type: 'GET',
+        dataType: 'html',
+        success: function (res) {
+
+
+            // از داده‌های دریافتی با Ajax استفاده کنید
+            var url = '@Url.Action("ExportMoalefeExcel81223forcontrolmoadel", "Moalefe", new { area = "Salaries" })';
+
+
+            url += '?MoalefeID=' + PeymanArr + '&Year=' + $("#Year345").val() + '&Month=' + $("#Month455").val();
+            console.log(url);
+
+            window.location = url;
+
+
+            console.log(res)
+            //============================================[stop loading...]
+            setTimeout(() => {
+                $("#loading-circle").css("display", "none");
+            }, 40000);
+            //============================================[stop loading...]
+
+        },
+        error: function (res) {
+            alert("fdslsfdk"); // تغییر از alart به alert
+            console.log(res);
+        }
+    });
+    }
+    function DownloadExcel236forcontrol_____magsos() {
+        var PeymanArr = [];
+        $.each($("#select_Allmoalefe_").val().toString().split(","), function (index, item) {
+            if (item !== "") {
+                if (item != 'Select') {
+                    PeymanArr.push(item);
+                    console.log(item);
+                }
+            }
+
+        });
+        console.log(PeymanArr);
+        $.ajax({
+
+        beforeSend: function () {
+                //============================================[loading...]
+                $("#loading-circle .loadingText1").text('لطفا منتظر دانلود " فایل هایلو کارکرد ها " بمانید ...');
+                $("#loading-circle").css("display", "flex");
+                //============================================[loading...]
+            },
+
+        // از داده‌های دریافتی با Ajax استفاده کنید
+        @*url: '@Url.Action("ExportMoalefeExcel4", "Moalefe", new { area = "Salaries" })',*@
+        type: 'GET',
+        dataType: 'html',
+        success: function (res) {
+
+
+            // از داده‌های دریافتی با Ajax استفاده کنید
+            var url = '@Url.Action("ExportMoalefeExcel81223forcontrolversionasli_mod", "Moalefe", new { area = "Salaries" })';
+
+
+            url += '?MoalefeID=' + PeymanArr + '&Year=' + $("#Year345").val() + '&Month=' + $("#Month455").val();
+            console.log(url);
+
+            window.location = url;
+
+
+            console.log(res)
+            //============================================[stop loading...]
+            setTimeout(() => {
+                $("#loading-circle").css("display", "none");
+            }, 40000);
+            //============================================[stop loading...]
+
+        },
+        error: function (res) {
+            alert("fdslsfdk"); // تغییر از alart به alert
+            console.log(res);
+        }
+    });
+    }
+
+        function DownloadExcel236forcontrolversionasli() {
+        var PeymanArr = [];
+        $.each($("#select_Allmoalefe_").val().toString().split(","), function (index, item) {
+            if (item !== "") {
+                if (item != 'Select') {
+                    PeymanArr.push(item);
+                    console.log(item);
+                }
+            }
+
+        });
+        console.log(PeymanArr);
+        $.ajax({
+
+        beforeSend: function () {
+                //============================================[loading...]
+                $("#loading-circle .loadingText1").text('لطفا منتظر دانلود " فایل هایلو کارکرد ها " بمانید ...');
+                $("#loading-circle").css("display", "flex");
+                //============================================[loading...]
+            },
+
+        // از داده‌های دریافتی با Ajax استفاده کنید
+        @*url: '@Url.Action("ExportMoalefeExcel4", "Moalefe", new { area = "Salaries" })',*@
+        type: 'GET',
+        dataType: 'html',
+        success: function (res) {
+
+
+            // از داده‌های دریافتی با Ajax استفاده کنید
+            var url = '@Url.Action("ExportMoalefeExcel81223forcontrolversionasli", "Moalefe", new { area = "Salaries" })';
+
+
+            url += '?MoalefeID=' + PeymanArr + '&Year=' + $("#Year345").val() + '&Month=' + $("#Month455").val();
+            console.log(url);
+
+            window.location = url;
+
+
+            console.log(res)
+            //============================================[stop loading...]
+            setTimeout(() => {
+                $("#loading-circle").css("display", "none");
+            }, 40000);
+            //============================================[stop loading...]
+
+        },
+        error: function (res) {
+            alert("fdslsfdk"); // تغییر از alart به alert
+            console.log(res);
+        }
+    });
+    }
+
+    function DownloadExcel236forcontrolversionasliselect_mahdodyat() {
+        var PeymanArr = [];
+        $.each($("#select_Allmoalefe_").val().toString().split(","), function (index, item) {
+            if (item !== "") {
+                if (item != 'Select') {
+                    PeymanArr.push(item);
+                    console.log(item);
+                }
+            }
+
+        });
+        console.log(PeymanArr);
+        $.ajax({
+
+        beforeSend: function () {
+                //============================================[loading...]
+                $("#loading-circle .loadingText1").text('لطفا منتظر دانلود " فایل هایلو کارکرد ها " بمانید ...');
+                $("#loading-circle").css("display", "flex");
+                //============================================[loading...]
+            },
+
+        // از داده‌های دریافتی با Ajax استفاده کنید
+        @*url: '@Url.Action("ExportMoalefeExcel4", "Moalefe", new { area = "Salaries" })',*@
+        type: 'GET',
+        dataType: 'html',
+        success: function (res) {
+
+
+            // از داده‌های دریافتی با Ajax استفاده کنید
+            var url = '@Url.Action("ExportMoalefeExcel81223forcontrolversionasli_mahdodyary", "Moalefe", new { area = "Salaries" })';
+
+
+            url += '?MoalefeID=' + PeymanArr + '&Year=' + $("#Year345").val() + '&Month=' + $("#Month455").val();
+            console.log(url);
+
+            window.location = url;
+
+
+            console.log(res)
+            //============================================[stop loading...]
+            setTimeout(() => {
+                $("#loading-circle").css("display", "none");
+            }, 40000);
+            //============================================[stop loading...]
+
+        },
+        error: function (res) {
+            alert("fdslsfdk"); // تغییر از alart به alert
+            console.log(res);
+        }
+    });
+    }
+    function DownloadExcel236forcontrolversionasliselect() {
+        var PeymanArr = [];
+        $.each($("#select_Allmoalefe_").val().toString().split(","), function (index, item) {
+            if (item !== "") {
+                if (item != 'Select') {
+                    PeymanArr.push(item);
+                    console.log(item);
+                }
+            }
+
+        });
+        console.log(PeymanArr);
+        $.ajax({
+
+        beforeSend: function () {
+                //============================================[loading...]
+                $("#loading-circle .loadingText1").text('لطفا منتظر دانلود " فایل هایلو کارکرد ها " بمانید ...');
+                $("#loading-circle").css("display", "flex");
+                //============================================[loading...]
+            },
+
+        // از داده‌های دریافتی با Ajax استفاده کنید
+        @*url: '@Url.Action("ExportMoalefeExcel4", "Moalefe", new { area = "Salaries" })',*@
+        type: 'GET',
+        dataType: 'html',
+        success: function (res) {
+
+
+            // از داده‌های دریافتی با Ajax استفاده کنید
+            var url = '@Url.Action("ExportMoalefeExcel81223forcontrolversionasliselect", "Moalefe", new { area = "Salaries" })';
+
+
+            url += '?MoalefeID=' + PeymanArr + '&Year=' + $("#Year345").val() + '&Month=' + $("#Month455").val();
+            console.log(url);
+
+            window.location = url;
+
+
+            console.log(res)
+            //============================================[stop loading...]
+            setTimeout(() => {
+                $("#loading-circle").css("display", "none");
+            }, 40000);
+            //============================================[stop loading...]
+
+        },
+        error: function (res) {
+            alert("fdslsfdk"); // تغییر از alart به alert
+            console.log(res);
+        }
+    });
+    }
+
+    function DownloadExcel2366788() {
+        var PeymanArr = [];
+        $.each($("#select_Allmoalefe_").val().toString().split(","), function (index, item) {
+            if (item !== "") {
+                if (item != 'Select') {
+                    PeymanArr.push(item);
+                    console.log(item);
+                }
+            }
+
+        });
+        console.log(PeymanArr);
+        $.ajax({
+
+        beforeSend: function () {
+                //============================================[loading...]
+                $("#loading-circle .loadingText1").text('لطفا منتظر دانلود " فایل هایلو کارکرد ها " بمانید ...');
+                $("#loading-circle").css("display", "flex");
+                //============================================[loading...]
+            },
+
+        // از داده‌های دریافتی با Ajax استفاده کنید
+        @*url: '@Url.Action("ExportMoalefeExcel4", "Moalefe", new { area = "Salaries" })',*@
+        type: 'GET',
+        dataType: 'html',
+        success: function (res) {
+
+
+            // از داده‌های دریافتی با Ajax استفاده کنید
+            var url = '@Url.Action("ExportMoalefeExcelcontrolmahdodat", "Moalefe", new { area = "Salaries" })';
+
+
+            url += '?MoalefeID=' + PeymanArr + '&Year=' + $("#Year345").val() + '&Month=' + $("#Month455").val();
+            console.log(url);
+
+            window.location = url;
+
+
+            console.log(res)
+            //============================================[stop loading...]
+            setTimeout(() => {
+                $("#loading-circle").css("display", "none");
+            }, 40000);
+            //============================================[stop loading...]
+
+        },
+        error: function (res) {
+            alert("fdslsfdk"); // تغییر از alart به alert
+            console.log(res);
+        }
+    });
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+    $.each($("#select_Allmoalefe"), function (index, item) {
+        $("#select_Allmoalefe").attr("id", "select_Allmoalefe_");
+        $('#select_Allmoalefe_').attr("multiple", "multiple");
+        $('#select_Allmoalefen_').on('sp-change', function () { });
+    });
+</script>
+<script>
+        function DownloadExcel2() {
+
+
+
+
+
+
+
+
+
+        $.ajax({
+            beforeSend: function () {
+                document.getElementById("loading-message").style.display = "block";
+            },
+            @*url: '@Url.Action("ExportMoalefeExcel4", "Moalefe", new { area = "Salaries" })',*@
+            type: 'GET',
+            dataType: 'html',
+
+
+            success: function (res) {
+                           document.getElementById("loading-message").style.display = "none";
+          window.location = '@Url.Action("ExportMoalefeExcel10", "Moalefe", new { area = "Salaries" })';
+            },
+            error: function (res) {
+                alart("fdslsfdk")
+                console.log(res);
+            }
+        });
+    }
+    function markAsChanged(input) {
+        input.dataset.changed = true; // Mark input as changed
+    }
+
+    document.getElementById("ButtonRe").addEventListener("click", function () {
+        var changedInputs = document.querySelectorAll("input[data-changed='true']");
+
+        // Prepare data to send
+        var data = [];
+        for (var i = 0; i < changedInputs.length; i++) {
+            var input = changedInputs[i];
+            var userId = input.id;
+            var value = input.value;
+            var fullName = input.parentElement.previousElementSibling.textContent;
+            var year = input.parentElement.nextElementSibling.textContent;
+            var month = input.parentElement.nextElementSibling.textContent;
+            var moalefeID = input.parentElement.nextElementSibling.nextElementSibling.textContent;
+
+            data.push({
+                FullName: fullName,
+                UserID: userId,
+                Value: value,
+                Year: year,
+                Month: month,
+                MoalefeID: moalefeID,
+            });
+        }
+
+        // Send data using appropriate method (e.g., AJAX, form submission)
+        console.log(data); // Example: Print submitted data in the console
+        // Send data to your server-side code here
+
+        $.ajax({
+            type: "POST",
+            url: "/Salaries/Formula/getEditeHiLo",
+            data: JSON.stringify(data),
+            contentType: "application/json",
+            success: function (response) {
+                // Handle success response
+                console.log(response);
+            },
+            error: function (xhr, status, error) {
+                // Handle error response
+                console.log(xhr.responseText);
+            }
+        });
+    });
+</script>
+

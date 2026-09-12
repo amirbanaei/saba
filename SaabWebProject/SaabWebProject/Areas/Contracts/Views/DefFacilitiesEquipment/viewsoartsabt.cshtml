@@ -1,0 +1,481 @@
+﻿@section Styles{
+    <link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+    <link href="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.style.css" rel="stylesheet" />
+}
+
+@*<script src="~/Assets/js/jalalidatepicker.min.js"></script>
+    <link href="~/Assets/css/jalalidatepicker.min.css" rel="stylesheet" />
+    <script src="~/Assets/js/jalaali.min.js"></script>
+    <link href="~/MyStyles/jalalidatepicker.css" rel="stylesheet" />*@
+
+
+<div class="row">
+    @*<div class="col-xl-4">
+            <label class="form-label">انتخاب نوع تجهیز</label>
+            @Html.Action("_ListGroup", "DefFacilitiesEquipment")
+        </div>*@
+    <div class="col-xl-7">
+        <label class="form-label"> پیمان </label>
+        @Html.Action("_GetAllListPeymans_SingleSelecforSoratsabt", "Peyman", new { area = "Contracts" })
+    </div>
+</div>
+
+<div class="row" >
+    <div class="col-xl-2">
+        <label class="form-label">سال</label>
+       
+        <select id="year_Eq4" name="year_Eq4" class="form-select">
+            <option value="0">انتخاب کنید</option>
+
+            @{
+                System.Globalization.PersianCalendar cs2 = new System.Globalization.PersianCalendar();
+                int currentYear = cs2.GetYear(DateTime.Now);
+
+                for (var i = 4; i >= 0; i--)
+                {
+                    var s = DateTime.Now.AddYears(-i);
+
+                    <option value="@cs2.GetYear(s)">@cs2.GetYear(s)</option>
+                }
+            }
+        </select>
+
+    </div>
+    <div class="col-xl-2">
+        <label class="form-label">ماه</label>
+       
+        <select id="month_Eq4" name="month_Eq4" class="form-select">
+            <option value="0">انتخاب کنید  </option>
+
+            <option value="1">فروردین </option>
+            <option value="2">اردیبهشت</option>
+            <option value="3">خرداد</option>
+            <option value="4">تیر</option>
+            <option value="5">مرداد</option>
+            <option value="6">شهریور</option>
+            <option value="7">مهر</option>
+            <option value="8">آبان</option>
+            <option value="9">آذر</option>
+            <option value="10">دی</option>
+            <option value="11">بهمن</option>
+            <option value="12">اسفند</option>
+        </select>
+    </div>
+
+    <div class="col-xl-3">
+        <label class="form-label">از تاریخ</label>
+       
+        @*------------------------------------------------[1402/09/20]-|KH|-*@
+        <input data-jdp jdp-btn-close data-jdp-miladi-input="datepickerFromEn_usr" id="datepickerFrom_Eq" class="form-control" >
+        <input id="datepickerFromEn_usr" type="hidden" />
+        @*-------------------------------------------------------------|KH|-*@
+    </div>
+    <div class="col-xl-3">
+        <label class="form-label">تا تاریخ</label>
+       
+        @*------------------------------------------------[1402/09/20]-|KH|-*@
+        <input data-jdp jdp-btn-close data-jdp-miladi-input="datepickerToEn_usr" id="datepickerTo_Eq" class="form-control" >
+        <input id="datepickerToEn_usr" type="hidden" />
+        @*-------------------------------------------------------------|KH|-*@
+    </div>
+
+
+</div>
+
+
+<div class="row">
+    <div class="col-xl-9"></div>
+    <div class="col-xl-1">
+        <button class="btn form-control buttonGeneral" onclick="downloadAjaxsorat()" style="font-size:10px;margin-bottom:10px;">
+            <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+            <span class="bGeneral-text">دانلود فایل نمونه</span>
+        </button>
+    </div>
+
+    <div class="col-xl-1">
+        <a class="btn form-control buttonGeneral" id="uo34uy" style="font-size:10px;margin-bottom:10px;">
+            <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+            <span class="bGeneral-text">بارگزاری اطلاعات</span>
+        </a>
+    </div>
+    <div class="col-xl-1">
+        <button class="btn form-control buttonGeneral" id="Cheack1000" style="font-size:10px;margin-bottom:10px;">
+            <i class="fa fa-eye fa-fw me-1 VecGeneral"></i>
+            <span class="bGeneral-text">مشاهده جزئیات</span>
+        </button>
+    </div>
+    @*------------------------------------------------[1402/08/20]-|KH|-*@
+    @*<div class="col-xl-2">
+            <button class="btn btn-outline-theme csss" id="singleImport" style="border-radius:15px;font-size:10px;  color: white;
+        background-color: #0d3244;margin-bottom:10px;
+         " data-bs-toggle="modal" data-bs-target="#modalLg">
+                وارد کردن تکی
+            </button>
+        </div>*@
+    @*-------------------------------------------------------------|KH|-*@
+    @*<div class="col-xl-1">
+        <button class="btn form-control buttonGeneral" id="Cheack" style="font-size:10px;margin-bottom:10px;">
+            <i class="fa fa-eye fa-fw me-1 VecGeneral"></i>
+            <span class="bGeneral-text">مشاهده جزئیات</span>
+        </button>
+    </div>*@
+</div>
+<div id="myTable4"></div>
+<div id="table_div2"></div>
+<input id="summery_file4" name="gjgjgj"  style="display:none" type="file" class="form-control" value="" />
+
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Scripts/popper.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/sweetalert2.js"></script>
+
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script>
+    //$("#year_Eq4").picker({ search: false });
+    //$("#month_Eq4").picker({ search: false });
+</script>
+
+@*------------------------------------------------[1402/08/29]-|KH|-*@
+@*<script type="text/javascript">
+        jalaliDatepicker.startWatch({
+            time: true,
+            days: ["شنبه", "1شنبه", "2شنبه", "3شنبه", "4شنبه", "5شنبه", "جمعه"],
+            persianDigits: true,
+            autoClose: true,
+            autocomplete: true,
+            showCloseBtn:true,
+            showEmptyBtn: false,
+            showCloseBtn: true,
+            zIndex: 100000,
+
+        });
+
+    </script>*@
+@*-------------------------------------------------------------|KH|-*@
+
+<script>
+    @*$("#myTable4").load('@Url.Content("/Contracts/Functions/LIstSoratSabt")');*@
+
+    $("#pymn5" ).load('@Url.Content("/../Contracts/Peyman/_GetAllListPeymans_Select")',function(){
+       $("#select_peyman").attr("id", "select_peyman4");
+   });
+                          @*$("#pymn5").load('@Url.Content("/RegistrationAndConfirmationProcedures/Refrencepy")?isSabt=True&IsFor=5');*@
+
+    $("#singleImport").click(function () {
+        $("#big_modal_body").load('@Url.Content("../../Contracts/Functions/_singleImportEquipment")');
+
+    });
+$(document).ready(function() {
+    console.log("aaa");
+    $("#pymn2").load('@Url.Content("/RegistrationAndConfirmationProcedures/ReffrenceSaveGetPeymans3")?isSabt=True&IsFor=0', function () {
+        // This function is executed after the content is successfully loaded
+    });
+});
+
+
+    $("#select_EquipmentGroup").change(function () {
+
+
+        console.log($(this).val());
+       if ($(this).val() != "Select") {
+           console.log($(this).val());
+          $("#pymn2").load('@Url.Content("/RegistrationAndConfirmationProcedures/ReffrenceSaveGetPeymans4")?isSabt=True&IsFor='+$(this).val(), function () {
+
+
+           });
+        }else{
+            $("#pymn2").html("");
+        }
+
+    });
+
+    //$('#year_Eq4').picker({ search: true });
+    //$('#month_Eq4').picker({ search: true });
+
+    // $('#datepickerFrom_Eq').MdPersianDateTimePicker({
+    //        targetTextSelector: '#datepickerFrom_Eq',
+    //        targetDateSelector: '#datepickerFromEn_Eq',
+    //        dateFormat: 'yyyy-MM-dd',
+    //        isGregorian: false,
+    //        enableTimePicker: true,
+    //        disableBeforeToday: false
+    //    });
+
+    // $('#datepickerTo_Eq').MdPersianDateTimePicker({
+    //        targetTextSelector: '#datepickerTo_Eq',
+    //        targetDateSelector: '#datepickerToEn_Eq',
+    //        dateFormat: 'yyyy-MM-dd',
+    //        isGregorian: false,
+    //        enableTimePicker: true,
+    //        disableBeforeToday: false
+    //    });
+</script>
+<script>
+    var fd = new FormData();
+    function downloadAjaxsorat() {
+        //var selectedValue = $("#baste_peymanofAccept").val();
+
+        //if (selectedValue) {
+        //    var parts = selectedValue.split('_');
+
+        //    if (parts.length >= 2) {
+        //        var FK_Baste = parts[1];
+        //        var pymnID = parts[0];
+
+        //        // Your further code logic here
+        //    } else {
+        //        console.error("Invalid format: " + selectedValue);
+        //    }
+        //} else {
+        //    console.error("Selected value is undefined or null");
+        //}
+        console.log(pymnID)
+        if ($("#select_peyman1").val() == 0) {
+            alert("لطفا عنوان را انتخاب نمائید");
+        }
+        else if ($("#year_Eq4").val() == 0) {
+            alert("سال مورد نظر را انتخاب نمایید")
+
+        } else if ($("#month_Eq4").val() == 0) {
+            console.log($("#month_usr").val())
+            alert("ماه مورد نظر را انتخاب نمایید")
+        } else if ($("#datepickerFromEn_usr").val() == null) {
+            alert("از تاریخ مورد نظر را انتخاب نمایید")
+        } else if ($("#datepickerToEn_usr").val() == null) {
+            alert("تا تاریخ مورد نظر را انتخاب نمایید")
+
+        } else {
+            debugger;
+            var selectedValue = $("#baste_peyman7").val();
+            console.log($("#baste_peyman7").val());
+            var parts = selectedValue.split('_');
+            var FK_Baste = parts[1];
+            var pymnID = parts[0];
+
+
+
+
+
+
+            console.log($("#baste_peyman7").val());
+            console.log(FK_Baste);
+            console.log(pymnID);
+
+            $.ajax({
+
+                beforeSend: function () {
+                    document.getElementById("loading-message").style.display = "block";//مهندس دارین برعککس میزارین
+                    //این درسته
+                    //شبیه هم ننوشتین
+                    //خوب ورودی هام فرق داتشنت الاان فهمیدم چیشد + اضافه گذاشته بود
+                },
+                url: '@Url.Action("ExceleForsorat", "Moalefe", new { area = "Salaries" })?PeymanID=' + pymnID + '&month=' + $("#month_Eq4").val() + '&year=' + $("#year_Eq4").val() + '&Basteh=' + FK_Baste,
+                type: 'GET',
+                dataType: 'html',
+
+
+                success: function (res) {
+                    //if (res === "False") {
+                    //    // اجرای بلوک error در صورت مطابقت با "False"
+                    //    alert("برای این ماه و این سال این بسته تایید نهایی شده است ");
+                    //    window.location.reload();
+                    //    console.log(res);
+                    //}
+                    //else {
+
+                        $("#loading-message").css("display", "block");
+                    var selectedValue = $("#baste_peyman7").val();
+                        var parts = selectedValue.split('_');
+                        var FK_Baste = parts[1];
+                        var pymnID = parts[0];
+                        console.log($("#baste_peyman").val())
+                        window.location =  '@Url.Action("ExceleForsorat", "Moalefe", new { area = "Salaries" })?PeymanID=' + pymnID + '&month=' + $("#month_Eq4").val() + '&year=' + $("#year_Eq4").val() + '&Basteh=' + FK_Baste;
+                        $("#loading-message").css("display", "none");
+
+                    /*}*/
+                },
+                error: function (res) {
+                    alart("fdslsfdk")
+                    console.log(res);
+                }
+            });
+
+
+
+
+
+
+        }
+
+
+
+
+      }
+</script>
+<script>
+
+    $("#uo34uy").click(function () {
+
+        var selectedValue = $("#baste_peyman7").val();
+
+        if (selectedValue) {
+            var parts = selectedValue.split('_');
+
+            if (parts.length >= 2) {
+                var FK_Baste = parts[1];
+                var pymnID = parts[0];
+
+                // Your further code logic here
+            } else {
+                console.error("Invalid format: " + selectedValue);
+            }
+        } else {
+            console.error("Selected value is undefined or null");
+        }
+        console.log(pymnID)
+        if (pymnID == undefined) {
+            alert("پیمان مورد نظر را انتخاب نمایید")
+        //} else if ($("#select_EquipmentGroup").val() == "Select") {
+        //    alert("نوع تجهیزات خود را مشخص کنید ")
+            //}
+        }
+        else if ($("#year_Eq4").val() == 0) {
+            alert("سال مورد نظر را انتخاب نمایید")
+
+        } else if ($("#month_Eq4").val() == 0) {
+            console.log($("#month_usr").val())
+            alert("ماه مورد نظر را انتخاب نمایید")
+        } else if ($("#datepickerFromEn_usr").val() == null) {
+            alert("از تاریخ مورد نظر را انتخاب نمایید")
+        } else if ($("#datepickerToEn_usr").val() == null) {
+            alert("تا تاریخ مورد نظر را انتخاب نمایید")
+        } else {
+
+
+            try {
+                var inputElement = document.querySelector("input[name='gjgjgj']");
+                if (inputElement) {
+                    inputElement.value = null;
+                    console.log("Input value cleared");
+
+                    setTimeout(function () {
+                        console.log("Attempting to click input element");
+                        inputElement.click();
+                        console.log("Input clicked");
+                    }, 100);
+                } else {
+                    console.error("Input element not found");
+                }
+
+            } catch (error) {
+                console.error("Error in upload112332444 function: ", error);
+            }
+        //    $("#summery_file4").click();
+        }
+       });
+    $("input[name='gjgjgj']").change(function (e) {
+                   $.each(e.target.files, function (index, file) {
+                       fd.append("files", file);
+                   });
+                   sendAjax10('@Url.Action("ImportExcel_Moalefe_Forsorat", "Moalefe", new { area = "Salaries" })', fd);
+       });
+</script>
+<script>
+    function sendAjax10(url2, fd2) {
+        var selectedValue = $("#baste_peyman7").val();
+        var parts = selectedValue.split('_');
+        var FK_Baste = parts[1];
+        var pymnID = parts[0];
+
+
+
+
+
+
+        console.log($("#baste_peyman7").val());
+        console.log(FK_Baste);
+        console.log(pymnID);
+
+        $("#loading-message").css("display", "block");
+        var selectedValue = $("#baste_peyman7").val();
+        var parts = selectedValue.split('_');
+        var FK_Baste = parts[1];
+        var pymnID = parts[0];
+        fd2.append("svdfunc_pymnID", pymnID);
+        fd2.append("svdfunc_BastehID", FK_Baste);
+        fd2.append("FromDate", $("#datepickerFromEn_usr").val());
+        fd2.append("ToDate", $("#datepickerToEn_usr").val());
+        //fd2.append("Year", $("#year_Eq4").val());
+        //fd2.append("Month", $("#month_Eq4").val());
+        //fd2.append("Type", $("#select_EquipmentGroup").val());
+
+        $.ajax({
+            url: url2,
+            type: 'POST',
+            data: fd2,
+            processData: false,
+            contentType: false,
+            success: function (res) {
+                $("#loading-message").css("display", "none");
+                fd = new FormData();
+                console.log(res);
+                console.log("jj");
+                if (res == "True") {
+
+                    alert("با موفقیت ثبت شد");
+
+                    location.reload();
+                }
+
+                    //$("#big_modal_body1").html(res)
+                    //    .then(() => {
+                       @*$("#table_div").load('@Url.Content("../defFacilitiesEquipment/_ListEquipmentMoalefeValue")');*@
+
+
+            },
+            error: function (res) {
+                $("#loading-message").css("display", "none");
+                console.log(res);
+                console.log("jj");
+                Toast.fire({
+                    icon: 'success',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                }).then(() => {
+                    $("#loading-message").css("display", "none");
+                });
+            }
+        });
+    }
+</script>
+<script>
+    @*$("#table_div").load('@Url.Content("../defFacilitiesEquipment/_ListEquipmentMoalefeValue")');*@
+
+    $("#Cheack1000").click(function () {
+        var selectedValue = $("#baste_peyman7").val();
+        console.log(selectedValue);
+
+        var parts = selectedValue.split('_');
+        var FK_Baste = parts[1];
+        var pymnID = parts[0];
+        console.log(pymnID)
+        if (pymnID == undefined) {
+            alert("پیمان مورد نظر را انتخاب نمایید")
+        } else {
+          
+
+            var url = '@Url.Content("~/Contracts/Functions/LIstSoratSabt")';
+            var params = {
+                Year: $("#year_Eq4").val(),
+                Month: $("#month_Eq4").val(),
+                fk_basteh: pymnID
+            };
+
+            $("#myTable4").load(url, params);
+        }
+});
+</script>

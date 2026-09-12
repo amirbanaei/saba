@@ -1,0 +1,75 @@
+﻿@{
+    ViewBag.Title = "جزئیات";
+    Layout = null;
+}
+<link href="~/MyStyles/buttonstyle.css" rel="stylesheet" />
+@model IEnumerable<SaabWebProject.Models.DomainModels.tbDetermining_creditline>
+<link href="~/MyStyles/inputstyleandformstyle.css" rel="stylesheet" />
+
+@{
+    int i = -1;
+}
+
+@foreach (var item in Model)
+{
+    i++;
+    <div class="row"style="margin-top:15px">
+
+        @if (i == 0)
+        {
+            <div class="col-xl-1">
+                <label class="form-label">قرارداد  </label>
+
+            </div>
+
+
+
+        }
+        else
+        {
+            <div class="col-xl-1">
+                <label class="form-label">اصلاحیه @i  </label>
+
+            </div>
+        }
+        <div class="col-xl-3">
+            <label class="form-label">: ردیف اعتباری</label>
+            <label class="form-label">@item.tbCreditIndicators.Title</label>
+        </div>
+
+        <div class="col-xl-4">
+            @{
+                var creditorCredit = item.Creditorcredit; // Assuming item.Creditorcredit is the number you want to format
+            }
+            <div class="form-label">بستانکار (ریال): @string.Format("{0:N0}", creditorCredit)</div>
+            @*<label class="form-label">  بستانکار (ریال):  </label>
+        <input class="bestankar-input" value="@item.Creditorcredit" />*@
+        </div>
+        <div class="col-xl-4">
+            @{
+                var creditorCredit2 = item.Debtorcredit; // Assuming item.Creditorcredit is the number you want to format
+            }
+            <div class="form-label">  بدهکار (ریال): @string.Format("{0:N0}", creditorCredit2) </div>
+        </div>
+    </div>
+}
+<script>
+    $(document).ready(function () {
+        var bestankarInput = $(".bestankar-input");
+
+        bestankarInput.each(function () {
+            var value = $(this).text().trim(); // Use text() to get the content
+            var numericValue = parseFloat(value.replace(/,/g, '')); // Convert to a numeric value
+
+            if (!isNaN(numericValue)) {
+                var formattedValue = formatNumber(numericValue);
+                $(this).text(formattedValue);
+            }
+        });
+    });
+
+    // تابع جدا کردن سه رقم سه رقم
+    function formatNumber(number) {
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+</script>

@@ -1,0 +1,188 @@
+﻿
+@{
+    ViewBag.TitleLargModal = " پیمان ها جدید";
+    Layout = null;
+}
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div id="formControls" class="mb-5">
+
+        <div class="card">
+            <div class="card-body pb-2">
+                <form>
+                    <div class="row">
+                        <div class="col-xl-2">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> پیمان </label>
+                                <div id="div_peyman2"></div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-2">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> نوع مدرک </label>
+                                <Select class="form-select" id="typeOfDocument">
+                                    <option value="0">انتخاب نوع مدرک...</option>
+                                    <option value="1">صورت وضعیت</option>
+                                    <option value="2">حقوقودستمزد</option>option>
+                                    <option value="2">استاد سیستمی</option>
+                                </Select>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-2">
+                            <label class="form-label"> سال </label>
+                            <select class="form-select" id="pec_StartTime_year">
+                                <option value="0">انتخاب کنید..</option>
+                                <option value="1400">1400</option>
+                                <option value="1401">1401</option>
+                                <option value="1402">1402</option>
+                                <option value="1403">1403</option>
+                                <option value="1404">1404</option>
+                                <option value="1405">1405</option>
+                            </select>
+
+                        </div>
+                        <div class="col-xl-2" id="month" style="display:none">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> ماه </label>
+                                <select class="form-select" id="pec_StartTime_month">
+                                    <option value="0">انتخاب کنید..</option>
+                                    <option value="1">فروردین</option>
+                                    <option value="2">اردیبهشت</option>
+                                    <option value="3">خرداد</option>
+                                    <option value="4">تیر</option>
+                                    <option value="5">مرداد</option>
+                                    <option value="6">شهریور</option>
+                                    <option value="7">مهر</option>
+                                    <option value="8">آبان</option>
+                                    <option value="9">آذر</option>
+                                    <option value="10">دی</option>
+                                    <option value="11">بهمن</option>
+                                    <option value="12">اسفند</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-xl-2" id="soorat" style="display:none">
+                            <label class="form-label"> شماره صورت وضعیت </label>
+                            <input class="form-control" />
+
+                        </div>
+
+                        <div class="col-xl-1" style="margin-top:30px;">
+                            <div class="form-group mb-3">
+                                <button id="btnCreate" type="button" class="btn form-control buttonsabt">
+                                    <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                                    <span class="bSabt-text">ثبت</span>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row" style="display:none" id="div_table">
+                        <div class="card">
+                            <div class="tab-content p-4">
+                                <div class="tab-pane fade show active" id="allTab">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover text-nowrap">
+                                            <thead>
+                                                <tr style="text-align:center">
+                                                    <th>
+                                                        @Html.DisplayName("فعالیت")
+                                                    </th>
+                                                    <th>
+                                                        @Html.DisplayName("#")
+                                                    </th>
+                                                    <th>
+                                                        @Html.DisplayName("وضعیت بارگذاری خلاصه مدرک")
+                                                    </th>
+                                                    <th>
+                                                        @Html.DisplayName("وضعیت بارگذاری پیوست مدرک")
+                                                    </th>
+
+                                                    <th>
+                                                        @Html.DisplayName("وضعیت مولفه کنترلی")
+                                                    </th>
+
+                                                    <th>
+                                                        @Html.DisplayName("وضعیت کنترل مکانیزه")
+                                                    </th>
+
+                                                    <th>
+                                                        @Html.DisplayName("نوع کنترل")
+                                                    </th>
+
+                                                    <th>
+                                                        @Html.DisplayName("وضعیت تایید مدرک")
+                                                    </th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-arrow">
+                                <div class="card-arrow-top-left"></div>
+                                <div class="card-arrow-top-right"></div>
+                                <div class="card-arrow-bottom-left"></div>
+                                <div class="card-arrow-bottom-right"></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+
+            <div class="card-arrow">
+                <div class="card-arrow-top-left"></div>
+                <div class="card-arrow-top-right"></div>
+                <div class="card-arrow-bottom-left"></div>
+                <div class="card-arrow-bottom-right"></div>
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+    //نمایش یا عدم نمایش شماره صورت وضعیت وماه
+         $("#typeOfDocument").change(function(){
+                if($(this).val() == 1){ // soorat
+                    $("#month").css("display","none");
+                    $("#soorat").css("display","block");
+                }else if($(this).val() == 2){// hoghoogh
+                    $("#month").css("display","block");
+                    $("#soorat").css("display","none");
+                }else{
+                    $("#month").css("display","block");
+                    $("#soorat").css("display","none");
+                }
+         });
+
+         $("#month").change(function(){
+                $("#div_table").css("display","block")
+         });
+        $("#soorat").change(function(){
+                console.log("hello");
+                $("#div_table").css("display","block")
+         });
+        $(function(){
+             $("#div_peyman2").load('@Url.Content("/../Contracts/Peyman/_GetAllListPeymans_Select")',function(){
+                 console.log("hello");
+                 $("#select_peyman").attr("id", "select_peyman1");
+                 $("#select_peyman1").picker({ search: true }); 
+                 $("#select_peyman1").removeAttr("multiple");
+              
+             });
+        });
+
+</script>
+
+
+

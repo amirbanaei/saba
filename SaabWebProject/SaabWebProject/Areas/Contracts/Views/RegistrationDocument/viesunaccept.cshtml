@@ -1,0 +1,121 @@
+﻿
+@using SaabWebProject.Models.Classes;
+@using SaabWebProject.Models.DomainModels;
+
+@{
+    Layout = null;
+    SaabEntities db = new SaabEntities();
+
+}
+@model SaabWebProject.Models.DomainModels.tbDocuments
+
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+<div class="row">
+    <div class="col-xl-12">
+        <label class="form-label"> شرح </label>
+        <div class="col-xl-12">
+            <textarea class="form-control" id="Title2" style="height: 50px;">
+    </textarea>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <input style="display:none" value="@Model.ID" id="idd2" />
+
+    @*<div class="col-xl-3">
+            <a href="#" class="btn btn-outline-info form-control" id="Show_Etebar">
+                <i class="fa fa-eye"></i>
+                مشاهده اعتبار ردیف ها
+            </a>
+        </div>
+        <div class="col-xl-2">
+            <a href="#" class="btn btn-outline-info form-control">
+                <i class="bi bi-download"></i>
+                دانلود فایل نمونه
+            </a>
+
+        </div>
+        <div class="col-xl-2">
+            <a href="#" class="btn btn-outline-info form-control">
+                <i class="bi bi-upload"></i>
+                بارگذاری اطلاعات
+            </a>
+
+        </div>*@
+    <div class="col-xl-11"></div>
+    <div class="col-xl-1">
+        <div class="form-group mb-3">
+            <button class="btn btn-outline-success form-control buttonsabt" id="btnCreate1244">
+                <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                <span class="bSabt-text">ثبت</span>
+            </button>
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/popper.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script>
+    $("#btnCreate1244").click(function () {
+
+            var Filters = [];
+
+
+            //var obj = new Object();
+            //console.log($("#uniform").val());
+            //var creditorCreditValue = $("#uniform").val();
+            //      var resultString2 = creditorCreditValue.replace(/,/g, '');
+            //console.log(resultString2);
+
+            //obj.Creditorcredit = resultString2;
+
+            ;
+            console.log($("#idd").val());
+
+            var obj2 = {
+                //valuetaead: resultString2,
+                Fk_Document : $("#idd2").val(),
+                Title:$("#Title2").val()
+};
+
+sendAjax1('@Url.Action("creatuntad", "Orders", new { area = "Setting" })', obj2);
+
+                  @*Filters.push(obj);
+                   console.log(Filters);
+                  sendAjax('@Url.Action("edit", "Peyman", new { area = "Contracts" })', obj);*@
+
+
+
+
+        });
+        function sendAjax1(url, data) {
+            console.log(url);
+            console.log(data);
+
+
+                $.ajax({
+                    beforeSend: function () {
+                        document.getElementById("loading-message").style.display = "block";
+                    },
+                    url: url,
+                    data: data, // تغییر این قسمت                    type: "POST",
+                    dataType: "html",
+                    success: function (resp) {
+                        console.log(resp);
+                        document.getElementById("loading-message").style.display = "none";
+                        if (resp == "True") {
+                            alert("با موفقیت ثبت شد");
+                            location.reload();
+
+                        } else {
+                            alert("دچار مشکل شده است ");
+                        }
+                    },
+                    error: function (resp) {
+                        document.getElementById("loading-message").style.display = "none";
+                        alert("دچار مشکل شده است ");
+                        console.log(resp);
+                    }
+                });
+            }
+</script>

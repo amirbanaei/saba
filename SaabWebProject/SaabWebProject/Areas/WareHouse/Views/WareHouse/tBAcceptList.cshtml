@@ -1,0 +1,123 @@
+﻿
+
+@{
+    Layout = null;
+}
+@model IEnumerable<SaabWebProject.Models.DomainModels.tbCommodityProject>
+
+<div class="card mt-3" style="width: 100%">
+    <div class="tab-content p-4" style="z-index:1">
+        <div class="tab-pane fade show active" id="allTab">
+            <div class="table-responsive">
+                <table class="table table-hover" style="text-align:center;">
+                    <thead>
+                        <tr>
+                            <td>عملیات</td>
+                            <td>کد پروژه</td>
+                            <td>نام پروژه</td>
+                            <td>پیمان</td>
+                            <td>مبلغ کل</td>
+                            <td>دانلود فایل نمونه</td>
+
+
+                            <td>نام شهر</td>
+                            <td>تاریخ</td>
+                            <td>وضعیت</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var pro in Model)
+                        {
+
+
+                            <tr>
+                                <td>
+                                    <div class="ms-sm-4 mt-sm-0 mt-2 dropdown-toggle">
+                                        <a href="#" data-bs-toggle="dropdown" class="text-white text-opacity-75 text-decoration-none">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                        <div class="dropdown-menu">
+                                            <a style="cursor:pointer" onclick="EditProject(this)" id="@pro.ProjectCode" data-bs-toggle="modal" data-bs-target="#modalLg" class="dropdown-item EditUser">
+                                                ویرایش
+                                            </a>
+                                            @if (pro.P_Active == true)
+                                            {
+
+
+                                                <a onclick="DisableProject(this)" id="@pro.Id" style="cursor:pointer" class="dropdown-item">
+                                                    غیرفعال
+                                                </a>
+
+
+                                            }
+                                            else
+                                            {
+
+                                                <a onclick="EnableProject(this)" id="@pro.Id" style="cursor:pointer" class="dropdown-item">
+                                                    فعال
+                                                </a>
+
+                                            }
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td>@pro.ProjectCode</td>
+                                <td>
+                                    @pro.ProjectTitle
+                                </td>
+
+                                <td>@pro.tbPeymanContracts.pec_Title</td>
+                                <td>@pro.Totalnumber</td>
+
+                                @if (pro.File_SystemName != null)
+                                {
+                                    <td style="color:green">
+                                        <a target="_blank" href="~/Areas/WareHouse/Contents/WareHouseAttachmentsFile/@pro.File_SystemName">
+                                            دانلود
+                                        </a>
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td style="color:red">ذخیره نشده</td>
+                                }
+
+                                <td>
+                                    @Html.Action("_GetCities", "WareHouse", new { area = "WareHouse", id = pro.ProjectCode })
+                                </td>
+                                <td>@pro.DateOfDefinitionCommodityProject</td>
+                                <td>
+                                    @if (pro.P_Active == true)
+                                    {
+                                        <i class="far fa-lg fa-fw me-2 fa-check-square" style="color:green"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="far fa-lg fa-fw me-2 fa-window-close" style="color:red"></i>
+                                    }
+                                </td>
+                            </tr>
+
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+
+<script>
+
+    function EditProject(e) {
+        $("#big_modal_body").load('@Url.Content("/WareHouse/WareHouse/_ManageProjects")?id='+e.id);
+    }
+
+</script>

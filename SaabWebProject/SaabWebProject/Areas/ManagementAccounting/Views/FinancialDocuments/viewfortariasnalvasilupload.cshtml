@@ -1,0 +1,51 @@
+﻿
+@using SaabWebProject.Models.DomainModels;
+@{
+    Layout = null;
+    SaabEntities db = new SaabEntities();
+}
+@model IEnumerable<SaabWebProject.Models.DomainModels.dbAsnaduplaodfil1>
+<select class="form-select" id="select_users1" name="select_users1">
+
+    
+
+        @foreach (var item in Model)
+        {
+            string tolll = "";
+            var currentItem = item; // شروع از آیتم فعلی
+
+            bool isFirst = true; // متغیری برای پیگیری اینکه آیا اولین رکورد است یا خیر
+
+            // ادامه جستجو تا زمانی که IDre برابر null شود
+            while (currentItem != null && currentItem.IDre != null)
+            {
+                // پیدا کردن رکورد بعدی با استفاده از IDre فعلی
+                currentItem = db.dbAsnaduplaodfil1.Where(p => p.ID == currentItem.IDre).FirstOrDefault();
+
+                // اگر رکورد پیدا شد، آن را به tolll اضافه کنید
+                if (currentItem != null)
+                {
+                    if (isFirst)
+                    {
+                        tolll += currentItem.name;
+                        tolll += "_";
+                        // در ابتدا بدون فاصله
+                        isFirst = false; // بعد از اولین اضافه کردن، isFirst را false می‌کنیم
+                    }
+                    else
+                    {
+                        tolll += "_" + currentItem.name; // اگر اولین رکورد نیست، فاصله اضافه می‌شود
+                    }
+                }
+            }
+
+            // در اینجا می‌توانید نمایش گزینه‌ها را انجام دهید
+            <option value="@item.ID" data-interval="" data-delay="@item.codmahsol">@item.name _ @tolll _(@item.codmahsol)</option>
+        }
+    
+</select>
+<script src="~/Assets/js/jquery3.6.0.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script>
+    $('#select_users1').picker({ search: true });
+</script>

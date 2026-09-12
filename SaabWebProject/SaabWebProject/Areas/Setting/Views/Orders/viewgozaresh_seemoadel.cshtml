@@ -1,0 +1,164 @@
+﻿@*@model SaabWebProject.Models.ViewModels.Contracts.Function.FunctionModGel*@
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+@using SaabWebProject.Models.DomainModels;
+
+@{
+    ViewBag.Title = "گزارش کارکرد ها";
+
+    SaabEntities db = new SaabEntities();
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="tab-content" id="pills-tabContent">
+    <div class="tab-pane fade show active" id="pills-profile ">
+
+        <div class="">
+            <div class="card">
+                <div class="card-body pb-2">
+                    <div class="row" style="margin-top:10px">
+                        @*<div class="col-xl-5">
+            <label class="form-label"> پیمان  </label>
+            <div id="peymans2">
+
+            </div>
+
+        </div>
+
+        <div class="col-xl-3">
+            <label class="form-label"> نوع تجهیز  </label>
+            <select class="form-select select_peyman" id="select_peyman40" name="select_peyman">
+                <option hidden value="Select">انتخاب مورد</option>
+                @foreach (var item in db.tbEquipmentGroup.ToList())
+                {
+                    <option value="@item.Eqpgrp_ID">@item.Eqpgrp_Name</option>
+                }
+            </select>
+
+        </div>*@
+                        @*<div class="col-xl-2">
+            <div class="form-group mb-3">
+                <label class="form-label"> ماه </label>
+                <select class="form-select my_Select" id="Month2">
+                    <option value="0">انتخاب کنید..</option>
+                    <option value="1">فروردین</option>
+                    <option value="2">اردیبهشت</option>
+                    <option value="3">خرداد</option>
+                    <option value="4">تیر</option>
+                    <option value="5">مرداد</option>
+                    <option value="6">شهریور</option>
+                    <option value="7">مهر</option>
+                    <option value="8">آبان</option>
+                    <option value="9">آذر</option>
+                    <option value="10">دی</option>
+                    <option value="11">بهمن</option>
+                    <option value="12">اسفند</option>
+                </select>
+            </div>
+        </div>*@
+                        @*<div class="col-xl-4">
+            <label class="form-label">نام دوره </label>
+
+            <select class="form-select select_peyman" id="select_peyman" name="select_peyman">
+                <option hidden value="Select">انتخاب مورد</option>
+                @foreach (var item in db.dbergharel_4.Where(s => s.del != true && s.FK_namegozarwsh != null).ToList())
+                {
+                    <option value="@item.ID">@item.dbergharel_4_4.name</option>
+                }
+            </select>
+
+        </div>*@
+                        @*<div class="col-xl-4">
+            <label class="form-label">کاربر حقیقی</label>
+
+            <select class="form-select select_peyman22" id="select_peyman22" name="select_peyman22">
+                <option hidden value="Select">انتخاب مورد</option>
+                @foreach (var item in Model.tbAdamAdam2.ToList())
+                {
+                    //var find = db.tbUsers.Where(s => s.usr_ID == item.Name).FirstOrDefault();
+
+                    <option value="@item.ID">@item.fullname </option>
+                }
+            </select>
+
+        </div>*@
+                        <div class="col-xl-1">
+                            <a href="@Url.Action("ExportGozareshMoalefeh", "Orders", new { area = "Setting" })"
+                               class="btn form-control buttonGeneral"
+                               >
+                                <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                                <span class="bGeneral-text"> فایل کارکردها </span>
+                            </a>
+                        </div>
+                        <div class="col-xl-1">
+                            <a href="#" class=" btn form-control buttonGeneral" id="dwn" onclick="DownloadExcel23() ">
+                                <i class="bi bi-eye fa-fw me-1 VecGeneral"></i>
+                                <span class="bGeneral-text">مشاهده</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-bottom:10px;">
+                        <div class="col-xl-11"></div>
+
+
+
+                    </div>
+                    <hr />
+
+                    <div id="test2">
+
+                    </div>
+                </div>
+
+                <div class="card-arrow">
+                    <div class="card-arrow-top-left"></div>
+                    <div class="card-arrow-top-right"></div>
+                    <div class="card-arrow-bottom-left"></div>
+                    <div class="card-arrow-bottom-right"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+
+@*<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>*@
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script>
+
+function DownloadExcel23() {
+    //var month = $("#Month2").val();
+    //var year = $("#select_peyman").val();
+
+    document.getElementById("loading-circle").style.display = "block";
+
+    //if ( year == 0) {
+    //    alert("لطفاً ماه و سال را انتخاب کنید.");
+    //    return;
+    //}
+
+    $.ajax({
+        url: '@Url.Action("GozareshMoalefeh", "Orders", new { area = "Setting" })',
+        type: "GET",
+     /*   data: { year: year},*/
+        success: function (result) {
+            document.getElementById("loading-circle").style.display = "none";
+
+            $("#test2").html(result);
+        },
+        error: function () {
+            alert("خطا در بارگذاری اطلاعات.");
+        }
+    });
+}
+</script>

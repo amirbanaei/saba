@@ -1,0 +1,63 @@
+﻿
+@{
+    ViewBag.Title = "مدیریت دلایل پیش فرض ";
+    Layout = null;}
+
+
+<div class="row">
+
+    <div class="col-xl-2">
+        <label class="form-label"> شغل اصلی  </label>
+        <input class="form-control" id="Edit_pestenka"/>
+    </div>
+    <div class="col-xl-2">
+        <label class="form-label"> شغل فرعی</label>
+        <input class="form-control" id="Edit_bdehkar"/>
+    </div>
+    <div class="col-xl-4">
+        <label class="form-label">  شرح  </label>
+        <input class="form-control" id="Edit_Title" value="@Model.Title" />
+    </div>
+
+</div>
+
+<div class="row" style="margin-top:20px">
+    <div class="col-xl-11"></div>
+    <div class="col-xl-1">
+        <button class="btn form-control buttonsabt" id="btnEdit">
+            <span class="bSabt-text"> ثبت</span>
+
+        </button>
+    </div>
+</div>
+
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Scripts/popper.min.js"></script>
+<script>
+    $("#btnEdit").click(function () {
+        console.log($("#Edit_Detailedtitle").val());
+        console.log($("#Edit_Title").val());
+        console.log($("#Edit_SelectPeyman").val());
+        if ($("#Edit_creditline").val() == 'Select' && $("#Edit_Detailedtitle").val() == 'Select') {
+            alert("لطفا مرکز هزینه را را انتخاب نمائید");
+            }
+            else if (($("#Edit_Title").val() == 0))
+                 {
+                alert("لطفا شرح را وارد  نمائید");
+            }
+           else if (($("#Edit_SelectPeyman").val() == null))
+           {
+             alert("لطفا پیمان را انتخاب نمائید");
+           }
+        else if (($("#datepickerFromEn_Eq").val() == 0))
+           {
+             alert("لطفا تاریخ  را انتخاب نمائید");
+           }
+           else {
+             sendAjaxEdit('@Url.Action("EditFinantial", "FinancialDocuments",new { area = "ManagementAccounting" })', fd);
+           };
+    });
+
+</script>

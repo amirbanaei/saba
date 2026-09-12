@@ -1,0 +1,3207 @@
+﻿@model SaabWebProject.Models.ViewModels.Statements.ReportStatmentsViewModel
+@{
+    ViewBag.Title = "صورت وضعیت ";
+    Layout = null;
+}
+@using SaabWebProject.Models.DomainModels
+@{ SaabEntities db = new SaabEntities();
+
+}
+@{
+    var cities = db.tbpeymancities
+                    .Where(p => p.tbPeymanContracts.pec_Title == Model.Header_0.Peymankar)
+                    .Select(s => s.tbCities.Name)
+                    .ToList();
+    var vo = db.tbPeymanContracts.Where(p => p.pec_Title == Model.Header_0.Peymankar).FirstOrDefault();
+    // Pass the list of cities to the view
+
+}
+<style>
+    div {
+        border: 1px solid black;
+        border-collapse: collapse;
+        max-width: 100%;
+        /*padding: 10px;*/
+    }
+    /*----------------------border -> L R T D------------------------*/
+    .Le {
+        border-left: 1px solid black;
+    }
+
+    .Ri {
+        border-right: 1px solid black;
+    }
+
+    .To {
+        border-top: 1px solid black;
+    }
+
+    .Bo {
+        border-bottom: 1px solid black;
+    }
+    /*---------------------------------------------------------------*/
+    th, td {
+        border-collapse: collapse;
+        /*-----------------------------*/
+        padding-top: 2px;
+        padding-bottom: 2px;
+        width: 5.26%;
+    }
+    /*---------------------------------------------------------------*/
+    table {
+        /*------------border-----------*/
+        /*border: 1px solid black;*/
+        border-collapse: collapse;
+        /*-----------------------------*/
+        font-size: 6px;
+        text-align: center;
+        font-family: serif;
+    }
+    /*---------------------------------------------------------------*/
+    th {
+        font-size: 6px;
+        font-weight: bold;
+    }
+
+    .titel_01 {
+        font-size: 6px;
+        font-weight: bold;
+        background-color: rgba(190, 206, 218, 0.15);
+    }
+
+    .titel_02 {
+        font-size: 6px;
+        font-weight: bold;
+        text-align: right;
+    }
+
+    .verT01 {
+        font-size: 6px;
+        transform: rotate(180deg);
+        writing-mode: vertical-lr;
+        /*text-orientation: mixed;*/
+    }
+
+    .description {
+        font-size: 6px;
+        font-family: serif;
+        text-align: right;
+        text-align: justify;
+        vertical-align: 0px;
+    }
+
+    .header {
+        font-size: 6px;
+        font-weight: bold;
+        /*padding: 8px;*/
+    }
+
+    .footer {
+        font-size: 6px;
+        font-weight: bold;
+        padding: 20px;
+    }
+    /*---------------------------------------------------------------*/
+    @@media print {
+        #printPageButton {
+            display: none; /* برای عدم نمایش دکمه پرینت*/
+            padding: 0;
+        }
+    }
+    /*---------------------------------------------------------------*/
+
+    @{
+        var x = 0;
+        var x1 = 0;
+        var x2 = 0;
+        var x3 = 0;
+        var x4 = 0;
+        var x5 = 0;
+        var x6 = 0;
+        var x7 = 0;
+        var x8 = 0;
+        var x9 = 0;
+        var x10 = 0;
+        //var x11 = 0;
+
+
+            }
+</style>
+<button onclick="window.print()" ID="printPageButton">پرینت صورت وضعیت</button>
+<button>
+    <a href="@Url.Action("Report", "Statment", new { area = "Statments" })" class="menu-link">
+        <span class="menu-text">بازگشت به صفحه گزارش گیری</span>
+    </a>
+</button>
+<body dir="rtl" lang="fa">
+    <div>
+
+
+
+
+
+
+
+        <table>
+            <tr>
+
+
+
+                <th rowspan="01" colspan="01" CLASS="Bo header">صورت وضعیت شماره</th>
+                <th rowspan="01" colspan="01" CLASS="Le Bo ">@Model.Header_0.numberOfSooratVaziat</th>
+                <th rowspan="01" colspan="01" CLASS="Bo">از تاریخ:</th>
+                <th rowspan="01" colspan="01" CLASS="Le Bo">@Model.Header_0.FromDate</th>
+                <th rowspan="01" colspan="01" CLASS="Bo">تا تاریخ:</th>
+                <th rowspan="01" colspan="01" CLASS="Le Bo">@Model.Header_0.toDate</th>
+                <th rowspan="01" colspan="01" CLASS="Bo">پیمانکار :</th>
+                <th rowspan="01" colspan="04" CLASS="Le Bo">@Model.Header_0.Peymankar</th>
+                <th rowspan="01" colspan="01" CLASS="Bo">نام کارگزاری :</th>
+                <th rowspan="01" colspan="01" CLASS="Bo">@Model.Header_0.KargozariName</th>
+                <th rowspan="01" colspan="01" CLASS="Bo">شهرستانها:</th>
+                @{
+                    var lastIndex = cities.Count - 1;
+                }
+
+                @foreach (var city in cities)
+                {
+                    if (city == cities[lastIndex])
+                    {
+                        <th rowspan="01" colspan="01" CLASS="Bo Le">@city</th>
+                    }
+                    else
+                    {
+                        <th rowspan="01" colspan="01" CLASS="Bo">@city</th>
+                    }
+                }
+                <th rowspan="01" colspan="01" CLASS="Bo">کد کارگزاری:</th>
+                <th rowspan="01" colspan="01" CLASS="Bo">@Model.Header_0.KargozariCode</th>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                <!--<th rowspan="01" colspan="01" CLASS="Bo header">صورت وضعیت شماره</th>
+                        <th rowspan="01" colspan="01" CLASS="Le Bo ">@Model.Header_0.numberOfSooratVaziat</th>
+                        <th rowspan="01" colspan="01" CLASS="Bo">از تاریخ:</th>
+                        <th rowspan="01" colspan="01" CLASS="Le Bo">@Model.Header_0.FromDate</th>
+                        <th rowspan="01" colspan="01" CLASS="Bo">تا تاریخ:</th>
+                        <th rowspan="01" colspan="01" CLASS="Le Bo">@Model.Header_0.toDate</th>
+                        <th rowspan="01" colspan="01" CLASS="Bo">پیمانکار :</th>
+                        <th rowspan="01" colspan="04" CLASS="Le Bo">@Model.Header_0.Peymankar</th>
+                        <th rowspan="01" colspan="01" CLASS="Bo">نام کارگزاری :</th>
+                        <th rowspan="01" colspan="01" CLASS="Bo">@Model.Header_0.KargozariName</th>
+                        <th rowspan="01" colspan="01" CLASS="Bo">شهرستانها:</th>
+                    >
+
+
+                        @*<th rowspan="01" colspan="01" CLASS="Bo">---</th>
+                <th rowspan="01" colspan="01" CLASS="Le Bo">--</th>*@
+                        <!--<th rowspan="01" colspan="01" CLASS="Bo">کد کارگزاری:</th>
+                        <th rowspan="01" colspan="01" CLASS="Bo">@Model.Header_0.KargozariCode</th>-->
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td rowspan="06" colspan="01" CLASS="To Le titel_01">جدول 1-مشخصات قرارداد</td>
+                <td rowspan="01" colspan="02" CLASS="To Le titel_01">عنوان</td>
+                <td rowspan="01" colspan="03" CLASS="To titel_01">اولیه</td>
+                <td rowspan="01" colspan="03" CLASS="To titel_01">الحاقیه</td>
+                <td rowspan="01" colspan="03" CLASS="To Le titel_01">نهایی</td>
+                <td rowspan="01" colspan="03" CLASS="To titel_01">تایید (صورت وضعیت) شده</td>
+                <td rowspan="01" colspan="04" CLASS="To titel_01">مانده</td>
+            </tr>
+            <tr>
+                <td rowspan="01" colspan="02" CLASS="To Le titel_01">انرژی (kwh)</td>
+                <td rowspan="01" colspan="03" CLASS="To numbers">@Model.Contracs_1.EnergyInformation.Base</td>
+                <td rowspan="01" colspan="03" CLASS="To numbers">@Model.Contracs_1.EnergyInformation.Elhaghie</td>
+                <td rowspan="01" colspan="03" CLASS="To Le numbers">@Model.Contracs_1.EnergyInformation.Final</td>
+                <td rowspan="01" colspan="03" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="04" CLASS="To numbers">---</td>
+            </tr>
+            <tr>
+                <td rowspan="01" colspan="02" CLASS="To Le titel_01">مبلغ قرارداد (ریال)</td>
+                <td rowspan="01" colspan="03" CLASS="numbers">@Model.Contracs_1.PriceContractInformation.Base</td>
+                <td rowspan="01" colspan="03" CLASS="numbers">@Model.Contracs_1.PriceContractInformation.Elhaghie</td>
+                <td rowspan="01" colspan="03" CLASS="Le numbers">@Model.Contracs_1.PriceContractInformation.Final</td>
+                <td rowspan="01" colspan="03" CLASS="numbers">@Model.Contracs_1.PriceContractInformation.TaeedShode</td>
+                <td rowspan="01" colspan="04" CLASS="numbers">@Model.Contracs_1.PriceContractInformation.Mande</td>
+            </tr>
+            <tr>
+                <td rowspan="03" colspan="02" CLASS="To Le titel_01">مبلغ سبدها (ریال)</td>
+                <td rowspan="01" colspan="01" CLASS="To titel_01">سبد 1</td>
+                <td rowspan="01" colspan="01" CLASS="To titel_01">سبد 2</td>
+                <td rowspan="01" colspan="01" CLASS="To titel_01">سبد 3</td>
+                <td rowspan="01" colspan="01" CLASS="To titel_01">سبد 4</td>
+                <td rowspan="01" colspan="01" CLASS="To titel_01">سبد 5</td>
+                <td rowspan="01" colspan="01" CLASS="To titel_01">سبد 6</td>
+                <td rowspan="01" colspan="01" CLASS="To titel_01">سبد 7</td>
+                <td rowspan="01" colspan="01" CLASS="To titel_01">سبد 8</td>
+                <td rowspan="01" colspan="01" CLASS="To titel_01">سبد 9</td>
+                <td rowspan="01" colspan="01" CLASS="To titel_01">سبد 10</td>
+                <td rowspan="01" colspan="01" CLASS="To titel_01">سبد 11</td>
+                <td rowspan="01" colspan="01" CLASS="To titel_01">سبد 12</td>
+                <td rowspan="01" colspan="01" CLASS="To titel_01">سبد 13</td>
+                <td rowspan="01" colspan="01" CLASS="To Le titel_01">سبد 14</td>
+                <td rowspan="02" colspan="02" CLASS="To titel_01">جمع</td>
+            </tr>
+            <tr>
+
+                @foreach (var item in Model.Contracs_1.Baskets)
+                {
+                    <td rowspan="01" colspan="01" CLASS="titel_01">@item.basket</td>
+                }
+
+                @{
+                    // Calculate how many more cells are needed
+                    var remainingCells = 14 - Model.Contracs_1.Baskets.Count;
+
+                    // Fill the remaining cells with a default value
+                    for (int i = 0; i < remainingCells; i++)
+                    {
+                        if (i == remainingCells - 1)
+                        {
+                            <td rowspan="01" colspan="01" CLASS="Le titel_01">---</td>
+                        }
+                        else
+                        {
+                            <td rowspan="01" colspan="01" CLASS="titel_01">----</td>
+
+                        }
+                    }
+                }
+
+                <!--@foreach (var item in Model.Contracs_1.Baskets)
+                {
+                    <td rowspan="01" colspan="01" CLASS="titel_01">@item.basket</td>
+
+                }-->
+                @*<td rowspan="01" colspan="01" CLASS="titel_01">خالص حقوق</td>
+                    <td rowspan="01" colspan="01" CLASS="titel_01">خالص اجاره تبلت</td>*@
+                <!--<td rowspan="01" colspan="01" CLASS="titel_01">خودروی شخصی (ایاب و ذهاب)</td>
+                <td rowspan="01" colspan="01" CLASS="titel_01">خالص سوخت و تعمیرات</td>
+                <td rowspan="01" colspan="01" CLASS="titel_01">یونیفرم خودرو و باکس موتور</td>
+                <td rowspan="01" colspan="01" CLASS="titel_01">اجاره وسیله نقلیه</td>
+                <td rowspan="01" colspan="01" CLASS="titel_01">بیمه تامین اجتماعی</td>
+                <td rowspan="01" colspan="01" CLASS="titel_01">مالیات حقوق</td>
+                <td rowspan="01" colspan="01" CLASS="titel_01">سایر</td>
+                <td rowspan="01" colspan="01" CLASS="titel_01">*</td>
+                <td rowspan="01" colspan="01" CLASS="titel_01">*</td>
+                <td rowspan="01" colspan="01" CLASS="titel_01">*</td>
+                <td rowspan="01" colspan="01" CLASS="titel_01">*</td>
+
+                <td rowspan="01" colspan="01" CLASS="Le titel_01">*</td>-->
+            </tr>
+            <tr>
+                @foreach (var item in Model.Contracs_1.Baskets)
+                {
+                    <td td rowspan="01" colspan="01" CLASS="To numbers">@item.Price</td>
+
+                }
+                @{
+                    // Calculate how many more cells are needed
+                    var remainingCells2 = 14 - Model.Contracs_1.Baskets.Count;
+
+                    // Fill the remaining cells with a default value
+                    for (int i = 0; i < remainingCells2; i++)
+                    {
+                        if (i == remainingCells2 - 1)
+                        {
+                            <td rowspan="01" colspan="01" CLASS="Le To numbers">---</td>
+                        }
+                        else
+                        {
+                            <td td rowspan="01" colspan="01" CLASS="To numbers">----</td>
+
+                        }
+                    }
+                }
+                <td rowspan="01" colspan="02" CLASS="To numbers">---</td>
+
+                @*<td rowspan="01" colspan="01" CLASS="To numbers"></td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">10000000000</td>*@
+
+            </tr>
+            <tr>
+                <td rowspan="06" colspan="01" CLASS="To Le titel_01">جدول 2- انتظار و عملکرد (تجمیعی)</td>
+                <td rowspan="02" colspan="02" CLASS="To Le titel_01">شهرستان/بخش</td>
+                <td rowspan="01" colspan="05" CLASS="To Le titel_01">عملکرد</td>
+                <td rowspan="01" colspan="07" CLASS="To Le titel_01">حد انتظار</td>
+                <td rowspan="01" colspan="04" CLASS="To titel_01">انحراف عملکرد</td>
+            </tr>
+            <tr>
+                <td rowspan="01" colspan="01" CLASS="titel_01">انرژی تحویلی(kwh)</td>
+                <td rowspan="01" colspan="01" CLASS="titel_01">انرژی توزیعی(kwh)</td>
+
+                <td rowspan="01" colspan="01" CLASS="Le titel_01">وصول (درصد)</td>
+                <td rowspan="01" colspan="01" CLASS="titel_01">انرژی توزیعی یکساله (پذیرش)</td>
+                <td rowspan="01" colspan="02" CLASS="titel_01">انرژی توزیعی یکساله (هدف)</td>
+                <td rowspan="01" colspan="02" CLASS="titel_01">درصد تلفات(پدیرش)</td>
+                <td rowspan="01" colspan="01" CLASS="titel_01">درصد تلفات(هدف))</td>
+                <td rowspan="01" colspan="01" CLASS="titel_01">وصول یکساله (هدف)</td>
+                <td rowspan="01" colspan="02" CLASS="Le titel_01">وصول یکساله (پذیرش)</td>
+                <td rowspan="01" colspan="02" CLASS="titel_01">انرژی(kwh)</td>
+                <td rowspan="01" colspan="02" CLASS="titel_01">وصول (درصد)</td>
+            </tr>
+
+            @foreach (var item in Model.AmalkerdEntezar_2.amalkerdEntezarSubCirties)
+            {
+
+                <tr>
+                    <td rowspan="01" colspan="02" CLASS="To Le titel_01">@item.SubCityName</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">@item.amalkerd_EnergyToziee</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">@item.amalkerd_EnergyTahvili</td>
+
+                    <td rowspan="01" colspan="01" CLASS="To Le numbers">@item.amalkerd_VosoolPercent</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">@item.Entezar_EnergyTahvili</td>
+                    <td rowspan="01" colspan="02" CLASS="To numbers">@item.amalkerd_EnergyToziee2</td>
+
+                    <td rowspan="01" colspan="02" CLASS="To numbers">@item.Entezar_talafatPercent_Paziresh</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">@item.Entezar_talafatPercnt_hadaf</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">@item.Entezar_VosoolPercent</td>
+                    <td rowspan="01" colspan="02" CLASS="To Le numbers">@item.Entezar_EnergyTozieeEslahi</td>
+                    <td rowspan="01" colspan="02" CLASS="To numbers">@item.Enheraft_Energy2</td>
+                    <td rowspan="01" colspan="02" CLASS="To numbers">@item.Enheraft_VosoolPercent</td>
+                </tr>
+                x += (int)item.amalkerd_EnergyToziee;
+                x1 += (int)item.amalkerd_EnergyTahvili;
+                x2 += (int)item.Entezar_talafatPercnt_hadaf;
+                x3 += (int)item.Entezar_VosoolPercent;
+                x4 += (int)item.amalkerd_VosoolPercent;
+                x5 += (int)item.Entezar_EnergyTahvili;
+                x6 += (int)item.amalkerd_EnergyToziee2;
+                x7 += (int)item.Entezar_EnergyTozieeEslahi;
+                x8 += (int)item.Entezar_talafatPercent_Paziresh;
+                x9 += (int)item.Enheraft_Energy2;
+                x10 += (int)item.Enheraft_VosoolPercent;
+
+            }
+            @*<tr>
+                    <td rowspan="01" colspan="02" CLASS="To Le titel_01">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To Le numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="02" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="02" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="02" CLASS="To Le numbers">---</td>
+                    <td rowspan="01" colspan="02" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="02" CLASS="To numbers">---</td>
+                </tr>
+                <tr>
+                    <td rowspan="01" colspan="02" CLASS="To Le titel_01">***</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="02" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="02" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="02" CLASS="Le numbers">---</td>
+                    <td rowspan="01" colspan="02" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="02" CLASS="numbers">---</td>
+                </tr>
+                <tr>
+                    <td rowspan="01" colspan="02" CLASS="To Le titel_01">***</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="02" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="02" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="02" CLASS="Le numbers">---</td>
+                    <td rowspan="01" colspan="02" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="02" CLASS="numbers">---</td>
+                </tr>*@
+            <tr>
+                <td rowspan="01" colspan="02" CLASS="To Le titel_01">جمع</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">@x1</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">@x</td>
+
+                <td rowspan="01" colspan="01" CLASS="Le numbers">@x4</td>
+                <td rowspan="01" colspan="01" CLASS=" numbers">@x5</td>
+                <td rowspan="01" colspan="02" CLASS="numbers">@x6</td>
+                <td rowspan="01" colspan="02" CLASS="numbers">@x8</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">@x2</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">@x3</td>
+                <td rowspan="01" colspan="02" CLASS="Le numbers">@x7</td>
+                <td rowspan="01" colspan="02" CLASS="numbers">@x9</td>
+                <td rowspan="01" colspan="02" CLASS="numbers">@x10</td>
+            </tr>
+            <tr>
+                <td rowspan="05" colspan="01" CLASS="To Le titel_01">جدول 3-مبلغ خام(برمبنای انرژی)</td>
+                <td rowspan="01" colspan="02" CLASS="To Le titel_01">عنوان</td>
+                <td rowspan="01" colspan="01" CLASS="To titel_01">صورت وضعیت 1</td>
+                <td rowspan="01" colspan="01" CLASS="To titel_01">صورت وضعیت2</td>
+                <td rowspan="01" colspan="01" CLASS="To titel_01">صورت وضعیت3</td>
+                <td rowspan="01" colspan="01" CLASS="To titel_01">صورت وضعیت4</td>
+                <td rowspan="01" colspan="01" CLASS="To titel_01">صورت وضعیت5</td>
+                <td rowspan="01" colspan="01" CLASS="To titel_01">صورت وضعیت6</td>
+                <td rowspan="01" colspan="01" CLASS="To titel_01">صورت وضعیت7</td>
+                <td rowspan="01" colspan="01" CLASS="To titel_01">صورت وضعیت8</td>
+                <td rowspan="01" colspan="02" CLASS="To titel_01">صورت وضعیت9</td>
+                <td rowspan="01" colspan="02" CLASS="To titel_01">صورت وضعیت10</td>
+                <td rowspan="01" colspan="02" CLASS="To titel_01">صورت وضعیت11</td>
+                <td rowspan="01" colspan="02" CLASS="To titel_01">صورت وضعیت12</td>
+            </tr>
+            <tr>
+                <td rowspan="01" colspan="02" CLASS="To Le titel_01">انرژی (kwh)</td>
+                @{decimal o = 0;
+                    int i4 = 0;}
+                @{foreach (var it in db.tbSoratvaziat.Where(p => p.Fk_pymn == vo.pec_ID && p.nergh != null && p.Final_accept == true).ToList())
+                    {
+                        i4++;
+                        if (i4 <= 8)
+                        {
+                            <td rowspan="01" colspan="01" CLASS="To numbers">@it.Enerjy</td>
+                        }
+                        else
+                        {
+                            <td rowspan="01" colspan="02" CLASS="To numbers">@it.Enerjy</td>
+                        }
+
+
+                        o += (long)it.Enerjy;
+                    }
+
+
+                }
+                @{var yui = 12 - db.tbSoratvaziat.Where(p => p.Fk_pymn == vo.pec_ID && p.nergh != null && p.Final_accept == true).Count();
+
+                    for (int i = 0; i < yui; i++)
+                    {
+                        if (i4 < 8)
+                        {
+                            <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+
+                        }
+                        else
+                        {
+                            <td rowspan="01" colspan="02" CLASS="To numbers">---</td>
+
+                        }
+                        i4++;
+
+                    }
+
+
+
+                }
+
+            </tr>
+            <tr>
+                <td rowspan="01" colspan="02" CLASS="To Le titel_01">نرخ (ریال)</td>
+                @{ int i3 = 0;}
+                @{foreach (var it in db.tbSoratvaziat.Where(p => p.Fk_pymn == vo.pec_ID && p.nergh != null && p.Final_accept == true).ToList())
+                    {
+                        i3++;
+                        if (i3 <= 8)
+                        {
+                            <td rowspan="01" colspan="01" CLASS="To numbers">@it.nergh</td>
+                        }
+                        else
+                        {
+                            <td rowspan="01" colspan="02" CLASS="To numbers">@it.nergh</td>
+                        }
+
+                    }
+
+                }
+                @for (int i = 0; i < yui; i++)
+                {
+                    if (i3 < 8)
+                    {
+                        <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+
+                    }
+                    else
+                    {
+                        <td rowspan="01" colspan="02" CLASS="To numbers">---</td>
+
+                    }
+                    i3++;
+
+                }
+
+
+
+            </tr>
+            <tr>
+                <td rowspan="01" colspan="02" CLASS="To Le titel_01">مبلغ خام(ریال)</td>
+                @{long h = 0;
+                    int i2 = 0;
+
+
+                }
+                @{foreach (var it in db.tbSoratvaziat.Where(p => p.Fk_pymn == vo.pec_ID && p.nergh != null && p.Final_accept == true).ToList())
+                    {
+                        i2++;
+                        if (i2 <= 8)
+                        {
+                            <td rowspan="01" colspan="01" CLASS="To numbers">@it.gham</td>
+
+
+                        }
+                        else
+                        {
+                            <td rowspan="01" colspan="02" CLASS="To numbers">@it.gham</td>
+
+                        }
+                        h += (long)it.gham;
+                    }
+
+
+                }
+                @for (int i = 0; i < yui; i++)
+                {
+                    if (i2 < 8)
+                    {
+                        <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+
+                    }
+                    else
+                    {
+                        <td rowspan="01" colspan="02" CLASS="To numbers">---</td>
+
+                    }
+                    i2++;
+
+                }
+            </tr>
+            <tr>
+                <td rowspan="01" colspan="02" CLASS="To Le titel_01">جمع</td>
+                <td rowspan="01" colspan="02" CLASS="To Le titel_01">انرژی (kwh):</td>
+                <td rowspan="01" colspan="06" CLASS="To Le numbers">@o</td>
+                <td rowspan="01" colspan="02" CLASS="To Le titel_01">مبلغ خام (ریال):</td>
+                <td rowspan="01" colspan="06" CLASS="To numbers">@h</td>
+            </tr>
+            <tr>
+                <td rowspan="39" colspan="01" CLASS="To Le titel_01 verT01">جدول 4 - کنترل سبدهای هزینه ای (ریال)</td>
+                <td rowspan="02" colspan="01" CLASS="To Le titel_01">شماره صورت وضعیت</td>
+                <td rowspan="02" colspan="01" CLASS="To Le titel_01">عنوان</td>
+
+
+                <td rowspan="01" colspan="01" CLASS="To titel_01">سبد 1</td>
+                <td rowspan="01" colspan="01" CLASS="To titel_01">سبد 2</td>
+                <td rowspan="01" colspan="01" CLASS="To titel_01">سبد 3</td>
+                <td rowspan="01" colspan="01" CLASS="To titel_01">سبد 4</td>
+                <td rowspan="01" colspan="01" CLASS="To titel_01">سبد 5</td>
+                <td rowspan="01" colspan="01" CLASS="To titel_01">سبد 6</td>
+                <td rowspan="01" colspan="01" CLASS="To titel_01">سبد 7</td>
+                <td rowspan="01" colspan="01" CLASS="To titel_01">سبد 8</td>
+                <td rowspan="01" colspan="01" CLASS="To titel_01">سبد 9</td>
+                <td rowspan="01" colspan="01" CLASS="To titel_01">سبد 10</td>
+                <td rowspan="01" colspan="01" CLASS="To titel_01">سبد 11</td>
+                <td rowspan="01" colspan="01" CLASS="To titel_01">سبد 12</td>
+                <td rowspan="01" colspan="01" CLASS="To titel_01">سبد 13</td>
+                <td rowspan="01" colspan="01" CLASS="To Le titel_01">سبد 14</td>
+                <td rowspan="02" colspan="02" CLASS="To titel_01">جمع کل</td>
+            </tr>
+            <tr>
+                @foreach (var item in Model.Contracs_1.Baskets)
+                {
+                    <td td rowspan="01" colspan="01" CLASS="titel_01">@item.basket</td>
+                }
+
+                @{
+                    // Calculate how many more cells are needed
+                    var remainingCells3 = 14 - Model.Contracs_1.Baskets.Count;
+
+                    // Fill the remaining cells with a default value
+                    for (int i = 0; i < remainingCells3; i++)
+                    {
+                        if (i == 3)
+                        {
+                            <td td rowspan="01" colspan="01" CLASS="Le titel_01">----</td>
+
+                        }
+                        else
+                        {
+                            <td td rowspan="01" colspan="01" CLASS="titel_01">----</td>
+
+                        }
+                    }
+
+
+                }
+            </tr>
+            <!--   ----------------------------------------------------------------------   -->
+            @{
+
+                var remainingCells9 = 16 - Model.Contracs_1.Baskets.Count;
+
+            }
+            @if (Model.Header_0.numberOfSooratVaziat >= 1)
+            {
+                <tr>
+                    <td rowspan="03" colspan="01" CLASS="To Le titel_01">1</td>
+
+                    <td rowspan="01" colspan="01" CLASS="To Le titel_01">مامورین</td>
+
+
+
+
+
+                    @{
+                        long hh = 0;
+                        long hui = 0;
+                    }
+                    @foreach (var item in Model.Contracs_1.Baskets)
+                    {
+                        var t = db.tbSoratvaziat.Where(p => p.Fk_pymn == vo.pec_ID && p.tbCreditIndicators.Title == item.basket && p.number_sorat == 1 && p.role == 1 && p.Final_accept == true).FirstOrDefault();
+                        <td rowspan="01" colspan="01" CLASS="To numbers">@t.value</td>
+                        hh += (long)t.value;
+                        hui += (long)t.value;
+                    }
+
+
+
+
+
+
+                    @{
+                        // Calculate how many more cells are needed
+                        var remainingCells5 = 16 - Model.Contracs_1.Baskets.Count;
+
+                        // Fill the remaining cells with a default value
+                        for (int i = 0; i < remainingCells9; i++)
+                        {
+
+                            if (i == 3)
+                            {
+                                <td td rowspan="01" colspan="01" CLASS="Le To numbers">----</td>
+
+                            }
+                            else if (i == 5)
+
+                            {
+
+
+
+
+                            }
+                            else if (i == 4)
+
+                            {
+
+                                <td rowspan="01" colspan="01" CLASS="Le To numbers">@hh</td>
+
+
+
+                            }
+
+
+                            else
+                            {
+                                <td td rowspan="01" colspan="01" CLASS="To numbers">----</td>
+
+                            }
+                        }
+                    }
+
+
+
+                </tr>
+                <tr>
+                    <td rowspan="01" colspan="01" CLASS="To Le titel_01">نماینده مقیم</td>
+                    @{
+                        long hh1 = 0;
+
+                    }
+                    @foreach (var item in Model.Contracs_1.Baskets)
+                    {
+                        var t = db.tbSoratvaziat.Where(p => p.Fk_pymn == vo.pec_ID && p.tbCreditIndicators.Title == item.basket && p.number_sorat == 1 && p.role == 2 && p.Final_accept == true).FirstOrDefault();
+                        <td rowspan="01" colspan="01" CLASS=" numbers">@t.value</td>
+                        hh1 += (long)t.value;
+                        hui += (long)t.value;
+                    }
+                    @{
+                        // Calculate how many more cells are needed
+
+                        // Fill the remaining cells with a default value
+                        for (int i = 0; i < remainingCells9; i++)
+                        {
+
+                            if (i == 3)
+                            {
+                                <td td rowspan="01" colspan="01" CLASS="Le  numbers">----</td>
+
+                            }
+                            else if (i == 5)
+
+                            {
+
+
+
+
+                            }
+
+
+                            else if (i == remainingCells9 - 1) // Check if i is the last index
+                            {
+                                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                            }
+                            else if (i == 4)
+
+                            {
+
+                                <td rowspan="01" colspan="01" CLASS="Le  numbers">@hh1</td>
+
+
+
+                            }
+                            else
+                            {
+                                <td td rowspan="01" colspan="01" CLASS=" numbers">----</td>
+
+                            }
+                        }
+                    }
+
+                </tr>
+                <tr>
+                    <td rowspan="01" colspan="01" CLASS="To Le titel_01">کادر اداری</td>
+                    @{
+                        long hh2 = 0;
+
+                    }
+                    @foreach (var item in Model.Contracs_1.Baskets)
+                    {
+                        var t = db.tbSoratvaziat.Where(p => p.Fk_pymn == vo.pec_ID && p.tbCreditIndicators.Title == item.basket && p.number_sorat == 1 && p.role == 3 && p.Final_accept == true).FirstOrDefault();
+                        <td rowspan="01" colspan="01" CLASS=" numbers">@t.value</td>
+                        hh2 += (long)t.value;
+                        hui += (long)t.value;
+                    }
+                    @{
+                        // Calculate how many more cells are needed
+
+                        // Fill the remaining cells with a default value
+                        for (int i = 0; i < remainingCells9; i++)
+                        {
+
+                            if (i == 3)
+                            {
+                                <td td rowspan="01" colspan="01" CLASS="Le  numbers">----</td>
+
+                            }
+
+
+                            else if (i == 4)
+
+                            {
+
+                                <td rowspan="01" colspan="01" CLASS="Le  numbers">@hh2</td>
+
+
+
+                            }
+                            else if (i == remainingCells9 - 1) // Check if i is the last index
+                            {
+                                <td rowspan="01" colspan="01" CLASS="  numbers">@hui</td>
+                            }
+                            else
+                            {
+                                <td td rowspan="01" colspan="01" CLASS=" numbers">----</td>
+
+                            }
+                        }
+                    }
+
+
+
+                </tr>
+            }
+            else
+            {
+                <tr>
+                    <td rowspan="03" colspan="01" CLASS="To Le titel_01">1</td>
+                    <td rowspan="01" colspan="01" CLASS="To Le titel_01">مامورین</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To Le numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To Le numbers">---</td>
+                    <td rowspan="03" colspan="01" CLASS="To numbers">---</td>
+                </tr>
+                <tr>
+                    <td rowspan="01" colspan="01" CLASS="To Le titel_01">نماینده مقیم</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+                </tr>
+                <tr>
+                    <td rowspan="01" colspan="01" CLASS="To Le titel_01">کادر اداری</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+                </tr>
+            }
+            <!--   ----------------------------------------------------------------------   -->
+            @if (Model.Header_0.numberOfSooratVaziat >= 2)
+            {
+                <tr>
+                    <td rowspan="03" colspan="01" CLASS="To Le titel_01">2</td>
+                    <td rowspan="01" colspan="01" CLASS="To Le titel_01">مامورین</td>
+                    @{
+                        long hh3 = 0;
+                        long hui1 = 0;
+                    }
+                    @foreach (var item in Model.Contracs_1.Baskets)
+                    {
+                        var t = db.tbSoratvaziat.Where(p => p.Fk_pymn == vo.pec_ID && p.tbCreditIndicators.Title == item.basket && p.number_sorat == 2 && p.role == 1 && p.Final_accept == true).FirstOrDefault();
+                        <td rowspan="01" colspan="01" CLASS="To numbers">@t.value</td>
+                        hh3 += (long)t.value;
+                        hui1 += (long)t.value;
+                    }
+
+                    @{ for (int i = 0; i < remainingCells9; i++)
+                        {
+
+                            if (i == 3)
+                            {
+                                <td td rowspan="01" colspan="01" CLASS="Le To numbers">----</td>
+
+                            }
+                            else if (i == 5)
+
+                            {
+
+
+
+
+                            }
+
+                            else if (i == 4)
+
+                            {
+
+                                <td rowspan="01" colspan="01" CLASS="Le To numbers">@hh3</td>
+
+
+
+                            }
+                            else
+                            {
+                                <td td rowspan="01" colspan="01" CLASS="To numbers">----</td>
+
+                            }
+                        }}
+
+
+
+                    @*<td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                        <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                        <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                        <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                        <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                        <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                        <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                        <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                        <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                        <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                        <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                        <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                        <td rowspan="01" colspan="01" CLASS="To Le numbers">---</td>
+                        <td rowspan="01" colspan="01" CLASS="To Le numbers">---</td>
+                        <td rowspan="03" colspan="01" CLASS="To numbers">---</td>*@
+                </tr>
+                <tr>
+                    <td rowspan="01" colspan="01" CLASS="To Le titel_01">نماینده مقیم</td>
+                    @{
+                        long hh4 = 0;
+
+                    }
+                    @foreach (var item in Model.Contracs_1.Baskets)
+                    {
+                        var t = db.tbSoratvaziat.Where(p => p.Fk_pymn == vo.pec_ID && p.tbCreditIndicators.Title == item.basket && p.Final_accept == true && p.number_sorat == 2 && p.role == 2).FirstOrDefault();
+                        <td rowspan="01" colspan="01" CLASS=" numbers">@t.value</td>
+                        hh4 += (long)t.value;
+                        hui1 += (long)t.value;
+                    }
+
+                    @{ for (int i = 0; i < remainingCells9; i++)
+                        {
+
+                            if (i == 3)
+                            {
+                                <td td rowspan="01" colspan="01" CLASS="Le  numbers">----</td>
+
+                            }
+                            else if (i == 5)
+
+                            {
+
+
+
+
+                            }
+
+                            else if (i == 4)
+
+                            {
+
+                                <td rowspan="01" colspan="01" CLASS="Le  numbers">@hh4</td>
+
+
+
+                            }
+                            else
+                            {
+                                <td td rowspan="01" colspan="01" CLASS=" numbers">----</td>
+
+                            }
+                        }}
+
+                </tr>
+                <tr>
+                    <td rowspan="01" colspan="01" CLASS="To Le titel_01">کادر اداری</td>
+                    @{
+                        long hh5 = 0;
+
+                    }
+                    @foreach (var item in Model.Contracs_1.Baskets)
+                    {
+                        var t = db.tbSoratvaziat.Where(p => p.Fk_pymn == vo.pec_ID && p.Final_accept == true && p.tbCreditIndicators.Title == item.basket && p.number_sorat == 2 && p.role == 3).FirstOrDefault();
+                        <td rowspan="01" colspan="01" CLASS=" numbers">@t.value</td>
+                        hh5 += (long)t.value;
+                        hui1 += (long)t.value;
+                    }
+                    @{ for (int i = 0; i < remainingCells9; i++)
+                        {
+
+                            if (i == 3)
+                            {
+                                <td td rowspan="01" colspan="01" CLASS="Le  numbers">----</td>
+
+                            }
+                            else if (i == 4)
+
+                            {
+
+                                <td rowspan="01" colspan="01" CLASS="Le  numbers">@hh5</td>
+
+
+
+                            }
+
+                            else if (i == remainingCells9 - 1) // Check if i is the last index
+                            {
+                                <td rowspan="01" colspan="01" CLASS="numbers">@hui1</td>
+                            }
+                            else
+                            {
+                                <td td rowspan="01" colspan="01" CLASS=" numbers">----</td>
+
+                            }
+                        }}
+
+                </tr>
+            }
+            else
+            {
+                <tr>
+                    <td rowspan="03" colspan="01" CLASS="To Le titel_01">2</td>
+                    <td rowspan="01" colspan="01" CLASS="To Le titel_01">مامورین</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To Le numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To Le numbers">---</td>
+                    <td rowspan="03" colspan="01" CLASS="To numbers">---</td>
+                </tr>
+                <tr>
+                    <td rowspan="01" colspan="01" CLASS="To Le titel_01">نماینده مقیم</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+                </tr>
+                <tr>
+                    <td rowspan="01" colspan="01" CLASS="To Le titel_01">کادر اداری</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+                </tr>
+            }
+
+            <!--   ----------------------------------------------------------------------   -->
+            @if (Model.Header_0.numberOfSooratVaziat >= 3)
+            {
+                <tr>
+                    <td rowspan="03" colspan="01" CLASS="To Le titel_01">3</td>
+                    <td rowspan="01" colspan="01" CLASS="To Le titel_01">مامورین</td>
+                    @{
+                        long hh6 = 0;
+                        long hui2 = 0;
+                    }
+                    @foreach (var item in Model.Contracs_1.Baskets)
+                    {
+                        var t = db.tbSoratvaziat.Where(p => p.Fk_pymn == vo.pec_ID && p.Final_accept == true && p.tbCreditIndicators.Title == item.basket && p.number_sorat == 3 && p.role == 1).FirstOrDefault();
+                        <td rowspan="01" colspan="01" CLASS="To numbers">@t.value</td>
+                        hh6 += (long)t.value;
+                        hui2 += (long)t.value;
+                    }
+
+                    @{ for (int i = 0; i < remainingCells9; i++)
+                        {
+
+                            if (i == 3)
+                            {
+                                <td td rowspan="01" colspan="01" CLASS="Le To numbers">----</td>
+
+                            }
+
+                            else if (i == 5)
+
+                            {
+
+
+
+
+                            }
+
+                            else if (i == 4)
+
+                            {
+
+                                <td rowspan="01" colspan="01" CLASS="Le To numbers">@hh6</td>
+
+
+
+                            }
+                            else
+                            {
+                                <td td rowspan="01" colspan="01" CLASS="To numbers">----</td>
+
+                            }
+                        }}
+
+                </tr>
+                <tr>
+                    <td rowspan="01" colspan="01" CLASS="To Le titel_01">نماینده مقیم</td>
+                    @{
+                        long hh7 = 0;
+
+                    }
+
+                    @foreach (var item in Model.Contracs_1.Baskets)
+                    {
+                        var t = db.tbSoratvaziat.Where(p => p.Fk_pymn == vo.pec_ID && p.tbCreditIndicators.Title == item.basket && p.number_sorat == 3 && p.role == 2 && p.Final_accept == true).FirstOrDefault();
+                        <td rowspan="01" colspan="01" CLASS=" numbers">@t.value</td>
+                        hh7 += (long)t.value;
+                        hui2 += (long)t.value;
+                    }
+                    @{ for (int i = 0; i < remainingCells9; i++)
+                        {
+
+                            if (i == 3)
+                            {
+                                <td td rowspan="01" colspan="01" CLASS="Le  numbers">----</td>
+
+                            }
+                            else if (i == 5)
+
+                            {
+
+
+
+
+                            }
+
+                            else if (i == 4)
+
+                            {
+
+                                <td rowspan="01" colspan="01" CLASS="Le  numbers">@hh7</td>
+
+
+
+                            }
+
+
+                            else
+                            {
+                                <td td rowspan="01" colspan="01" CLASS=" numbers">----</td>
+
+                            }
+                        }}
+
+                </tr>
+                <tr>
+                    <td rowspan="01" colspan="01" CLASS="To Le titel_01">کادر اداری</td>
+                    @{
+                        long hh8 = 0;
+                    }
+                    @foreach (var item in Model.Contracs_1.Baskets)
+                    {
+                        var t = db.tbSoratvaziat.Where(p => p.Fk_pymn == vo.pec_ID && p.Final_accept == true && p.tbCreditIndicators.Title == item.basket && p.number_sorat == 3 && p.role == 3).FirstOrDefault();
+                        <td rowspan="01" colspan="01" CLASS=" numbers">@t.value</td>
+                        hh8 += (long)t.value;
+                        hui2 += (long)t.value;
+                    }
+                    @{ for (int i = 0; i < remainingCells9; i++)
+                        {
+
+                            if (i == 3)
+                            {
+                                <td td rowspan="01" colspan="01" CLASS="Le  numbers">----</td>
+
+                            }
+
+
+                            else if (i == 4)
+
+                            {
+
+                                <td rowspan="01" colspan="01" CLASS="Le  numbers">@hh8</td>
+
+
+
+                            }
+                            else if (i == remainingCells9 - 1) // Check if i is the last index
+                            {
+                                <td rowspan="01" colspan="01" CLASS="numbers">@hui2</td>
+                            }
+                            else
+                            {
+                                <td td rowspan="01" colspan="01" CLASS=" numbers">----</td>
+
+                            }
+                        }}
+
+                </tr>
+            }
+            else
+            {
+                <tr>
+                    <td rowspan="03" colspan="01" CLASS="To Le titel_01">3</td>
+                    <td rowspan="01" colspan="01" CLASS="To Le titel_01">مامورین</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To Le numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To Le numbers">---</td>
+                    <td rowspan="03" colspan="01" CLASS="To numbers">---</td>
+                </tr>
+                <tr>
+                    <td rowspan="01" colspan="01" CLASS="To Le titel_01">نماینده مقیم</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+                </tr>
+                <tr>
+                    <td rowspan="01" colspan="01" CLASS="To Le titel_01">کادر اداری</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+                </tr>
+            }
+
+            <!--   ----------------------------------------------------------------------   -->
+            @if (Model.Header_0.numberOfSooratVaziat >= 4)
+            {
+
+                <tr>
+                    <td rowspan="03" colspan="01" CLASS="To Le titel_01">4</td>
+                    <td rowspan="01" colspan="01" CLASS="To Le titel_01">مامورین</td>
+                    @{
+                        long hh9 = 0;
+                        long hui3 = 0;
+                    }
+                    @foreach (var item in Model.Contracs_1.Baskets)
+                    {
+                        var t = db.tbSoratvaziat.Where(p => p.Fk_pymn == vo.pec_ID && p.Final_accept == true && p.tbCreditIndicators.Title == item.basket && p.number_sorat == 4 && p.role == 1).FirstOrDefault();
+                        <td rowspan="01" colspan="01" CLASS="To numbers">@t.value</td>
+                        hh9 += (long)t.value;
+                        hui3 += (long)t.value;
+                    }
+                    @{ for (int i = 0; i < remainingCells9; i++)
+                        {
+
+                            if (i == 3)
+                            {
+                                <td td rowspan="01" colspan="01" CLASS="Le To numbers">----</td>
+
+                            }
+
+
+                            else if (i == 5)
+
+                            {
+
+
+
+
+                            }
+
+                            else if (i == 4)
+
+                            {
+
+                                <td rowspan="01" colspan="01" CLASS="Le To numbers">@hh9</td>
+
+
+
+                            }
+                            else
+                            {
+                                <td td rowspan="01" colspan="01" CLASS="To numbers">----</td>
+
+                            }
+                        }}
+
+                </tr>
+                <tr>
+                    <td rowspan="01" colspan="01" CLASS="To Le titel_01">نماینده مقیم</td>
+                    @{
+                        long hh10 = 0;
+                    }
+                    @foreach (var item in Model.Contracs_1.Baskets)
+                    {
+                        var t = db.tbSoratvaziat.Where(p => p.Fk_pymn == vo.pec_ID && p.Final_accept == true && p.tbCreditIndicators.Title == item.basket && p.number_sorat == 4 && p.role == 2).FirstOrDefault();
+                        <td rowspan="01" colspan="01" CLASS=" numbers">@t.value</td>
+                        hh10 += (long)t.value;
+                        hui3 += (long)t.value;
+                    }
+                    @{ for (int i = 0; i < remainingCells9; i++)
+                        {
+
+                            if (i == 3)
+                            {
+                                <td td rowspan="01" colspan="01" CLASS="Le  numbers">----</td>
+
+                            }
+
+
+
+                            else if (i == 5)
+
+                            {
+
+
+
+
+                            }
+
+                            else if (i == 4)
+
+                            {
+
+                                <td rowspan="01" colspan="01" CLASS="Le  numbers">@hh10</td>
+
+
+
+                            }
+                            else
+                            {
+                                <td td rowspan="01" colspan="01" CLASS=" numbers">----</td>
+
+                            }
+                        }}
+
+
+
+
+
+
+
+
+
+                </tr>
+
+
+                <tr>
+                    <td rowspan="01" colspan="01" CLASS="To Le titel_01">کادر اداری</td>
+                    @{
+                        long hh11 = 0;
+
+                    }
+                    @foreach (var item in Model.Contracs_1.Baskets)
+                    {
+                        var t = db.tbSoratvaziat.Where(p => p.Fk_pymn == vo.pec_ID && p.Final_accept == true && p.tbCreditIndicators.Title == item.basket && p.number_sorat == 4 && p.role == 3).FirstOrDefault();
+                        <td rowspan="01" colspan="01" CLASS=" numbers">@t.value</td>
+                        hh11 += (long)t.value;
+                        hui3 += (long)t.value;
+                    }
+                    @{ for (int i = 0; i < remainingCells9; i++)
+                        {
+
+                            if (i == 3)
+                            {
+                                <td td rowspan="01" colspan="01" CLASS="Le  numbers">----</td>
+
+                            }
+                            else if (i == 4)
+
+                            {
+
+                                <td rowspan="01" colspan="01" CLASS="Le  numbers">@hh11</td>
+
+
+
+                            }
+
+                            else if (i == remainingCells9 - 1) // Check if i is the last index
+                            {
+                                <td rowspan="01" colspan="01" CLASS="numbers">@hui3</td>
+                            }
+                            else
+                            {
+                                <td td rowspan="01" colspan="01" CLASS=" numbers">----</td>
+
+                            }
+                        }}
+
+                </tr>
+            }
+            else
+            {
+                <tr>
+                    <td rowspan="03" colspan="01" CLASS="To Le titel_01">4</td>
+                    <td rowspan="01" colspan="01" CLASS="To Le titel_01">مامورین</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To Le numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To Le numbers">---</td>
+                    <td rowspan="03" colspan="01" CLASS="To numbers">---</td>
+                </tr>
+                <tr>
+                    <td rowspan="01" colspan="01" CLASS="To Le titel_01">نماینده مقیم</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+                </tr>
+                <tr>
+                    <td rowspan="01" colspan="01" CLASS="To Le titel_01">کادر اداری</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+                </tr>
+            }
+            <!--   ----------------------------------------------------------------------   -->
+            @if (Model.Header_0.numberOfSooratVaziat >= 5)
+            {
+                <tr>
+                    <td rowspan="03" colspan="01" CLASS="To Le titel_01">5</td>
+                    <td rowspan="01" colspan="01" CLASS="To Le titel_01">مامورین</td>
+                    @{
+                        long hh12 = 0;
+                        long hui4 = 0;
+                    }
+                    @foreach (var item in Model.Contracs_1.Baskets)
+                    {
+                        var t = db.tbSoratvaziat.Where(p => p.Fk_pymn == vo.pec_ID && p.Final_accept == true && p.tbCreditIndicators.Title == item.basket && p.number_sorat == 5 && p.role == 1).FirstOrDefault();
+                        <td rowspan="01" colspan="01" CLASS="To numbers">@t.value</td>
+                        hh12 += (long)t.value;
+                        hui4 += (long)t.value;
+
+                    }
+
+
+
+                    @{ for (int i = 0; i < remainingCells9; i++)
+                        {
+
+                            if (i == 3)
+                            {
+                                <td td rowspan="01" colspan="01" CLASS="Le To numbers">----</td>
+
+                            }
+                            else if (i == 5)
+
+                            {
+
+
+
+
+                            }
+
+                            else if (i == 4)
+
+                            {
+
+                                <td rowspan="01" colspan="01" CLASS="Le To numbers">@hh12</td>
+
+
+
+                            }
+                            else
+                            {
+                                <td td rowspan="01" colspan="01" CLASS="To numbers">----</td>
+
+                            }
+                        }}
+
+                </tr>
+                <tr>
+                    <td rowspan="01" colspan="01" CLASS="To Le titel_01">نماینده مقیم</td>
+                    @{
+                        long hh13 = 0;
+
+                    }
+                    @foreach (var item in Model.Contracs_1.Baskets)
+                    {
+                        var t = db.tbSoratvaziat.Where(p => p.Fk_pymn == vo.pec_ID && p.Final_accept == true && p.tbCreditIndicators.Title == item.basket && p.number_sorat == 5 && p.role == 2).FirstOrDefault();
+                        <td rowspan="01" colspan="01" CLASS=" numbers">@t.value</td>
+                        hh13 += (long)t.value;
+                        hui4 += (long)t.value;
+                    }
+                    @{ for (int i = 0; i < remainingCells9; i++)
+                        {
+
+                            if (i == 3)
+                            {
+                                <td td rowspan="01" colspan="01" CLASS="Le  numbers">----</td>
+
+                            }
+
+
+
+                            else if (i == 5)
+
+                            {
+
+
+
+
+                            }
+
+                            else if (i == 4)
+
+                            {
+
+                                <td rowspan="01" colspan="01" CLASS="Le  numbers">@hh13</td>
+
+
+
+                            }
+                            else
+                            {
+                                <td td rowspan="01" colspan="01" CLASS=" numbers">----</td>
+
+                            }
+                        }}
+
+                </tr>
+                <tr>
+                    <td rowspan="01" colspan="01" CLASS="To Le titel_01">کادر اداری</td>
+                    @{
+                        long hh14 = 0;
+
+                    }
+                    @foreach (var item in Model.Contracs_1.Baskets)
+                    {
+                        var t = db.tbSoratvaziat.Where(p => p.Fk_pymn == vo.pec_ID && p.Final_accept == true && p.tbCreditIndicators.Title == item.basket && p.number_sorat == 5 && p.role == 3).FirstOrDefault();
+                        <td rowspan="01" colspan="01" CLASS=" numbers">@t.value</td>
+                        hh14 += (long)t.value;
+                        hui4 += (long)t.value;
+                    }
+                    @{ for (int i = 0; i < remainingCells9; i++)
+                        {
+
+                            if (i == 3)
+                            {
+                                <td td rowspan="01" colspan="01" CLASS="Le  numbers">----</td>
+
+                            }
+
+                            else if (i == 4)
+
+                            {
+
+                                <td rowspan="01" colspan="01" CLASS="Le  numbers">@hh14</td>
+
+
+
+                            }
+
+                            else if (i == remainingCells9 - 1) // Check if i is the last index
+                            {
+                                <td rowspan="01" colspan="01" CLASS="numbers">@hui4</td>
+                            }
+                            else
+                            {
+                                <td td rowspan="01" colspan="01" CLASS=" numbers">----</td>
+
+                            }
+                        }}
+
+                </tr>
+            }
+            else
+            {
+                <tr>
+                    <td rowspan="03" colspan="01" CLASS="To Le titel_01">5</td>
+                    <td rowspan="01" colspan="01" CLASS="To Le titel_01">مامورین</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To Le numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To Le numbers">---</td>
+                    <td rowspan="03" colspan="01" CLASS="To numbers">---</td>
+                </tr>
+                <tr>
+                    <td rowspan="01" colspan="01" CLASS="To Le titel_01">نماینده مقیم</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+                </tr>
+                <tr>
+                    <td rowspan="01" colspan="01" CLASS="To Le titel_01">کادر اداری</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+                </tr>
+            }
+
+            <!--   ----------------------------------------------------------------------   -->
+            @if (Model.Header_0.numberOfSooratVaziat >= 6)
+            {
+                <tr>
+                    <td rowspan="03" colspan="01" CLASS="To Le titel_01">6</td>
+                    <td rowspan="01" colspan="01" CLASS="To Le titel_01">مامورین</td>
+                    @{
+                        long hh15 = 0;
+                        long hui5 = 0;
+                    }
+                    @foreach (var item in Model.Contracs_1.Baskets)
+                    {
+                        var t = db.tbSoratvaziat.Where(p => p.Fk_pymn == vo.pec_ID && p.Final_accept == true && p.tbCreditIndicators.Title == item.basket && p.number_sorat == 6 && p.role == 1).FirstOrDefault();
+                        <td rowspan="01" colspan="01" CLASS="To numbers">@t.value</td>
+                        hh15 += (long)t.value;
+                        hui5 += (long)t.value;
+                    }
+                    @{ for (int i = 0; i < remainingCells9; i++)
+                        {
+
+                            if (i == 3)
+                            {
+                                <td td rowspan="01" colspan="01" CLASS="Le To numbers">----</td>
+
+                            }
+
+
+                            else if (i == 5)
+
+                            {
+
+
+
+
+                            }
+
+                            else if (i == 4)
+
+                            {
+
+                                <td rowspan="01" colspan="01" CLASS="Le To numbers">@hh15</td>
+
+
+
+                            }
+                            else
+                            {
+                                <td td rowspan="01" colspan="01" CLASS="To numbers">----</td>
+
+                            }
+                        }}
+
+                </tr>
+                <tr>
+                    <td rowspan="01" colspan="01" CLASS="To Le titel_01">نماینده مقیم</td>
+                    @{
+                        long hh16 = 0;
+
+                    }
+                    @foreach (var item in Model.Contracs_1.Baskets)
+                    {
+                        var t = db.tbSoratvaziat.Where(p => p.Fk_pymn == vo.pec_ID && p.Final_accept == true && p.tbCreditIndicators.Title == item.basket && p.number_sorat == 6 && p.role == 2).FirstOrDefault();
+                        <td rowspan="01" colspan="01" CLASS=" numbers">@t.value</td>
+                        hh16 += (long)t.value;
+                        hui5 += (long)t.value;
+                    }
+                    @{ for (int i = 0; i < remainingCells9; i++)
+                        {
+
+                            if (i == 3)
+                            {
+                                <td td rowspan="01" colspan="01" CLASS="Le  numbers">----</td>
+
+                            }
+
+
+                            else if (i == 5)
+
+                            {
+
+
+
+
+                            }
+
+                            else if (i == 4)
+
+                            {
+
+                                <td rowspan="01" colspan="01" CLASS="Le  numbers">@hh16</td>
+
+
+
+                            }
+                            else
+                            {
+                                <td td rowspan="01" colspan="01" CLASS=" numbers">----</td>
+
+                            }
+                        }}
+
+                </tr>
+                <tr>
+                    <td rowspan="01" colspan="01" CLASS="To Le titel_01">کادر اداری</td>
+                    @{
+                        long hh17 = 0;
+
+                    }
+                    @foreach (var item in Model.Contracs_1.Baskets)
+                    {
+                        var t = db.tbSoratvaziat.Where(p => p.Fk_pymn == vo.pec_ID && p.Final_accept == true && p.tbCreditIndicators.Title == item.basket && p.number_sorat == 6 && p.role == 3).FirstOrDefault();
+                        <td rowspan="01" colspan="01" CLASS=" numbers">@t.value</td>
+                        hh17 += (long)t.value;
+                        hui5 += (long)t.value;
+                    }
+                    @{ for (int i = 0; i < remainingCells9; i++)
+                        {
+
+                            if (i == 3)
+                            {
+                                <td td rowspan="01" colspan="01" CLASS="Le  numbers">----</td>
+
+                            }
+
+                            else if (i == remainingCells9 - 1) // Check if i is the last index
+                            {
+                                <td rowspan="01" colspan="01" CLASS="numbers">@hui5</td>
+                            }
+                            else if (i == 4)
+
+                            {
+
+                                <td rowspan="01" colspan="01" CLASS="Le  numbers">@hh17</td>
+
+
+
+                            }
+                            else
+                            {
+                                <td td rowspan="01" colspan="01" CLASS=" numbers">----</td>
+
+                            }
+                        }}
+
+                </tr>
+            }
+            else
+            {
+                <tr>
+                    <td rowspan="03" colspan="01" CLASS="To Le titel_01">6</td>
+                    <td rowspan="01" colspan="01" CLASS="To Le titel_01">مامورین</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To Le numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To Le numbers">---</td>
+                    <td rowspan="03" colspan="01" CLASS="To numbers">---</td>
+                </tr>
+                <tr>
+                    <td rowspan="01" colspan="01" CLASS="To Le titel_01">نماینده مقیم</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+                </tr>
+                <tr>
+                    <td rowspan="01" colspan="01" CLASS="To Le titel_01">کادر اداری</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+                </tr>
+            }
+            <!--   ----------------------------------------------------------------------   -->
+            @if (Model.Header_0.numberOfSooratVaziat >= 7)
+            {
+                <tr>
+                    <td rowspan="03" colspan="01" CLASS="To Le titel_01">7</td>
+                    <td rowspan="01" colspan="01" CLASS="To Le titel_01">مامورین</td>
+                    @{
+                        long hh18 = 0;
+                        long hui6 = 0;
+                    }
+                    @foreach (var item in Model.Contracs_1.Baskets)
+                    {
+                        var t = db.tbSoratvaziat.Where(p => p.Fk_pymn == vo.pec_ID && p.Final_accept == true && p.tbCreditIndicators.Title == item.basket && p.number_sorat == 7 && p.role == 1).FirstOrDefault();
+                        <td rowspan="01" colspan="01" CLASS="To numbers">@t.value</td>
+                        hh18 += (long)t.value;
+                        hui6 += (long)t.value;
+                    }
+                    @{ for (int i = 0; i < remainingCells9; i++)
+                        {
+
+                            if (i == 3)
+                            {
+                                <td td rowspan="01" colspan="01" CLASS="Le To numbers">----</td>
+
+                            }
+
+
+                            else if (i == 5)
+
+                            {
+
+
+
+
+                            }
+
+                            else if (i == 4)
+
+                            {
+
+                                <td rowspan="01" colspan="01" CLASS="Le To numbers">@hh18</td>
+
+
+
+                            }
+                            else
+                            {
+                                <td td rowspan="01" colspan="01" CLASS="To numbers">----</td>
+
+                            }
+                        }}
+
+                </tr>
+                <tr>
+                    <td rowspan="01" colspan="01" CLASS="To Le titel_01">نماینده مقیم</td>
+                    @{
+                        long hh19 = 0;
+
+                    }
+                    @foreach (var item in Model.Contracs_1.Baskets)
+                    {
+                        var t = db.tbSoratvaziat.Where(p => p.Fk_pymn == vo.pec_ID && p.Final_accept == true && p.tbCreditIndicators.Title == item.basket && p.number_sorat == 7 && p.role == 2).FirstOrDefault();
+                        <td rowspan="01" colspan="01" CLASS=" numbers">@t.value</td>
+                        hh19 += (long)t.value;
+                        hui6 += (long)t.value;
+                    }
+                    @{ for (int i = 0; i < remainingCells9; i++)
+                        {
+
+                            if (i == 3)
+                            {
+                                <td td rowspan="01" colspan="01" CLASS="Le  numbers">----</td>
+
+                            }
+                            else if (i == 5)
+
+                            {
+
+
+
+
+                            }
+
+                            else if (i == 4)
+
+                            {
+
+                                <td rowspan="01" colspan="01" CLASS="Le  numbers">@hh19</td>
+
+
+
+                            }
+                            else
+                            {
+                                <td td rowspan="01" colspan="01" CLASS=" numbers">----</td>
+
+                            }
+                        }}
+
+                </tr>
+                <tr>
+                    <td rowspan="01" colspan="01" CLASS="To Le titel_01">کادر اداری</td>
+                    @{
+                        long hh20 = 0;
+
+                    }
+                    @foreach (var item in Model.Contracs_1.Baskets)
+                    {
+                        var t = db.tbSoratvaziat.Where(p => p.Fk_pymn == vo.pec_ID && p.Final_accept == true && p.tbCreditIndicators.Title == item.basket && p.number_sorat == 7 && p.role == 3).FirstOrDefault();
+                        <td rowspan="01" colspan="01" CLASS=" numbers">@t.value</td>
+                        hh20 += (long)t.value;
+                        hui6 += (long)t.value;
+                    }
+                    @{ for (int i = 0; i < remainingCells9; i++)
+                        {
+
+                            if (i == 3)
+                            {
+                                <td td rowspan="01" colspan="01" CLASS="Le  numbers">----</td>
+
+                            }
+                            else if (i == 4)
+
+                            {
+
+                                <td rowspan="01" colspan="01" CLASS="Le  numbers">@hh20</td>
+
+
+
+                            }
+
+                            else if (i == remainingCells9 - 1) // Check if i is the last index
+                            {
+                                <td rowspan="01" colspan="01" CLASS="numbers">@hui6</td>
+                            }
+                            else
+                            {
+                                <td td rowspan="01" colspan="01" CLASS=" numbers">----</td>
+
+                            }
+                        }}
+
+                </tr>
+            }
+            else
+            {
+                <tr>
+                    <td rowspan="03" colspan="01" CLASS="To Le titel_01">7</td>
+                    <td rowspan="01" colspan="01" CLASS="To Le titel_01">مامورین</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To Le numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To Le numbers">---</td>
+                    <td rowspan="03" colspan="01" CLASS="To numbers">---</td>
+                </tr>
+                <tr>
+                    <td rowspan="01" colspan="01" CLASS="To Le titel_01">نماینده مقیم</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+                </tr>
+                <tr>
+                    <td rowspan="01" colspan="01" CLASS="To Le titel_01">کادر اداری</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+                </tr>
+            }
+
+            <!--   ----------------------------------------------------------------------   -->
+            @if (Model.Header_0.numberOfSooratVaziat >= 8)
+            {
+                <tr>
+                    <td rowspan="03" colspan="01" CLASS="To Le titel_01">8</td>
+                    <td rowspan="01" colspan="01" CLASS="To Le titel_01">مامورین</td>
+                    @{
+                        long hh21 = 0;
+                        long hui7 = 0;
+                    }
+                    @foreach (var item in Model.Contracs_1.Baskets)
+                    {
+                        var t = db.tbSoratvaziat.Where(p => p.Fk_pymn == vo.pec_ID && p.Final_accept == true && p.tbCreditIndicators.Title == item.basket && p.number_sorat == 8 && p.role == 1).FirstOrDefault();
+                        <td rowspan="01" colspan="01" CLASS="To numbers">@t.value</td>
+                        hh21 += (long)t.value;
+                        hui7 += (long)t.value;
+                    }
+                    @{ for (int i = 0; i < remainingCells9; i++)
+                        {
+
+                            if (i == 3)
+                            {
+                                <td td rowspan="01" colspan="01" CLASS="Le To numbers">----</td>
+
+                            }
+
+                            else if (i == 5)
+
+                            {
+
+
+
+
+                            }
+
+                            else if (i == 4)
+
+                            {
+
+                                <td rowspan="01" colspan="01" CLASS="Le To numbers">@hh21</td>
+
+
+
+                            }
+                            else
+                            {
+                                <td td rowspan="01" colspan="01" CLASS="To numbers">----</td>
+
+                            }
+                        }}
+
+                </tr>
+                <tr>
+                    <td rowspan="01" colspan="01" CLASS="To Le titel_01">نماینده مقیم</td>
+                    @{
+                        long hh22 = 0;
+
+                    }
+                    @foreach (var item in Model.Contracs_1.Baskets)
+                    {
+                        var t = db.tbSoratvaziat.Where(p => p.Fk_pymn == vo.pec_ID && p.Final_accept == true && p.tbCreditIndicators.Title == item.basket && p.number_sorat == 8 && p.role == 2).FirstOrDefault();
+                        <td rowspan="01" colspan="01" CLASS=" numbers">@t.value</td>
+                        hh22 += (long)t.value;
+                        hui7 += (long)t.value;
+                    }
+                    @{ for (int i = 0; i < remainingCells9; i++)
+                        {
+
+                            if (i == 3)
+                            {
+                                <td td rowspan="01" colspan="01" CLASS="Le  numbers">----</td>
+
+                            }
+                            else if (i == 5)
+
+                            {
+
+
+
+
+                            }
+
+                            else if (i == 4)
+
+                            {
+
+                                <td rowspan="01" colspan="01" CLASS="Le  numbers">@hh22</td>
+
+
+
+                            }
+                            else
+                            {
+                                <td td rowspan="01" colspan="01" CLASS=" numbers">----</td>
+
+                            }
+                        }}
+
+                </tr>
+                <tr>
+                    <td rowspan="01" colspan="01" CLASS=" To Le titel_01">کادر اداری</td>
+                    @{
+                        long hh23 = 0;
+
+                    }
+                    @foreach (var item in Model.Contracs_1.Baskets)
+                    {
+                        var t = db.tbSoratvaziat.Where(p => p.Fk_pymn == vo.pec_ID && p.Final_accept == true && p.tbCreditIndicators.Title == item.basket && p.number_sorat == 8 && p.role == 3).FirstOrDefault();
+                        <td rowspan="01" colspan="01" CLASS=" numbers">@t.value</td>
+                        hh23 += (long)t.value;
+                        hui7 += (long)t.value;
+                    }
+                    @{ for (int i = 0; i < remainingCells9; i++)
+                        {
+
+                            if (i == 3)
+                            {
+                                <td td rowspan="01" colspan="01" CLASS="Le  numbers">----</td>
+
+                            }
+                            else if (i == 4)
+
+                            {
+
+                                <td rowspan="01" colspan="01" CLASS="Le  numbers">@hh23</td>
+
+
+
+                            }
+
+                            else if (i == remainingCells9 - 1) // Check if i is the last index
+                            {
+                                <td rowspan="01" colspan="01" CLASS="numbers">@hui7</td>
+                            }
+                            else
+                            {
+                                <td td rowspan="01" colspan="01" CLASS=" numbers">----</td>
+
+                            }
+                        }}
+
+                </tr>
+            }
+            else
+            {
+                <tr>
+                    <td rowspan="03" colspan="01" CLASS="To Le titel_01">8</td>
+                    <td rowspan="01" colspan="01" CLASS="To Le titel_01">مامورین</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To Le numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To Le numbers">---</td>
+                    <td rowspan="03" colspan="01" CLASS="To numbers">---</td>
+                </tr>
+                <tr>
+                    <td rowspan="01" colspan="01" CLASS="To Le titel_01">نماینده مقیم</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+                </tr>
+                <tr>
+                    <td rowspan="01" colspan="01" CLASS="To Le titel_01">کادر اداری</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+                </tr>
+            }
+            <!--   ----------------------------------------------------------------------   -->
+
+            <tr>
+                <td rowspan="03" colspan="01" CLASS="To Le titel_01">9</td>
+                <td rowspan="01" colspan="01" CLASS="To Le titel_01">مامورین</td>
+                @{
+                    long hh24 = 0;
+                    long hui8 = 0;
+                    var ttoo = db.tbSoratvaziat.Where(p => p.Fk_pymn == vo.pec_ID && p.Final_accept == true && p.number_sorat == 9 && p.role == 1).FirstOrDefault();
+
+
+                }
+
+
+
+
+                @if (ttoo != null)
+                {
+                    foreach (var item in Model.Contracs_1.Baskets)
+                    {
+                        var t = db.tbSoratvaziat.Where(p => p.Fk_pymn == vo.pec_ID && p.Final_accept == true && p.tbCreditIndicators.Title == item.basket && p.number_sorat == 9 && p.role == 1).FirstOrDefault();
+                        <td rowspan="01" colspan="01" CLASS="To numbers">@t.value</td>
+                        hh24 += (long)t.value;
+                        hui8 += (long)t.value;
+                    }
+                    {
+                        for (int i = 0; i < remainingCells9; i++)
+                        {
+
+                            if (i == 3)
+                            {
+                                <td td rowspan="01" colspan="01" CLASS="Le To numbers">----</td>
+
+                            }
+
+
+                            else if (i == 5)
+
+                            {
+
+
+
+
+                            }
+
+                            else if (i == 4)
+
+                            {
+
+                                <td rowspan="01" colspan="01" CLASS="Le To numbers">@hh24</td>
+
+
+
+                            }
+                            else
+                            {
+                                <td td rowspan="01" colspan="01" CLASS="To numbers">----</td>
+
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To Le numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="To Le numbers">---</td>
+                    <td rowspan="03" colspan="01" CLASS="To numbers">---</td>
+                }
+
+
+            </tr>
+            <tr>
+                <td rowspan="01" colspan="01" CLASS="To Le titel_01">نماینده مقیم</td>
+
+                @{
+                    long hh25 = 0;
+
+                }
+                @if (ttoo != null)
+                {
+                    foreach (var item in Model.Contracs_1.Baskets)
+                    {
+                        var t = db.tbSoratvaziat.Where(p => p.Fk_pymn == vo.pec_ID && p.Final_accept == true && p.tbCreditIndicators.Title == item.basket && p.number_sorat == 9 && p.role == 3).FirstOrDefault();
+                        <td rowspan="01" colspan="01" CLASS=" numbers">@t.value</td>
+                        hh25 += (long)t.value;
+                        hui8 += (long)t.value;
+                    }
+                    {
+                        for (int i = 0; i < remainingCells9; i++)
+                        {
+
+                            if (i == 3)
+                            {
+                                <td td rowspan="01" colspan="01" CLASS="Le  numbers">----</td>
+
+                            }
+
+                            else if (i == 5)
+
+                            {
+
+
+
+
+                            }
+
+                            else if (i == 4)
+
+                            {
+
+                                <td rowspan="01" colspan="01" CLASS="Le  numbers">@hh25</td>
+
+
+
+                            }
+                            else
+                            {
+                                <td td rowspan="01" colspan="01" CLASS=" numbers">----</td>
+
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+
+                }
+            </tr>
+            <tr>
+                <td rowspan="01" colspan="01" CLASS="To Le titel_01">کادر اداری</td>
+
+                @{
+                    long hh26 = 0;
+
+                }
+                @if (ttoo != null)
+                {
+                    foreach (var item in Model.Contracs_1.Baskets)
+                    {
+                        var t = db.tbSoratvaziat.Where(p => p.Fk_pymn == vo.pec_ID && p.Final_accept == true && p.tbCreditIndicators.Title == item.basket && p.number_sorat == 9 && p.role == 2).FirstOrDefault();
+                        <td rowspan="01" colspan="01" CLASS=" numbers">@t.value</td>
+                        hh26 += (long)t.value;
+                        hui8 += (long)t.value;
+                    }
+                    {
+                        for (int i = 0; i < remainingCells9; i++)
+                        {
+
+                            if (i == 3)
+                            {
+                                <td td rowspan="01" colspan="01" CLASS="Le  numbers">----</td>
+
+                            }
+
+                            else if (i == 4)
+
+                            {
+
+                                <td rowspan="01" colspan="01" CLASS="Le  numbers">@hh26</td>
+
+
+
+                            }
+                            else if (i == remainingCells9 - 1) // Check if i is the last index
+                            {
+                                <td rowspan="01" colspan="01" CLASS="numbers">@hui8</td>
+                            }
+                            else
+                            {
+                                <td td rowspan="01" colspan="01" CLASS=" numbers">----</td>
+
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+                    <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+                }
+
+
+            </tr>
+            <!--   ----------------------------------------------------------------------   -->
+            <tr>
+                <td rowspan="03" colspan="01" CLASS="To Le titel_01">10</td>
+                <td rowspan="01" colspan="01" CLASS="To Le titel_01">مامورین</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To Le numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To Le numbers">---</td>
+                <td rowspan="03" colspan="01" CLASS="To numbers">---</td>
+            </tr>
+            <tr>
+                <td rowspan="01" colspan="01" CLASS="To Le titel_01">نماینده مقیم</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+            </tr>
+            <tr>
+                <td rowspan="01" colspan="01" CLASS="To Le titel_01">کادر اداری</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+            </tr>
+            <!--   ----------------------------------------------------------------------   -->
+            <tr>
+                <td rowspan="03" colspan="01" CLASS="To Le titel_01">11</td>
+                <td rowspan="01" colspan="01" CLASS="To Le titel_01">مامورین</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To Le numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To Le numbers">---</td>
+                <td rowspan="03" colspan="01" CLASS="To numbers">---</td>
+            </tr>
+            <tr>
+                <td rowspan="01" colspan="01" CLASS="To Le titel_01">نماینده مقیم</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+            </tr>
+            <tr>
+                <td rowspan="01" colspan="01" CLASS="To Le titel_01">کادر اداری</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+            </tr>
+            <!--   ----------------------------------------------------------------------   -->
+            <tr>
+                <td rowspan="03" colspan="01" CLASS="To Le titel_01">12</td>
+                <td rowspan="01" colspan="01" CLASS="To Le titel_01">مامورین</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To Le numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To Le numbers">---</td>
+                <td rowspan="03" colspan="01" CLASS="To numbers">---</td>
+            </tr>
+            <tr>
+                <td rowspan="01" colspan="01" CLASS="To Le titel_01">نماینده مقیم</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+            </tr>
+            <tr>
+                <td rowspan="01" colspan="01" CLASS="To Le titel_01">کادر اداری</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="Le numbers">---</td>
+            </tr>
+            <!--   ----------------------------------------------------------------------   -->
+            <tr>
+                <td rowspan="01" colspan="02" CLASS="To Le titel_01">
+                    عیدی و پاداش و سنوات <تجمیعی></تجمیعی>
+                </td>
+                @{
+                    long yu = 0;
+                    var ttt = db.Link_User_And_Peyman.Where(s => s.FK_Peyman_ID == vo.pec_ID && s.Status == true).ToList();
+                    foreach (var y in ttt)
+                    {
+                        var value = db.tbMoalefeValueFish.Where(p => p.FK_User == y.FK_User_ID && p.tbContractMoalefeDastmozdi.md_Title == "عیدی و پاداش ( ماهانه-ریال)").ToList();
+                        foreach (var iu in value)
+                        {
+                            yu += (long)iu.mlfvlfsh_Value;
+                        }
+                    }
+                }
+
+                <td rowspan="01" colspan="01" CLASS="To numbers">@yu</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="01" CLASS="To Le numbers">---</td>
+                <td rowspan="01" colspan="02" CLASS="To numbers">@yu</td>
+            </tr>
+            <tr>
+                <td rowspan="02" colspan="01" CLASS="To Le titel_01">عیدی و پاداش و سنوات (تجمیعی)</td>
+                <td rowspan="01" colspan="02" CLASS="To Le titel_01">-مبلغ (ریال)</td>
+                @{
+                    long hh128 = 0;
+
+                }
+                @foreach (var item in Model.Contracs_1.Baskets)
+                {
+                    var yuu = db.Descriptionsorat.Where(p => p.tbCreditIndicators.Title == item.basket && p.FK_Pymn == vo.pec_ID).FirstOrDefault();
+                    <td rowspan="01" colspan="01" CLASS="To numbers">@yuu.value</td>
+                    hh128 += (long)yuu.value;
+                }
+
+                @{ for (int i = 0; i < remainingCells9; i++)
+                    {
+
+                        if (i == 3)
+                        {
+                            <td td rowspan="01" colspan="01" CLASS="Le To numbers">----</td>
+
+                        }
+
+                        else if (i == remainingCells9 - 1) // Check if i is the last index
+                        {
+                            <td rowspan="01" colspan="02" CLASS="To numbers">@hh128</td>
+                        }
+                        else
+                        {
+                            <td td rowspan="01" colspan="01" CLASS="To numbers">----</td>
+
+                        }
+                    }}
+
+
+
+            </tr>
+            <tr>
+                <td rowspan="01" colspan="02" CLASS="To Le titel_01">شرح</td>
+                <td rowspan="01" colspan="16" CLASS="To description">
+                    ...
+                    <br>
+                    <br>
+                    <br>
+                </td>
+            </tr>
+            <tr>
+                <td rowspan="03" colspan="01" CLASS="To Le titel_01">جدول 6-مقایسه با انتظار</td>
+                <td rowspan="01" colspan="02" CLASS="To Le titel_01">جمع عملکرد تجمیعی (ریال)</td>
+                @{
+                    long hh129 = 0;
+
+                }
+                @{var oi = 0;}
+                @foreach (var item in Model.Contracs_1.Baskets)
+                {
+                    oi++; if (oi == 1)
+                    {
+                        long oooo = 0;
+                        var t = db.tbSoratvaziat.Where(p => p.Fk_pymn == vo.pec_ID && p.tbCreditIndicators.Title == item.basket && p.Final_accept == true).ToList();
+                        foreach (var it in t)
+                        {
+                            oooo += (long)it.value;
+                        }
+                        var yo = db.Descriptionsorat.Where(p => p.FK_Pymn == vo.pec_ID && p.tbCreditIndicators.Title == item.basket).FirstOrDefault();
+                        oooo += (long)yo.value;
+                        oooo += yu;
+                        <td rowspan="01" colspan="01" CLASS="To numbers">@oooo</td>
+                        hh129 += oooo;
+                    }
+                    else
+                    {
+                        long oooo = 0;
+                        var t = db.tbSoratvaziat.Where(p => p.Fk_pymn == vo.pec_ID && p.tbCreditIndicators.Title == item.basket && p.Final_accept == true).ToList();
+                        foreach (var it in t)
+                        {
+                            oooo += (long)it.value;
+                        }
+                        var yo = db.Descriptionsorat.Where(p => p.FK_Pymn == vo.pec_ID && p.tbCreditIndicators.Title == item.basket).FirstOrDefault();
+                        oooo += (long)yo.value;
+                        <td rowspan="01" colspan="01" CLASS="To numbers">@oooo</td>
+                        hh129 += oooo;
+
+                    }
+
+
+                }
+                @{ for (int i = 0; i < remainingCells9; i++)
+                    {
+
+                        if (i == 3)
+                        {
+                            <td td rowspan="01" colspan="01" CLASS="Le To numbers">----</td>
+
+                        }
+
+
+                        else if (i == remainingCells9 - 1) // Check if i is the last index
+                        {
+                            <td rowspan="01" colspan="02" CLASS="To numbers">@hh129</td>
+                        }
+                        else
+                        {
+                            <td td rowspan="01" colspan="01" CLASS="To numbers">----</td>
+
+                        }
+                    }}
+
+
+            </tr>
+            <tr>
+                <td rowspan="01" colspan="02" CLASS="To Le titel_01">حد انتظار (ریال)</td>
+                @{
+                    long hh130 = 0;
+
+                }
+                @foreach (var item in Model.Contracs_1.Baskets)
+                {
+
+
+
+
+
+
+                    decimal uu = item.Price;
+                    decimal finalPrice;
+                    if (decimal.TryParse(Model.Contracs_1.EnergyInformation.Final, out finalPrice) && finalPrice != 0)
+                    {
+                        uu /= finalPrice;
+                        uu *= o;
+                        <td rowspan="01" colspan="01" CLASS="To numbers">@uu</td>
+                        hh130 += (long)uu;
+                    }
+                    else
+                    {
+                        <td rowspan="01" colspan="01" CLASS="To numbers">Invalid Final Price</td>
+                    }
+                }
+
+                @{ for (int i = 0; i < remainingCells9; i++)
+                    {
+
+
+
+                        if (i == remainingCells9 - 1) // Check if i is the last index
+                        {
+                            <td rowspan="01" colspan="02" CLASS="To numbers">@hh130</td>
+                        }
+                        else
+                        {
+                            <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+
+                        }
+                    }}
+
+
+
+
+            </tr>
+            <tr>
+                <td rowspan="01" colspan="02" CLASS="To Le titel_01">انحراف عملکردازحدانتظار (ریال)</td>
+                @{
+                    long hh1233 = 0;
+
+                }
+                @{ long jh = 0;};
+
+                @foreach (var item in Model.Contracs_1.Baskets)
+                {
+                    jh++; if (jh == 1)
+                    {
+                        decimal oooo = 0;
+                        var t = db.tbSoratvaziat.Where(p => p.Fk_pymn == vo.pec_ID && p.tbCreditIndicators.Title == item.basket && p.Final_accept == true).ToList();
+                        foreach (var it in t)
+                        {
+                            oooo += (long)it.value;
+                        }
+                        var yo = db.Descriptionsorat.Where(p => p.FK_Pymn == vo.pec_ID && p.tbCreditIndicators.Title == item.basket).FirstOrDefault();
+                        oooo += (long)yo.value;
+                        oooo += yu;
+
+                        decimal uu = item.Price;
+                        decimal finalPrice;
+                        if (decimal.TryParse(Model.Contracs_1.EnergyInformation.Final, out finalPrice) && finalPrice != 0)
+                        {
+                            uu /= finalPrice;
+                            uu *= o;
+                            decimal jj = uu - oooo;
+                            uu = @Math.Round(uu);
+                            var uui = uu - oooo;
+                            <td rowspan="01" colspan="01" CLASS="To numbers">@uui</td>
+                            hh1233 += (long)uui;
+                        }
+
+                    }
+                    else
+                    {
+                        decimal oooo = 0;
+                        var t = db.tbSoratvaziat.Where(p => p.Fk_pymn == vo.pec_ID && p.tbCreditIndicators.Title == item.basket && p.Final_accept == true).ToList();
+                        foreach (var it in t)
+                        {
+                            oooo += (long)it.value;
+                        }
+                        var yo = db.Descriptionsorat.Where(p => p.FK_Pymn == vo.pec_ID && p.tbCreditIndicators.Title == item.basket).FirstOrDefault();
+                        oooo += (long)yo.value;
+                        decimal uu = item.Price;
+                        decimal finalPrice;
+                        if (decimal.TryParse(Model.Contracs_1.EnergyInformation.Final, out finalPrice) && finalPrice != 0)
+                        {
+
+                            uu /= finalPrice;
+                            uu *= o;
+                            uu = @Math.Round(uu);
+                            var uui = uu - oooo;
+                            <td rowspan="01" colspan="01" CLASS="To numbers">@uui</td>
+                            hh1233 += (long)uui;
+                        }
+
+                        else
+                        {
+                            <td rowspan="01" colspan="01" CLASS="To numbers">Invalid Final Price</td>
+                        }
+                    }
+
+
+
+
+
+
+                }
+
+                @{ for (int i = 0; i < remainingCells9; i++)
+                    {
+
+                        if (i == 3)
+                        {
+                            <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+
+                        }
+
+
+                        else if (i == remainingCells9 - 1) // Check if i is the last index
+                        {
+                            <td rowspan="01" colspan="02" CLASS="To numbers">@hh1233</td>
+                        }
+                        else
+                        {
+                            <td rowspan="01" colspan="01" CLASS="To numbers">---</td>
+
+                        }
+                    }}
+
+
+
+
+
+
+
+            </tr>
+            <tr>
+                <td rowspan="02" colspan="01" CLASS="To Le titel_01">جدول 7- مبلغ اولیه</td>
+                <td rowspan="01" colspan="02" CLASS="To Le titel_01">***</td>
+                <td rowspan="01" colspan="03" CLASS="To titel_01">مبلغ خام </td>
+                <td rowspan="01" colspan="03" CLASS="To titel_01">ضریب استفاده از سبدها</td>
+                <td rowspan="01" colspan="03" CLASS="To titel_01">مبلغ پس از اعمال اصلاحات </td>
+                <td rowspan="01" colspan="03" CLASS="To titel_01">مبلغ پرداخت شده قبلی</td>
+                <td rowspan="01" colspan="04" CLASS="To titel_01">مبلغ اولیه</td>
+            </tr>
+            <tr>
+                <td rowspan="01" colspan="02" CLASS="To Le titel_01">مبلغ (ریال)</td>
+                <td rowspan="01" colspan="03" CLASS="To numbers">@Model.basket7.cham</td>
+                <td rowspan="01" colspan="03" CLASS="To numbers">@Model.basket7.zarib</td>
+                <td rowspan="01" colspan="03" CLASS="To numbers">@Model.basket7.aftereslahat</td>
+                <td rowspan="01" colspan="03" CLASS="To numbers">@Model.basket7.chabli</td>
+                <td rowspan="01" colspan="04" CLASS="To numbers">@Model.basket7.aval</td>
+            </tr>
+            <tr>
+                <td rowspan="04" colspan="01" CLASS="To Le titel_01">جدول 8-پاداش و جرائم</td>
+                <td rowspan="02" colspan="02" CLASS="To Le titel_01">عنوان</td>
+                <td rowspan="01" colspan="07" CLASS="To Le titel_01">پاداش</td>
+                <td rowspan="01" colspan="09" CLASS="To titel_01">جریمه</td>
+            </tr>
+            <tr>
+                <td rowspan="01" colspan="04" CLASS="To titel_01">نوع یک </td>
+
+                <td rowspan="01" colspan="03" CLASS="To Le titel_01">نوع دو</td>
+                <td rowspan="01" colspan="06" CLASS="To titel_01">نوع یک </td>
+
+                <td rowspan="01" colspan="04" CLASS="To titel_01">نوع دو</td>
+            </tr>
+            <tr>
+                <td rowspan="01" colspan="02" CLASS="To Le titel_01">مبلغ اولیه (ریال)</td>
+                <td rowspan="01" colspan="04" CLASS="numbers">@Model.grameh</td>
+                <td rowspan="01" colspan="03" CLASS="Le numbers">---</td>
+                <td rowspan="01" colspan="06" CLASS="numbers">@Model.padash</td>
+                <td rowspan="01" colspan="03" CLASS="numbers">---</td>
+            </tr>
+            @*<tr>
+                    <td rowspan="01" colspan="02" CLASS="To Le titel_01">مبلغ با رعایت سقف (ریال)</td>
+                    <td rowspan="01" colspan="02" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="02" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="03" CLASS="Le numbers">---</td>
+                    <td rowspan="01" colspan="03" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="03" CLASS="numbers">---</td>
+                    <td rowspan="01" colspan="03" CLASS="numbers">---</td>
+                </tr>*@
+            <tr>
+                <td rowspan="01" colspan="02" CLASS="To Le titel_01">شرح</td>
+                <td rowspan="01" colspan="04" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="03" CLASS="Le numbers">---</td>
+                <td rowspan="01" colspan="06" CLASS="numbers">---</td>
+                <td rowspan="01" colspan="03" CLASS="numbers">---</td>
+            </tr>
+            <tr>
+                <td rowspan="02" colspan="01" CLASS="To Le titel_01">جدول9-مبلغ نهایی</td>
+                <td rowspan="01" colspan="02" CLASS="To Le titel_01">عنوان</td>
+                <td rowspan="01" colspan="01" CLASS="To titel_01">جمع کل پاداش</td>
+                <td rowspan="01" colspan="01" CLASS="To titel_01">جمع کل جریمه</td>
+                <td rowspan="01" colspan="01" CLASS="To titel_01">ذخیره قبل</td>
+                <td rowspan="01" colspan="01" CLASS="To Le titel_01">مبلغ اولیه</td>
+                <td rowspan="01" colspan="02" CLASS="To titel_01">محدودیت ریالی A</td>
+                <td rowspan="01" colspan="02" CLASS="To titel_01">محدودیت ریالی B</td>
+                <td rowspan="01" colspan="02" CLASS="To titel_01">محدودیت ریالی C</td>
+                <td rowspan="01" colspan="02" CLASS="To titel_01">محدودیت ریالی D</td>
+                <td rowspan="01" colspan="02" CLASS="To Le titel_01">جمع محدودیت</td>
+                <td rowspan="01" colspan="02" CLASS="To titel_01">مبلغ نهایی صورت وضعیت</td>
+            </tr>
+            <tr>
+                <td rowspan="01" colspan="02" CLASS="To Le titel_01">مبلغ (ریال)</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">@Model.grameh</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">@Model.padash</td>
+                <td rowspan="01" colspan="01" CLASS="To numbers">0</td>
+                <td rowspan="01" colspan="01" CLASS="To Le numbers">@Model.padash+@Model.grameh</td>
+                <td rowspan="01" colspan="02" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="02" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="02" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="02" CLASS="To numbers">---</td>
+                <td rowspan="01" colspan="02" CLASS="To Le numbers">---</td>
+                @{
+                    var yeeu = db.tbSoratvaziat.Where(p => p.Fk_pymn == vo.pec_ID && p.number_sorat == 8 && p.Finalvaluesorat != null).Select(p => p.Finalvaluesorat).FirstOrDefault();
+                }
+                <td rowspan="01" colspan="02" CLASS="To numbers">@yeeu</td>
+            </tr>
+
+            <tr>
+                <td rowspan="01" colspan="18" CLASS="To description">---</td>
+            </tr>
+            <tr>
+                <td rowspan="01" colspan="18" CLASS="description">---</td>
+            </tr>
+            <tr>
+                <td rowspan="01" colspan="18" CLASS="description">---</td>
+            </tr>
+            <tr>
+                <td rowspan="01" colspan="18" CLASS="description">---</td>
+            </tr>
+            <tr>
+                <td rowspan="01" colspan="04" CLASS="To Le footer">محل مهر و امضای کارگزار</td>
+                <td rowspan="01" colspan="05" CLASS="To Le footer">محل امضای معاونت فروش و خدمات مشترکین</td>
+                <td rowspan="01" colspan="05" CLASS="To Le footer">محل امضای معاونت بهره برداری و دیسپاچینگ</td>
+                <td rowspan="01" colspan="05" CLASS="To footer">محل امضای معاونت مالی و پشتیبانی</td>
+            </tr>
+        </table>
+    </div>
+</body>
+
+</html>
+<!--------------------------------------------------------------------------------------------------------------------->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="~/Scripts/sweetalert2.js" type="text/javascript"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/src/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Scripts/popper.min.js"></script>
+
+<script>
+    $(function () {
+        $(".numbers").each(function () {
+            var number = parseFloat($(this).text().replace(/,/g, ""));
+            if (!isNaN(number)) {
+                $(this).text(number.toLocaleString('en-US'));
+            }
+        });
+    });
+</script>
+<!DOCTYPE html>
+
+<!--------------------------------------------------------------------------------------------------------------------->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="~/Scripts/sweetalert2.js" type="text/javascript"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/src/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Scripts/popper.min.js"></script>
+
+<script>
+    $(function () {
+        $(".numbers").each(function () {
+            var number = parseFloat($(this).text().replace(/,/g, ""));
+            if (!isNaN(number)) {
+                $(this).text(number.toLocaleString('en-US'));
+            }
+        });
+    });
+</script>

@@ -1,0 +1,230 @@
+﻿
+@using SaabWebProject.Models.DomainModels;
+@{
+    ViewBag.Title = "جدول مشترکین بدهکار";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    SaabEntities db = new SaabEntities();
+
+}
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+<style>
+
+    .tableH_Lock1 {
+        max-height: 343px;
+        /*height: 260px;*/
+    }
+</style>
+<div class="row" style="margin-top:10px">
+    <div class="col-xl-6">
+
+        <label class="form-label"> مولفه </label>
+        @Html.Action("AllMoalefeList_MultiSelectfish", "MoalefeDastMozdi", new { area = "Contracts" })
+
+
+    </div>
+    <div class="col-xl-1"></div>
+    <div class="col-xl-1">
+        <button id="btnCalculateAzmayeshi" type="button" class="btn form-control buttonGeneral">
+            <i class="fa fa-calculator fa-fw me-1 VecGeneral"></i>
+            <span class="bGeneral-text">ثبت</span>
+        </button>
+    </div>
+
+</div>
+
+<div class="card">
+
+    <div class="table-content p-4">
+        <div class="tab-pane fade show active" id="allTab">
+            <div class="table-responsive tableH_Lock1">
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr>
+                            <th> فعالیت </th>
+
+                            <th>
+                                نام مولفه
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter11-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+
+                            <th>
+                                واحد
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter12-filter" class="inputFilter form-control" placeholder="" style=" width: 36%; margin: auto;">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            @*<th>تعداد کاربران</th>
+                                <th>نام کابران زیر مجموعه</th>*@
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int II = 0;
+                        }
+                        @foreach (var it in db.tbmadel_kar1.ToList())
+                        {
+                            string cityvalue = "";
+
+                            II++;
+
+                            <tr class="task-list-rowEM "
+                                data-filter11="@it.tbContractMoalefeDastmozdi.md_Title"
+                                data-filter12="@it.tbContractMoalefeDastmozdi.tbUnitParameter.unt_Name">
+                                <td>
+                                    <div class="ms-sm-4 mt-sm-0 mt-2 dropdown-toggle">
+                                        <a href="#" data-bs-toggle="dropdown" class="text-white text-opacity-75 text-decoration-none">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                        <div class="dropdown-menu">
+                                            @*<a data-bs-toggle="modal" data-bs-target="#modalLg1" class="dropdown-item edit" id="Edit_@item.ID">ویرایش</a>*@
+                                            <a data-bs-toggle="modal" data-bs-target="#modalLg" class="dropdown-item edit1" id="edit1_@it.ID">ویرایش</a>
+                                            @*<a class="dropdown-item Delete" id="Delete_@item.ID">حذف</a>*@
+                                            @*<a data-bs-toggle="modal" data-bs-target="#modalLg" class="dropdown-item edit" id="Edit_@item.ID">ویرایش</a>*@
+
+
+                                        </div>
+
+
+                                    </div>
+                                </td>
+                                <td>@it.tbContractMoalefeDastmozdi.md_Title</td>
+
+                                <td>@it.tbContractMoalefeDastmozdi.tbUnitParameter.unt_Name</td>
+
+
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Scripts/popper.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Scripts/popper.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script>
+    var
+        filtersEM = {
+            filter11: null,
+            filter12: null,
+
+        };
+
+    function updateFiltersEM() {
+        $('.task-list-rowEM').hide().filter(function () {
+            var self = $(this),
+                result = true; // not guilty until proven guilty
+
+            Object.keys(filtersEM).forEach(function (filter) {
+                if (filtersEM[filter] && (filtersEM[filter] != 'None') && (filtersEM[filter] != 'همه')) {
+                    // تطبیق جزئی (contains) به جای تطبیق کامل
+                    result = result && self.data(filter).indexOf(filtersEM[filter]) !== -1;
+                }
+            });
+
+            return result;
+        }).show();
+    }
+
+    function changeFilterEM(filterName) {
+        filtersEM[filterName] = this.value;
+        updateFiltersEM();
+    }
+
+    $('#filter11-filter').on('input', function () {
+        changeFilterEM.call(this, 'filter11');
+    });
+    $('#filter12-filter').on('input', function () {
+        changeFilterEM.call(this, 'filter12');
+    });
+
+</script>
+<script>
+    $.each($("#select_Allmoalefefish"), function (index, item) {
+        $("#select_Allmoalefefish").attr("id", "select_Allmoalefe_");
+        $('#select_Allmoalefe_').attr("multiple", "multiple");
+        $('#select_Allmoalefen_').on('sp-change', function () { });
+    });
+              $("#btnCalculateAzmayeshi").click(function () {
+    var PeymanArr = [];
+                  $.each($("#select_Allmoalefe_").val().toString().split(","), function (index, item) {
+                      if (item !== "") {
+                          if (item != 'Select') {
+                              PeymanArr.push(item);
+                              console.log(item);
+                          }
+                      }
+                  });
+              console.log(PeymanArr);
+              var month = $("#users1").val();
+
+
+
+
+        $.ajax({
+            url: "@Url.Action("creatmarhaleh1", "Orders", new { area = "Setting" })",
+
+            type: "Post",
+            dataType: "html",
+            data: { Fkpym: PeymanArr, usr: month },
+            success: function (res) {
+                document.getElementById("loading-message").style.display = "none";
+                if (res = "True") {
+                    alert("با موفقیت ثبت شد ");
+                    location.reload();
+                }
+
+            },
+            error: function (res) {
+                console.log(res);
+
+                document.getElementById("loading-message").style.display = "none";
+                Toast.fire({
+                    icon: 'error',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "عملیات  با خطا مواجه شد"
+                });
+                return false;
+            }
+        });
+
+});
+
+    $(".edit1").click(function () {
+    var idd = $(this).attr("id").split("_")[1];
+    console.log(idd);
+        $("#big_modal_body").load('@Url.Content("/Setting/Orders/listtarifmoalfedit")?id='+idd);
+    });
+</script>

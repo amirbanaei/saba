@@ -1,0 +1,139 @@
+﻿
+@{
+    ViewBag.TitleLargModal = "جزییات";
+    Layout = null;
+}
+@model SaabWebProject.Models.DomainModels.tbinstallments
+
+
+<link href="~/Content/installments.css" rel="stylesheet" />
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+
+<style>
+    .modal-lg, .modal-xl {
+        margin-top: 10px !important;
+        max-width: 90% !important;
+    }
+</style>
+<div class="p-4">
+    <div class="row">
+        @if (Model.Peyman_ID != null)
+        {
+            <div class="col-xl-4">
+                <label class="form-label"> پیمان </label>
+                <label class="form-control colo"> @Model.tbPeymanContracts.pec_Title </label>
+            </div>
+        }
+        else
+        {
+            <div class="col-xl-3">
+                <label class="form-label"> کاربر </label>
+                <div class="inputDiv form-control colo">@Model.tbUsers.FullName</div>
+            </div>
+        }
+        <div class="col-xl-2">
+            <label class="form-label"> مبلغ کل (ریال) </label>
+            <input value="  @string.Format("{0:N0}", Model.Total_Amount)" class="form-control AmountInput control " id="totalAmountInput_edit" name="totalAmountInput_edit" type="text" maxlength="15" />
+        </div>
+        <div class="col-xl-2">
+            <label class="form-label"> نوع محاسبه </label>
+            @if (Model.Calculation_type == false)
+            {
+                <div class="inputDiv form-control colo">خودکار </div>
+            }
+            else
+            {
+                <div class="inputDiv form-control colo">دستی  </div>
+            }
+        </div>
+        <div class="col-xl-2">
+            <label class="form-label"> نام </label>
+            @if (Model.Fk_molfe != null)
+            {
+                <div class="inputDiv form-control colo">@Model.tbContractMoalefeDastmozdi.md_Title </div>
+            }
+            else
+            {
+                <div class="inputDiv form-control colo"></div>
+            }
+        </div>
+        <div class="col-xl-2">
+            <label class="form-label"> محل اعمال  </label>
+            @if (Model.Action_traz == true)
+            {
+                <div class="inputDiv form-control colo">اعمال در تراز مالی </div>
+            }
+            else if (Model.Action_sorat == true)
+            {
+                <div class="inputDiv form-control colo">اعمال درصورت وضعیت  </div>
+            }
+            else if (Model.Action_Fish == true)
+            {
+                <div class="inputDiv form-control colo">اعمال در فیش   </div>
+            }
+        </div>
+    </div>
+    <hr style="margin-top:0" />
+
+    <div class="row">
+
+        @foreach (var item in Model.tb_Subset_of_installments)
+        {
+            <div class="InstallmentInputsPlus col-xl-4">
+                <div class="row">
+                    <div class="col-xl-1" style="width: 6%; padding-top: 6px;">
+                        <span>+</span>
+                    </div>
+                    <div class="col-xl-11" style="width:94%">
+                        <label class="form-label mx-4"> مبلغ قست ریال @item.number</label>
+                        <div class="inputDiv colo form-control installmentAmountInput">@string.Format("{0:N0}", item.value)</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-1">
+                <label class="form-label mx-4">ماه</label>
+                <div class="inputDiv colo form-control installmentAmountInput">@item.Month</div>
+            </div>
+            <div class="col-xl-1">
+                <label class="form-label mx-4">سال</label>
+                <div class="inputDiv colo form-control installmentAmountInput">@item.Year</div>
+            </div>
+
+
+            @*<div class="col-md-3 mt-2">
+                    <label class="form-label mx-4"> شماره قست @item.number </label>
+                    <label class="form-label mx-4"> ماه :@item.Month :سال @item.Year</label>
+                    <div class="d-flex align-items-center">
+                        <label class="form-control installmentAmountInput colo" id="installmentInput_@item.number"> @string.Format("{0:N0}", item.value)</label>
+                    </div>
+                </div>*@
+        }
+    </div>
+    <hr style="margin-top:0" />
+    <div class="row">
+
+
+        <div class="col-xl-6">
+            <label class="form-label"> شرح </label>
+            <div class="inputDiv form-control colo">@Model.Title </div>
+
+        </div>
+        <div class="col-xl-4">
+            <label class="form-label"> پیوست مدارک: </label>
+            @if (Model.File_SystemName != null)
+            {
+                <a target="_blank" class="form-control colo" href="~/Areas/ManagementAccounting/Contents/installmentAttachmentsFile/@Model.File_SystemName">
+                    دانلود
+                </a>
+
+            }
+            else
+            {
+                <div class="inputDiv  form-control colo ">پیوستی ثبت نشده است</div>
+            }
+        </div>
+
+    </div>
+</div>
+
+

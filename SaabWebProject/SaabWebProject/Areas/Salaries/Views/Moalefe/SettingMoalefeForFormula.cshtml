@@ -1,0 +1,179 @@
+﻿@model List<SaabWebProject.Areas.Contracts.Models.Classes.ListOfMoalefeha>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "تنظیمات مولفه ها";
+}
+
+<link href="/Areas/Users/Styles/Table_Scroll.css" rel="stylesheet"/>
+ <div class="row">
+        <div class="col-md-11">
+            <input class="form-control search-input" onkeyup="myFunction()" id="myInput" type="search" style="margin-bottom:10px;" placeholder="جستجو" autocomplete="off">
+        </div>
+        <div class="col-md-1">
+            <input id="SaveSetting" type="submit" class="btn btn-outline-success" value="ثبت" style="width: 100%"/>
+        </div>
+    </div>
+
+    <div class="card" style="width: 100%">
+        <div class="tab-content p-4">
+            <div class="tab-pane fade show active" id="allTab">
+                <div class="table-responsive">
+                    <table class="table table-hover" style="text-align:center;" id="myTable">
+                        <thead>
+                        <tr>
+                            <th>مولفه ها</th>
+                            <th>وضعیت</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var item in Model)
+                        {
+                            if (item.Type == 0)
+                            {
+                                <tr>
+                                    <td>
+                                        <label for="@item.GharardadColoumnName">@item.variablePersianName</label>
+                                    </td>
+                                    <td>
+                                        @if (item.visable)
+                                        {
+                                            <input class="checkbox" type="checkbox" id="@item.GharardadColoumnName" name="Status" checked="checked"/>
+                                        }
+                                        else
+                                        {
+                                            <input class="checkbox" type="checkbox" id="@item.GharardadColoumnName" name="Status"/>
+                                           
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td>
+                                        <label for="checkedbox_@item.ID">@item.variablePersianName</label>
+                                    </td>
+                                    <td>
+                                        @if (item.visable)
+                                        {
+                                            <input class="checkbox" type="checkbox" id="checkedbox_@item.ID" name="Status" checked="checked"/>
+                                        }
+                                        else
+                                        {
+                                            <input class="checkbox" type="checkbox" id="checkedbox_@item.ID" name="Status"/>
+                                            
+                                        }
+
+                                    </td>
+                                </tr>
+                            }
+                        }
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="card-arrow">
+            <div class="card-arrow-top-left"></div>
+            <div class="card-arrow-top-right"></div>
+            <div class="card-arrow-bottom-left"></div>
+            <div class="card-arrow-bottom-right"></div>
+        </div>
+    </div>
+<script src="/Assets/js/jquery3.6.0.js" type="text/ecmascript"></script>
+<script>
+    //Search Script Table
+    function myFunction() {
+        // Declare variables
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("myInput");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("myTable");
+        tr = table.getElementsByTagName("tr");
+
+        // Loop through all table rows, and hide those who don't match the search query
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+</script>
+<script>
+
+$("#SaveSetting").click(function (){
+    
+    const Toast = Swal.mixin({
+            toast: true,
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+    
+    var CheckBoxes = $(".checkbox");
+    console.log(CheckBoxes);
+    var model =[];
+    for (var i=0;i<CheckBoxes.length;i++)
+    {
+       
+       var id = CheckBoxes[i].id;
+       var sp = id.split('_');
+       if (!isNaN(sp[1])){
+           var obj = new Object();
+           obj.status = false;
+           obj.Moalefe_ID = sp[1];
+           if (CheckBoxes[i].checked){
+               obj.status = true;
+           }
+           model.push(obj);
+       }
+       else{
+           var obj = new Object();
+           obj.status = false;
+           obj.Moalefe_ID = id;
+           if (CheckBoxes[i].checked){
+               obj.status = true;
+           }
+           model.push(obj);
+         }
+       
+    }
+    
+    $.ajax({
+    beforeSend:function (){
+      document.getElementById("loading-message").style.display = "block";   
+    },
+           url:'@Url.Action("SaveSetting","Moalefe")',
+           datatype:"html",
+           type:"Post",
+           data:{model:model},
+           success:function (res){
+               document.getElementById("loading-message").style.display = "none"; 
+               if (res == "True"){
+                   Toast.fire({
+                       icon: 'success',
+                       background: '#35434A',
+                       color: 'white',
+                       title: "تنظیمات با موفقیت ذخیره شد"
+                    }).then(()=>{
+                       location.reload(); 
+                    });
+               }
+        
+        }
+    });
+    
+    
+ });
+</script>

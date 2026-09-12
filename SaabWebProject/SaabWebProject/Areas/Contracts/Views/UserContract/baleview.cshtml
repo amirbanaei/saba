@@ -1,0 +1,92 @@
+﻿@*@model IEnumerable<UserBaleViewModel>
+    @model IEnumerable<SaabWebProject.Models.UserBaleViewModel>*@
+@model IEnumerable<SaabWebProject.Models.ViewModels.Contracts.Function.UserBaleViewModel>
+
+@{
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+
+}
+<div class="panel panel-primary">
+    <div class="panel-heading">ارسال پیام به کاربران بله</div>
+    <div class="panel-body">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>نام کاربر</th>
+                    <th>نام کاربری بله</th>
+                    <th>شناسه چت</th>
+                    <th>عملیات</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.FullName</td>
+                        <td>@@@item.BaleUsername</td>
+                        <td>@item.ChatId</td>
+                        <td>
+                            <button class="btn btn-success btn-sm"
+                                    onclick="openSendModal('@item.ChatId', '@item.FullName')">
+                                <i class="fa fa-paper-plane"></i> ارسال پیام
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal برای نوشتن متن پیام -->
+<div class="modal fade" id="sendMsgModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">ارسال پیام به <span id="targetUserName"></span></h4>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="targetChatId" />
+                <textarea id="msgText" class="form-control" rows="4" placeholder="متن پیام را اینجا بنویسید..."></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">انصراف</button>
+                <button type="button" class="btn btn-primary" onclick="submitMessage()">ارسال نهایی</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        function openSendModal(chatId, fullName) {
+            $('#targetChatId').val(chatId);
+            $('#targetUserName').text(fullName);
+            $('#msgText').val('');
+            $('#sendMsgModal').modal('show');
+        }
+
+        function submitMessage() {
+            var cid = $('#targetChatId').val();
+            var txt = $('#msgText').val();
+
+            if (!txt) { alert("لطفا متن پیام را وارد کنید"); return; }
+
+            $.post('/UserContract/SendQuickMessage', { chatId: cid, message: txt }, function (res) {
+                if (res.success) {
+                    alert("پیام با موفقیت ارسال شد");
+                    $('#sendMsgModal').modal('hide');
+                } else {
+                    alert("خطا: " + res.message);
+                }
+            });
+        }
+    </script>
+}
+
+
+
+

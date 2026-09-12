@@ -1,0 +1,1982 @@
+﻿@model IEnumerable<SaabWebProject.Models.DomainModels.tbMoalefeValuePishkhan>
+@using SaabWebProject.Models.DomainModels;
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "گزارش مامورین";
+    SaabEntities db = new SaabEntities();
+
+}
+@using SaabWebProject.Models.Classes;
+
+<style>
+    table {
+        text-align: center;
+        vertical-align: middle !important;
+        margin-bottom: 0px !important;
+    }
+
+
+    /*====================================*/
+    .fontSize {
+        font-size: 10px !important;
+    }
+
+    .TitleDiv {
+        font-size: 12px !important;
+        font-weight: bold;
+    }
+    /*===================================*/
+    div#buttonContainer {
+        margin-bottom: -14px;
+    }
+    /*===================================*/
+    select {
+        border: 2px solid var(--bs-border-input-color) !important;
+        border-radius: 8px !important;
+        background-color: var(--bs-tab-content-bg) !important;
+        font-size: 12px !important;
+        color: var(--bs-txt-inputs-color) !important;
+        /*padding: 2px 5px 2px 5px;*/
+    }
+    /*===================================*/
+    .exclamationSt {
+        color: #d77f00bd !important;
+        font-size: 14px;
+    }
+
+    hr:not([size]) {
+        height: 1px !important;
+    }
+
+    .card {
+        --bs-border-color-rgb: #ffffff03;
+    }
+
+    .picker, .form-select {
+        margin-bottom: 0 !important;
+    }
+
+    .NotAcceptedSvg {
+        width: 20px;
+        color: #ff5c00;
+    }
+
+    .AcceptedSvg {
+        width: 20px;
+        color: #90e2ee;
+    }
+
+    .card {
+        --bs-border-color: #ffffff03;
+    }
+
+    .notShow, notShowFooter {
+        display: none !important;
+    }
+
+    .bodyDashbord {
+        /*width: 500px;*/ /* عرض دلخواه */
+        /*height: 300px;*/ /* ارتفاع دلخواه */
+        /*background-image: url('/Areas/Reporter/Content/first.jpg') !important;*/ /* مسیر تصویر مورد نظر */
+        background-size: cover !important; /* تنظیم اندازه تصویر */
+        background-position: center !important; /* موقعیت تصویر در داخل div */
+        border-radius: 13px !important;
+        opacity: 0.99 !important;
+        /*margin-top: -82px;*/
+    }
+
+    .btnEYE {
+        padding-right: 10px !important;
+        padding-left: 10px !important;
+        padding-top: 2px !important;
+        padding-bottom: 0px !important;
+        border-radius: 7px !important;
+    }
+
+    .cotrolStyle {
+        border-radius: 10px !important;
+        padding: 2px !important;
+        margin-left: 0px !important;
+        margin-bottom: -4px !important;
+        backdrop-filter: blur(10px);
+        background: var(--bs-dashboard-bg);
+        height: 100%;
+        display: flex;
+    }
+
+        .cotrolStyle:hover {
+            /*border:1px solid #0082ac*/
+            box-shadow: 0 0 10px 0 #66fffd96, 0 0 10px 0 #64cdfd8f;
+        }
+    /*----------------------------*/
+
+    .coMargin-box {
+        margin-bottom: 8px
+    }
+
+    .coMargin-top {
+        margin: 8px 8px 0px 8px
+    }
+
+    .coMargin-Mid {
+        margin: 0px 8px 0px 8px;
+    }
+
+    .coMargin-Bot {
+        margin: 0px 8px 8px 8px
+    }
+    /*----------------------------*/
+    .yCheck {
+        color: #8fe58c;
+        font-size: 10px;
+        margin-top: 6px;
+    }
+
+    .nCheck {
+        color: #fc5b00;
+        font-size: 10px;
+        margin-top: 6px;
+    }
+    /*----------------------------*/
+    .AcceptedSvg, .fa-eye, .bi-download {
+        color: #95ee90 !important;
+    }
+</style>
+
+<style>
+    /*-------------------------------*/
+    /* حاشیه های دور نمودار ها */
+    .apexcharts-bar-area {
+        stroke: #ffffff59;
+    }
+    /*-------------------------------*/
+    /* خط های افقی پشت نمودار */
+    .apexcharts-gridline, g line {
+        stroke: var(--bs-border-color-translucent);
+    }
+    /*-------------------------------*/
+    /*    .apexcharts-xaxis-tick {
+        transform: translateY(-39px);
+    }*/
+
+    .apexcharts-legend-series .apexcharts-legend-text {
+        /*color: var(--bs-heading-color) !important;*/
+        color: var(--bs-body-color) !important;
+        font-family: var(--bs-body-font-family) !important;
+    }
+
+    text.apexcharts-xaxis-label tspan,
+    text.apexcharts-yaxis-label tspan {
+        fill: var(--bs-body-color) !important;
+        font-family: var(--bs-body-font-family) !important;
+        font-size: 10px;
+    }
+
+    .apexcharts-tooltip.apexcharts-theme-light {
+        transform: translateY(-36px) !important;
+        direction: rtl;
+        text-align: center;
+    }
+    /*===============Gage===============================================*/
+    #barOverflow barOverflow .apexcharts-datalabel, .apexcharts-datalabel-label, .apexcharts-datalabel-value, .apexcharts-datalabels, .apexcharts-pie-label {
+        font-family: var(--bs-body-font-family) !important;
+        fill: var(--bs-app-sidebar-menu-link-color) !important;
+        opacity: 1;
+        font-size: 23px !important;
+        transform: translateY(-15px);
+    }
+
+    #barOverflow .apexcharts-canvas {
+        transform: translateY(-51px);
+        margin-bottom: -70px !important;
+    }
+    /*===============    ===============================================*/
+    .apexcharts-toolbar {
+        display: none;
+    }
+
+    .apexcharts-marker {
+        stroke: var(--bs-body-color);
+        stroke-width: 1px;
+    }
+</style>
+<div id="peymanMam" style="margin: -10px; margin-left: -17px;">
+    <div class="row" style="background: var(--bs-dashboard-bg); margin: 10px 8px 0px 16px; border-radius: 10px; backdrop-filter: blur(5px); ">
+        <h5 style="text-align: center; margin-bottom: 8px; margin-top: 5px; border-radius: 10px;">
+            @Model.FirstOrDefault().tbUsers.FullName
+        </h5>
+    </div>
+    @*<div id="UserOfPeyman" style="display:none">  @Model.FirstOrDefault().tbUsers.usr_Personal_ID</div>*@
+    <input id="UserOfPeyman" style="display:none" value=" @Model.FirstOrDefault().tbUsers.usr_ID" />
+    <input id="select_peyman1" style="display:none" value=" @Model.FirstOrDefault().tbUsers.usr_ID" />
+    @*<input id="select_peyman1" style="display:none">  @Model.FirstOrDefault().tbUsers.usr_ID</input>*@
+
+    <div class="row coMargin-top">
+
+        <div class="col-xl-7 coMargin-box">
+
+            <div class="row cotrolStyle">
+
+                <div class="cardTitle ">
+                    <div class="row ">
+                        <div style="font-size:10px" class="TitleDiv col-xl-12">
+                            <span> فیش حقوقی</span>
+                        </div>
+                        <div class="row">
+                            <div class="fontSize col-xl-4">دریافت فیش حقوقی:</div>
+                            @*<div class="col-xl-4">
+                                    <label class="form-label" for="iranian-month-select" style="font-size:13px;color:#04faf7">از</label>
+                                    <select class="form-control" id="monthYearSelect1"></select>
+                                </div>
+                                <div class="col-xl-4">
+                                    <label class="form-label" for="iranian-month-select" style="font-size:13px;color:#04faf7">تا</label>
+
+                                    <select class="form-control " id="monthYearSelect2"></select>
+
+                                </div>*@
+                            <div class="col-xl-3">
+                                <label class="fontSize form-label">ماه</label>
+                                <select id="selectMonth" class="form-select">
+                                    <option value="" selected disabled>انتخاب مورد</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                    <option value="11">11</option>
+                                    <option value="12">12</option>
+                                </select>
+                            </div>
+                            <div class="col-xl-3">
+                                <label class="fontSize form-label">سال</label>
+                                <select id="selectYear" class="form-select">
+                                    <option value="" selected disabled>انتخاب مورد</option>
+                                    <option value="1398">1398</option>
+                                    <option value="1399">1399</option>
+                                    <option value="1400">1400</option>
+                                    <option value="1401">1401</option>
+                                    <option value="1402">1402</option>
+                                    <option value="1403">1403</option>
+                                    <option value="1404">1404</option>
+                                    <option value="1405">1405</option>
+                                    <option value="1406">1406</option>
+                                    <option value="1407">1407</option>
+
+                                    <option value="1408">1408</option>
+                                    <option value="1409">1409</option>
+                                    <option value="1410">1410</option>
+                                </select>
+                            </div>
+                            <div class="col-xl-1">
+                                <button class="btn form-control buttonGeneral" id="btnShowSR" data-bs-toggle="modal" data-bs-target="#modalLg">
+                                    <i class="fa fa-eye fa-fw me-1 VecGeneral"></i>
+                                    <span class="bGeneral-text">نمایش</span>
+                                </button>
+                            </div>
+
+                        </div>
+                        <!--<div class="row" style="margin-top:10px">
+                            <div class="col-xl-1"></div>
+                            <div class="col-xl-3">
+                                <label class="form-label">ماه</label>
+                                <select id="selectMonth" class="form-select">
+                                    <option value="" selected disabled>انتخاب مورد</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                    <option value="11">11</option>
+                                    <option value="12">12</option>
+                                </select>
+                            </div>
+                            <div class="col-xl-3">
+                                <label class="form-label">سال</label>
+                                <select id="selectYear" class="form-select">
+                                    <option value="" selected disabled>انتخاب مورد</option>
+                                    <option value="1408">1408</option>
+                                    <option value="1407">1407</option>
+                                    <option value="1406">1406</option>
+                                    <option value="1405">1405</option>
+
+                                    <option value="1404">1404</option>
+                                    <option value="1403">1403</option>
+                                    <option value="1402">1402</option>
+                                    <option value="1401">1401</option>
+                                    <option value="1400">1400</option>
+                                    <option value="1399">1399</option>
+                                    <option value="1398">1398</option>
+                                </select>
+                            </div>
+                            <div class="col-xl-2"></div>
+                            <div class="col-xl-1">
+                                <button class="btn form-control buttonGeneral" id="downfish" title="">
+                                    <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                                    <span class="bGeneral-text">دریافت</span>
+                                </button>
+                            </div>-->
+                        @*<div class="col-xl-1">
+                                <button class="btn form-control buttonGeneral" id="downfish2">
+                                    <i class="fa fa-link fa-fw me-1 VecGeneral"></i>
+                                    <span class="bGeneral-text">لینک پیشخوان مامورین</span>
+                                </button>
+                            </div>*@
+                        <!--<div class="col-xl-2"></div>-->
+                        <!--</div>-->
+                    </div>
+                </div>
+                @*<br />
+
+                    <div id="buttonContainer" class="row"></div>*@
+            </div>
+        </div>
+        @*====================مهارت های جانبی============================================================================*@
+        <div class="col-xl-5 coMargin-box">
+
+            <div class="row cotrolStyle">
+                <div class="row">
+                    <div class="TitleDiv" style="font-size:10px">
+                        <span>  مهارت های جانبی</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xl-6">
+                        <span class="fontSize" style="color:#e4947b;padding-right:5px">  تخصص پایه:قرایت دیماندی</span>
+                    </div>
+                    <div class="col-xl-6">
+                        <div id="barOverflow" class="barOverflow">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*=======================تراز مالی===============================================================================*@
+    <div class="row coMargin-Mid">
+
+        <div class="col-xl-5 coMargin-box" id="cardContainer">
+            <div class="row cotrolStyle" style="  margin-bottom: 8px !important; ">
+                <div class="row ">
+                    <div class="col-xl-3">
+                        <span class="TitleDiv" style="font-size:10px">
+                            تراز مالی
+                        </span>
+
+                    </div>
+                    @{ int x = Convert.ToInt32(Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-مانده مطالبات").mlfval_Value);
+                        int y = Convert.ToInt32(Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-مانده ذخایر").mlfval_Value);
+                        int z = Convert.ToInt32(Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-مانده اقساط").mlfval_Value);
+                        int l = Convert.ToInt32(Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-مانده پاداش و جرایم").mlfval_Value);
+                    }
+                    <div class="col-xl-9">
+                        @if (Convert.ToInt32(x + y + z) > 0)
+                        {
+                            <div class="d-flex justify-content-end align-items-center" style="margin-bottom:-20px">
+                                <span style="color: #90e2ee;font-size: 15px">
+                                    <i class="fontSize bi bi-chevron-double-right"></i>
+                                </span>
+
+                                <span class="fontSize mx-2 number" style="color:#4895EF;font-size:20px">
+                                    @Convert.ToInt32(x + y + z + l)
+                                </span>
+                                <span class="fontSize " style="color:#4895EF;font-size:12px">ریال بستانکار</span>
+
+                                <span style="color: #90e2ee; font-size: 15px ">
+                                    <i class="fontSize bi bi-chevron-double-left"></i>
+                                </span>
+
+
+                            </div>
+
+                        }
+                        else
+                        {
+                            <div class="d-flex justify-content-end align-items-center" style="margin-bottom:-20px">
+                                <span style="color: #90e2ee;font-size: 15px">
+                                    <i class="fontSize bi bi-chevron-double-left"></i>
+                                </span>
+                                <span class="fontSize mx-2 number" style="color: #4895EF;font-size: 20px">
+                                    @Convert.ToInt32(Convert.ToInt32(x + y + z + l) * -1)
+                                </span>
+                                <span class="fontSize " style="color:#4895EF;font-size:12px">ریال بدهکار</span>
+                                <span style="color: #90e2ee; font-size: 15px ">
+                                    <i class="fontSize bi bi-chevron-double-right"></i>
+                                </span>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 4px; margin-bottom: -8px;">
+                    <div class="col-xl-4">
+                        <label class="fontSize form-label">ماه</label>
+                        <select id="selectMonth1" class="fontSize form-select">
+                            <option value="" selected disabled>انتخاب مورد</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                        </select>
+                    </div>
+                    <div class="col-xl-4">
+                        <label class="fontSize form-label">سال</label>
+                        <select id="selectYear1" class="fontSize form-select">
+                            <option value="" selected disabled>انتخاب مورد</option>
+                            <option value="1398">1398</option>
+                            <option value="1399">1399</option>
+                            <option value="1400">1400</option>
+                            <option value="1401">1401</option>
+                            <option value="1402">1402</option>
+                            <option value="1403">1403</option>
+                            <option value="1404">1404</option>
+                            <option value="1405">1405</option>
+                            <option value="1406">1406</option>
+                            <option value="1407">1407</option>
+
+                            <option value="1408">1408</option>
+                            <option value="1409">1409</option>
+                            <option value="1410">1410</option>
+                        </select>
+                    </div>
+                    <div class="col-xl-3"></div>
+                    <div class="col-xl-1">
+                        <a href="#" class="btn btnEYE" id="btnplus3" data-bs-toggle="modal" data-bs-target="#modalLg1">
+                            <i class="fa fa-eye fa-fw"></i>
+                        </a>
+                    </div>
+                </div>
+
+
+                <table class="fontSize table table-hover mb-0" style="font-size:10px;width:100%">
+                    <thead>
+                        <tr>
+                            <th>مانده مطالبات</th>
+                            <th>مانده ذخایر</th>
+                            <th>مانده اقساط</th>
+                            <th>مانده پاداش و جرایم</th>
+
+                        </tr>
+                    </thead>
+                    <tbody style="text-align:center">
+                        <tr>
+                            <td class="numbers">@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-مانده مطالبات").mlfval_Value </td>
+                            <td class="numbers">@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-مانده ذخایر").mlfval_Value </td>
+                            <td class="numbers">@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-مانده اقساط").mlfval_Value  </td>
+                            <td class="numbers">@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-مانده پاداش و جرایم").mlfval_Value  </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+
+            </div>
+        </div>
+        @*===================قرارداد های امضا شده========================================================================*@
+
+        <div class=" col-xl-4 coMargin-box">
+            <div class="row cotrolStyle">
+                <div class="row">
+                    <div class=" col-xl-10">
+                        <span class="TitleDiv" style="font-size:10px">
+                            قرارداد های امضا شده
+                        </span>
+                    </div>
+                    <div class=" col-xl-1">
+                        <button class="btn btnEYE" id="qarardademzashode">
+                            <i class="fa fa-eye fa-fw "></i>
+                        </button>
+                    </div>
+                </div>
+
+                <table class="fontSize  table" style="font-size: 10px; width: 100%">
+                    <thead>
+                        <tr>
+                            <th>شماره قرارداد</th>
+                            <th>تاریخ شروع</th>
+                            <th>تاریخ خاتمه</th>
+                            <th>وضعیت</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-شماره قرارداد1").mlfval_Value</td>
+                            <td>@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-تاریخ شروع قرارداد1").mlfval_Value</td>
+                            <td>@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-تاریخ خاتمه قرارداد1").mlfval_Value</td>
+                            @if (Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-وضعیت قرارداد1").mlfval_Value == "0")
+                            {
+                                <td><i class="bi bi-record-btn" style="color:#EF233A;font-size:10px;"></i></td>
+                            }
+                            else
+                            {
+                                <td><i class="bi bi-record-btn" style="color:#05C800;font-size:10px;"></i></td>
+                            }
+                        </tr>
+                        <tr>
+                            <td>@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-شماره قرارداد2").mlfval_Value</td>
+                            <td>@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-تاریخ شروع قرارداد2").mlfval_Value</td>
+                            <td>@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-تاریخ خاتمه قرارداد2").mlfval_Value</td>
+                            @if (Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-وضعیت قرارداد2").mlfval_Value == "0")
+                            {
+                                <td><i class="bi bi-record-btn" style="color:#EF233A;;font-size:10px;"></i></td>
+                            }
+                            else
+                            {
+                                <td><i class="bi bi-record-btn" style="color:#05C800;font-size:10px;"></i></td>
+                            }
+                        </tr>
+
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+        @*===============================================================================================================*@
+        <div class=" col-xl-3 coMargin-box">
+            <div class="row cotrolStyle">
+                <div class="cardTitle">
+                    <span class="TitleDiv" style="font-size:10px">
+                        <i class="bi bi-people-fill" style="color: aqua;"></i> رتبه و میزان رشد
+                    </span>
+                </div>
+                <table class="fontSize  table" style="font-size: 10px; width: 100%">
+                    <thead>
+                        <tr>
+                            <th>میزان رشد</th>
+                            <th>رتبه</th>
+                            <th>تعداد کل نفرات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-ارزیابی-میزان رشد").mlfval_Value%</td>
+                            <td>@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-ارزیابی-رتبه").mlfval_Value</td>
+                            <td>@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-ارزیابی-جمع نفرات").mlfval_Value</td>
+                        </tr>
+                        <tr>
+                            <td><i class="bi bi-caret-up-fill" style="color: #05c800"></td>
+                            <td><i class="bi bi-caret-down-fill" style="color: #ef233a"></i></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                    @*<tr>
+                            <th>میزان رشد</th>
+                            <td>@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-ارزیابی-میزان رشد").mlfval_Value%</td>
+                            <td><i class="bi bi-caret-up-fill" style="color: #05c800"></i></td>
+                        </tr>
+                        <tr>
+                            <th>رتبه</th>
+                            <td>@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-ارزیابی-رتبه").mlfval_Value</td>
+                            <td><i class="bi bi-caret-down-fill" style="color: #ef233a"></i></td>
+                        </tr>
+                        <tr>
+                            <th>تعداد کل نفرات</th>
+                            <td>@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-ارزیابی-جمع نفرات").mlfval_Value</td>
+                            <td></td>
+                        </tr>*@
+                </table>
+
+            </div>
+        </div>
+
+
+    </div>
+    @*===============================================================================================================*@
+    <div class="row coMargin-Mid">
+        <div class="col-xl-7 coMargin-box">
+            <div class="row cotrolStyle" style="direction: ltr;">
+
+                <div class="row " style="direction:rtl;margin-top:10px">
+                    <div class=" col-xl-3">
+                        <span class="TitleDiv" style="font-size:12px">
+                            خالص درآمد ماهیانه
+                        </span>
+                    </div>
+                    <div class="fontSize  col-xl-3" style="font-size:10px;">مقادیر به ریال است </div>
+                    <div class="col-xl-3">
+                        <div class="form-group ">
+                            <label class="fontSize  form-label" for="iranian-month-select" style="font-size:11px;color:#04faf7">از</label>
+                            <select class="fontSize  form-control" id="iranian-month-select">
+                                <option value="Bahman">بهمن 1401</option>
+                                <option value="Esfand">1401 اسفند</option>
+                                <option value="Farvardin">فروردین 1402 </option>
+                                <option value="Ordibehesht">اردیبهشت 1402</option>
+                                <option value="Khordad">خرداد 1402 </option>
+                                <option value="Tir">تیر 1402</option>
+                                <option value="Mordad">مرداد 1402 </option>
+                                <option value="Shahrivar">شهریور 1402</option>
+                                <option value="Mehr">مهر 1402</option>
+                                <option value="Aban">1402 آبان</option>
+                                <option value="Azar">آذر 1402</option>
+                                <option value="Dey">دی 1402</option>
+                                <option value="Bahman">بهمن 1402</option>
+                                <option value="Esfand">1402 اسفند</option>
+                            </select>
+
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3">
+                        <div class="form-group ">
+                            <style>
+                                select {
+                                    -webkit-appearance: none;
+                                    -moz-appearance: none;
+                                    appearance: none;
+                                    /*اضافه کردن آیکون فلش به عنوان background-image*/
+                                    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='16' style='color:red' fill='aqua' class='bi bi-caret-down-fill' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+                                    background-repeat: no-repeat;
+                                    background-position: left center;
+                                    background-color: inherit;
+                                    /*تنظیم اندازه آیکون فلش*/
+                                    padding-left: 4px;
+                                    color: white;
+                                    font-size: 12PX;
+                                }
+                            </style>
+
+                            <label class="fontSize form-label" for="iranian-month-select" style="font-size:11px;color:#04faf7">تا</label>
+                            <select class="fontSize form-control">
+                                <option value="Bahman">بهمن 1401</option>
+                                <option value="Esfand">1401 اسفند</option>
+                                <option value="Farvardin">فروردین 1402 </option>
+                                <option value="Ordibehesht">اردیبهشت 1402</option>
+                                <option value="Khordad">خرداد 1402 </option>
+                                <option value="Tir">تیر 1402</option>
+                                <option value="Mordad">مرداد 1402 </option>
+                                <option value="Shahrivar">شهریور 1402</option>
+                                <option value="Mehr">مهر 1402</option>
+                                <option value="Aban">1402 آبان</option>
+                                <option value="Azar">آذر 1402</option>
+                                <option value="Dey">دی 1402</option>
+                                <option value="Bahman">بهمن 1402</option>
+                                <option value="Esfand">1402 اسفند</option>
+                            </select>
+
+                        </div>
+                    </div>
+
+                </div>
+                <div class="chartsty" id="chartdiv123"></div>
+            </div>
+
+        </div>
+        <div class="col-xl-5 coMargin-box">
+            @*=======================شرح وظایف===============================================================================*@
+            <div class="row cotrolStyle" style="height: 13% !important; margin-bottom: 9px !important;">
+                <div class="row ">
+                    <div class="TitleDiv col-xl-10">
+                        <span>
+                            مشاهده شرح وظایف
+                        </span>
+                    </div>
+                    <div class=" col-xl-1 ">
+                        <a href="#" id="sharh" data-bs-toggle="modal" data-bs-target="#modalLg">
+
+                            @*<button class="small-button buttonGeneralW"> دریافت فایل شرح وظایف<i class="bi bi-download"></i> </button>*@
+                            <i class="fa fa-eye fa-fw " style=" margin-top: 4px !important;"></i>
+
+                        </a>
+                    </div>
+                </div>
+            </div>
+            @*=======================آموزش های مورد نیاز=====================================================================*@
+            <div class="row cotrolStyle" style="height: 36% !important; margin-bottom: 9px !important; ">
+
+                <div class="cardTitle" style="margin-bottom:10px">
+                    <span class="TitleDiv" style="font-size:10px">آموزش های مورد نیاز</span>
+                </div>
+                <div class="row " dir="rtl">
+                    <div class="col-xl-6">
+                        @if (Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-آموزش-تست کنتور").mlfval_Value == "0")
+                        {
+                            <i class="bi bi-exclamation-circle-fill exclamationSt" style="color:#FFF9D7;font-size:14px;"></i>
+
+                            <label class="fontSize gooof" title="آشنایی با عملیات تست کنتور برق" style="font-size:11px;">آشنایی با عملیات...</label>
+                        }
+                        else
+                        {
+                            <i class="bi bi-check-circle-fill" style="color:aqua;font-size:14px;"></i>
+                            <label class="fontSize gooof" title="آشنایی با عملیات تست کنتور برق" style="font-size:11px;">آشنایی با عملیات...</label>
+                        }
+                    </div>
+                    <div class="col-xl-6">
+                        @if (Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-آموزش-شناسایی غیر مجاز").mlfval_Value == "0")
+                        {
+                            <i class="bi bi-exclamation-circle-fill exclamationSt" style="color:#FFF9D7;font-size:14px;"></i>
+                            <label class="fontSize " title="روش های شناسایی انشعابات غیر مجاز" style="font-size:11px;">روش های شناسایی... </label>
+                        }
+                        else
+                        {
+                            <i class="bi bi-check-circle-fill" style="color:aqua;font-size:14px;"></i>
+                            <label class="fontSize " title="روش های شناسایی انشعابات غیر مجاز" style="font-size:11px;">روش های شناسایی... </label>
+                        }
+                    </div>
+                </div>
+                <div class="row " dir="rtl">
+                    <div class="col-xl-6">
+
+                        @if (Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-آموزش-برخورد با مشترکین").mlfval_Value == "0")
+                        {
+                            <i class="bi bi-exclamation-circle-fill exclamationSt" style="color:#FFF9D7;font-size:14px;"></i>
+                            <label class="fontSize " style="font-size:11px;">آداب برخورد با مشترکین</label>
+                        }
+                        else
+                        {
+                            <i class="bi bi-check-circle-fill" style="color:aqua;font-size:14px;"></i>
+                            <label class="fontSize " style="font-size:11px;">آداب برخورد با مشترکین</label>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="row cotrolStyle" style="height: 44% !important;">
+
+                <div class="cardTitle" style="margin-bottom:10px">
+                    <span class="TitleDiv" style="font-size:10px">گواهی نامه های مورد نیاز</span>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-xl-6">
+                        @if (Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-گواهینامه-فن ورز هوایی").mlfval_Value == "0")
+                        {
+
+                            <i class="bi bi-exclamation-circle-fill exclamationSt" style="color:#FFF9D7;font-size:14px;"></i>
+
+                            <label class="fontSize " title="فن ورز (عملیات روی شبکه هوائی)" style="font-size:13px;">فن ورز(عملیات روی...</label>
+                            <br />
+                        }
+                        else
+                        {
+                            <i class="bi bi-check-circle-fill" style="color:aqua;font-size:14px;"></i>
+                            <label class="fontSize " title="فن ورز (عملیات روی شبکه هوائی)" style="font-size:13px;">فن ورز(عملیات روی...</label>
+                            <br />
+                        }
+                        @if (Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-گواهینامه-فن ورز گرم").mlfval_Value == "0")
+                        {
+                            <i class="bi bi-exclamation-circle-fill exclamationSt" style="color:#FFF9D7;font-size:14px;"></i>
+                            <label class="fontSize " title="   فن ورز (عملیات روی شبکه خط گرم)" style="font-size:13px;">
+                                فن ورز(عملیات روی...
+                            </label>
+                            <br />
+
+                        }
+                        else
+                        {
+                            <i class="bi bi-check-circle-fill" style="color:aqua;font-size:14px;"></i>
+                            <label class="fontSize " title="   فن ورز (عملیات روی شبکه خط گرم)" style="font-size:13px;">
+                                فن ورز(عملیات روی...
+                            </label>
+                            <br />
+                        }
+                        @if (Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-گواهینامه-ایمنی در برق").mlfval_Value == "0")
+                        {
+                            <i class="bi bi-exclamation-circle-fill exclamationSt" style="color:#FFF9D7;font-size:14px;"></i>
+                            <label class="fontSize " title=" رعایت ایمنی در شبکه های برق" style="font-size:12px;">
+                                رعایت ایمنی در شبکه...
+
+                            </label>
+                            <br />
+                        }
+                        else
+                        {
+                            <i class="bi bi-check-circle-fill" style="color:aqua;font-size:14px;"></i>
+                            <label class="fontSize " title=" رعایت ایمنی در شبکه های برق" style="font-size:12px;">
+                                رعایت ایمنی در شبکه...
+
+                            </label>
+                            <br />
+                        }
+
+                    </div>
+                    <div class="col-xl-6">
+                        @if (Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-گواهینامه-مامور مشترکین").mlfval_Value == "0")
+                        {
+                            <i class="bi bi-exclamation-circle-fill exclamationSt" style="color:#FFF9D7;font-size:14px;"></i>
+                            <label class="fontSize " title="   مامور فنی (خدمات مشترکین)" style="font-size:13px;">
+                                مامور فنی (خدمات...
+                            </label>
+                            <br />
+                        }
+                        else
+                        {
+                            <i class="bi bi-check-circle-fill" style="color:aqua;font-size:14px;"></i>
+                            <label class="fontSize " title="   مامور فنی (خدمات مشترکین)" style="font-size:13px;">
+                                مامور فنی (خدمات...
+                            </label>
+                            <br />
+                        }
+                        @if (Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-گواهینامه-مامور قرائت").mlfval_Value == "0")
+                        {
+
+                            <i class="bi bi-exclamation-circle-fill exclamationSt" style="color:#FFF9D7;font-size:14px;"></i>
+                            <label class="fontSize " title=" مامور فنی (قرائت کنتور برق )" style="font-size:13px;">
+                                مامور فنی (قرائت...
+                            </label>
+                            <br />
+                        }
+                        else
+                        {
+                            <i class="bi bi-check-circle-fill" style="color:aqua;font-size:14px;"></i>
+                            <label class="fontSize " title=" مامور فنی (قرائت کنتور برق )" style="font-size:13px;">
+                                مامور فنی (قرائت...
+                            </label>
+                            <br />
+                        }
+                        @if (Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-گواهینامه-ایمنی فردی").mlfval_Value == "0")
+                        {
+
+                            <i class="bi bi-exclamation-circle-fill exclamationSt" style="color:#FFF9D7;font-size:14px;"></i>
+                            <label class="fontSize " style="font-size:13px;">
+                                ایمنی فردی 8 ساعته
+                            </label>
+
+                        }
+                        else
+                        {
+                            <i class="bi bi-check-circle-fill" style="color:aqua;font-size:14px;"></i>
+                            <label class="fontSize " style="font-size:13px;">
+                                ایمنی فردی 8 ساعته
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<input id="MonthSelected" class="d-none" />
+<input id="YearSelected" class="d-none" />
+
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Scripts/amcharts5/index.js"></script>
+<script src="~/Scripts/amcharts5/xy.js"></script>
+<script src="~/Scripts/amcharts5/radar.js"></script>
+<script src="~/Scripts/amcharts5/themes/Animated.js"></script>
+<script src="~/Scripts/amcharts5/themes/Dark.js"></script>
+<script src="~/Scripts/amcharts5/percent.js"></script>
+<script src="~/Scripts/sweetalert2.js"></script>
+<script src="~/Scripts/jqueryMouseWheel.js"></script>
+<link href="~/Assets/plugins/BootstrapPersianDateTimePicker/src/jquery.md.bootstrap.datetimepicker.style.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Assets/plugins/apexcharts/dist/apexcharts.min.js"></script>
+
+<script>
+    var options2 = {
+        chart: {
+            height: 220,
+            type: "radialBar",
+        },
+        series: [@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-مهارت های جانبی").mlfval_Value],
+        colors: ["#20E647"],
+        plotOptions: {
+            radialBar: {
+                startAngle: -90,
+                endAngle: 90,
+                hollow: {
+                    margin: 0,
+                    size: "30%",
+                },
+                track: {
+                    background: '#333',
+                    startAngle: -90,
+                    endAngle: 90,
+                },
+                dataLabels: {
+                    name: {
+                        show: false,
+                    },
+                    value: {
+                        fontSize: "30px",
+                        show: true
+                    }
+                }
+            }
+        },
+        fill: {
+            type: "gradient",
+            gradient: {
+                shade: "dark",
+                type: "horizontal",
+                gradientToColors: ["#87D4F9"],
+                stops: [0, 100]
+            }
+        },
+        stroke: {
+            lineCap: "butt"
+        },
+        labels: ["Progress"]
+    };
+
+    new ApexCharts(document.querySelector("#barOverflow"), options2).render();
+</script>
+@{
+    var id = Model.FirstOrDefault()?.tbUsers.usr_ID ?? 0;
+    var month = Model.FirstOrDefault()?.mlfval_Month ?? 0;
+    var yr = Model.FirstOrDefault()?.mlfval_Year ?? 0;
+    var dataSeries = new List<decimal>();
+    var categories = new List<string>();
+    var persianMonths = new Dictionary<int, string>
+    {
+        {1, "فروردین"},
+        {2, "اردیبهشت"},
+        {3, "خرداد"},
+        {4, "تیر"},
+        {5, "مرداد"},
+        {6, "شهریور"},
+        {7, "مهر"},
+        {8, "آبان"},
+        {9, "آذر"},
+        {10, "دی"},
+        {11, "بهمن"},
+        {12, "اسفند"}
+    };
+
+    foreach (var it in db.tbMoalefeValueFish.Where(p => p.FK_User == id && p.mlfvlfsh_Month <= month && p.mlfvlfsh_Year == yr&&p.tbContractMoalefeDastmozdi.md_Title== "خالص قابل دریافت (ریال)"))
+    {
+        dataSeries.Add((decimal)it.mlfvlfsh_Value);
+        if (persianMonths.ContainsKey((int)it.mlfvlfsh_Month))
+        {
+            categories.Add(persianMonths[(int)it.mlfvlfsh_Month]);
+        }
+        else
+        {
+            categories.Add(it.mlfvlfsh_Month.ToString()); // به عنوان پیش‌فرض، عدد ماه را اضافه کنید اگر در دیکشنری نباشد
+        }
+    }
+
+}
+<script>
+
+     var options = {
+        series: [{
+            name: 'خالص درآمد: ',
+            data: @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(dataSeries))
+        }],
+        chart: {
+            height: 220,
+            type: 'area',
+            zoom: {
+                enabled: false
+            }
+        },
+        colors: ["#4c98fa"],
+        fill: {
+            type: "gradient",
+            gradient: {
+                shadeIntensity: 1,
+                inverseColors: false,
+                opacityFrom: 0.5,
+                opacityTo: 0,
+                stops: [0, 90, 100]
+            }
+        },
+        markers: {
+            size: 4,
+        },
+        dataLabels: {
+            enabled: false
+        },
+        stroke: {
+            curve: 'straight',
+            width: 3
+        },
+        grid: {},
+        xaxis: {
+            categories: @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(categories))
+        }
+    };
+
+
+    var chart = new ApexCharts(document.querySelector("#chartdiv123"), options);
+    chart.render();
+</script>
+<script>
+        $("#downfish").on('click', function () {
+       // debugger;
+       // alert("salam");
+        var yr = $("#selectYear").find(":selected").val();
+        var month = $("#selectMonth").find(":selected").val();
+        var personal = $("#UserOfPeyman").val();
+            var usr = $("#select_peyman1").val();
+            console.log(usr);
+            console.log(month);
+
+           $.ajax({
+            url: '@Url.Action("DownloadFish1", "Salary", new { area = "Salaries" })',
+               data: { year: yr, month: month, personelCode: personal, usr: usr },
+                type: "Post",
+                dataType: "html",
+            success: function (resp) {
+
+
+
+
+                     if (resp == "0") {
+
+                        //Toast.fire({
+                        //    icon: 'error',
+                        //    background: '#35434A',
+                        //    color: 'white',
+                        //    title: "فیشی برای این ماه وجود ندارد"
+                        //}).then(() => {
+
+                        //});
+                }
+                     else {
+                           var link = '@Url.Action("DownloadFish1", "Salary", new { area = "Salaries", year = "7", month = "8", personelCode = "13", usr="15" })'
+
+
+                         link = link.replace("7", yr);
+                        link = link.replace("8", month);
+                        link = link.replace("13", personal);
+                         link = link.replace("15", usr);
+                        link = link.replace("amp;", "");
+                        link = link.replace("amp;", "");
+                        link = link.replace("amp;", "");
+                        link = link.replace("amp;", "");
+
+                        window.location = link;
+                     }
+                   },
+                   error: function (resp2) {
+
+                   }
+     });
+
+        })
+
+
+
+
+
+
+
+
+
+    $("#btnShowSR").click(function () {
+        var selectedMonth = $("#selectMonth").find(":selected").val();
+        var yr = $("#selectYear").find(":selected").val();
+    var personal = $("#UserOfPeyman").val();
+
+    console.log(selectedMonth);
+    console.log(personal);
+    console.log(yr);
+
+  // Construct the URL using Url.Action with placeholders
+// Construct the URL using Url.Action with placeholders
+var urlTemplate = '@Url.Action("ShowFish", "Formula", new { area = "Salaries", Year = "__year__", Month = "__month__", UserID = "__id__" })';
+
+// Replace placeholders with actual values
+var url = urlTemplate.replace(/__year__/g, encodeURIComponent(yr))
+                    .replace(/__month__/g, encodeURIComponent(selectedMonth))
+                    .replace(/__id__/g, encodeURIComponent(personal));
+
+
+                    var linkTemplate = '@Url.Action("ShowFish", "Formula", new { area = "Salaries", Year = "7", Month = "8", UserID = "15" })';
+
+var link = linkTemplate.replace("7", encodeURIComponent(yr))
+    .replace("8", encodeURIComponent(selectedMonth))
+    .replace("15", encodeURIComponent(personal));
+
+// برای حذف همه ارجاع‌های "&amp;"
+link = link.replace(/amp;/g, "");
+
+console.log(link);
+
+console.log(url);
+
+
+        // Load the content into the modal
+        $("#big_modal_body").load(link);
+});
+
+
+
+
+
+    var fd5555555 = new FormData();
+        //----------------------------------------------------------------
+@*$("#btnShowSR").click(function () {
+    var usr = $("#select_peyman1").val();
+    var month = $("#selectMonth").find(":selected").val();
+    var yr = $("#selectYear").find(":selected").val();
+
+    // Logging to ensure values are being fetched correctly
+    console.log('UserID:', usr);
+    console.log('Month:', month);
+    console.log('Year:', yr);
+
+    var data = {
+        UserID: usr,
+        Year: yr,
+        Month: month
+    };
+
+    sendAjax2('@Url.Action("ShowFish", "Formula", new { area = "Salaries" })', data);
+});
+
+function sendAjax2(url2, data) {
+    $.ajax({
+        url: url2,
+        type: 'POST',
+        data: data,
+        success: function (resp1) {
+            if (resp1 == "0") {
+                Toast.fire({
+                    icon: 'error',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "مجوز نمایش فیش صادر نشده است"
+                }).then(() => {
+                    $("#loading-message").css("display", "none");
+                });
+            } else if (resp1 == "-1") {
+                Toast.fire({
+                    icon: 'error',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "فیشی برای این کاربر در این ماه محاسبه نشده است"
+                }).then(() => {
+                    $("#loading-message").css("display", "none");
+                });
+            } else if (resp1 == "-2") {
+                Toast.fire({
+                    icon: 'error',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "در نمایش فیش خطایی رخ داده است"
+                }).then(() => {
+                    $("#loading-message").css("display", "none");
+                });
+            } else {
+                $("#loading-message").css("display", "none");
+                $("#big_modal_body").html(resp1);
+            }
+        },
+        error: function (resp1) {
+            console.log(resp1);
+            console.log("Nokeye");
+            $("#loading-message").css("display", "none");
+            Toast.fire({
+                icon: 'success',
+                background: '#35434A',
+                color: 'white',
+                title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+            }).then(() => {
+                $("#loading-message").css("display", "none");
+            });
+        }
+    });
+}*@
+
+
+    $("#btnplus3").click(function () {
+    var selectedMonth = $("#selectMonth1").find(":selected").val();
+    var yr = $("#selectYear1").find(":selected").val();
+    var personal = $("#UserOfPeyman").val();
+
+    console.log(selectedMonth);
+    console.log(personal);
+    console.log(yr);
+
+  // Construct the URL using Url.Action with placeholders
+// Construct the URL using Url.Action with placeholders
+var urlTemplate = '@Url.Action("viewasnadfishmamor", "FinancialDocuments", new { area = "ManagementAccounting", year = "__year__", month = "__month__", id = "__id__" })';
+
+// Replace placeholders with actual values
+var url = urlTemplate.replace(/__year__/g, encodeURIComponent(yr))
+                    .replace(/__month__/g, encodeURIComponent(selectedMonth))
+                    .replace(/__id__/g, encodeURIComponent(personal));
+
+
+                    var linkTemplate = '@Url.Action("viewasnadfishmamor", "FinancialDocuments", new { area = "ManagementAccounting", year = "7", month = "8", id = "15" })';
+
+var link = linkTemplate.replace("7", encodeURIComponent(yr))
+    .replace("8", encodeURIComponent(selectedMonth))
+    .replace("15", encodeURIComponent(personal));
+
+// برای حذف همه ارجاع‌های "&amp;"
+link = link.replace(/amp;/g, "");
+
+console.log(link);
+
+console.log(url);
+
+
+        // Load the content into the modal
+        $("#big_modal_body1").load(link);
+});
+
+
+
+
+
+
+
+    var monthYearSelect1 = document.getElementById('monthYearSelect1');
+    var monthYearSelect2 = document.getElementById('monthYearSelect2');
+    var buttonContainer = document.getElementById('buttonContainer');
+
+    // Function to generate options for the month and year select elements
+    function generateMonthYearOptions(selectElement) {
+        var persianMonths = [
+            'فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور',
+            'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'
+        ];
+
+        for (var year = 1401; year <= 1410; year++) {
+            for (var month = 0; month < persianMonths.length; month++) {
+                var option = document.createElement('option');
+                option.value = year + '-' + month;
+                option.textContent = persianMonths[month] + ' ' + year;
+                selectElement.appendChild(option);
+            }
+        }
+    }
+
+    // Generate options for the month and year select elements
+    generateMonthYearOptions(monthYearSelect1);
+    generateMonthYearOptions(monthYearSelect2);
+
+    // Event listener to handle the select change
+    monthYearSelect1.addEventListener('change', generateButtons);
+    monthYearSelect2.addEventListener('change', generateButtons);
+
+    // Function to generate buttons
+    function generateButtons() {
+        var selectedValue1 = monthYearSelect1.value;
+        var selectedValue2 = monthYearSelect2.value;
+        var selectedParts1 = selectedValue1.split('-');
+        var selectedParts2 = selectedValue2.split('-');
+        var year1 = parseInt(selectedParts1[0]);
+        var month1 = parseInt(selectedParts1[1]);
+        var year2 = parseInt(selectedParts2[0]);
+        var month2 = parseInt(selectedParts2[1]);
+        var persianMonths = [
+            'فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور',
+            'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'
+        ];
+
+        var distance = Math.abs((year2 - year1) * 12 + month2 - month1);
+        buttonContainer.innerHTML = '';
+
+        if (distance > 5) {
+            var errorText = document.createElement('p');
+            errorText.textContent = 'باز زمان انتخاب شما باید حداکثر 6 ماه باشد ';
+            buttonContainer.appendChild(errorText);
+        } else {
+            for (var i = 0; i <= distance; i++) {
+                var currentYear = year1 + Math.floor((month1 + i) / 12);
+                var currentMonth = (month1 + i) % 12;
+
+                var columnDiv = document.createElement('div');
+                columnDiv.classList.add('col-xl-2');
+
+                var button = document.createElement('button');
+                var anchor = document.createElement('a');
+                anchor.style.fontSize = '10px';
+                anchor.style.color = 'black';
+                anchor.style.textDecoration = 'none';
+                anchor.textContent = persianMonths[currentMonth] + ' ' + currentYear;
+                anchor.className = "download";
+                button.classList.add('btn','form-control','buttonGeneralW');
+
+                button.appendChild(anchor);
+                columnDiv.appendChild(button);
+
+                buttonContainer.appendChild(columnDiv);
+
+                $(".download").on('click', function () {
+                    console.log("dfsdfdsf");
+                    var yearmonth = $(this).text();
+                    var yearmonthsplited = yearmonth.split(' ');
+                    var month = yearmonthsplited[0];
+                    var yr = yearmonthsplited[1];
+
+                    if (month == "آذر") {
+                         month = "09";
+
+                     }
+                    if (month== "دی") {
+                         month = "10";
+
+                      }
+                    if (month == "بهمن") {
+                         month = "11";
+
+                     }
+                    if (month == "اسفند") {
+                       month = "12";
+
+                     }
+                    if (month == "فروردین") {
+                       month = "01";
+
+                     }
+                    if (month== "اردیبهشت") {
+                        month = "02";
+
+                     }
+                    if (month == "خرداد") {
+                         month = "03";
+
+                     }
+                    if (month == "تیر") {
+                         month = "04";
+
+                     }
+                    if (month == "مرداد") {
+                        month = "05";
+
+                     }
+                    if (month == "شهریور") {
+                         month = "06";
+
+                     }
+                    if (month == "مهر") {
+                        month = "07";
+
+                     }
+                    if (month == "آبان") {
+                        month = "08";
+
+                    }
+                    var obj = new Object;
+                    obj = { year: yr, month: month, personelCode: -1, peyman: 19 };
+                    console.log(obj);
+        $.ajax({
+            url: '@Url.Action("DownloadFish", "Salary", new { area = "Salaries" })',
+            data: { year: yr, month: month, personelCode: -1, peyman: 19 },
+                type: "Post",
+                dataType: "html",
+                 success: function (resp) {
+
+
+
+
+                     if (resp == "0") {
+
+                        Toast.fire({
+                            icon: 'error',
+                            background: '#35434A',
+                            color: 'white',
+                            title: "فیشی برای این ماه وجود ندارد"
+                        }).then(() => {
+
+                        });
+                }
+                     else {
+                           var link = '@Url.Action("DownloadFish", "Salary", new { area = "Salaries", year = "7", month = "8", personelCode = "13", peyman = "15" })'
+
+
+                         link = link.replace("7", yr);
+                        link = link.replace("8", month);
+                        link = link.replace("13", -1);
+                        link = link.replace("15", 19);
+                        link = link.replace("amp;", "");
+                        link = link.replace("amp;", "");
+                        link = link.replace("amp;", "");
+                        link = link.replace("amp;", "");
+
+                        window.location = link;
+
+                     }
+                   },
+                   error: function (resp2) {
+
+                   }
+                    });
+                });
+            }
+        }
+    }
+</script>
+
+<script>
+    function toggleEnlarge() {
+        var cardContainer = document.getElementById("cardContainer");
+        cardContainer.classList.toggle("enlarged");
+    }
+</script>
+
+
+@*<script>
+        var monthYearSelect1 = document.getElementById('monthYearSelect1');
+        var monthYearSelect2 = document.getElementById('monthYearSelect2');
+        var buttonContainer = document.getElementById('buttonContainer');
+
+        // Function to generate options for the month and year select elements
+        function generateMonthYearOptions(selectElement) {
+            var persianMonths = [
+                'فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور',
+                'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'
+            ];
+
+            for (var year = 1398; year <= 1405; year++) {
+                for (var month = 0; month < persianMonths.length; month++) {
+                    var option = document.createElement('option');
+                    option.value = year + '-' + month;
+                    option.textContent = persianMonths[month] + ' ' + year;
+                    selectElement.appendChild(option);
+                }
+            }
+        }
+
+        // Generate options for the month and year select elements
+        generateMonthYearOptions(monthYearSelect1);
+        generateMonthYearOptions(monthYearSelect2);
+
+        // Event listener to handle the select change
+        monthYearSelect1.addEventListener('change', generateButtons);
+        monthYearSelect2.addEventListener('change', generateButtons);
+
+        // Function to generate buttons
+        function generateButtons() {
+            var selectedValue1 = monthYearSelect1.value;
+            var selectedValue2 = monthYearSelect2.value;
+            var selectedParts1 = selectedValue1.split('-');
+            var selectedParts2 = selectedValue2.split('-');
+            var year1 = parseInt(selectedParts1[0]);
+            var month1 = parseInt(selectedParts1[1]);
+            var year2 = parseInt(selectedParts2[0]);
+            var month2 = parseInt(selectedParts2[1]);
+            var persianMonths = [
+                'فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور',
+                'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'
+            ];
+
+            var distance = Math.abs((year2 - year1) * 12 + month2 - month1);
+            buttonContainer.innerHTML = '';
+
+            if (distance > 5) {
+                var errorText = document.createElement('p');
+                errorText.textContent = 'Error: The distance between the months is more than 6.';
+                buttonContainer.appendChild(errorText);
+            } else {
+                for (var i = 0; i <= distance; i++) {
+                    var currentYear = year1 + Math.floor((month1 + i) / 12);
+                    var currentMonth = (month1 + i) % 12;
+
+                    var button = document.createElement('button');
+                    var anchor = document.createElement('a');
+                    anchor.style.fontSize = '10px';
+                    anchor.textContent = persianMonths[currentMonth] + ' ' + currentYear;
+                    button.classList.add('small-button');
+                    button.appendChild(anchor);
+                    buttonContainer.appendChild(button);
+
+
+                }
+            }
+        }
+    </script>*@
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+    // Assuming the progress is a value between 0 and 100
+    $(".progress").each(function () {
+
+        var $bar = $(this).find(".bar2");
+        var $val = $(this).find("span");
+        var perc = parseInt($val.text(), 10);
+
+        $({
+            p: 0
+        }).animate({
+            p: perc
+        }, {
+            duration: 3000,
+            easing: "swing",
+            step: function (p) {
+                $bar.css({
+                    transform: "rotate(" + (45 + (p * 1.8)) + "deg)", // 100%=180° so: ° = % * 1.8
+                    // 45 is to add the needed rotation to have the green borders at the bottom
+                });
+                $val.text(p | 0);
+            }
+        });
+    });
+</script>
+
+
+<script>
+     $("#sharh").click(function () {
+        var str="";
+        $("#big_modal_body").load('@Url.Content("/Reporter/Dashboard/SharhVazayef")');
+    });
+</script>
+
+<script>
+
+    const Toast = Swal.mixin({
+        toast: true,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    });
+
+
+
+
+
+    $("#qaraddad").on('click', function () {
+         $.ajax({
+                url: '@Url.Action("DNqaradad", "Dashboard", new { area = "Reporter" })',
+            data: {  },
+                type: "Post",
+
+                success: function (resp) {
+
+                   },
+                   error: function (resp2) {
+
+                   }
+     });
+
+    })
+
+
+
+    $("#qarardademzashode").on('click', function () {
+
+         $.ajax({
+                url: '@Url.Action("ShowContractEmzaShode", "Contract", new { area = "Contracts" })',
+            data: {  },
+                type: "Post",
+
+                success: function (resp) {
+                    if (resp == "0") {
+                        Toast.fire({
+                            icon: 'error',
+                            background: '#35434A',
+                            color: 'white',
+                            title: "قرارداد امضا شده ای وجود ندارد"
+                        }).then(() => {
+
+                        });
+                    }
+                    else {
+                        window.location='@Url.Action("ShowContractEmzaShode", "Contract", new { area = "Contracts" })'
+                    }
+                   },
+                   error: function (resp2) {
+
+                   }
+     });
+    })
+</script>
+
+
+@* انتخاب تاریخ فیش حقوقی *@
+
+
+<script>
+    // Months
+    $(function () {
+        var gate = $(window),
+            cog = $('#rotator'),
+            digit = cog.find('span'),
+            field = $('#MonthSelected'),
+            slot = digit.height(),
+            base = 1.5 * slot,
+            up, swipe;
+        let ChildsCount = cog.children().length - 1;
+
+        if (document.readyState == 'complete') interAction();
+        else gate.one('load', interAction);
+
+        function interAction() {
+
+            field.text(0);
+
+            cog.scrollTop(base).fadeTo(0, 1).on('mousewheel', function (delta) {
+
+
+                if (isBusy()) return false;
+
+                up = delta.originalEvent.deltaY > 0;
+                nextNumber();
+
+                return false;
+            });
+
+            digit.on('touchstart', function (e) {
+
+                var begin = e.originalEvent.touches[0].pageY;
+
+                digit.on('touchmove', function (e) {
+
+                    var yaw = e.originalEvent.touches[0].pageY - begin;
+                    up = yaw < 0;
+                    swipe = Math.abs(yaw) > 30;
+                });
+
+                gate.one('touchend', function () {
+
+                    digit.off('touchmove');
+
+                    if (swipe && !isBusy()) nextNumber();
+                });
+            })
+                .on('mousedown touchstart', function (e) {
+
+                    if (e.which && e.which != 1) return;
+
+                    var zest = this, item = $(this).index();
+
+                    $(this).one('mouseup touchend', function (e) {
+
+                        digit.off('mouseup');
+
+                        var quit = e.originalEvent.changedTouches;
+
+                        if (quit) var jab = document.elementFromPoint(quit[0].clientX, quit[0].clientY);
+                        if (swipe || item == 2 || quit && jab != zest || isBusy()) return;
+
+                        up = item == 1;
+                        nextNumber();
+                    });
+
+                    return false;
+                })
+                .mouseleave(function () {
+
+                    digit.off('mouseup');
+                });
+        }
+
+        function isBusy() {
+
+            return cog.is(':animated');
+        }
+
+        function nextNumber() {
+
+            var aim = base;
+            swipe = false;
+
+            up ? aim += slot : aim -= slot;
+
+            cog.animate({ scrollTop: aim }, 250, function () {
+
+                up ? digit.eq(0).appendTo(cog) : digit.eq(ChildsCount).prependTo(cog);
+
+                digit = cog.find('span');
+
+                cog.scrollTop(base);
+                field.text(digit.eq(2).text());
+            });
+        }
+    });
+    // Years
+    $(function () {
+        var gate = $(window),
+            cog = $('#rotator2'),
+            digit = cog.find('span'),
+            field = $('#YearSelected'),
+            slot = digit.height(),
+            base = 1.5 * slot,
+            up, swipe;
+        let ChildsCount = cog.children().length - 1;
+        if (document.readyState == 'complete') interAction();
+        else gate.one('load', interAction);
+
+        function interAction() {
+
+            field.text(0);
+
+            cog.scrollTop(base).fadeTo(0, 1).on('mousewheel', function (delta) {
+
+
+                if (isBusy()) return false;
+
+                up = delta.originalEvent.deltaY > 0;
+                nextNumber();
+
+                return false;
+            });
+
+            digit.on('touchstart', function (e) {
+
+                var begin = e.originalEvent.touches[0].pageY;
+
+                digit.on('touchmove', function (e) {
+
+                    var yaw = e.originalEvent.touches[0].pageY - begin;
+                    up = yaw < 0;
+                    swipe = Math.abs(yaw) > 30;
+                });
+
+                gate.one('touchend', function () {
+
+                    digit.off('touchmove');
+
+                    if (swipe && !isBusy()) nextNumber();
+                });
+            })
+                .on('mousedown touchstart', function (e) {
+
+                    if (e.which && e.which != 1) return;
+
+                    var zest = this, item = $(this).index();
+
+                    $(this).one('mouseup touchend', function (e) {
+
+                        digit.off('mouseup');
+
+                        var quit = e.originalEvent.changedTouches;
+
+                        if (quit) var jab = document.elementFromPoint(quit[0].clientX, quit[0].clientY);
+                        if (swipe || item == 2 || quit && jab != zest || isBusy()) return;
+
+                        up = item == 1;
+                        nextNumber();
+                    });
+
+                    return false;
+                })
+                .mouseleave(function () {
+
+                    digit.off('mouseup');
+                });
+        }
+
+        function isBusy() {
+
+            return cog.is(':animated');
+        }
+
+        function nextNumber() {
+
+            var aim = base;
+            swipe = false;
+
+            up ? aim += slot : aim -= slot;
+
+            cog.animate({ scrollTop: aim }, 250, function () {
+
+                up ? digit.eq(0).appendTo(cog) : digit.eq(ChildsCount).prependTo(cog);
+
+                digit = cog.find('span');
+
+                cog.scrollTop(base);
+                field.text(digit.eq(2).text());
+            });
+        }
+    });
+
+    @{
+        int percent = 100;
+        int valuefeali = Convert.ToInt32(Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-مهارت های جانبی").mlfval_Value);
+    }
+
+
+    $(".Coral button span").not(':first').css({ top: "@Convert.ToInt32(percent - valuefeali)%" });
+</script>
+@*<script src="https://cdn.amcharts.com/lib/5/core.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/charts.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/themes/animated.js"></script>*@
+
+@*<script>
+        am5.ready(function () {
+            // Create root element
+            var root = am5.Root.new("chartdiv123");
+
+            // Set themes
+            root.setThemes([
+                am5themes_Animated.new(root)
+            ]);
+
+            // Create chart
+            var chart = root.container.children.push(am5xy.XYChart.new(root, {
+                panX: true,
+                panY: true,
+                wheelX: "panX",
+                wheelY: "zoomX",
+                pinchZoomX: true
+            }));
+
+            // Add cursor
+            var cursor = chart.set("cursor", am5xy.XYCursor.new(root, {}));
+            cursor.lineY.set("visible", false);
+
+            // Create axes
+            var xRenderer = am5xy.AxisRendererX.new(root, { minGridDistance: 30 });
+            xRenderer.labels.template.setAll({
+                rotation: -90,
+                centerY: am5.p50,
+                centerX: am5.p100,
+                paddingRight: 15
+            });
+
+            xRenderer.grid.template.setAll({
+                location: 1
+            });
+
+            var xAxis = chart.xAxes.push(am5xy.CategoryAxis.new(root, {
+                maxDeviation: 0.3,
+                categoryField: "country",
+                renderer: xRenderer,
+                tooltip: am5.Tooltip.new(root, {})
+            }));
+
+            var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
+                maxDeviation: 0.3,
+                renderer: am5xy.AxisRendererY.new(root, {
+                    strokeOpacity: 0.1
+                })
+            }));
+
+            // Create series
+             var series = chart.series.push(am5xy.LineSeries.new(root, {
+                name: "Series 1",
+                xAxis: xAxis,
+                yAxis: yAxis,
+                valueYField: "value",
+                sequencedInterpolation: true,
+                categoryXField: "country",
+                fill: am5.color(0xFFFF99), // Pale yellow fill color
+                fillOpacity: 0.8, // Adjust the opacity as desired
+                stroke: am5.color(0xFFFF00), // Yellow color for the curve line
+
+
+                tooltip: am5.Tooltip.new(root, {
+                    labelText: "{valueY}"
+                })
+            }));
+
+            // Set series color
+
+
+            // Set data
+            var data = [
+                {
+                    country: "مهر",
+                    value: @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-مهر1401").mlfval_Value,
+                    color: "#babf95"
+                },
+                {
+                    country: "آبان",
+                    value: @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-آبان1401").mlfval_Value
+                },
+                {
+                    country: "آذر",
+                    value: @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-آذر1401").mlfval_Value
+                },
+                {
+                    country: "دی",
+                    value: @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-دی1401").mlfval_Value
+                },
+                {
+                    country: "بهمن",
+                    value: @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-بهمن1401").mlfval_Value
+                },
+                {
+                    country: "اسفند",
+                    value: @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-اسفند1401").mlfval_Value
+                },
+                {
+                    country: "فروردین",
+                    value: @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-فروردین1402").mlfval_Value
+                },
+                {
+                    country: "اردیبهشت",
+                    value: @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-اردیبهشت1402").mlfval_Value
+                }
+            ];
+              var chartContainer = document.getElementById("chartdiv123");
+          //chartContainer.addEventListener("mouseover", function () {
+          //  chartContainer.style.fontSize = "28px";
+          //});
+
+          //chartContainer.addEventListener("mouseout", function () {
+          //  chartContainer.style.fontSize = "13px"; // Change back to the original font size
+          //});
+            //data = color: "#babf95";
+            xAxis.data.setAll(data);
+            series.data.setAll(data);
+
+            // Make stuff animate on load
+            series.appear(1000);
+            chart.appear(1000, 100);
+        });
+    </script>*@
+
+<script>
+
+    $(function () {
+        $.each($(".numbers"), function (index, item) {
+
+            var amount = $(this).text().replace(/[\D\s\._\-]+/g, "-");
+
+            amount = amount ? parseInt(amount, 10) : 0;
+            $(this).text(function () {
+                return (amount === 0) ? "0 ریال" : amount.toLocaleString("fa-IR") + " " + " ریال";
+            });
+        });
+
+    });
+</script>
+
+
+<script>
+
+    $(function () {
+        $.each($(".number"), function (index, item) {
+
+            var amount = $(this).text().replace(/[\D\s\._\-]+/g, "");
+
+            amount = amount ? parseInt(amount, 10) : 0;
+            $(this).text(function () {
+                return (amount === 0) ? "" : amount.toLocaleString("en-US");
+            });
+        });
+
+    });
+</script>
+
+
+
+
+
+
+
+<script>
+
+    // Your JavaScript code to render the chart goes here
+</script>
+
+
+
+
+
+
+
+
+
+

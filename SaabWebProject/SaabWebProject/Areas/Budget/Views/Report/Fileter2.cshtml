@@ -1,0 +1,175 @@
+﻿@using SaabWebProject.Models.DomainModels;
+
+@{
+    Layout = null;
+    ViewBag.TitleLargModal = "اضافه کردن مشتری";
+    SaabEntities db = new SaabEntities();
+}
+
+@model IEnumerable<SaabWebProject.Models.DomainModels.FinancialDocuments>
+<style>
+
+    .tableH_Lock {
+        max-height: 223px;
+        /*height: 260px;*/
+    }
+
+    thead {
+        position: sticky;
+        top: 0;
+        text-align: center;
+        z-index: 2;
+    }
+
+    .inputFilter {
+        margin-bottom: 0px !important;
+    }
+
+    thead th {
+        vertical-align: middle;
+    }
+</style>
+<div class="card">
+    <div class="table-content p-2">
+        <div class="tab-pane fade show active" id="allTab">
+            <div class="table-responsive tableH_Lock">
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr style="text-align:center">
+                            <th>@Html.DisplayName("ردیف")</th>
+                            <th>
+                                @Html.DisplayName("تاریخ")
+                                <input type="text" id="filter01-filter" class="inputFilter form-control" placeholder="">
+                            </th>
+                            <th>
+                                @Html.DisplayName("شرح")
+                                <input type="text" id="filter02-filter" class="inputFilter form-control" placeholder="">
+                            </th>
+                            <th>
+                                @Html.DisplayName("بستانکار")
+                            </th>
+                            <th>
+                                @Html.DisplayName("بدهکار")
+                            </th>
+                            <th>
+                                @Html.DisplayName("تشخیص")
+                                <input type="text" id="filter03-filter" class="inputFilter form-control" placeholder="">
+                            </th>
+                            <th>
+                                @Html.DisplayName("مانده")
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody style="text-align:center">
+                        @{
+                            var i = 0;
+                            List<string> pecTitleList = new List<string>();
+                            var yy = 0;
+                        }
+                        @foreach (var it in Model)
+                        {
+                            var yu = 0;
+                            var yu1 = 0;
+                            var tt = 0;
+                            i++;
+                            //var x = db.tbDetermining_creditline.Where(p => p.FK_creditline == it.Creditlamdicatros_ID && p.Pyman_ID == it.Peyman_ID).FirstOrDefault();
+                            //var ttt = 0;
+                            //pecTitleList.Add(it.tbPeymanContracts.pec_Title);
+                            <tr class="task-list-row"
+                                data-filter01=""
+                                data-filter02=""
+                                data-filter03=""
+                                >
+                                <td>@i</td>
+                                <td cont-date="dateS_@i" hidden>@it.DataDocument.Value.ToString("MM/dd/yyyy ")</td>
+                                <td id="dateS_@i"></td>
+                                <td>@it.Title</td>
+
+                                @if (it.Creditor != null)
+                                {
+                                    <td>
+                                        @string.Format("{0:N0}", it.Creditor)
+                                        @{
+                                            yu = (int)it.Creditor;
+                                            tt += (int)it.Creditor;
+                                        }
+
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        ---
+                                    </td>
+                                }
+
+
+                                @if (it.Debtore != null)
+                                {
+                                    <td>
+                                        @string.Format("{0:N0}", it.Debtore)
+                                        @{
+                                            yu1 = (int)it.Debtore;
+                                            tt += (int)it.Debtore;
+                                        }
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        ---
+                                    </td>
+                                }
+                                @if (tt > 0)
+                                {
+                                    <td>
+                                        بس
+                                    </td>
+                                }
+                                else if (tt < 0)
+                                {
+
+
+                                    <td>
+                                        بد
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        ---
+                                    </td>
+                                }
+                                <td>
+                                    @{
+                                        yy = yu - yu1 + yy;
+                                    }
+                                    @string.Format("{0:N0}", yy)
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+
+<script>
+    // Convert Gregorian date to jaali in the table
+    var tds = document.querySelectorAll("[cont-date]");
+    var valueD, id, target;
+    var options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    tds.forEach(td => {
+        valueD = new Date(td.textContent).toLocaleDateString('fa-IR-u-nu-latn', options).replace(',', '').replace(" ", "");
+        valueD = valueD.slice(0, 10) + " " + td.textContent.slice(10, 30)
+        id = td.getAttribute("cont-date");
+        target = document.getElementById(id);
+        target.textContent = valueD;
+    });</script>

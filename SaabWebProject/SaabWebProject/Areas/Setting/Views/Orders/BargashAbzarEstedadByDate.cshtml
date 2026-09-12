@@ -1,0 +1,454 @@
+﻿@*@model IEnumerable<SaabWebProject.Models.DomainModels.tbTarifAbzarKar1>*@
+@model SaabWebProject.Models.ViewModels.Contracts.Function.FunctionModel
+@using SaabWebProject.Models.DomainModels;
+
+@{ SaabEntities db = new SaabEntities();
+
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+@using System.Globalization
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>ModiriatStedad</title>
+
+    <style>
+        @@media (max-width: 768px) {
+            /* ستون اول ثابت */
+            .sticky-col {
+                position: sticky;
+                right: -5px; /* ستون سمت چپ */
+                background: #fff; /* پس‌زمینه ثابت */
+                z-index: 2000; /* زیر هدر، بالاتر از بقیه سلول‌ها */
+                min-width: 120px; /* جلوگیری از قاطی شدن متن */
+            }
+            /* هدر ستون اول بالاتر از سلول‌ها */
+            .sticky-col-header {
+                z-index: 3;
+            }
+
+            table {
+                overflow-x: auto !important;
+            }
+
+
+
+            .title {
+                padding-right: 0 !important;
+                flex-direction: column !important;
+                gap: 10px !important;
+            }
+
+            .title-page {
+                display: none !important;
+            }
+
+            .lebel-title {
+                font-size: 10px;
+                margin-right: 10px;
+            }
+
+            #SaatKhateme, #SaatShoroo {
+                width: 80px;
+            }
+        }
+
+
+        .TextCenter {
+            align-content: center;
+            align-items: center;
+            justify-content: center;
+            border-left: 1px solid white;
+        }
+
+
+
+        tbody tr td:first-child {
+            border-top-right-radius: 0px !important;
+            border-bottom-right-radius: 0px !important;
+            border-left: 1px solid white;
+            border-bottom: 1px solid white !important;
+        }
+
+        .position {
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px !important;
+        }
+
+        .title-page {
+            display: flex;
+            height: 100%;
+            width: 260px;
+            background: var(--bs-Meno-color);
+            align-content: center;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            padding: 0px !important;
+        }
+
+        .title {
+            border-width: 2px;
+            margin-bottom: 50px;
+            display: flex;
+            gap: 20px;
+            padding-right: 900px;
+        }
+
+            .title div {
+                display: flex;
+                gap: 5px;
+                align-content: center;
+                align-items: baseline;
+            }
+
+        td input {
+            margin: 0 !important;
+            width: 200px;
+        }
+
+
+        .TdInput {
+            width: 50px;
+            text-align: center;
+        }
+
+        .thwidth {
+            width: 100px;
+        }
+        /* HTML: <div class="puzzle"></div> */
+
+    </style>
+
+</head>
+<body>
+    <div class="tab-content" id="pills-tabContent" style="padding:20px; background:#f7f7f7;">
+
+        @*<div class="row">
+            <div class="col-xl-12">
+
+                <div class="form-control title position " style="padding:0 !important;">
+                    <div class="title-page">
+                        <label class="lebel-title">موجودی ابزار کار و لوازم ایمنی</label>
+                    </div>
+                </div>
+            </div>*@
+
+        <!--</div>-->
+        <!--<div class="row">-->
+        @*<div class="col-xl-2">
+
+                <label class="form-label">تاریخ</label>
+                <input data-jdp jdp-btn-close data-jdp-miladi-input="miladi_date1" id="datepickerFrom_shw1" class="form-control pdate" name="datepickerFrom_shw1">
+                <input id="miladi_date1" type="hidden" />
+
+            </div>*@
+        @*<div class="col-xl-1">
+                <a href="#" class="btn form-control buttonGeneral" id="Sendnamayesh">
+                    <i class="bi bi-plus-circle fa-fw me-1 VecGeneral"></i>
+                    <span class="bGeneral-text">نمایش</span>
+                </a>
+            </div>*@
+        <!--</div>-->
+
+        <div class="tab-pane fade show active" id="allTab">
+            <div class="table-responsive tableH_Lock">
+                <table class="table table-hover" style="text-align:center; border-radius:10px; overflow:hidden;">
+                    <thead>
+                        <tr>
+                            <th class=" sticky-col sticky-col-header" rowspan="2" style="border-bottom-right-radius:0px !important;">
+                                عنوان
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter05-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+
+                                </div>
+                            </th>
+                            <th class="" rowspan="2" style="border-bottom-right-radius:0px !important; border-left:1px solid white">
+                                واحد شمارش
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter05-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+
+                                </div>
+                            </th>
+                            <th class="TextCenter" colspan="6" style="border-bottom-left-radius:0px !important; border-left:none !important; border-bottom:1px solid white !important;">
+                                تعداد موجودی
+
+                            </th>
+
+                        </tr>
+
+
+                        <tr>
+                            <th style="border-radius:0px !important;" class="TextCenter thwidth">سالم (ذخیره در انبار)</th>
+                            <th style="border-radius:0px !important;" class="TextCenter thwidth">سالم (در اختیار مامور)</th>
+                            <th style="border-radius:0px !important;" class="TextCenter thwidth">نیازمند تعمیر</th>
+                            <th style="border-radius:0px !important;" class="TextCenter thwidth">گم شده یا از بین رفته</th>
+                            <th style="border-radius:0px !important;" class="TextCenter">شرح</th>
+                            <th style="border-radius:0px !important; border-left:0px !important" class="TextCenter">جمع</th>
+                        </tr>
+
+                    </thead>
+                    <tbody>
+                        @{
+                            var rowIndex = 0;
+                        }
+                        @foreach (var item in Model.tbTarifAbzarKar1)
+                        {
+                            var findd = Model.tbTarifAbzarKar2Estedad.Where(s => s.Fk_tarifabzarkar == item.ID).FirstOrDefault();
+                            if (findd == null)
+                            {
+                                rowIndex++;
+                                string groupName = $"attendance_{rowIndex}";
+
+                                <tr data-id="@item.ID">
+
+                                    <td class="sticky-col" style="background-color: var(--bs-table-th-bg)">@item.Name</td>
+                                    <td>@item.Vahed</td>
+
+                                    <td><input class="TdInput" name="@groupName" value="" /></td>
+                                    <td><input class="TdInput" name="@groupName" value="" /></td>
+                                    <td><input class="TdInput" name="@groupName" value="" /></td>
+                                    <td><input class="TdInput" name="@groupName" value="" /></td>
+                                    <td><input name="" value="" /></td>
+                                    <td><input style="user-select:none !important;" class="TdInput" name="@groupName" value="" /></td>
+
+                                </tr>
+                            }
+                            else
+                            {
+                                rowIndex++;
+                                string groupName = $"attendance_{rowIndex}";
+
+                                <tr data-id="@item.ID">
+
+                                    <td class="sticky-col" style="background-color: var(--bs-table-th-bg)">@item.Name</td>
+                                    <td>@item.Vahed</td>
+
+
+                                    <td><input class="TdInput" name="@groupName" value="@findd.SalemZakhire" /></td>
+                                    <td><input class="TdInput" name="@groupName" value="@findd.SalemMamor" /></td>
+                                    <td><input class="TdInput" name="@groupName" value="@findd.NiyazmandTamir" /></td>
+                                    <td><input class="TdInput" name="@groupName" value="@findd.GomShode" /></td>
+                                    <td><input name="" value="@findd.Sharh" /></td>
+                                    <td><input style="user-select:none !important;" class="TdInput" name="@groupName" value="@findd.jam" /></td>
+                                    @*<td></td>*@
+
+                                </tr>
+                            }
+
+                        }
+                    </tbody>
+
+                    @*<i class="bi bi-eye"></i>
+                        <i class="bi bi-eye-slash"></i>
+                        <i class="bi bi-arrow-clockwise"></i>*@
+
+
+                </table>
+            </div>
+            <div class="row">
+                <div class="col-xl-11"></div>
+                <div class="col-xl-1">
+                    <a href="#" class=" btn form-control buttonGeneral" id="Send">
+                        <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                        <span class="bGeneral-text">ثبت</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <hr />
+
+        <!--<div id="resultArea">-->
+        @* اینجا جدول PartialView برمی‌گرده *@
+        <!--</div>-->
+
+
+
+    </div>
+    <script>
+        $(document).ready(function () {
+            // گوش دادن به تغییر مقدار هر input با کلاس TdInput
+            $(document).on("input", ".TdInput", function () {
+                var $row = $(this).closest("tr"); // ردیف فعلی
+                var sum = 0;
+
+                // فقط چهار ستون اول عددی (از ستون ۳ تا ۶)
+                $row.find("td:eq(2) input, td:eq(3) input, td:eq(4) input, td:eq(5) input").each(function () {
+                    var val = $(this).val().replace(/[^0-9]/g, ""); // فقط عدد
+                    $(this).val(val); // اصلاح مقدار ورودی
+                    if (val) sum += parseInt(val, 10);
+                });
+
+                // نمایش جمع در ستون آخر (ستون ۸م)
+                $row.find("td:last input").val(sum > 0 ? sum : "");
+            });
+        });
+    </script>
+
+
+
+
+    @*<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>*@
+
+    <script src="~/Assets/js/jalalidatepicker.min.js"></script>
+    <link href="~/Assets/css/jalalidatepicker.min.css" rel="stylesheet" />
+    <script src="~/Assets/js/jalaali.min.js"></script>
+    <link href="~/MyStyles/jalalidatepicker.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+
+
+    <script>
+        jalaliDatepicker.startWatch({
+            time: false,
+            days: ["شنبه", "1شنبه", "2شنبه", "3شنبه", "4شنبه", "5شنبه", "جمعه"],
+            persianDigits: true,
+            autoClose: true,
+            autocomplete: true,
+            showEmptyBtn: false,
+            showCloseBtn: true,
+            zIndex: 100000,
+        });
+
+        var inputs = document.querySelectorAll("[data-jdp-miladi-input]");
+        for (var i = 0; i < inputs.length; i++) {
+            inputs[i].addEventListener("jdp:change", function (e) {
+                var miladiInput = document.getElementById(this.getAttribute("data-jdp-miladi-input"));
+                var date = this.value.replace(' ', '').slice(0, 10).split('/');
+                date = jalaali.toGregorian(parseInt(date[0]), parseInt(date[1]), parseInt(date[2]));
+                if (!this.value) {
+                    date = "";
+                } else if (this.value.replace(' ', '').length < 11) {
+                    date = date.gy + '-' + date.gm + '-' + date.gd;
+                } else {
+                    date = date.gy + '-' + date.gm + '-' + date.gd + ' ' + this.value.replace(' ', '').slice(10, 30);
+                }
+                miladiInput.value = date;
+            });
+        }
+
+    </script>
+
+    @*<script>
+
+                $("#Send").click(function (e) {
+            //e.preventDefault();
+
+            var rows = [];
+            $("table tbody tr").each(function () {
+                var $tr = $(this);
+                rows.push({
+                    Fk_tarifabzarkar: $tr.data("id"), // اگر نیاز به شناسه دارید
+                    SalemZakhire: parseInt($tr.find("td:eq(2) input").val()) || 0,
+                    SalemMamor: parseInt($tr.find("td:eq(3) input").val()) || 0,
+                    NiyazmandTamir: parseInt($tr.find("td:eq(4) input").val()) || 0,
+                    GomShode: parseInt($tr.find("td:eq(5) input").val()) || 0,
+                    jam: parseInt($tr.find("td:last-child").text()) || 0,
+                    Sharh: $tr.find("td:eq(6) input").val(),
+                    TimeSabt: $("#miladi_date1").val() // تاریخ میلادی
+                });
+            });
+
+            $.ajax({
+                url: '@Url.Action("SaveAbzarEstedad","Orders")',
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(rows),
+                success: function(res) {
+                    if(res.success){
+                        alert("با موفقیت ذخیره شد ✅");
+                    } else {
+                        alert("خطا: " + res.error);
+                    }
+                }
+            });
+        });
+
+            </script>*@
+
+
+    <script>
+    $("#Send").click(function (e) {
+        //e.preventDefault();
+
+        var rows = [];
+        $("table tbody tr").each(function () {
+            var $tr = $(this);
+
+            var SalemZakhire = parseInt($tr.find("td:eq(2) input").val());
+            var SalemMamor = parseInt($tr.find("td:eq(3) input").val());
+            var NiyazmandTamir = parseInt($tr.find("td:eq(4) input").val());
+            var GomShode = parseInt($tr.find("td:eq(5) input").val());
+            var jam = parseInt($tr.find("td:last-child input").val());
+
+            /*var jam = SalemZakhire + SalemMamor + NiyazmandTamir + GomShode*/
+
+            var Sharh = $tr.find("td:eq(6) input").val();
+
+            // ✅ فقط ردیف‌هایی که داده دارند ارسال بشن
+            if (SalemZakhire !== 0 || SalemMamor !== 0 || NiyazmandTamir !== 0 || GomShode !== 0 || jam !== 0 || Sharh.trim() !== "") {
+                rows.push({
+                    Fk_tarifabzarkar: $tr.data("id"),
+                    SalemZakhire: SalemZakhire,
+                    SalemMamor: SalemMamor,
+                    NiyazmandTamir: NiyazmandTamir,
+                    GomShode: GomShode,
+                    jam: jam,
+                    Sharh: Sharh,
+                    TimeSabt: $("#miladi_date1").val()
+                });
+            }
+        });
+
+        $.ajax({
+            url: '@Url.Action("SaveAbzarEstedad","Orders")',
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(rows),
+            success: function (res) {
+                if (res.success) {
+                    alert("با موفقیت ذخیره شد ✅");
+                    location.reload();
+                } else {
+                    alert("خطا: " + res.error);
+                }
+            }
+        });
+    });
+    </script>
+
+
+
+
+    @*//================*@
+    @*<script>
+           $(document).ready(function () {
+               $("#Sendnamayesh").click(function (e) {
+                   e.preventDefault();
+                   var date = $("#miladi_date1").val();
+
+                   $.ajax({
+                       url: '@Url.Action("BargashAbzarEstedadByDate", "Orders")',
+                       type: 'GET',
+                       data: { date: date },
+                       success: function (html) {
+                           $("#allTab").html(html); // جدول جایگزین جدول قبلی بشه
+                       },
+                       error: function () {
+                           alert("خطا در دریافت اطلاعات");
+                       }
+                   });
+               });
+           });
+
+        </script>*@
+
+
+</body>
+</html>

@@ -1,0 +1,133 @@
+﻿
+
+@using SaabWebProject.Models.DomainModels;
+
+@{
+    ViewBag.Title = "تعریف وسایل اسناد";
+    Layout = null;
+    SaabEntities db = new SaabEntities();
+
+}
+@model SaabWebProject.Models.DomainModels.dbAsnadcratname
+<div class="row">
+    <!--<div class="col-xl-3">
+    <label class="form-label">تاریخ</label>-->
+    @*------------------------------------------------[1402/09/20]-|KH|-*@
+    <!--<input data-jdp jdp-btn-close data-jdp-miladi-input="datepickerFromEn_usr" id="datepickerFrom_usr" class="form-control">
+    <input id="datepickerFromEn_usr" type="hidden" />-->
+    @*-------------------------------------------------------------|KH|-*@
+    <!--</div>
+    <div class="col-xl-2">
+        <label class="form-label">روز هفته</label>
+        <input class="form-control" id="weekDay" disabled />
+    </div>
+    <div class="col-xl-2">
+        <label class="form-label">تعطیل رسمی/غیر رسمی</label>
+        <select class="form-select" id="tael">
+            <option value="0" hidden>انتخاب مورد</option>
+            <option value="1">رسمی</option>
+            <option value="2">غیر رسمی</option>
+        </select>
+    </div>-->
+    <div class="col-xl-4">
+        <label class="form-label">  نام کالا    </label>
+        <input class="form-control" id="vasilehedit" value="@Model.name" />
+    </div>
+    <div class="col-xl-2">
+        <label class="form-label"> نوع واحد  </label>
+        <select class="form-select select_peyman" id="nerghnintlinkedit" name="select_peyman">
+            <option value="@Model.tbUnitParameter.unt_ID" selected>@Model.tbUnitParameter.unt_Name</option>
+            @foreach (var item in db.tbUnitParameter.ToList())
+            {
+                <option value="@item.unt_ID">@item.unt_Name</option>
+            }
+        </select>
+        @*<label class="form-label">  نوع نرخ  </label>
+            <input class="form-control" id="nergh" />*@
+    </div>
+    <div class="col-xl-4">
+        <label class="form-label">  شماره کالا    </label>
+        <input class="form-control" id="numbertaghizedit" value="@Model.codmahsol"/>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-11">
+    </div>
+    <div class="col-md-1">
+        <button id="btnTatilatedit" type="button" class="btn form-control buttonsabt">
+            <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+            <span class="bSabt-text">ثبت</span>
+        </button>
+    </div>
+</div>
+<script>
+    $("#btnTatilatedit").click(function () {
+              var Filters  = [];
+          var obj = new Object();
+
+
+         console.log("djkjsdkl");
+        var val2 = $('#vasilehedit').val();
+        var val22 = $('#nerghnintlinkedit').val();
+        var val232 = $('#numbertaghizedit').val();
+
+          //var val24 = $('#weekDay').val();
+          console.log(val22);
+          //console.log(val24);
+          console.log(val2);
+
+        obj.name = val2;
+        obj.nerghnintlink = val22;
+        obj.codmahsol = val232;
+        obj.ID =@Model.ID;
+          //obj.titr = val24;
+          console.log(obj);
+
+
+
+
+
+
+
+
+          sendAjax111('@Url.Action("creatvazvaselhedit", "FinancialDocuments", new { area = "ManagementAccounting" })', obj);
+
+
+
+       ;
+
+  });
+
+
+
+    function sendAjax111(url, data) {
+        console.log(url);
+
+        $.ajax({
+            beforeSend: function () {
+                document.getElementById("loading-message").style.display = "block";
+            },
+            url: url,
+            data: data,
+            type: "POST",
+            dataType: "html",
+            success: function (resp) {
+                console.log(resp);
+                document.getElementById("loading-message").style.display = "none";
+                if (resp == "True") {
+                    alert("با موفقیت ثبت شد");
+                    location.reload();
+                }
+
+                else {
+                    alert("resp")
+                }
+            },
+            error: function (resp) {
+                document.getElementById("loading-message").style.display = "none";
+                alert("دچار مشکل شده است ");
+                console.log(resp);
+            }
+        });
+    }
+</script>

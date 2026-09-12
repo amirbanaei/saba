@@ -1,0 +1,80 @@
+﻿
+@{
+    ViewBag.Title = "viewww";
+    Layout = "~/Areas/Salaries/Views/Shared/_Layout.cshtml";
+}
+
+<h2>viewww</h2>
+<div class="col-xl-2">
+    <label class="form-label"> مبلغ کل (ریال) </label>
+    <input class="form-control AmountInput control " id="TotalPrice" name="totalAmountInput_edit" type="text" maxlength="15" />
+
+</div>
+<div class="col-xl-1">
+    <div class="form-group mb-3">
+        <button class="btn btn-outline-success form-control buttonsabt" id="btnCreate12">ثبت </button>
+    </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+
+<script>
+        $("#btnCreate12").click(function () {
+            var Filters = [];
+            var obj = new Object();
+
+
+
+
+
+
+
+            //      var creditorCreditValue = $("#bestankar").val();
+            //      var resultString2 = creditorCreditValue.replace(/,/g, '');
+            //      var debtorCreditValue = $("#bedehkar").val();
+            //      var resultString = debtorCreditValue.replace(/,/g, '');
+
+            //obj.Debtore = resultString2;
+            //      obj.Debtorcredit = resultString;
+
+
+                /*  obj.Determining_creditline_ID = $("#idd").val();*/
+
+            obj.id = $("#TotalPrice").val();
+
+                  Filters.push(obj);
+                   console.log(Filters);
+                  sendAjax11('@Url.Action("viewwww", "Formula", new { area = "Salaries" })', obj);
+                  location.reload();
+
+              ;
+
+        });
+    function sendAjax11(url, data) {
+                console.log(url);
+
+                $.ajax({
+                    beforeSend: function () {
+                        document.getElementById("loading-message").style.display = "block";
+                    },
+                    url: url,
+                    data: data,
+                    type: "POST",
+                    dataType: "html",
+                    success: function (resp) {
+                        console.log(resp);
+                        document.getElementById("loading-message").style.display = "none";
+                        if (resp == "True") {
+                            alert("با موفقیت ثبت شد");
+                        } else {
+                            alert("مبلغ های های بستانکارهای شما بیش از حد مجاز در قرار داد است");
+                        }
+                    },
+                    error: function (resp) {
+                        document.getElementById("loading-message").style.display = "none";
+                        alert("دچار مشکل شده است ");
+                        console.log(resp);
+                    }
+                });
+            }
+</script>

@@ -1,0 +1,310 @@
+﻿@using SaabWebProject.Models.DomainModels;
+
+@{
+    ViewBag.Title = "کاربران حقیقی";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    SaabEntities db = new SaabEntities();
+}
+
+
+<div class="tab-content">
+    <div class="row mb-10px">
+        @*<div class="col-xl-4">
+            <label class="form-label ">سمت شغلی</label>
+
+            <select class="form-select" id="select_tbBusinessSide">
+                @foreach (var item in db.tbBusinessSide.ToList())
+                {
+                    <option value="@item.up_Id">@item.up_name</option>
+                }
+            </select>
+
+        </div>
+        <div class="col-xl-1">
+            <button id="Getfilter" type="button" class="btn btn-outline-theme form-control buttonGeneral">
+                <i class="VecGeneral fa fa-eye fa-fw me-1"></i>
+                <span class="bGeneral-text">مشاهده</span>
+
+            </button>
+        </div>*@
+        <div class="col-xl-9"></div>
+        <div class="col-xl-1">
+            <a href="@Url.Action("Export_Users","Users")" class="btn btn-outline-info form-control buttonGeneral">
+                <i class="VecGeneral bi bi-download fa-fw me-1"></i>
+                <span class="bGeneral-text">دانلود فایل اکسل نمونه</span>
+
+            </a>
+        </div>
+        <div class="col-xl-1">
+            <a href="#" onclick="ShowDialogFile()" class="btn btn-outline-info form-control buttonGeneral">
+                <i class="VecGeneral bi bi-upload fa-fw me-1"></i>
+                <span class="bGeneral-text">آپلود فایل حقیقی</span>
+
+            </a>
+        </div>
+        <div class="col-xl-1">
+            <button id="CreateUser" type="button" class="btn btn-outline-theme form-control buttonGeneral" data-bs-toggle="modal" data-bs-target="#modalLg">
+                <i class="VecGeneral fa fa-plus-circle fa-fw me-1"></i>
+                <span class="bGeneral-text">افزودن کاربر جدید</span>
+
+            </button>
+        </div>
+    </div>
+    @*@using (Ajax.BeginForm("ImportExel_Users", "Users", new AjaxOptions { HttpMethod = "Post", OnSuccess = "UploadedFile" }, null, new { id = "UploadFile", enctype = "multipart/form-data" }))
+        {
+            <input name="MyExcelStream" type="file" style="display:none" />
+        }*@
+
+    <input name="MyExcelStream" type="file" style="display:none" />
+
+    <div id="ListUsers">
+        @Html.Action("GetAllUsersList", "Users", new { area = "Users" })
+    </div>
+
+</div>
+<script src="~/Assets/js/jquery3.6.0.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+@*<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>*@
+
+<script src="~/Scripts/sweetalert2.js"></script>
+<script src="/Scripts/popper.min.js"></script>
+
+
+<script>
+    //$('#select_tbBusinessSide').picker({ search: true });
+
+const Toast = Swal.mixin({
+            toast: true,
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+$(function (){
+
+    var res = "@TempData["response"]";
+    if (res == "True"){
+         document.getElementById("loading-message").style.display = "none";
+        Toast.fire({
+             icon: 'success',
+             background: '#35434A',
+             color: 'white',
+             title: "اطلاعات با موفقیت ذخیره شد"
+         });
+    }
+    if (res == "False"){
+             document.getElementById("loading-message").style.display = "none";
+            Toast.fire({
+                 icon: 'warning',
+                 background: '#35434A',
+                 color: 'white',
+                 title: "اطلاعات ذخیره نشد"
+             });
+        }
+    if (res == "false_NotFoundUser"){
+             document.getElementById("loading-message").style.display = "none";
+            Toast.fire({
+                 icon: 'warning',
+                 background: '#35434A',
+                 color: 'white',
+                 title: "این کاربر از قبل در سیستم ثبت شده است"
+             });
+        }
+    if (res == "catch"){
+             document.getElementById("loading-message").style.display = "none";
+            Toast.fire({
+                 icon: 'error',
+                 background: '#35434A',
+                 color: 'white',
+                 title: "عملیات ذخیره سازی با خطا مواجه شد لطفا بعدا تلاش فرمائید"
+             });
+        }
+
+});
+$("#Getfilter").click(function () {
+    var selectedValue = $('#select_tbBusinessSide').val();
+    var url = '@Url.Action("GetFilter", "Users", new { area = "Users" })' + '?id=' + encodeURIComponent(selectedValue);
+
+    $("#ListUsers").load(url);
+});
+
+
+    // Select Excel File And Submit Form
+    $("input[name='MyExcelStream']").change(function () {
+        var file = this.files[0];
+        var ext = file.name.split('.')[1];
+        if (ext == "xlsx" || ext == "xls") {
+
+            var  obj = new FormData();
+
+            obj.append("MyExcelStream", file);
+
+            console.log(file);
+            $.ajax({
+            beforeSend:function (){
+              document.getElementById("loading-message").style.display = "block";
+            },
+               url: "@Url.Action("ImportExel_Users","Users")",
+               type: "post",
+               contentType: false,
+               data: obj,
+               processData: false,
+               cache: false,
+               success: function (res) {
+                   document.getElementById("loading-message").style.display = "none";
+                   UploadedFile(res);
+               },
+               error: function (res) {
+                   console.log(res);
+               }
+           });
+        }
+        else {
+
+            Swal.fire({
+                icon: 'warning',
+                background: 'rgb(29,40,52)',
+                color: 'white',
+                confirmButtonText: 'باشه',
+                title: 'نوع فایل',
+                text: 'لطفا فایلی با پسوند اکسل وارد کنید',
+            });
+            return false;
+        }
+
+    });
+    /// Open Dialog File
+    function ShowDialogFile() {
+        $("input[name='MyExcelStream']").val(null);
+        $("input[name='MyExcelStream']").click();
+    }
+
+    $("#CreateUser").click(function () {
+$("#big_modal_body").html(null);
+        $("#big_modal_body").load('@Url.Content("/Users/Users/_CreateUser")');
+
+    });
+
+
+    $(".EditUser").click(function () {
+$("#big_modal_body").html(null);
+        var id = $(this).attr("id").split('_')[1];
+
+
+$("#big_modal_body").load('@Url.Content("/Users/Users/_EditUser")?id='+id);
+
+
+
+    });
+
+    $(".SetAccessLevel").click(function () {
+$("#big_modal_body").html(null);
+        var id = $(this).attr("id").split('_')[1];
+       $("#big_modal_body").load('@Url.Content(Url.Action("_TreeViewAccessLevels_Users","AccessLevel") ?? string.Empty)?Id='+id);
+
+    });
+
+    function UploadedFile(res) {
+
+        if (res == "true") {
+
+            Toast.fire({
+                icon: 'success',
+                background: '#35434A',
+                color: 'white',
+                title: "اطلاعات با موفقیت ذخیره شد"
+            }).then(function () {
+
+                document.location.reload();
+
+            });
+
+        }
+        else {
+
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: res
+            });
+        }
+
+
+    }
+
+
+</script>
+@section Scripts{
+    <script>
+        /// DeActive Or Active a Business
+        function DeActiveUser(url, input, status) {
+
+            var state = "غیرفعال";
+            if (status) {
+                state = "فعال";
+            }
+
+            Swal.fire({
+                title: 'آیا مطمئن هستید؟',
+                text: "این کاربر در کل برنامه " + state + " می شود",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'بله, ' + state + ' کن!',
+                cancelButtonText: '' + state + ' نکن'
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    var id = $(input).attr('id').split('_')[1];
+                    input.setAttribute('title', state);
+                    $.ajax({
+                        beforeSend: function () {
+                            document.getElementById("loading-message").style.display = "block";
+                        },
+                        url: url,
+                        type: "get",
+                        data: { id: id },
+                        dataType: "html",
+                        success: function (res) {
+                            document.getElementById("loading-message").style.display = "none";
+                            if (res === "False") {
+                                Swal.fire({
+                                    icon: 'error',
+                                    confirmButtonText: 'باشه',
+                                    title: 'خطا',
+                                    text: 'برنامه با خطا مواجه شد',
+                                });
+                                return false;
+                            }
+                            Swal.fire({
+                                icon: 'success',
+                                confirmButtonText: 'باشه',
+                                title: '' + state + ' شد ',
+                                text: 'کاربر مورد نظر ' + state + ' شد',
+                            }).then(function () {
+                                document.location.reload();
+                            });
+                        },
+                        error: function () {
+                            document.getElementById("loading-message").style.display = "none";
+                            Toast.fire({
+                                icon: 'error',
+                                background: '#35434A',
+                                color: 'white',
+                                title: "عملیات با خطا مواجه شد لطفا بعدا تلاش کنید"
+                            });
+                        }
+                    });
+                }
+            });
+        }
+
+    </script>
+
+}

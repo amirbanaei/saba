@@ -1,0 +1,267 @@
+﻿@using SaabWebProject.Utility
+@model SaabWebProject.Models.DomainModels.tbContractMoalefeDastmozdi
+
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" type="text/css" rel="stylesheet" />
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div id="formControls" class="">
+
+        <div class="card">
+            <div class="card-body pb-2">
+                <form>
+
+                    <div class="row">
+                        <div class="col-xl-6">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> عنوان </label>
+                                @Html.EditorFor(model => model.md_Title, new { htmlAttributes = new { @class = "form-control", @id = "title" } })
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label "> واحد </label>
+                                <div class="cood">  @Html.Action("_ListVahedForSelect", "Moalefe", new { area = "BaseInformation" })</div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label">جنس مولفه</label>
+                                <select class="form-select" id="md_variable">
+                                    <option value="@Gender_Moalefe.Int">عدد</option>
+                                    <option value="@Gender_Moalefe.String">رشته</option>
+                                    <option value="@Gender_Moalefe.Date">تاریخ</option>
+                                    <option value="@Gender_Moalefe.Time">زمان</option>
+                                    <option value="@Gender_Moalefe.Tik">تیک</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label">نوع مولفه</label>
+                                <select class="form-select selsctor1" id="md_Type">
+                                    <option value="-1" selected hidden>انتخاب کنید..</option>
+                                    <option value="1">قراردادی</option>
+                                    <option value="2">عملکردی</option>
+                                    <option value="3">کاربری</option>
+                                    <option value="5">کنترلی</option>
+                                    <option value="4">سایر</option>
+                                    <option value="6">محاسباتی</option>
+                                    <option value="7">دستمزدی</option>
+                                    <option value="8">کارکردی</option>
+                                    <option value="9">پیشخوان</option>
+                                    <option value="10">فیش حقوقی</option>
+                                    <option value="11">صورت وضعیت </option>
+
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label">دسته بندی</label>
+                                @Html.Action("_GetAllListCategory_Select", "Categories", new { area = "Contracts" })
+                            </div>
+                        </div>
+                    </div>
+                    @*------------------------------------------------[1402/08/30]-|KH|-*@
+                <div class="row">
+                    <div class="col-xl-4" id="selector2" style="display:none;">
+                        <label class="form-label">نام...</label>
+                        <select class="form-select" id="md_select2">
+                            <option value="0" selected hidden>انتخاب کنید</option>
+                            <option value="1">کسورات</option>
+                            <option value="2">اضافات</option>
+                        </select>
+                    </div>
+                    <div class="col-xl-4" id="selector3" style="display:none;">
+                        <label class="form-label">مشمول</label>
+                        <select class="form-select" id="md_select3">
+                            <option value="0" selected hidden>انتخاب کنید</option>
+                            <option value="1">مشمول بیمه</option>
+                            <option value="2">مشمول مالیات</option>
+                            <option value="3">هر دو</option>
+                        </select>
+                    </div>
+                    <div class="col-xl-4" id="selector4" style="display:none;">
+                        <label class="form-label">مشمول</label>
+
+                        <input class="form-check-input inputFilter" type="checkbox"id="md_input4"
+                               @*name="selectAllOwner"
+                               id="selectAllMamur_@item.ID"
+                               onclick="selectAllRadios('@item.ID')"*@ />
+                        @*<select class="form-select" id="md_select3">
+            <option value="0" selected hidden>انتخاب کنید</option>
+            <option value="1">مشمول بیمه</option>
+            <option value="2">مشمول مالیات</option>
+            <option value="3">هر دو</option>
+        </select>*@
+                    </div>
+                </div>
+                    @*-------------------------------------------------------------|KH|-*@
+                    <div class="row" style="margin-bottom:2%">
+                        <div class="col-xl-11">
+                        </div>
+                        <div class="col-xl-1">
+                            <button id="btnSaveMoalefeDatMozdi" type="button" class="btn form-control buttonsabt">
+                                <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                                <span class="bSabt-text">ثبت</span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="card-arrow">
+                <div class="card-arrow-top-left"></div>
+                <div class="card-arrow-top-right"></div>
+                <div class="card-arrow-bottom-left"></div>
+                <div class="card-arrow-bottom-right"></div>
+            </div>
+        </div>
+    </div>
+}
+<script src="/Scripts/sweetalert2.js" type="text/javascript"></script>
+<script src="~/Scripts/sweetalert2.js" type="text/javascript"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+@*<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>*@
+@*------------------------------------------------[1402/08/30]-|KH|-*@
+<script>
+    $(document).ready(function () {
+        $(".selsctor1").change(function () {
+            console.log($(this).val())
+            if ($(this).val() == "10" || $(this).val() == "1") {
+                $("#selector2").show();
+                $("#selector3").show();
+                $("#selector4").show();
+
+            } else {
+                $("#selector2").hide();
+                $("#selector3").hide();
+                $("#selector4").hide();
+
+            }
+        });
+    });
+</script>
+@*-------------------------------------------------------------|KH|-*@
+<script>
+    $("#select_category")[0].attributes.getNamedItem("name").value = "FK_Category_ID";
+    var Toast = Swal.mixin({
+        toast: true,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    });
+    //$("#md_variable").picker();
+    //$("#md_Type").picker();
+
+    function sendAjax(url, data) {
+        $("#loading-message").css("display", "block");
+        $.ajax({
+            url: url,
+            data: { Filters: data},
+            type: "Post",
+            dataType: "html",
+            success: function (resp) {
+                console.log(resp);
+                $("#loading-message").css("display", "none");
+
+                if (resp == "True") {
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "اطلاعات با موفقیت ثبت شد"
+                    }).then(() => {
+                        location.reload();
+                    });
+                } else {
+                    $("#loading-message").css("display", "none");
+
+                    swal({
+                        title: "",
+                        type: "success",
+                        text: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید",
+                        buttons: false,
+                        timer: 2000
+                    }, function () {
+                    });
+                    $("#loading-message").css("display", "none");
+
+                }
+
+            },
+            error: function (resp) {
+                console.log(resp);
+                console.log("nashod");
+                swal({
+                    title: "",
+                    type: "success",
+                    text: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید",
+                    buttons: false,
+                    timer: 2000
+                }, function () {
+                });
+            }
+        });
+
+    }
+
+    $("#btnSaveMoalefeDatMozdi").click(function () {
+        if ($("#title").val().trim().length == 0) {
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: "لطفا عنوان مولفه را انتخاب کنید"
+            });
+        } else if ($("#md_variable").val().length == 0) {
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: "لطفا جنس متغیر را انتخاب کنید"
+            });
+        } else if ($("#md_Type").val().length == -1) {
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: "لطفا نوع متغیر را انتخاب کنید"
+            });
+        }
+        else{
+
+            var Filters = new Object();
+            Filters.md_variable = $("#md_variable").val();
+            Filters.md_Type = $("#md_Type").val();
+            Filters.included = $("#md_select3").val();
+            Filters.Deduction_or_addition = $("#md_select2").val();
+            Filters.md_Title = $("#title").val().trim();
+            Filters.FK_Category_ID = $("#select_category").val();
+            Filters.ISdays = $("#md_input4").is(":checked");
+
+            Filters.FK_UnitParameter = $("#select_Unit").val();
+            if (Filters.md_Title == "حق مسکن" || Filters.md_Title == "حق اولاد" || Filters.md_Title == "خوار و بار" || Filters.md_Title == "مزدگروه" || Filters.md_Title == "مزد سنوات" || Filters.md_Title == "گروه شغلی" || Filters.md_Title == "تاریخ شروع" || Filters.md_Title == "تاریخ پایان" || Filters.md_Title == "سال سنوات" || Filters.md_Title == "تعداد اولاد مشمول بیمه" || Filters.md_Title == "شهر محل خدمت") {
+
+                Toast.fire({
+                    icon: 'warning',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "این مولفه جز مولفه های غیرقابل ثبت می باشد"
+                });
+                return false;
+
+            }
+            sendAjax('@Url.Action("SaveMoalefeDastMozdi","MoalefeDastMozdi",new { area = "Contracts" })', Filters);
+
+      }
+    });
+</script>

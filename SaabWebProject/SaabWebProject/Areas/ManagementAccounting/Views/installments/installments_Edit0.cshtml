@@ -1,0 +1,489 @@
+﻿@{
+    ViewBag.TitleLargModal = "اقساط های جدید";
+    Layout = null;
+}
+@model SaabWebProject.Models.DomainModels.tbinstallments
+
+@{
+    int itemCount = Model.tb_Subset_of_installments.Count;
+
+}
+
+<link href="~/Content/installments.css" rel="stylesheet" />
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+
+<div class="row">
+
+
+    <input id="numm" value="@itemCount" style="display:none" />
+    <input id="Id1" value="@Model.installment_ID" style="display:none" />
+
+    @if (Model.Peyman_ID == null)
+    {
+
+
+        <select class="form-select" id="select_users1" name="select_users1">
+
+
+
+
+            <option value="@Model.User_ID">@Model.tbUsers.FullName</option>
+
+
+
+        </select>
+
+
+        <input style="display:none" id="lable2" value="کاربر" />
+
+    }
+    else
+    {
+
+
+        <select class="form-select select_peyman1" id="select_peyman1" name="select_peyman1">
+            <option hidden value="@Model.Peyman_ID">@Model.tbPeymanContracts.pec_Title</option>
+
+
+
+
+        </select>
+
+
+
+
+        <input style="display:none" id="lable2" value="پیمان" />
+
+
+    }
+
+    <div class="col-xl-3">
+        <label class="form-label"> مبلغ کل (ریال) </label>
+        <input class="form-control AmountInput1" id="totalAmountInput11" name="totalAmountInput11" type="text" maxlength="15" value="@Model.Total_Amount" />
+    </div>
+
+    <div class="col-xl-2">
+        <label class="form-label"> نوع محاسبه </label>
+        <select class="form-select" id="select_TypeOfCalculate1">
+            @if (Model.Calculation_type == true)
+            {
+                <option value="1">دستی </option>
+                <option value="2">خودکار</option>
+            }
+            else
+            {
+
+                <option value="2">خودکار</option>
+                <option value="1">دستی</option>
+            }
+
+
+
+        </select>
+
+    </div>
+
+
+
+
+</div>
+<div class="row mt-3">
+    <div class="col-xl-2">
+        <label class="form-label">ماه</label>
+        
+        <select id="month2" name="month_pr" class="form-select " >
+            @*<option value="0" hidden>انتخاب ماه</option>*@
+            @{
+                for (var i = 1; i <= 12; i++)
+                {
+                    <option style="background-color: #1c2734;color:#7e858c;" selected="selected" value="@i">@i </option>
+                }
+            }
+            <option style="background-color: #1c2734;color:#7e858c;" selected="selected" value="0" hidden>انتخاب ماه</option>
+        </select>
+    </div>
+    <div class="col-xl-2" style="margin-left:10px;">
+        <label class="form-label">سال</label>
+        
+        <div>
+            <select id="years" name="year_Eq" class="form-select">
+                @{
+                    System.Globalization.PersianCalendar cs2 = new System.Globalization.PersianCalendar();
+
+                    for (var i = 4; i >= 0; i--)
+                    {
+                        var s = DateTime.Now.AddYears(-i + 2);
+                        <option selected="selected" value="@cs2.GetYear(s)">@cs2.GetYear(s)</option>
+                    }
+                }
+            </select>
+        </div>
+
+    </div>
+    <div class="col-xl-3">
+        <label class="form-label">نام   </label>
+        
+        @Html.Action("moalfe_fk", "installments", new { area = "ManagementAccounting" })
+    </div>
+
+</div>
+
+<div class="row container">
+    @foreach (var item in Model.tb_Subset_of_installments)
+    {
+
+
+
+
+
+                // Update item.value to 0
+
+
+                <div class="col-md-3 mt-2">
+                    @* Decrease item.number by 1 *@
+
+                    <label class="form-label mx-4" id="installmentInput1_@item.number">شماره قسط @item.number</label>
+                    <div class="d-flex align-items-center installmentAmountInput1">
+                        <input class="form-control installmentAmountInput1" id="installmentInput_@item.number" value="@item.value" />
+                        @if (item.Subsetins_ID != null)
+                        {
+                            <input id="idddd_@item.number" value="@item.Subsetins_ID" style="display:none" />
+                        }
+                    </div>
+                </div>
+     
+  
+       
+
+    }
+</div>
+
+<div class="row mt-4 ">
+    <button onclick="addNewItem()" class="col=xl-4">افزودن عنصر جدید</button>
+    <input id="resultInput" />
+</div>
+<div class="row mt-4">
+    <button onclick="deleteLastItem()" class="col-xl-4">حذف آخرین عنصر</button>
+</div>
+
+
+
+
+<div class="row">
+    <div class="col-xl-6">
+        <label class="form-label"> شرح </label>
+        <textarea class="form-control" id="Title2" value="">@Model.Title</textarea>
+    </div>
+    <div class="col-xl-4">
+        <label class="form-label"> پیوست مدارک: </label>
+        @if (Model.File_SystemName != null)
+        {
+
+            <a target="_blank" href="~/Areas/ManagementAccounting/Contents/installmentAttachmentsFile/@Model.File_SystemName">
+                دانلود
+            </a>
+
+        }
+        else
+        {
+            <div style="color:red">پیوستی ثبت نشده است </div>
+        }
+    </div>
+</div>
+<div class="row" style="margin-top:20px">
+    <div class="col-xl-9">
+    </div>
+    <div class="col-xl-2">
+        <button class="btn buttonGeneral form-control uploadSummery">
+            <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+            <span class="bGeneral-text">بارگذاری پیوست</span>
+            
+        </button>
+        <input id="summery_file" style="display:none" type="file" class="form-control" value="" />
+    </div>
+    <div class="col-xl-1">
+        <button class="btn buttonsabt form-control" id="btnCreate2">
+            <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+            <span class="bSabt-text">ثبت</span>
+        </button>
+    </div>
+</div>
+
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+
+
+
+
+<script>
+    var num = 1;
+    var c = $("#numm").val();
+    console.log(c);
+    var x = parseInt(c) + 1;
+
+ 
+    function checkAndPerformAction() {
+        var totalAmount = 0;
+        $(".installmentAmountInput1 input").each(function () {
+            var inputValue = parseFloat($(this).val());
+            if (!isNaN(inputValue)) {
+                totalAmount += inputValue;
+            }
+        });
+
+        var taghrefg = parseFloat($("#totalAmountInput11").val()); //
+
+        return totalAmount;
+    }
+
+    function addNewItem() {
+        var taghrefg = parseFloat($("#totalAmountInput11").val());
+        var totalAmount = checkAndPerformAction();
+        console.log(totalAmount); 
+        if (!isNaN(totalAmount) && totalAmount < taghrefg) {
+          
+            for (let i = x; i < x + num; i++) {
+                var newItem = document.createElement("div");
+                newItem.className = "col-md-3 mt-2 ";
+                newItem.id = `installmentInput_${i}`;
+                newItem.innerHTML = `
+            <label class="form-label mx-4"> شماره قسط   `+ i + `</label>
+            <div class="d-flex align-items-center installmentAmountInput1">
+                <input class="form-control installmentAmountInput1" />
+            </div>
+        `;
+                
+                var container = document.querySelector(".container");
+                container.appendChild(newItem);
+                showResult()
+            }
+          
+            x += num;
+        }
+        else {
+            console.log("dfs");
+            showResult()
+        }
+    }
+    function showResult() {
+        var taghrefg = parseFloat($("#totalAmountInput11").val());
+        var totalAmount = checkAndPerformAction();
+        var resultInput = document.getElementById("resultInput");
+
+        if (!isNaN(totalAmount)) {
+            resultInput.value = taghrefg -= totalAmount;
+        } else {
+            resultInput.value = "خطا در محاسبه";
+        }
+    }
+
+    function deleteLastItem() {
+
+        if (x > 1) {
+            var lastItemId = `installmentInput_${x - 1}`;
+            var lastItem = document.getElementById(lastItemId);
+            if (lastItem) {
+                lastItem.remove();
+                showResult()
+                x--; 
+
+                var lastLabelId = `installmentInput1_${x}`;
+                var lastLabel = document.getElementById(lastLabelId);
+                if (lastLabel) {
+                    lastLabel.remove();
+                    showResult()
+                }
+
+            }
+
+        }
+
+    }
+
+</script>
+
+
+<script>
+    var fd = new FormData();
+
+
+</script>
+
+
+
+
+<script>
+           $(".uploadSummery").click(function () {
+                 $("#summery_file").click();
+           });
+
+            $("#summery_file").change(function (e) {
+                   $.each(e.target.files, function (index, file) {
+                      fd.append("files", file);
+                   });
+            });
+    $("#btnCreate2").click(function () {
+
+
+            if ($("#Creditlamdicatros").val() == 0) {
+                alert("لطفا عنوان را انتخاب نمائید");
+            }
+            if (($("#Title").val() == 0))
+                 {
+                alert("لطفا عنوان را وارد  نمائید");
+            }
+
+
+              if (($("#datepickerFrom_Eq").val() == 0))
+                 {
+                alert("لطفا تاریخ  را انتخاب نمائید");
+              }
+
+              else {
+                  console.log($("#select_TypeOfCalculate1").val());
+
+
+                  sendAjax22('@Url.Action("installments_Edit", "installments",new { area = "ManagementAccounting" })', fd);
+
+
+                }
+
+
+    });
+
+    function sendAjax22(url2, fd2) {
+     
+        var selectedValue = $('#lable2').val();
+        console.log(selectedValue);
+                        console.log($('#lable2').val());
+        var typee = $("#select_TypeOfCalculate1").val();
+      
+        if (selectedValue === 'کاربر') {
+            fd2.append("User_ID", $("#select_users1").val());
+        } else if (selectedValue === 'پیمان') {
+            fd2.append("Peyman_ID", $("#select_peyman1").val());
+        }
+        if (typee == 1) {
+            fd2.append("Calculation_type", true);
+        }
+        else if (typee == 2) {
+            fd2.append("Calculation_type", false);
+        }
+        var inputString = $("#totalAmountInput11").val();
+        var resultString = inputString.replace(/,/g, '');
+        fd2.append("numberOfInstallment", $("#numberOfInstallment").val());
+        fd2.append("Title", $("#Title2").val());
+        console.log($("#Title2").val());
+        fd2.append("Calculation_type", $("#select_TypeOfCalculate1").val());
+        fd2.append("Total_Amount", resultString);
+                fd2.append("installment_ID", $("#Id1").val());
+        console.log(fd2);
+
+        $.ajax({
+            url: url2,
+            type: 'POST',
+            data: fd2,
+            processData: false,
+            contentType: false,
+            success: function (resp1) {
+                var Filters = [];
+                var count = 0;
+                console.log(count);
+                $('.installmentAmountInput1').each(function (i, obj) {
+                    console.log($(this).attr("id"));
+
+                        count++;
+                        var obj = new Object();
+
+                        var inputString = $(this).val();
+                               var resultString = inputString.replace(/,/g, '');
+                        obj.value = resultString;
+                        console.log($(this).val());
+                        obj.number = count;
+                    obj.fk_installment_ID = resp1;
+                if ($("#idddd").val() != null) {
+                    obj.Subsetins_ID = $("#idddd").val();
+                    console.log($("#idddd").val());
+    Filters.push(obj);
+                } else {
+                     console.log($("#idddd").val());
+    Filters.push(obj);
+}
+
+
+                });
+                     $('.installmentAmountInput1Manually').each(function (i, obj) {
+                    console.log($(this).attr("id"));
+                    if ($(this).attr("id").split("_").length == 2) {
+                        count++;
+                        var obj = new Object();
+
+                        var inputString = $(this).val();
+                               var resultString = inputString.replace(/,/g, '');
+                        obj.value = resultString;
+                        console.log($(this).val());
+                        obj.number = count;
+                        obj.fk_installment_ID = resp1;
+                        Filters.push(obj);
+                    }
+                });
+
+
+                if (resp1 != 0) {
+                     sendAjax('@Url.Action("tbinstallments_Edit", "installments", new { area = "ManagementAccounting" })', Filters);
+
+                } else {
+                    $("#loading-message").css("display", "none");
+                    Toast.fire({
+                        icon: 'error',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                    }).then(() => {
+                        $("#loading-message").css("display", "none");
+                    });
+                }
+            },
+            error: function (resp1) {
+                console.log(resp1);
+                console.log("Nokeye");
+                $("#loading-message").css("display", "none");
+                Toast.fire({
+                    icon: 'error',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                }).then(() => {
+                    $("#loading-message").css("display", "none");
+                });
+            }
+        });
+    }
+      function sendAjax(url, data) {
+                console.log(url);
+
+                $.ajax({
+                    beforeSend: function () {
+                        document.getElementById("loading-message").style.display = "block";
+                    },
+                    url: url,
+                    data: { Filters: data },
+                    type: "POST",
+                    dataType: "html",
+                    success: function (resp) {
+                        console.log(resp);
+                        document.getElementById("loading-message").style.display = "none";
+                        if (resp == "True") {
+                            alert("با موفقیت ثبت شد");
+                            location.reload();
+                        } else {
+                            alert("در ثبت دچار خطا شده ایم ! لطفا بعدا تلاش نمائید")
+                        }
+                    },
+                    error: function (resp) {
+                        document.getElementById("loading-message").style.display = "none";
+                        alert("دچار مشکل شده است ");
+                        console.log(resp);
+                    }
+                });
+            }
+</script>

@@ -1,0 +1,144 @@
+﻿
+@using SaabWebProject.Models.DomainModels;
+
+@{ SaabEntities db = new SaabEntities();
+
+    ViewBag.Title = "ثبت و تایید ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row" style="margin-top:10px">
+    <div class="col-xl-8">
+        <label class="form-label"> عنوان مورد نظر </label>
+        @Html.Action("listselectorviewsabtnew", "RegistrationAndConfirmationProcedures", new { area = "Contracts" })
+    </div>
+
+    <div class="col-xl-2">
+        <label class="form-label">ماه</label>
+        <select class="form-select my_Select" id="MonthAz">
+            <option value="0">انتخاب مورد</option>
+            <option value="1">فروردین</option>
+            <option value="2">اردیبهشت</option>
+            <option value="3">خرداد</option>
+            <option value="4">تیر</option>
+            <option value="5">مرداد</option>
+            <option value="6">شهریور</option>
+            <option value="7">مهر</option>
+            <option value="8">آبان</option>
+            <option value="9">آذر</option>
+            <option value="10">دی</option>
+            <option value="11">بهمن</option>
+            <option value="12">اسفند</option>
+        </select>
+    </div>
+    <div class="col-xl-2">
+        <div class="col-xl-12">
+            <label class="form-label">سال</label>
+        </div>
+        <div class="col-xl-12">
+            <div class="col-xl-12">
+                <select class="form-select" id="YearAz">
+                    <option value="0">انتخاب مورد</option>
+
+                    @{
+                        System.Globalization.PersianCalendar cs2 = new System.Globalization.PersianCalendar();
+                        int currentYear = cs2.GetYear(DateTime.Now);
+
+                        for (var i = 4; i >= 0; i--)
+                        {
+                            var s = DateTime.Now.AddYears(-i);
+
+                            <option value="@cs2.GetYear(s)">@cs2.GetYear(s)</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xl-11"></div>
+    <div class="col-xl-1">
+        <button id="btnCalculateAzmayeshi" type="button" class="btn form-control buttonGeneral">
+            <i class="fa fa-eye fa-fw me-1 VecGeneral"></i>
+            <span class="bGeneral-text">مشاهده</span>
+        </button>
+    </div>
+</div>
+<div id="table"></div>
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script>
+    $.each($("#select_peyman"), function (index, item) {
+        $("#select_peyman").attr("id", "select_peyman_");
+        $('#select_peyman_').attr("multiple", "multiple");
+        $('#select_peyman_').picker({ search: true });
+        $('#select_peyman_').on('sp-change', function () { });
+    });
+</script>
+<script>
+
+       $("#btnCalculateAzmayeshi").click(function () {
+           var PeymanArr = [];
+           $.each($("#select_peyman_").val().toString().split(","), function (index, item) {
+               if (item !== "") {
+                   if (item != 'Select') {
+                       PeymanArr.push(item);
+                       console.log(item);
+                   }
+               }
+           });
+           var year = $("#YearAz").val();
+           var month = $("#MonthAz ").val();
+
+           if ($("#select_peyman_").val() == 'Select') {
+               alert("لطفا پیمان ها را انتخاب کنید");
+           }
+         
+           else if ($("#MonthAz").val() == 0) {
+               alert("لطفا ماه را انتخاب کنید");
+           }
+           else if ($("#YearAz").val() == 0) {
+               alert("لطفا سال را انتخاب کنید");
+           }
+
+           else {
+               $(".loader").css('display', 'block');
+               $("#loading-circle .loadingText1").text("لطفا منتظر نمایش اطلاعات بمانید ...");
+               $("#loading-circle").css("display", "flex");
+               $.ajax({
+                   url: "@Url.Action("sabttaeedfilter", "RegistrationAndConfirmationProcedures", new { area = "Contracts" })",
+                   type: "Post",
+                   dataType: "html",
+                   data: { Fkpym: PeymanArr, month3: month, year3: year },
+                   success: function (res) {
+                       $(".loader").css('display', 'none');
+
+                       document.getElementById("loading-message").style.display = "none";
+                       $("#loading-circle").css("display", "none"); // پنهان کردن لودینگ
+
+                       document.getElementById("loading-message").style.display = "none";
+                       $("#table").html(res)
+                       //$("#modalLg").modal('show')
+
+                   },
+                   error: function (res) {
+                       console.log(res);
+
+                       document.getElementById("loading-message").style.display = "none";
+                       Toast.fire({
+                           icon: 'error',
+                           background: '#35434A',
+                           color: 'white',
+                           title: "عملیات  با خطا مواجه شد"
+                       });
+                       return false;
+                   }
+               });
+           }
+       });
+
+</script>

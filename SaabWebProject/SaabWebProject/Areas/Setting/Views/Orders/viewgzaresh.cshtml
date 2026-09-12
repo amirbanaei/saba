@@ -1,0 +1,401 @@
+﻿@using SaabWebProject.Models.Classes;
+
+@{
+    ViewBag.Title = "گزارش حقوق و دستمزد";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+<style>
+    .responsive {
+        font-size: 10px !important;
+        padding: 9px
+    }
+
+    @@media (min-width: 1270px) and (max-width: 1500px) {
+        .responsive {
+            font-size: 12px;
+            padding: 11px
+        }
+    }
+</style>
+<div class="">
+    <ul class="nav nav-tabs nav-tabs-v2 ps-4 pe-4" id="pills-tab" style="margin-bottom:30px">
+        @if (UserStuf.PosID == "2165" || UserStuf.PosID == "2181" || UserStuf.PosID == "2174" || UserStuf.PosID == "2164" || UserStuf.PosID == "2166" || UserStuf.PosID == "2169" || UserStuf.PosID == "2169" || UserStuf.PosID == "2170" || UserStuf.PosID == "2171" || UserStuf.PosID == "2176" || UserStuf.PosID == "2177" || UserStuf.PosID == "2178")
+        {
+            <li class="nav-item me-3">
+                <a href="#TaedKarkardTajhizat" class="nav-link active" data-bs-toggle="tab">
+                    <button class=" nav-btn">گزارش مالیات </button>
+                </a>
+            </li>
+            @*<li class="nav-item me-3"><a href="#TaedVaziyatProjectHayeKalaye" class="nav-link" data-bs-toggle="tab"><button class=" nav-btn">تایید وضعیت پروژه های کالایی</button></a></li>*@
+            <li class="nav-item me-3">
+                <a href="#TaedKarkardTajhizat2" class="nav-link " data-bs-toggle="tab">
+                    <button class=" nav-btn">گزارش بیمه </button>
+                </a>
+            </li>
+            <li class="nav-item me-3">
+                <a href="#pardaghti" class="nav-link" data-bs-toggle="tab">
+                    <button class=" nav-btn">گزارش پرداختی </button>
+                </a>
+            </li>
+            <li class="nav-item me-3">
+                <a href="#hakmat" class="nav-link" data-bs-toggle="tab">
+                    <button class=" nav-btn">گزارش حاکمیت </button>
+                </a>
+            </li>
+            <li class="nav-item me-3">
+                <a href="#hakmat2" class="nav-link" data-bs-toggle="tab">
+                    <button class=" nav-btn">گزارش حاکمیت2 </button>
+                </a>
+            </li>
+            <li class="nav-item me-3">
+                <a href="#eydi" class="nav-link" data-bs-toggle="tab">
+                    <button class=" nav-btn">محاسبات عیدی و پاداش  </button>
+                </a>
+            </li>
+        }
+        else if (UserStuf.PosID == "2190")
+        {
+            <li class="nav-item me-3">
+                <a href="#TaedKarkardKarbaran" class="nav-link active" data-bs-toggle="tab">
+                    <button class=" nav-btn">گزارش فیش</button>
+                </a>
+            </li>
+        }
+
+        else
+        {
+            <li class="nav-item me-3">
+                <a href="#TaedKarkardKarbaran" class="nav-link active" data-bs-toggle="tab">
+                    <button class=" nav-btn">گزارش فیش</button>
+                </a>
+            </li>
+            <li class="nav-item me-3">
+                <a href="#TaedKarkardTajhizat" class="nav-link" data-bs-toggle="tab">
+                    <button class=" nav-btn">گزارش مالیات </button>
+                </a>
+            </li>
+            @*<li class="nav-item me-3"><a href="#TaedVaziyatProjectHayeKalaye" class="nav-link" data-bs-toggle="tab"><button class=" nav-btn">تایید وضعیت پروژه های کالایی</button></a></li>*@
+            <li class="nav-item me-3">
+                <a href="#TaedKarkardTajhizat2" class="nav-link" data-bs-toggle="tab">
+                    <button class=" nav-btn">گزارش بیمه </button>
+                </a>
+            </li>
+            <li class="nav-item me-3">
+                <a href="#TaedKarkardTajhizat255" class="nav-link" data-bs-toggle="tab">
+                    <button class=" nav-btn">گزارش هایلو </button>
+                </a>
+            </li>
+
+            <li class="nav-item me-3">
+                <a href="#pardaghti" class="nav-link" data-bs-toggle="tab">
+                    <button class=" nav-btn">گزارش پرداختی </button>
+                </a>
+            </li>
+            <li class="nav-item me-3">
+                <a href="#hakmat" class="nav-link" data-bs-toggle="tab">
+                    <button class=" nav-btn">گزارش حاکمیت </button>
+                </a>
+            </li>
+            <li class="nav-item me-3">
+                <a href="#eydi" class="nav-link" data-bs-toggle="tab">
+                    <button class=" nav-btn">محاسبات عیدی و پاداش  </button>
+                </a>
+            </li>
+            <li class="nav-item me-3">
+                <a href="#hakmat2" class="nav-link" data-bs-toggle="tab">
+                    <button class=" nav-btn">گزارش حاکمیت2 </button>
+                </a>
+            </li>
+        }
+
+
+        @*<li class="nav-item me-3">
+            <a href="#Taedsorathad" class="nav-link" data-bs-toggle="tab">
+                <button class=" nav-btn">سقف مالیات شهرستان  </button>
+            </a>
+        </li>*@
+        <!--<li class="nav-item me-3">
+        <a href="#TaedFish" class="nav-link" data-bs-toggle="tab">
+            <button class=" nav-btn">ضریب مالیات شهرستان  </button>
+        </a>
+    </li>
+
+    <li class="nav-item me-3">
+        <a href="#Sodorfish" class="nav-link" data-bs-toggle="tab">
+            <button class=" nav-btn">تنطیمات صدور فیش برای کاربر </button>
+        </a>
+    </li>-->
+
+
+    </ul>
+    <div class="tab-content p-2">
+        @if (UserStuf.PosID == "2165" || UserStuf.PosID == "2181" || UserStuf.PosID == "2174" || UserStuf.PosID == "2164" || UserStuf.PosID == "2166" || UserStuf.PosID == "2169" || UserStuf.PosID == "2169" || UserStuf.PosID == "2170" || UserStuf.PosID == "2171" || UserStuf.PosID == "2176" || UserStuf.PosID == "2177" || UserStuf.PosID == "2178")
+        {
+            <div class="tab-pane show active " id="TaedKarkardTajhizat">
+                @Html.Action("viewmalyat", "Orders", new { area = "Setting" })
+
+
+                <hr />
+
+                @*@Html.Action("_ListEquipmentMoalefeValueForAcceper", "DefFacilitiesEquipment", new { area = "Contracts" })*@
+            </div>
+            <div class="tab-pane" id="pardaghti">
+
+                @Html.Action("pardaghti", "Orders", new { area = "Setting" })
+
+                <hr />
+
+
+
+            </div>
+            <div class="tab-pane" id="hakmat">
+
+                @Html.Action("hakmat", "Orders", new { area = "Setting" })
+
+                <hr />
+
+
+
+            </div>
+            <div class="tab-pane" id="hakmat2">
+
+                @Html.Action("hakmat_newver", "Orders", new { area = "Setting" })
+
+                <hr />
+
+
+
+            </div>
+            <div class="tab-pane" id="eydi">
+
+                @Html.Action("eydi_padash", "Orders", new { area = "Setting" })
+
+                <hr />
+
+
+
+            </div>
+            <div class="tab-pane" id="TaedKarkardTajhizat2">
+
+                @Html.Action("viewbemeh", "Orders", new { area = "Setting" })
+
+                <hr />
+
+
+
+            </div>
+        }
+        else if (UserStuf.PosID == "2190")
+        {
+            <div class="tab-pane fade show active" id="TaedKarkardKarbaran">
+                @*@Html.Action("ShowUsersFunctions", "Functions", new { area = "Contracts" })*@
+                @Html.Action("viewfish", "Orders", new { area = "Setting" })
+                <hr />
+                @*@Html.Action("ShowUsersFunctions", "Functions", new { area = "Contracts" })*@
+
+
+            </div>
+        }
+        else
+        {
+            <div class="tab-pane fade show active" id="TaedKarkardKarbaran">
+                @*@Html.Action("ShowUsersFunctions", "Functions", new { area = "Contracts" })*@
+                @Html.Action("viewfish", "Orders", new { area = "Setting" })
+                <hr />
+                @*@Html.Action("ShowUsersFunctions", "Functions", new { area = "Contracts" })*@
+
+
+            </div>
+            <div class="tab-pane   " id="TaedKarkardTajhizat">
+                @Html.Action("viewmalyat", "Orders", new { area = "Setting" })
+
+
+                <hr />
+
+                @*@Html.Action("_ListEquipmentMoalefeValueForAcceper", "DefFacilitiesEquipment", new { area = "Contracts" })*@
+            </div>
+
+            @*تایید کارکرد  کاربران  *@
+
+            @*تایید کارکرد تجهیزات    *@
+
+
+            @*تایید پروژه کالایی    *@
+            <div class="tab-pane" id="TaedKarkardTajhizat2">
+
+                @Html.Action("viewbemeh", "Orders", new { area = "Setting" })
+
+                <hr />
+
+
+
+            </div>
+            <div class="tab-pane" id="TaedKarkardTajhizat255">
+
+                @Html.Action("Hilo", "Salary", new { area = "Salaries" })
+
+                <hr />
+
+
+
+            </div>
+
+
+            <div class="tab-pane" id="pardaghti">
+
+                @Html.Action("pardaghti", "Orders", new { area = "Setting" })
+
+                <hr />
+
+
+
+            </div> <div class="tab-pane" id="hakmat">
+
+                @Html.Action("hakmat", "Orders", new { area = "Setting" })
+
+                <hr />
+
+
+
+            </div>
+            <div class="tab-pane" id="hakmat2">
+
+                @Html.Action("hakmat_newver", "Orders", new { area = "Setting" })
+
+                <hr />
+
+
+
+            </div>
+            <div class="tab-pane" id="eydi">
+
+                @Html.Action("eydi_padash", "Orders", new { area = "Setting" })
+
+                <hr />
+
+
+
+            </div>
+
+
+
+
+        }
+
+        @*<div class="tab-pane" id="TaedFish">
+
+            @Html.Action("City_tax4", "Admin", new { area = "Setting" })
+
+            <hr />
+
+
+
+        </div>
+        <div class="tab-pane" id="Sodorfish">
+
+            @Html.Action("viewforcheackfish", "Admin", new { area = "Setting" })
+
+            <hr />
+
+
+
+        </div>*@
+
+
+
+        @*تایید حد انتظار های صورت وضعیت*@
+        <!--<div class="tab-pane" id="Taedsorathad">
+
+    @Html.Action("Acceptview_Sorat", "WareHouse", new { area = "WareHouse" })
+
+    <hr />
+    @Html.Action("Listview_Sorat", "WareHouse", new { area = "WareHouse" })-->
+        @*@Html.Action("_ListEquipmentMoalefeValueForAcceper", "DefFacilitiesEquipment", new { area = "Contracts" })*@
+        <!--</div>-->
+        @*تایید وضعیت پروژه های کالایی  *@
+        <!--<div class="tab-pane" id="TaedVaziyatProjectHayeKalaye">
+    <label class="form-label">جدول عملکردهای دریافتی</label>
+    <div class="table-responsive">
+        <table class="table table-hover text-nowrap">
+            <thead>
+                <tr style="text-align:center;margin:auto">
+                    <th>
+                        @Html.DisplayName("ردیف")
+                    </th>
+                    <th style="width:30%">
+                        @Html.DisplayName("پیمان")
+                    </th>-->
+        @*<th>
+            @Html.DisplayName("بسته")
+        </th>*@
+        <!--<th>
+        @Html.DisplayName(" تاریخ")
+    </th>-->
+        @*<th>
+            @Html.DisplayName("تا تاریخ")
+        </th>*@
+        <!--<th>
+                            @Html.DisplayName("شماره پروژه کالایی")
+                        </th>
+                        <th>
+                            @Html.DisplayName("وضعیت")
+                        </th>
+
+
+                    </tr>
+
+                </thead>
+                <tbody>
+
+
+                    <tr style="text-align:center;">
+
+
+                        <td> <span>1</span></td>
+                        <td> <span></span></td>
+                        .
+                        <td></td>
+
+                        <td>
+                            5
+                        </td>
+                        <td>
+                            <div class="ms-sm-4 mt-sm-0 mt-2 dropdown-toggle">
+                                <input type="checkbox" class="checkbox" />
+
+                            </div>
+                        </td>
+
+                    </tr>
+                    <tr style="text-align:center;">
+
+
+                        <td> <span>2</span></td>
+                        <td> <span></span></td>
+                        <td> <span></span></td>
+
+                        <td>
+                            6
+                        </td>
+
+                        <td>
+                            <div class="ms-sm-4 mt-sm-0 mt-2 dropdown-toggle">
+                                <input type="checkbox" class="checkbox" />
+
+
+                            </div>
+                        </td>
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>-->
+
+
+
+    </div>
+
+</div>

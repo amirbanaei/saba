@@ -1,0 +1,71 @@
+﻿@{
+    Layout = null;
+    ViewBag.Title = "ایجاد اولویت ۱۲۱۸";
+}
+@model SaabWebProject.Models.DomainModels.olaviat_1218_alsil
+
+<div class="tab-content" id="pills-tabContent" style="padding:20px; background:#f7f7f7;">
+    <div class="row">
+        <div class="col-xl-2">
+            <div class="form-group mb-3">
+                <label class="form-label">عنوان اولویت </label>
+                <input class="form-control" id="name33"value="@Model.name" />
+            </div>
+        </div>
+        <div class="col-xl-1"></div>
+        <div class="col-xl-1">
+            <button id="btnSave22" type="button" class="btn form-control buttonsabt">
+                <i class="bi bi-plus-circle fa-fw me-1 VecGeneral"></i>
+                <span class="bSabt-text">افزودن اولویت</span>
+            </button>
+        </div>
+    </div>
+    <!--<div class="row">-->
+        @*$("#myTable").load('@Url.Action("listdocum", "FinancialDocuments", new { area = "ManagementAccounting" })');*@
+
+        <!--@Html.Action("CreatOlaveat12182_list", "Orders", new { Area = "Setting" })
+    </div>-->
+    <div id="resultMsg" class="mt-3"></div>
+</div>
+
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script>
+    $(document).ready(function () {
+    $("#btnSave22").click(function () {
+        var name1 = $("#name33").val().trim();
+        var name2 = @Model.ID;
+
+        if (name1 == "") {
+            alert("لطفا مقدار شرط را وارد کنید");
+            return;
+        }
+
+        $.ajax({
+            url: "/Setting/Orders/SaveOlaveat1218edit",
+            type: "POST",
+            data: { name: name1, name2: name2 },
+            success: function (res) {
+                if (res.status === true) {
+                    alert("با موفقیت ثبت شد");
+                    $("#name").val("");
+                } else {
+                    alert("خطا در ثبت");
+                }
+            },
+            error: function () {
+                alert("خطای ارتباط با سرور");
+            }
+        });
+    });
+    });
+</script>
+
+
+
+
+
+
+
+
+
+

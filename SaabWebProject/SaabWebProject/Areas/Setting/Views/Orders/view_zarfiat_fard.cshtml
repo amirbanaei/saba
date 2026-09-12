@@ -1,0 +1,214 @@
+﻿@using SaabWebProject.Models.DomainModels;
+
+@{
+    ViewBag.Title = "ظرفیت افراد ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    SaabEntities db = new SaabEntities();
+}
+
+<div class="row">
+
+    <div class="col-xl-4">
+        <label class="form-label">نام کاربر</label>
+        <select class="form-select select_peymanhazf" id="selecthazfpymn" name="selecthazf">
+            <option hidden value="0">انتخاب مورد</option>
+            @foreach (var item in db.tbUsers.ToList())
+            {
+                <option value="@item.usr_ID">@item.FullName _ @item.usr_Personal_ID</option>
+            }
+        </select>
+    </div>
+
+    <div class="col-xl-4">
+        <label class="form-label">شغل کاربر</label>
+        <select class="form-select valujob" id="valujob" name="valujob">
+            <option value="1">عادی</option>
+            <option value="2">دیماندی</option>
+            <option value="3">سایر</option>
+
+        </select>
+    </div>
+    <div class="col-xl-4">
+        <label class="form-label">وضعیت  کاربر</label>
+        <select class="form-select vaziatperson" id="vaziatperson" name="vaziatperson">
+            <option value="1">فعال</option>
+            <option value="2">غیر فعال</option>
+        </select>
+    </div>
+    <div class="col-xl-2">
+        <label class="form-label">کد منطقه 1</label>
+        <input class="form-control" id="numbersoart1" value="0" />
+    </div>
+
+    <div class="col-xl-2">
+        <label class="form-label">کد منطقه 2</label>
+        <input class="form-control" id="numbersoart2" value="0" />
+    </div>
+
+    <div class="col-xl-2">
+        <label class="form-label">کد منطقه 3</label>
+        <input class="form-control" id="numbersoart3" value="0" />
+    </div>
+
+    <div class="col-xl-2">
+        <label class="form-label">کد منطقه 4</label>
+        <input class="form-control" id="numbersoart4" value="0" />
+    </div>
+
+    <div class="col-xl-2">
+        <label class="form-label">کد منطقه 5</label>
+        <input class="form-control" id="numbersoart5" value="0" />
+    </div>
+
+    <div class="col-xl-2">
+        <label class="form-label">کد منطقه 6</label>
+        <input class="form-control" id="numbersoart6" value="0" />
+    </div>
+
+</div>
+
+<div class="row mt-3">
+    <div class="col-xl-11"></div>
+    <div class="col-xl-1">
+        <button class="btn form-control buttonGeneral" id="btnhazf" type="button">
+            <i class="fa fa-eye fa-fw me-1 VecGeneral"></i>
+            <span class="bGeneral-text">مقدار دستی معادل کار</span>
+        </button>
+    </div>
+</div>    <div class="col-xl-1">
+    <a href="@Url.Action("ExportAddMoalefezarfiat","Orders",new {area="Setting" })" class="btn form-control buttonGeneral">
+        <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+        <span class="bGeneral-text">دانلود فایل نمونه</span>
+    </a>
+</div>
+<div class="col-xl-1">
+    <a class="btn form-control buttonGeneral" id="upload10" style="font-size:10px;margin-bottom:10px;">
+        <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+        <span class="bGeneral-text"> بارگزای اکسل</span>
+    </a>
+</div>
+<input id="summery_file10" style="display:none" type="file" class="form-control" value="" />
+<input id="summery_file11" style="display:none" type="file" class="form-control" value="" />
+<input id="summery_file112" style="display:none" type="file" class="form-control" value="" />
+
+<div id="ListUsers">
+    @Html.Action("view_zarfiat_fard_list", "Orders", new { area = "Setting" })
+</div>
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Scripts/popper.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+                                $("#upload10").click(function () {
+
+
+
+
+
+      $("#summery_file10").click();
+
+        });
+       fd3 = new FormData();
+
+$("#summery_file10").change(function (e) {
+             $.each(e.target.files, function (index, file) {
+                 fd3.append("MyExcelStream", file);
+             });
+
+    sendAjax14('@Url.Action("Import_excel_zarfiat", "Orders", new { area = "Setting" })', fd3);
+});
+
+        function sendAjax14(url2, fd2) {
+
+            document.getElementById("loading-circle").style.display = "block";
+
+
+    $.ajax({
+        url: url2,
+        type: 'POST',
+        data: fd2,
+        processData: false,
+        contentType: false,
+        success: function (res) {
+            document.getElementById("loading-circle").style.display = "none";
+
+            $("#loading-message").css("display", "none");
+            fd = new FormData();
+            console.log(res);
+            console.log("jj");
+
+            if (res == "True") {
+                alert("با موفقیت ثبت شد ");
+            //    location.reload();
+            }
+                   @*$("#table_div").load('@Url.Content("../defFacilitiesEquipment/_ListEquipmentMoalefeValue")');*@
+
+
+
+        },
+        error: function (res) {
+            $("#loading-message").css("display", "none");
+            console.log(res);
+            console.log("jj");
+            Toast.fire({
+                icon: 'success',
+                background: '#35434A',
+                color: 'white',
+                title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+            }).then(() => {
+                $("#loading-message").css("display", "none");
+            });
+        }
+    });
+}
+        $("#selecthazfpymn").picker({ search: true });
+
+        $('#btnhazf').click(function () {
+
+            var fkusr = $('#selecthazfpymn').val();
+            var job = $('#valujob').val();
+
+            var mantagheh1 = $('#numbersoart1').val() || 0;
+            var mantagheh2 = $('#numbersoart2').val() || 0;
+            var mantagheh3 = $('#numbersoart3').val() || 0;
+            var mantagheh4 = $('#numbersoart4').val() || 0;
+            var mantagheh5 = $('#numbersoart5').val() || 0;
+            var mantagheh6 = $('#numbersoart6').val() || 0;
+            var vaziatperson = $('#vaziatperson').val() || 0;
+
+            if (fkusr == "0" || fkusr == null || fkusr == "") {
+                alert('لطفاً کاربر را انتخاب کنید.');
+                return;
+            }
+
+            var url = '/Setting/Orders/create_sabt'
+                + '?fkusr=' + fkusr
+                + '&job=' + job
+                + '&mantagheh1=' + mantagheh1
+                + '&mantagheh2=' + mantagheh2
+                + '&mantagheh3=' + mantagheh3
+                + '&mantagheh4=' + mantagheh4
+                + '&mantagheh5=' + mantagheh5
+                + '&vaziatperson=' + vaziatperson
+
+                + '&mantagheh6=' + mantagheh6;
+
+            $.ajax({
+                type: 'GET',
+                url: url,
+                success: function (response) {
+                    if (response === "TRue") {
+                        alert('عملیات موفق بود.');
+                    } else {
+                        alert('پاسخ: ' + response);
+                    }
+                },
+                error: function () {
+                    alert('خطا در انجام درخواست.');
+                }
+            });
+        });
+    });
+</script>

@@ -1,0 +1,270 @@
+﻿@model SaabWebProject.Models.ViewModels.Contracts.Function.FunctionModel.EditEvaluationViewModel
+
+@{
+    Layout = null;
+}
+<input type="hidden" id="evaluationId" value="@Model.ID" />
+<form id="evaluationForm" method="post" action="/Setting/Orders/SubmitEditedEvaluation">
+    <input type="hidden" name="EvaluationData" id="evaluationDataInput" />
+</form>
+<div class="row">
+    <div class="mb-3">
+        <label class="form-label">عنوان ارزیابی:</label>
+        <input type="text" class="form-control" id="evaluationTitle" value="@Model.Title" />
+    </div>
+    <div class="col-xl-4">
+        <label class="form-label">محل سکونت</label>
+
+        <select class="form-select " id="typegozarwsh">
+            @*<option hidden value="Select">انتخاب مورد</option>*@
+            @if (Model.typegozarwsh == 0)
+            {
+                <option value="0">انتخاب کنید</option>
+
+                <option value="1">نظرسنجی </option>
+
+                <option value="2">ارزیابی </option>
+
+            }
+            else if (Model.typegozarwsh == 1)
+            {
+
+                <option value="1">نظرسنجی </option>
+
+                <option value="2">ارزیابی </option>
+
+            }
+            else if (Model.typegozarwsh == 2)
+            {
+                <option value="2">ارزیابی </option>
+
+                <option value="1">نظرسنجی </option>
+
+
+
+            }
+            else
+            {
+                <option value="0">انتخاب کنید</option>
+
+                <option value="1">نظرسنجی </option>
+
+                <option value="2">ارزیابی </option>
+
+            }
+
+        </select>
+
+    </div>
+</div>
+
+
+<div id="questionsContainer">
+    @for (int i = 0; i < Model.Questions.Count; i++)
+    {
+        var q = Model.Questions[i];
+        <div class="question-block" data-qid="@q.ID">
+            <div class="row g-2 mb-2">
+                <div class="col-md-5">
+                    <input type="text" class="form-control" value="@q.Text" placeholder="متن سوال" />
+                </div>
+                <div class="col-md-5">
+                    <input type="text" class="form-control" value="@q.Description" placeholder="شرح" />
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-danger btn-sm w-100" onclick="removeElement(this.closest('.question-block'))">حذف سؤال</button>
+                </div>
+            </div>
+
+            <div id="options-@i">
+                @for (int j = 0; j < q.Options.Count; j++)
+                {
+                    var o = q.Options[j];
+                    <div class="row g-2 mb-2" data-oid="@o.ID">
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" value="@o.Text" placeholder="متن گزینه" />
+                        </div>
+                        <div class="col-md-5">
+                            <input type="number" class="form-control" value="@o.Weight" placeholder="وزن" />
+                        </div>
+                        <div class="col-md-1">
+                            <button class="btn btn-danger btn-sm w-100" onclick="removeElement(this.closest('.row'))">❌</button>
+                        </div>
+                    </div>
+                }
+            </div>
+            <button class="btn btn-success btn-sm my-2" onclick="addOption(@i)">➕ افزودن گزینه</button>
+        </div>
+    }
+</div>
+
+<button class="btn btn-success my-3" onclick="addQuestion()">➕ افزودن سؤال جدید</button>
+<button class="btn btn-primary" onclick="submitEvaluation()">💾 ذخیره تغییرات</button>
+
+<script>
+    function removeElement(el) {
+        el.remove();
+    }
+
+    function addOption(index) {
+        const optionsContainer = document.getElementById(`options-${index}`);
+        const row = document.createElement('div');
+        row.className = "row g-2 mb-2";
+
+        row.innerHTML = `
+            <div class="col-md-6">
+                <input type="text" class="form-control" placeholder="متن گزینه" />
+            </div>
+            <div class="col-md-5">
+                <input type="number" class="form-control" placeholder="وزن" />
+            </div>
+            <div class="col-md-1">
+                <button class="btn btn-danger btn-sm w-100" onclick="removeElement(this.closest('.row'))">❌</button>
+            </div>`;
+        optionsContainer.appendChild(row);
+    }
+
+    function addQuestion() {
+        const container = document.getElementById("questionsContainer");
+        const index = container.querySelectorAll(".question-block").length;
+
+        const qBlock = document.createElement("div");
+        qBlock.className = "question-block";
+
+        qBlock.innerHTML = `
+            <div class="row g-2 mb-2">
+                <div class="col-md-5">
+                    <input type="text" class="form-control" placeholder="متن سوال" />
+                </div>
+                <div class="col-md-5">
+                    <input type="text" class="form-control" placeholder="شرح" />
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-danger btn-sm w-100" onclick="removeElement(this.closest('.question-block'))">حذف سؤال</button>
+                </div>
+            </div>
+            <div id="options-${index}"></div>
+            <button class="btn btn-success btn-sm my-2" onclick="addOption(${index})">➕ افزودن گزینه</button>
+        `;
+        container.appendChild(qBlock);
+    }
+    function submitEvaluation() {
+        const title = document.getElementById("evaluationTitle").value;
+        const typegozarwsh = document.getElementById("typegozarwsh").value;
+
+        const id = document.getElementById("evaluationId").value;
+        const questions = [];
+
+        document.querySelectorAll(".question-block").forEach((qBlock, i) => {
+            const qId = qBlock.getAttribute("data-qid");
+            const qInputs = qBlock.querySelectorAll("input");
+            const text = qInputs[0].value;
+            const description = qInputs[1].value;
+
+            const options = [];
+            const optionRows = qBlock.querySelectorAll(".row[data-oid], .row:not([data-oid])");
+
+            optionRows.forEach(row => {
+                const oId = row.getAttribute("data-oid");
+                const oInputs = row.querySelectorAll("input");
+                const text = oInputs[0]?.value?.trim();
+                const weight = parseInt(oInputs[1]?.value);
+
+                if (text) {
+                    options.push({
+                        ID: oId ? parseInt(oId) : null,
+                        Text: text,
+                        Weight: isNaN(weight) ? 0 : weight
+                    });
+                }
+            });
+
+            if (text) {
+                questions.push({
+                    ID: qId ? parseInt(qId) : null,
+                    Text: text,
+                    Description: description,
+                    Options: options
+                });
+            }
+        });
+
+        // آماده‌سازی داده نهایی
+        const evaluationData = {
+            ID: parseInt(id),
+            Title: title,
+            typegozarwsh: typegozarwsh,
+            Questions: questions
+        };
+
+        // قرار دادن JSON در input مخفی
+        document.getElementById("evaluationDataInput").value = JSON.stringify(evaluationData);
+
+        // ارسال فرم
+        document.getElementById("evaluationForm").submit();
+    }
+    //async function submitEvaluation() {
+    //    const title = document.getElementById("evaluationTitle").value;
+    //    const id = document.getElementById("evaluationId").value;
+    //    const questions = [];
+
+    //    document.querySelectorAll(".question-block").forEach((qBlock, i) => {
+    //        const qId = qBlock.getAttribute("data-qid");
+    //        const qInputs = qBlock.querySelectorAll("input");
+    //        const text = qInputs[0].value;
+    //        const description = qInputs[1].value;
+
+    //        const options = [];
+    //        const optionRows = qBlock.querySelectorAll(".row[data-oid], .row:not([data-oid])");
+
+    //        optionRows.forEach(row => {
+    //            const oId = row.getAttribute("data-oid");
+    //            const oInputs = row.querySelectorAll("input");
+    //            const text = oInputs[0]?.value?.trim();
+    //            const weight = parseInt(oInputs[1]?.value);
+
+    //            if (text) {
+    //                options.push({
+    //                    ID: oId ? parseInt(oId) : null,
+    //                    Text: text,
+    //                    Weight: isNaN(weight) ? 0 : weight
+    //                });
+    //            }
+    //        });
+
+    //        if (text) {
+    //            questions.push({
+    //                ID: qId ? parseInt(qId) : null,
+    //                Text: text,
+    //                Description: description,
+    //                Options: options
+    //            });
+    //        }
+    //    });
+
+    //    const payload = {
+    //        EvaluationData: {
+    //            ID: parseInt(id),
+    //            Title: title,
+    //            Questions: questions
+    //        }
+    //    };
+    //    console.log(payload);
+    //    const res = await fetch("/Setting/Orders/SubmitEditedEvaluation", {
+    //        method: 'POST',
+    //        headers: { 'Content-Type': 'application/json' },
+    //        body: JSON.stringify(payload)
+    //    });
+
+    //    try {
+    //        const result = await res.json();
+    //        if (result.success)
+    //            alert("✅ ذخیره با موفقیت انجام شد");
+    //        else
+    //            alert("❌ خطا: " + result.message);
+    //    } catch (e) {
+    //        alert("❌ خطای ارتباط با سرور. پاسخ معتبر دریافت نشد.");
+    //        console.error("Response was not JSON:", e);
+    //    }
+    //}
+</script>

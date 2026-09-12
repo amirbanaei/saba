@@ -1,0 +1,113 @@
+﻿
+@{
+    ViewBag.Title = "ویرایش";
+    Layout = null;
+}
+@model SaabWebProject.Models.DomainModels.tbCreditIndicators
+
+<style>
+    .modal-lg, .modal-xl {
+        margin-top: 8px !important;
+        max-width: 80% !important;
+    }
+</style>
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-xl-3">
+
+                <label class="form-label"> عنوان  </label>
+                <input class="form-control" id="Title2" value="@Model.Title" />
+
+            </div>
+            <div class="col-xl-9">
+                <label class="form-label"> شرح  </label>
+                <input class="form-control" id="Description2" value="@Model.Description" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xl-11"></div>
+
+            <div class="col-xl-1">
+                <button class="btn form-control buttonsabt" id="SubmitRadifEtebar2">
+                    <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                    <span class="bSabt-text">ثبت</span>
+                </button>
+            </div>
+        </div>
+        <input style="display:none" value="@Model.ID" id="idd" />
+    </div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+<script>
+        $("#SubmitRadifEtebar2").click(function () {
+                     var Filters  = [];
+            if ($("#bestankar").val() == 0) {
+                alert("لطفا عنوان را انتخاب نمائید");
+            }
+            if (($("#creditline").val() == 0))
+                 {
+                alert("لطفا عنوان را وارد  نمائید");
+            }
+               if (($("#select_peyman1").val() == null))
+                 {
+                alert("لطفا پیمان را انتخاب نمائید");
+               }
+
+              if (($("#datepickerFrom_Eq").val() == 0))
+                 {
+                alert("لطفا تاریخ  را انتخاب نمائید");
+            }
+              else {
+
+                  var obj = new Object();
+                  obj.Title = $("#Title2").val();
+                  obj.Description = $("#Description2").val();
+                  obj.ID = $("#idd").val();
+
+                  console.log($("#idd").val());
+                  console.log($("#Description2").val());
+                  console.log($("#Title2").val());
+
+
+                  Filters.push(obj);
+                   console.log(Filters);
+                  sendAjax('@Url.Action("Edit_CreateCreditIndiactors2", "CreditLine",new { area = "Budget" })', Filters);
+
+                }
+              ;
+
+        });
+        function sendAjax(url, data) {
+                console.log(url);
+
+                $.ajax({
+                    beforeSend: function () {
+                        document.getElementById("loading-message").style.display = "block";
+                    },
+                    url: url,
+                    data: { Filters: data },
+                    type: "POST",
+                    dataType: "html",
+                    success: function (resp) {
+                        console.log(resp);
+                        document.getElementById("loading-message").style.display = "none";
+                        if (resp == "True") {
+                            alert("با موفقیت ثبت شد");
+                        } else {
+                            alert("در ثبت دچار خطا شده ایم ! لطفا بعدا تلاش نمائید")
+                        }
+                    },
+                    error: function (resp) {
+                        document.getElementById("loading-message").style.display = "none";
+                        alert("دچار مشکل شده است ");
+                        console.log(resp);
+                    }
+                });
+            }
+</script>

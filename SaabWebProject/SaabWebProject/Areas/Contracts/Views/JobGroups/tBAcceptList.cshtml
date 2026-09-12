@@ -1,0 +1,279 @@
+﻿@{
+    Layout = null;
+}
+@model IEnumerable<SaabWebProject.Models.DomainModels.tbCommodityProject>
+
+<div class="card " style="width: 100%">
+    <div class="table-content p-4" style="z-index:1">
+        <div class="tab-pane fade show active" id="allTab">
+            <div class="table-responsive">
+                <table class="table table-hover" style="text-align:center;">
+                    <thead>
+                        <tr>
+                            <th>عملیات</th>
+                            <th>کد پروژه</th>
+                            <th>نام پروژه</th>
+                            <th>پیمان</th>
+                            <th>مبلغ کل</th>
+                            <th>دانلود فایل نمونه</th>
+
+
+                            <th>نام شهر</th>
+                            <th>تاریخ</th>
+                            <th>وضعیت</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var pro in Model)
+                        {
+
+
+
+
+                            <tr>
+                                <td>
+                                    <div class="ms-sm-4 mt-sm-0 mt-2 dropdown-toggle">
+                                        <a href="#" data-bs-toggle="dropdown" class="text-white text-opacity-75 text-decoration-none">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                        @if (pro.tbProduct_project_Accept.Any(item => item.FK_Project == pro.Id))
+                                        {
+                                            // Your code here
+
+                                            if (pro.tbProduct_project_Accept.Any(item => item.Final_Accept != true))
+                                            {
+
+
+
+
+                                                <div class="dropdown-menu">
+                                                    <a style="cursor:pointer" onclick="EditProject(this)" id="@pro.Id" class="dropdown-item EditUser">
+                                                        تایید
+                                                    </a>
+                                                </div>
+
+                                            }
+                                        }
+                                        else
+                                        {
+
+                                            <div class="dropdown-menu">
+                                                <a style="cursor:pointer" onclick="EditProject(this)" id="@pro.Id" class="dropdown-item EditUser">
+                                                    تایید
+                                                </a>
+                                            </div>
+                                        }
+
+
+                                    </div>
+                                </td>
+
+                                <td>@pro.ProjectCode</td>
+                                <td>
+                                    @pro.ProjectTitle
+                                </td>
+
+                                <td>@pro.tbPeymanContracts.pec_Title</td>
+                                <td>@pro.Totalnumber</td>
+
+                                @if (pro.File_SystemName != null)
+                                {
+                                    <td style="color:green">
+                                        <a target="_blank" href="~/Areas/WareHouse/Contents/WareHouseAttachmentsFile/@pro.File_SystemName">
+                                            دانلود
+                                        </a>
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td style="color:red">ذخیره نشده</td>
+                                }
+
+                                <td>
+                                    @Html.Action("_GetCities", "WareHouse", new { area = "WareHouse", id = pro.ProjectCode })
+                                </td>
+                                <td>@pro.DateOfDefinitionCommodityProject</td>
+                                <td>
+                                    @if (pro.P_Active == true)
+                                    {
+                                        <i class="far fa-lg fa-fw me-2 fa-check-square" style="color:green"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="far fa-lg fa-fw me-2 fa-window-close" style="color:red"></i>
+                                    }
+                                </td>
+                            </tr>
+
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+
+<script>
+
+    function EditProject(e) {
+
+
+
+        console.log(e.id);
+
+            $.ajax({
+                url: '@Url.Action("AcceptProj", "WareHouse", new { area = "WareHouse" })',
+                data: { userContractID: e.id },
+                type: "Post",
+                dataType: "html",
+                success: function (resp) {
+                    $("#loading-message").css("display", "none");
+                    if (resp == "True") {
+                        Toast.fire({
+                            icon: 'success',
+                            background: '#35434A',
+                            color: 'white',
+                            title: "با موفقیت تایید شد "
+                        }).then(() => {
+                            location.reload();
+                        });
+                    }
+                    else if (resp == "True2") {
+                        Toast.fire({
+                            icon: 'success',
+                            background: '#35434A',
+                            color: 'white',
+                            title: " پروژه قبلا تایید شده  "
+                        }).then(() => {
+                            location.reload();
+                        });
+                    }
+
+
+                    else {
+                        Toast.fire({
+                            icon: 'success',
+                            background: '#35434A',
+                            color: 'white',
+                            title: "نمیتوانید این قرارداد را حذف کنید"
+                        }).then(() => {
+                        });
+                    }
+
+                },
+                error: function (resp2) {
+                    $("#loading-message").css("display", "none");
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "حذف قرارداد با خطا مواجه شده است"
+                    }).then(() => {
+                        location.reload();
+                    });
+                }
+            });
+
+
+};
+
+
+
+</script>
+<script>
+    var fd = new FormData();
+    function sendAjax2(url2, fd2) {
+        var debtorCreditValue = $("#pestenka").val();
+        var resultString = debtorCreditValue.replace(/,/g, '');
+        fd2.append("Creditor", resultString);
+        var debtorCreditValue2 = $("#bdehkar").val();
+
+
+
+        console.log(resultString)
+        var resultString2 = debtorCreditValue2.replace(/,/g, '');
+        console.log(resultString2)
+        console.log(resultString2)
+
+        console.log(resultString)
+
+        fd2.append("Title", $("#Title").val());
+        fd2.append("Debtore", resultString2);
+        fd2.append("Peyman_ID", $("#select_peyman4").val());
+        fd2.append("Peyman_ID", $("#select_peyman4").val());
+        var mod = $("#select_users").val()
+        if (mod == 'Select') {
+            fd2.append("User_ID", null);
+        }
+        else {
+            fd2.append("User_ID", mod);
+        }
+        var mod1 = $("#creditline").val()
+        if (mod1 == 'Select') {
+            fd2.append("Creditlamdicatros_ID", null);
+        }
+        else {
+            fd2.append("Creditlamdicatros_ID", mod1);
+        }
+        var mod2 = $("#tbDetailedtitle").val()
+        if (mod2 == 'Select') {
+            fd2.append("Detailedtitle_ID", null);
+        }
+        else {
+            fd2.append("Detailedtitle_ID", mod2);
+        }
+
+        fd2.append("DataDocument", $("#datepickerFromEn_Eq1").val());
+        fd2.append("Peyman_ID", $("#select_peyman4").val());
+
+        $.ajax({
+            url: url2,
+            type: 'POST',
+            data: fd2,
+            processData: false,
+            contentType: false,
+            success: function (resp1) {
+                console.log("okeye");
+                console.log(resp1);
+                $("#loading-message").css("display", "none");
+                fd = new FormData();
+                if (resp1 == "True") {
+                    alert("با موفقیت ثبت شد");
+                    location.reload();
+                }
+                else {
+                    $("#loading-message").css("display", "none");
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                    }).then(() => {
+                        $("#loading-message").css("display", "none");
+                    });
+                }
+
+            },
+            error: function (resp1) {
+                console.log(resp1);
+                console.log("Nokeye");
+                $("#loading-message").css("display", "none");
+                Toast.fire({
+                    icon: 'success',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                }).then(() => {
+                    $("#loading-message").css("display", "none");
+                });
+            }
+        });
+    }
+</script>

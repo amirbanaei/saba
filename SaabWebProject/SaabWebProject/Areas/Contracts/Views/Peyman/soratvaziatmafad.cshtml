@@ -1,0 +1,229 @@
+﻿@{
+    Layout = null;
+}
+<style>
+    .modal-dialog {
+        max-width: 80% !important;
+    }
+</style>
+@model SaabWebProject.Models.DomainModels.tbPeymanContracts
+
+<div class="card" style="margin-top:10px;">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-xl-3">
+                <label class="form-label">سهم ریال جاری</label>
+                <input class="form-control" id="jari" />
+            </div>
+            <div class="col-xl-3">
+                <label class="form-label">سپرده بیمه</label>
+                <input class="form-control" id="bemeh" />
+            </div>
+            <div class="col-xl-3">
+                <label class="form-label">حسن انجام کار</label>
+                <input class="form-control" id="hosn" />
+            </div>
+            <div class="col-xl-3">
+                <label class="form-label">تعداد مشترکین جاری</label>
+                <input class="form-control" id="moshtarkenjari" />
+            </div>
+            <div class="col-xl-3">
+                <label class="form-label"> شماره صورت وضعیت </label>
+                <select class="form-select" id="numbersorat">
+                    <option value="0">انتخاب کنید..</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                    <option value="13">13</option>
+                    <option value="14">14</option>
+                    <option value="15">15</option>
+                </select>
+
+            </div>
+
+
+            @*<div class="col-xl-3">
+                <label class="form-label">شماره صورت وضعیت </label>
+                <input class="form-control" id="numbersorat" />
+            </div>*@
+        </div>
+        <div class="row">
+            <div class="col-xl-11">
+
+            </div>
+            <div class="col-xl-1">
+                <button class="btn form-control buttonsabt" id="btnBarrasi">
+                    <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                    <span class="bSabt-text">بررسی</span>
+                </button>
+            </div>
+        </div>
+
+        <hr />
+
+        <div>
+            <div class="ROW" id="div_table" style="display:block;">
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- arrow -->
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Scripts/popper.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script>
+    $("#btnBarrasi").click(function () {
+        getlist()
+    });
+    $("#month").change(function () {
+        $("#div_table").css("display", "block")
+    });
+      function getlist() {
+          $("#loading-message").css("display", "block");
+
+     $("#div_table").load('@Url.Content("/../Contracts/Peyman/barrsiview")', {
+         id: @Model.pec_ID, numbersorat: $("#numbersorat").val(), mostrak: $("#moshtarkenjari").val(), beme: $("#bemeh").val(), hosin: $("#hosn").val(),jari: $("#jari").val()
+     }, function () {
+          $("#loading-message").css("display", "none");
+
+             //بارگذاری فایل مدرک
+             $(".UploadAttachment").click(function () {
+                 FK_DDOfTitle = $(this).attr("id").split("_")[2];
+                 ID = $(this).attr("id").split("_")[1];
+                 $("#inp_file").click();
+             });
+
+              $("#inp_file").change(function (e) {
+                 $.each(e.target.files, function (index, file) {
+                    fd.append("files", file);
+                 });
+                 sendAjax1('@Url.Action("UploadAttachmentFile", "RegistrationDocument",new { area = "Contracts" })', fd);
+              });
+             //دریافت نمونه اکسل خلاصه مدرک
+             $(".DownloadSummery").click(function () {
+                 downloadAjax();
+             });
+             //بارگذاری خلاصه مدرک
+              $(".uploadSummery").click(function () {
+                 FK_DDOfTitle = $(this).attr("id").split("_")[2];
+                 ID = $(this).attr("id").split("_")[1];
+                 $("#summery_file").click();
+             });
+
+              $("#summery_file").change(function (e) {
+                 $.each(e.target.files, function (index, file) {
+                    fd.append("files", file);
+                 });
+                 sendAjax2('@Url.Action("UploadSummaryFile", "RegistrationDocument",new { area = "Contracts" })', fd);
+              });
+          });
+  }
+
+</script>
+<script>
+    var Toast = Swal.mixin({
+        toast: true,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    });
+    function sendAjaxABCD(url2, fd2) {
+
+        fd2.append("restrictions_A", $("#MahdudiyatA").val());
+        fd2.append("restrictions_B", $("#MahdudiyatB").val());
+        fd2.append("restrictions_C", $("#MahdudiyatC").val());
+        fd2.append("restrictions_D", $("#MahdudiyatD").val());
+        fd2.append("Fk_pymn",@Model.pec_ID);
+
+        $.ajax({
+            url: url2,
+            type: 'POST',
+            data: fd2,
+            processData: false,
+            contentType: false,
+            success: function (resp1) {
+                console.log("okeye");
+                $("#loading-message").css("display", "none");
+                fd = new FormData();
+                if (resp1 == "True") {
+                    console.log("dfjsdf");
+                    alert("با موفقیت ثبت شد");
+                    location.reload();
+                }
+                else {
+                    $("#loading-message").css("display", "none");
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                    }).then(() => {
+                        $("#loading-message").css("display", "none");
+                    });
+                }
+
+            },
+            error: function (resp1) {
+                console.log(resp1);
+                console.log("Nokeye");
+                $("#loading-message").css("display", "none");
+                Toast.fire({
+                    icon: 'success',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                }).then(() => {
+                    $("#loading-message").css("display", "none");
+                });
+            }
+        });
+    }
+</script>
+<script>
+        var fdd = new FormData();
+        //----------------------------------------------------------------
+    $("#btn41").click(function () {
+
+            if       ($("#MahdudiyatA").val() == '') {
+                alert("لطفا محدودیت A را وارد کنید");
+            }
+            else if ($("#MahdudiyatB").val() == '') {
+                alert("لطفا محدودیت B را وارد کنید");
+            }
+            else if ($("#MahdudiyatC").val() == '') {
+                alert("لطفا محدودیت C را وارد کنید");
+            }
+            else if ($("#MahdudiyatD").val() == '') {
+                alert("لطفا محدودیت D را وارد کنید");
+            }
+           else {
+                sendAjaxABCD('@Url.Action("UploadRestrictions_ABCD", "Peyman", new { area = "Contracts" })', fdd);
+           };
+    });
+
+</script>

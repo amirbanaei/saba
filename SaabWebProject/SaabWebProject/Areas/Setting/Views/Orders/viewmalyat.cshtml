@@ -1,0 +1,185 @@
+﻿
+@{
+
+    ViewBag.Title = "گزارش";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = null;
+}
+<div class="mt-10px">
+    <div class="row">
+        <div class="col-xl-7">
+            <label class="form-label"> پیمان ها </label>
+            @Html.Action("GetAllCompanies233", "Peyman", new { area = "Contracts" })
+
+        </div>
+        <div class="col-xl-2">
+            <div class="col-xl-12">
+                <label class="form-label">سال</label>
+            </div>
+            <div class="col-xl-12">
+                <div class="col-xl-12">
+                    <select class="form-select" id="year_usr2">
+                        <option value="0">انتخاب کنید</option>
+
+                        @{
+                            System.Globalization.PersianCalendar cs2 = new System.Globalization.PersianCalendar();
+                            int currentYear = cs2.GetYear(DateTime.Now);
+
+                            for (var i = 4; i >= 0; i--)
+                            {
+                                var s = DateTime.Now.AddYears(-i);
+
+                                <option value="@cs2.GetYear(s)">@cs2.GetYear(s)</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-2">
+            <div class="col-xl-12">
+                <label class="form-label">ماه</label>
+
+            </div>
+            <div class="col-xl-12">
+                <select class="form-select" id="month_usr2">
+                    <option value="0">انتخاب کنید  </option>
+
+                    <option value="1">فروردین </option>
+                    <option value="2">اردیبهشت</option>
+                    <option value="3">خرداد</option>
+                    <option value="4">تیر</option>
+                    <option value="5">مرداد</option>
+                    <option value="6">شهریور</option>
+                    <option value="7">مهر</option>
+                    <option value="8">آبان</option>
+                    <option value="9">آذر</option>
+                    <option value="10">دی</option>
+                    <option value="11">بهمن</option>
+                    <option value="12">اسفند</option>
+                </select>
+            </div>
+
+        </div>
+    </div>
+
+
+
+
+    @*<div class="row">
+            <div class="col-xl-12">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <label class="form-label">توضیحات</label>
+
+                    </div>
+                    <div class="col-xl-12">
+                        <textarea class="form-control" rows="12" style="height: 20px;    width: 83%;">
+
+                                </textarea>
+                    </div>
+                </div>
+            </div>
+        </div>*@
+
+    <div class="row">
+        <div class="col-xl-10"></div>
+        <div class="col-xl-1">
+            <a href="@Url.Action("malyat", "Orders", new { area = "Setting" })"
+               class="btn form-control buttonGeneral"
+               onclick="this.href+='?year=' + document.getElementById('year_usr2').value + '&month_usr=' + document.getElementById('month_usr2').value+ '&compain=' + document.getElementById('compain2').value">
+                <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text">دانلود فایل گزارش مالیات </span>
+            </a>
+        </div>
+
+        @*<div class="col-xl-1">
+            <a href="#" class=" btn form-control buttonGeneral" id="dwn" onclick="DownloadExcel()">
+                <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text">دانلود فایل نمونه</span>
+            </a>
+        </div>*@
+
+
+
+    </div>
+    <input name="MyExcelStream" type="file" style="display:none" />
+    <input name="upload11233244432132" type="file" style="display:none" />
+
+    <div class="row" style="margin-top:10px">
+        <div id="myTable10">
+
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Scripts/sweetalert2.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+@*<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>*@
+<script>
+
+        function DownloadExcel() {
+            console.log($("#year_usr").val());
+            console.log($("#month_usr").val());
+            console.log($("#datepickerFromEn_usr").val());
+            console.log($("#datepickerToEn_usr").val());
+
+            if ($("#baste_peyman7").val() == 0) {
+                alert("پیمان مورد نظر را انتخاب نمایید");
+            } else if ($("#year_usr").val() == 0) {
+                alert("سال مورد نظر را انتخاب نمایید");
+            } else if ($("#month_usr").val() == 0) {
+                console.log($("#month_usr").val());
+                alert("ماه مورد نظر را انتخاب نمایید");
+            } else {
+                console.log($("#month_usr").val());
+                var aa = $("#month_usr").val();
+                // Basteh = $('#basteOfPeyman').val();
+
+                $.ajax({
+                    beforeSend: function () {
+                        document.getElementById("loading-message").style.display = "block";
+                    },
+                    // URL commented for example purpose
+                    // url: '@Url.Action("ExportMoalefeExcel", "Moalefe", new { area = "Salaries" })?year=' + $("#year_usr").val() + '&month=' + aa + '&FromDate=' + $("#datepickerFromEn_usr").val() + '&ToDate=' + $("#datepickerToEn_usr").val() + '&PeymanID=' + $("#baste_peyman2").val() + '&Basteh=' + Basteh,
+                    type: 'GET',
+                    dataType: 'html',
+                    success: function (res) {
+                        if (res === "False") {
+                            alert("برای این ماه و این سال این بسته تایید نهایی شده است ");
+                            window.location.reload();
+                            console.log(res);
+                        } else {
+                            document.getElementById("loading-message").style.display = "none";
+                            window.location = '@Url.Action("SetDataExcel_AddMobemeh", "Orders", new { area = "Setting" })?year=' + $("#year_usr").val() + '&month=' + aa;
+                        }
+                    },
+                    error: function (res) {
+                        alert("fdslsfdk");
+                        console.log(res);
+                    }
+                });
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+        function UploadedFile(result) {
+                    Toast.fire({
+                        background: '#35434A',
+                        color: 'white',
+                        title: result
+                    }).then(function () {
+                        location.reload();
+                    });
+    }
+</script>

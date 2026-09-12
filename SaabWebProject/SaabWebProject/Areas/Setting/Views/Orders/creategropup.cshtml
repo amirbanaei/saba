@@ -1,0 +1,181 @@
+﻿@using SaabWebProject.Models.Classes;
+@using SaabWebProject.Models.DomainModels;
+
+@{
+    SaabEntities db = new SaabEntities();
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>فرم گروه</title>
+    <style>
+        .form-container {
+            max-width: 700px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+
+        .row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .btn {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-add {
+            background: green;
+            color: #fff;
+        }
+
+        .btn-del {
+            background: red;
+            color: #fff;
+        }
+
+        .btn-submit {
+            background: blue;
+            color: #fff;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="">
+        <h2>فرم گروه</h2>
+        <form id="groupForm">
+            <!-- فیلدهای اصلی -->
+            <div class="row">
+                <div class="col-xl-5">
+                    <label for="name"class="form-label">نام گروه</label>
+                    <input type="text" id="name" name="name" class="form-control" placeholder="نام گروه را وارد کنید" required>
+                </div>
+                <div class="col-xl-5">
+                    <label for="code"class="form-label">کد گروه</label>
+                    <input type="text" id="code" name="code" class="form-control" placeholder="کد گروه را وارد کنید" required>
+                </div>
+
+            </div>
+
+            <!-- Container برای ردیف‌های اضافه شده -->
+            <div id="extraUsersContainer"></div>
+            <div class="">
+                <button type="button" class="btn btn-add" id="addUserBtn">+</button>
+            </div>
+            <!-- دکمه ثبت فرم -->
+            <div class="row">
+                <button type="submit" class="btn btn-submit">ثبت گروه</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        let extraUsersContainer = document.getElementById('extraUsersContainer');
+        let addUserBtn = document.getElementById('addUserBtn');
+
+        addUserBtn.addEventListener('click', () => {
+            const fieldId = Date.now();
+            const div = document.createElement('div');
+            div.className = 'extra-fields';
+            div.id = 'extra-' + fieldId;
+
+            div.innerHTML = `
+                <div class="row">
+                    <div class="col-xl-5">
+                        <label class="form-label">کاربر</label>
+                        <select class="form-control user-select form-select fk_dbergha2">
+                            @foreach(var item in db.tbUsers) {
+                                <option value="@item.usr_ID">@item.FullName</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-xl-4">
+                        <label class="form-label">نقش</label><br>
+                        <input type="radio" name="role-${fieldId}" value="raes"> رییس
+                        <input type="radio" name="role-${fieldId}" value="ranndeh"> راننده
+                        <input type="radio" name="role-${fieldId}" value="janshin"> جانشین
+                    </div>
+                    <div class="col-xl-1">
+                        <label >کارتابل</label><br>
+                        <input type="checkbox" class="kartabl" data-id="${fieldId}">
+                    </div>
+                    <div class="col-xl-1">
+                        <button type="button" class="btn btn-del" data-target="extra-${fieldId}">حذف</button>
+                    </div>
+                </div>
+            `;
+            extraUsersContainer.appendChild(div);
+        });
+
+        // حذف ردیف
+        extraUsersContainer.addEventListener('click', (e) => {
+            if (e.target.classList.contains('btn-del')) {
+                let targetId = e.target.getAttribute('data-target');
+                document.getElementById(targetId).remove();
+            }
+        });
+
+        // جمع‌آوری اطلاعات و ارسال AJAX
+        document.getElementById('groupForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            let groupData = {
+                Name: document.getElementById('name').value,
+                Code: document.getElementById('code').value,
+                Users: []
+            };
+
+            document.querySelectorAll('.extra-fields').forEach(div => {
+                const id = div.id.replace('extra-', '');
+                const userId = div.querySelector('.user-select').value;
+                const role = div.querySelector(`input[name="role-${id}"]:checked`)?.value || '';
+                const kartabl = div.querySelector('.kartabl').checked;
+
+                groupData.Users.push({
+                    FK_usr: parseInt(userId),
+                    Role: role,
+                    Kartabl: kartabl
+                });
+            });
+
+            fetch('/Setting/Orders/SaveGroup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json;charset=utf-8' },
+                body: JSON.stringify(groupData)
+            })
+            .then(res => {
+                if (!res.ok) throw new Error("HTTP Error " + res.status);
+                return res.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    document.getElementById('groupForm').reset();
+                    extraUsersContainer.innerHTML = '';
+                } else {
+                    alert('خطا: ' + data.message);
+                }
+            })
+            .catch(err => { console.error(err); alert('خطای پیش‌بینی نشده!'); });
+        });
+    </script>
+</body>
+</html>
+
+

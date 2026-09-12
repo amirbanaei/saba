@@ -1,0 +1,191 @@
+﻿@model List<SaabWebProject.Models.DomainModels.tbSuggestion>
+<style>
+
+    .tableH_Lock {
+        max-height: 300px;
+        /*height: 260px;*/
+    }
+
+    thead {
+        position: sticky;
+        top: 0;
+        text-align: center;
+        z-index: 2;
+    }
+
+    .inputFilter {
+        margin-bottom: 0px !important;
+    }
+
+    thead th {
+        vertical-align: middle;
+    }
+</style>
+<div class="card" style="width: 100%;">
+    <div class="table-content p-4">
+        <div class="table-responsive tableH_Lock">
+            <table class="table table-hover" style="text-align:center;">
+                <thead>
+                    <tr>
+                        <th>ردیف</th>
+                        <th>
+                            نوع
+                            <div class="inputWithFilterIcon">
+                                <input type="text" id="filter01-filter" class="inputFilter form-control" placeholder="">
+                                <span><i class="fas fa-filter"></i></span>
+                            </div>
+                        </th>
+                        <th>
+                            عنوان
+                            <div class="inputWithFilterIcon">
+                                <input type="text" id="filter02-filter" class="inputFilter form-control" placeholder="">
+                                <span><i class="fas fa-filter"></i></span>
+                            </div>
+                        </th>
+                        <th>شرح</th>
+                        <th>
+                            تاریخ
+                            <div class="inputWithFilterIcon">
+                                <input type="text" id="filter03-filter" class="inputFilter form-control" placeholder="">
+                                <span><i class="fas fa-filter"></i></span>
+                            </div>
+                        </th>
+                        <th>
+                            ثبت کننده
+                            <div class="inputWithFilterIcon">
+                                <input type="text" id="filter04-filter" class="inputFilter form-control" placeholder="">
+                                <span><i class="fas fa-filter"></i></span>
+                            </div>
+                        </th>
+                        <th>دیده شده</th>
+                        <th>پیوست</th>
+                        <th>پاسخ ها</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ var counter = 0;
+                        string noe = "";
+                    }
+                    @foreach (var item in Model)
+                    {
+                        counter++;
+                        if (item.IsSuggest == true)
+                        {
+                            noe = "پیشنهاد";
+                        }
+                        else
+                        {
+                            noe = "انتقاد";
+                        }
+                        <tr class="task-list-row"
+                            data-filter01="@noe"
+                            data-filter02="@item.Title"
+                            data-filter03="@item.Persian_Date"
+                            data-filter04="@item.UserFullName">
+                            <td>@counter</td>
+                            <td>@noe</td>
+                            <td>@item.Title</td>
+                            <td>@item.Description</td>
+                            <td>@item.Persian_Date</td>
+                            <td>@item.UserFullName</td>
+                            @if (item.IsSeen == true)
+                            {
+                                <td><i style="color:green" class="bi bi-eye-fill text-theme"></i></td>
+                            }
+                            else
+                            {
+                                <td><i style="color:red" class="bi bi-eye-slash-fill text-theme"></i></td>
+
+                            }
+                            @if (item.FileName != null)
+                            {
+                                <td><a target="_blank" href="~/Areas/Suggestion/Contents/@item.FileSystemName">دانلود</a></td>
+                            }
+                            else
+                            {
+                                <td>
+                                    ندارد
+                                </td>
+
+                            }
+                            <td>
+                                @if (item.HasNotSeen == 0)
+                                {
+                                    <a data-bs-toggle="modal" data-bs-target="#modalLg" class="dropdown-item show" id="@item.ID">نمایش</a>
+                                }
+                                else
+                                {
+                                    <a data-bs-toggle="modal" data-bs-target="#modalLg" class="dropdown-item show" style="box-shadow: 1px 1px 10px 3px #9b6b6b;" id="@item.ID">نمایش</a>
+
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+        </div>
+
+    </div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script>
+
+    var
+        filters = {
+            filter01: null,
+            filter02: null,
+            filter03: null,
+            filter04: null,
+        };
+
+    function updateFilters() {
+        $('.task-list-row').hide().filter(function () {
+            var self = $(this),
+                result = true;
+
+            Object.keys(filters).forEach(function (filter) {
+                var filterData = self.data(filter);
+                if (filters[filter] && (filters[filter] != 'None') && (filters[filter] != 'همه')) {
+                    // تبدیل داده به رشته و بررسی مقدار
+                    result = result && (filterData && filterData.toString().indexOf(filters[filter]) !== -1);
+                }
+            });
+
+            return result;
+        }).show();
+    }
+
+    function changeFilter(filterName) {
+        filters[filterName] = this.value;
+        updateFilters();
+    }
+
+    // Assigned User Dropdown Filter
+    $('#filter01-filter').on('input', function () {
+        changeFilter.call(this, 'filter01');
+    });
+    $('#filter02-filter').on('input', function () {
+        changeFilter.call(this, 'filter02');
+    });
+    $('#filter03-filter').on('input', function () {
+        changeFilter.call(this, 'filter03');
+    });
+    $('#filter04-filter').on('input', function () {
+        changeFilter.call(this, 'filter04');
+    });
+
+</script>
+<script>
+    $(".show").click(function () {
+        var id = $(this).attr("id");
+            $("#big_modal_body").load('@Url.Content("/Suggestion/SuggestionandCriticism/_Sabt_Pasokh")?suggestion_ID='+id);
+        $(this).css("box-shadow", "unset");
+    });
+</script>

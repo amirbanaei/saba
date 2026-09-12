@@ -1,0 +1,540 @@
+﻿@using SaabWebProject.Models.DomainModels;
+
+@{
+
+    ViewBag.Title = "گزارش صورت وضعیت";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/MyStyles/MyStyle.css" rel="stylesheet" />
+@{
+    System.Globalization.PersianCalendar cs2 = new System.Globalization.PersianCalendar();
+    int currentYear = cs2.GetYear(DateTime.Now);
+}
+
+@{
+    SaabEntities db = new SaabEntities();
+}
+<link href="~/MyStyles/MyStyle.css" rel="stylesheet" />
+
+<div class="">
+    <ul class="nav nav-tabs nav-tabs-v2 " id="pills-tab">
+        <li class="nav-item">
+            <a class="nav-link active" id="" data-bs-toggle="pill" href="#Descript_Dore">
+                <button class=" nav-btn">گزارش</button>
+            </a>
+        </li>
+        @*<li class="nav-item">
+            <a class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" href="#pills-profile">
+                <button class=" nav-btn">پیوست تچهیزات</button>
+            </a>
+        </li>*@
+    </ul>
+    <div class="tab-content" id="pills-tabContent">
+        <div class="tab-pane fade show active" id="Descript_Dore">
+            <div class="card">
+                <div class="card-body pb-2">
+
+                    <div class="row" style="margin-top:10px">
+                        <div class="col-xl-5">
+                            <label class="form-label">پیمان</label>
+                            <select class="form-select" id="pyman2">
+
+                                <option value="0">انتخاب کنید</option>
+                                @foreach (var uy in db.tbPeymanContracts.Where(p => p.Inactive != true).ToList())
+                                {
+                                    <option value="@uy.pec_ID">@uy.pec_Title</option>
+                                }
+
+
+
+                            </select>
+                        </div>
+
+                        <div class="col-xl-3" id="dore">
+                            <label class="form-label">شماره صورت وضعیت </label>
+                            <select class="form-select" id="Monthly13">
+                                <option value="0">انتخاب کنید..</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12">12</option>
+
+                                <option value="13">13</option>
+                                <option value="14">14</option>
+                                <option value="15">15</option>
+                                <option value="16">16</option>
+                                <option value="17">17</option>
+                                <option value="18">18</option>
+                                <option value="19">19</option>
+                                <option value="20">20</option>
+                            </select>
+                        </div>
+
+
+
+                        <div class="col-xl-2">
+                            <label class="form-label">سال</label>
+
+                            <select id="year_Eq11" name="year_Eq11" class="form-select">
+                                <option value="0">انتخاب کنید</option>
+
+                                @{
+
+
+                                    for (var i = 4; i >= 0; i--)
+                                    {
+                                        var s = DateTime.Now.AddYears(-i);
+
+                                        <option value="@cs2.GetYear(s)">@cs2.GetYear(s)</option>
+                                    }
+                                }
+                            </select>
+
+                        </div>
+
+
+
+                        <div class="col-xl-2" id="Monthly">
+                            <label class="form-label">ماه</label>
+                            <select class="form-select" id="Monthly12">
+                                <option value="0">انتخاب کنید..</option>
+                                <option value="1">فروردین</option>
+                                <option value="2">اردیبهشت</option>
+                                <option value="3">خرداد</option>
+                                <option value="4">تیر</option>
+                                <option value="5">مرداد</option>
+                                <option value="6">شهریور</option>
+                                <option value="7">مهر</option>
+                                <option value="8">آبان</option>
+                                <option value="9">آذر</option>
+                                <option value="10">دی</option>
+                                <option value="11">بهمن</option>
+                                <option value="12">اسفند</option>
+
+                            </select>
+                        </div>
+                        <div class="col-xl-2" id="vaziat1">
+                            <label class="form-label">وضعیت</label>
+                            <select class="form-select" id="vaziat">
+                                <option value="0">قطعی</option>
+                                <option value="1">موقت</option>
+                                
+
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row" style="display:none">
+                        <a id="hilo" href="~/Areas/Statments/Views/Files/Hi-Low-1401-08.pdf">~/Areas/Statments/Views/Files/Hi-Low-1401-08.pdf</a>
+                    </div>
+
+                    <div class="row" style="display:none">
+                        <a id="soorat" href="~/Statments/Views/Files/S1-1401-08.pdf">~/Areas/Statments/Views/Files/S1-1401-08.pdf</a>
+                    </div>
+                    <div class="row" style="margin-top:20px;margin-bottom:15px">
+                        <div class="col-xl-11">
+                        </div>
+                        <div class="col-xl-1">
+
+                            @*<button id="btnCreate" type="button" class="form-control buttonGeneral">
+                                <i class="fa fa-info fa-fw me-1 VecGeneral"></i>
+                                <span class="bGeneral-text"> <a data-bs-toggle="modal" data-bs-target="#modalLg1" class="Details ">جزئیات</a></span>
+
+                            </button>*@
+                            <button class="btn form-control buttonGeneral" id="btnShowSR" data-bs-toggle="modal" data-bs-target="#modalLg1">
+                                <i class="fa fa-eye fa-fw me-1 VecGeneral"></i>
+                                <span class="bGeneral-text">نمایش</span>
+                            </button>
+                        </div>
+                    </div>
+                    @*<div style="overflow-x: scroll;display:block ">
+                        <img src="~/Areas/Statments/ReportFiles/8.png" style="width:1500px;height:2000px;" />
+                    </div>*@
+                </div>
+                <div class="card-arrow">
+                    <div class="card-arrow-top-left"></div>
+                    <div class="card-arrow-top-right"></div>
+                    <div class="card-arrow-bottom-left"></div>
+                    <div class="card-arrow-bottom-right"></div>
+                </div>
+            </div>
+        </div>
+        @*<div class="tab-pane fade " id="pills-profile ">
+
+            <div class="">
+                <div class="card">
+                    <div class="card-body pb-2">
+                        <div class="row" style="margin-top:10px">
+                            <div class="col-xl-5">
+                                <label class="form-label"> پیمان  </label>
+                                <div id="peymans2">
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-xl-3">
+                                <label class="form-label"> نوع تجهیز  </label>
+                                <select class="form-select select_peyman" id="select_peyman40" name="select_peyman">
+                                    <option hidden value="Select">انتخاب مورد</option>
+                                    @foreach (var item in db.tbEquipmentGroup.ToList())
+                                    {
+                                        <option value="@item.Eqpgrp_ID">@item.Eqpgrp_Name</option>
+                                    }
+                                </select>
+
+                            </div>
+                            <div class="col-xl-2">
+                                <div class="form-group mb-3">
+                                    <label class="form-label"> ماه </label>
+                                    <select class="form-select my_Select" id="Month2">
+                                        <option value="0">انتخاب کنید..</option>
+                                        <option value="1">فروردین</option>
+                                        <option value="2">اردیبهشت</option>
+                                        <option value="3">خرداد</option>
+                                        <option value="4">تیر</option>
+                                        <option value="5">مرداد</option>
+                                        <option value="6">شهریور</option>
+                                        <option value="7">مهر</option>
+                                        <option value="8">آبان</option>
+                                        <option value="9">آذر</option>
+                                        <option value="10">دی</option>
+                                        <option value="11">بهمن</option>
+                                        <option value="12">اسفند</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-xl-2">
+                                <label class="form-label">سال</label>
+
+                                <select id="Year2" name="year_Eq" class="form-select">
+                                    <option value="0">انتخاب کنید</option>
+
+                                    @{
+
+                                        for (var i = 4; i >= 0; i--)
+                                        {
+                                            var s = DateTime.Now.AddYears(-i);
+
+                                            <option value="@cs2.GetYear(s)">@cs2.GetYear(s)</option>
+                                        }
+                                    }
+                                </select>
+
+                            </div>
+
+                        </div>
+
+                        <div class="row" style="margin-bottom:10px;">
+                            <div class="col-xl-11"></div>
+
+                            <div class="col-xl-1">
+                                <a href="#" class=" btn form-control buttonGeneral" id="dwn" onclick="DownloadExcel23() ">
+                                    <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                                    <span class="bGeneral-text">دانلود فایل نمونه</span>
+                                </a>
+                            </div>
+
+                        </div>
+                        <div id="test2">
+
+                        </div>
+                    </div>
+
+                    <div class="card-arrow">
+                        <div class="card-arrow-top-left"></div>
+                        <div class="card-arrow-top-right"></div>
+                        <div class="card-arrow-bottom-left"></div>
+                        <div class="card-arrow-bottom-right"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>*@
+    </div>
+
+    @*<div class="tab-pane fade show" id="Description_Contacts" style="height:auto;">
+            <div class="mb-5">
+                <div class="card">
+
+                    <div class="card-arrow">
+                        <div class="card-arrow-top-left"></div>
+                        <div class="card-arrow-top-right"></div>
+                        <div class="card-arrow-bottom-left"></div>
+                        <div class="card-arrow-bottom-right"></div>
+                    </div>
+                </div>
+            </div>
+        </div>*@
+
+</div>
+@section Scripts{
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+    <script>
+
+                $("#peymans2" ).load('@Url.Content("/../Contracts/Peyman/_GetAllListPeymans_Select")',function(){
+                 $("#select_peyman").attr("id", "select_peyman3");
+
+
+
+
+        });
+
+    </script>
+    <script>
+
+
+        $("#TypeStatement").on('change', function () {
+
+            if ($(this).val() == 1) {
+                $("#periodic").css('display', 'none')
+                $("#Monthly").css('display', 'block')
+            }
+            else if ($(this).val() == 2) {
+                $("#periodic").css('display', 'block')
+                $("#Monthly").css('display', 'none')
+            }
+            else {
+                $("#periodic").css('display', 'none')
+                $("#Monthly").css('display', 'none')
+            }
+        })
+
+
+
+    $("#btnCreate").click(function () {
+                if ($("#select_output").val() == 1) {
+                    sendAjax(1);
+                } else if ($("#select_output").val() == 2){
+                    sendAjax(2);
+                }
+    });
+
+
+         function DownloadExcel23() {
+     console.log($("#year_usr").val());
+     console.log($("#month_usr").val());
+     console.log($("#datepickerFromEn_usr").val());
+     console.log($("#datepickerToEn_usr").val());
+
+
+
+
+
+
+
+
+             console.log($("#peymans3").val());
+             var aa = $("#Month2").val();
+         //Basteh = $('#basteOfPeyman').val();
+
+
+         $.ajax({
+             beforeSend: function () {
+                 document.getElementById("loading-message").style.display = "block";//مهندس دارین برعککس میزارین
+                 //این درسته
+                 //شبیه هم ننوشتین
+                 //خوب ورودی هام فرق داتشنت الاان فهمیدم چیشد + اضافه گذاشته بود
+             },
+             @*url: '@Url.Action("ExportMoalefeExcel", "Moalefe", new { area = "Salaries" })?year=' + $("#year_usr").val() + '&month=' + aa + '&FromDate=' + $("#datepickerFromEn_usr").val() + '&ToDate=' + $("#datepickerToEn_usr").val() + '&PeymanID=' + $("#baste_peyman2").val() + '&Basteh=' + Basteh,*@
+             type: 'GET',
+             dataType: 'html',
+
+
+             success: function (res) {
+                 if (res === "False") {
+                     // اجرای بلوک error در صورت مطابقت با "False"
+                     alert("برای این ماه و این سال این بسته تایید نهایی شده است ");
+                     window.location.reload();
+                     console.log(res);
+                 }
+                 else {
+
+                     document.getElementById("loading-message").style.display = "none";
+                     window.location = '@Url.Action("ExportExcel_MachinsOrTools2224tst", "DefFacilitiesEquipment",new { area = "Contracts" })?Peyman_ID='+$("#select_peyman3").val() + '&type=' + $("#select_peyman40").val() + '&Month=' + aa + '&Year=' + $("#Year2").val();
+
+                 }
+             },
+             error: function (res) {
+                 alert("fdslsfdk")
+                 console.log(res);
+             }
+         });
+
+ }
+      function sendAjax(value) {
+          $.ajax({
+              url: '@Url.Action("Downloadsoorat", "Statment", new { area = "Statments" })',
+              data: { value: value , peymanID : $("#select_peyman").val(),Dore:$("#Dore").val() },
+              type: "Post",
+              dataType: "html",
+              success: function (resp) {
+                  var link = '@Url.Action("Downloadsoorat", "Statment", new { value = 1, peymanID=3,Dore="25" })'
+                  //link = link.replace("Statment", "s");
+                  link = link.replace(3, $("#select_peyman").val());
+                  link = link.replace("25", $("#Dore").val());
+                  link = link.replace("amp;", "");
+                  link = link.replace("amp;", "");
+
+                  window.location = link;
+              },
+              error: function (resp2) { }
+
+          });
+        }
+
+
+
+        var Toast = Swal.mixin({
+            toast: true,
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+    </script>
+    <script>
+        var fd2 = new FormData();
+        var fd3 = new FormData();
+
+        $("#btnShowSR").click(function () {
+
+        console.log("llk");
+                                                   sendAjax9('@Url.Action("creatcheack", "Formula", new { area = "Salaries" })', fd3);
+
+
+    })
+    function sendAjax9(url2, fd3) {
+        console.log("llk");
+        /**/
+        console.log($('#Monthly13').val());
+        //console.log($('#dore').val());
+        console.log($('#Monthly12').val());
+        console.log($('#pyman2').val());
+
+        var ty = $('#year_Eq11').val();
+        console.log(ty);
+        fd3.append("year_pY", ty);
+        fd3.append("pymn", $('#pyman2').val());
+        fd3.append("month_pY", $('#Monthly12').val());
+        fd3.append("dore", $('#Monthly13').val());
+
+        /**/
+
+
+        $.ajax({
+            url: url2,
+            type: 'POST',
+            data: fd3,
+            processData: false,
+            contentType: false,
+            success: function (resp1) {
+                $("#loading-message").css("display", "none");
+                fd = new FormData();
+                if (resp1 == "True") {
+                    console.log(fd3);
+                                                                      @*sendAjax11('@Url.Action("view3", "Formula", new { area = "Salaries" })', fd2);*@
+                    @*window.location.replace('@Url.Action("view3", "Formula", new { area = "Salaries" })?year_pY+', ty'&month_pY+');*@
+window.location.replace('@Url.Action("viewsorattt", "Formula", new { area = "Salaries" })' +
+    '?year=' + encodeURIComponent(ty) +
+    '&vaziat=' + encodeURIComponent($('#vaziat').val())+
+                         '&month=' + encodeURIComponent($('#Monthly12').val()) +
+                         '&pymn=' + encodeURIComponent($('#pyman2').val()) +
+                         '&number_sorat=' + encodeURIComponent($('#Monthly13').val()));
+
+                }
+
+                else if (resp1 == "false") {
+                    $("#loading-message").css("display", "none");
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "شما مجوز صدور گزارش برای این ماه و سال را برای این پیمان ندارید "
+                    }).then(() => {
+                        $("#loading-message").css("display", "none");
+                    });
+                }
+
+                else {
+                    $("#loading-message").css("display", "none");
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                    }).then(() => {
+                        $("#loading-message").css("display", "none");
+                    });
+
+
+                }
+
+            },
+            error: function (resp1) {
+                $("#loading-message").css("display", "none");
+                Toast.fire({
+                    icon: 'success',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                }).then(() => {
+                    $("#loading-message").css("display", "none");
+                });
+            }
+        });
+    }
+
+
+    function sendAjax11(url2, fd2) {
+
+
+        /**/
+
+
+        $.ajax({
+            url: url2,
+            type: 'POST',
+            data: fd2,
+            processData: false,
+            contentType: false,
+            success: function (resp1) {
+                $("#loading-message").css("display", "none");
+                fd = new FormData();
+
+
+                    $("#big_modal_body1").html(resp1);
+
+
+
+
+
+            },
+            error: function (resp1) {
+                $("#loading-message").css("display", "none");
+                Toast.fire({
+                    icon: 'success',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                }).then(() => {
+                    $("#loading-message").css("display", "none");
+                });
+            }
+        });
+    }
+
+    </script>
+}

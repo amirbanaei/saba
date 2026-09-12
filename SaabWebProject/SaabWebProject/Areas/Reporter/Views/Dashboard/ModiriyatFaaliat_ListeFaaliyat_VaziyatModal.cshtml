@@ -1,0 +1,94 @@
+﻿
+@{
+    Layout = null;
+}
+@using SaabWebProject.Models.DomainModels;
+
+@{
+    SaabEntities db = new SaabEntities();
+
+}
+@model SaabWebProject.Models.DomainModels.dbRelatinafrad
+<div class="row">
+    <div class="col-xl-4">
+        <label class="form-label">وضعیت<span class="text-danger">*</span></label>
+        <select class="form-select" id="position">
+            <option></option>
+            <option value="1">انجام شد</option>
+            <option value="2">عدم انجام</option>
+            <option value="3">تاخیر</option>
+            <option value="4">عدم توانایی</option>
+            <option value="5">عدم امکان</option>
+            <option value="6"> درجریان</option>
+
+        </select>
+    </div>
+    <div class="col-xl-6">
+        <label class="form-label">  شرح  </label>
+        <textarea class="form-control" id="Title20"></textarea>
+    </div>
+    <div class="col-xl-2"></div>
+</div>
+<div class="row">
+    <div class="col-xl-11">
+    </div>
+
+    <div class="col-xl-1">
+        <button id="btnSaveVaziyat" type="button" class="btn form-control buttonsabt">
+            <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+            <span class="bSabt-text">ثبت</span>
+        </button>
+    </div>
+</div>
+<script>
+    $("#btnSaveVaziyat").click(function () {
+        fd = new FormData();
+
+    //console.log($("#datepickerFromEn_Eq12").val());
+    sendAjax300('@Url.Action("creatvaziat", "FinancialDocuments",new { area = "ManagementAccounting" })', fd);
+});
+
+    function sendAjax300(url2, fd2) {
+    fd2.append("position", $("#position").val());
+    fd2.append("title", $("#Title20").val());
+    fd2.append("fk_realtinafrad", @Model.ID);
+  
+
+    console.log($("#endfalse33").val());
+
+    $.ajax({
+        url: url2,
+        type: 'POST',
+        data: fd2,
+        processData: false,
+        contentType: false,
+        success: function (resp1) {
+            console.log("okeye");
+            console.log(resp1);
+            $("#loading-message").css("display", "none");
+            fd = new FormData();
+            var Filters = [];
+            if (resp1 == "true") {
+                alert("با موفقیت ثبت شد ");
+            }
+
+            console.log("djkjsdkl");
+
+     
+        },
+        error: function (resp1) {
+            console.log(resp1);
+            console.log("Nokeye");
+            $("#loading-message").css("display", "none");
+            Toast.fire({
+                icon: 'success',
+                background: '#35434A',
+                color: 'white',
+                title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+            }).then(() => {
+                $("#loading-message").css("display", "none");
+            });
+        }
+    });
+}
+</script>

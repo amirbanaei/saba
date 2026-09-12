@@ -1,0 +1,117 @@
+﻿@using SaabWebProject.Models.DomainModels;
+
+@{
+    SaabEntities db = new SaabEntities();
+
+    Layout = null;
+}
+@model SaabWebProject.Models.DomainModels.dbtarifmahdodayt1
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+
+<div class="row" style="margin-top:25px">
+    <div class="col-xl-6">
+
+        <label class="form-label"> مولفه </label>
+        <select class="form-select" id="select_Allmoalefefisheditt" name="select_Allmoalefefisheditt" @*multiple="multiple"*@>
+            <option value="@Model.FK_moalfe"selected>@Model.tbContractMoalefeDastmozdi.md_Title</option>
+            @foreach (var item in db.tbContractMoalefeDastmozdi.Where(p => p.md_Type == 10).ToList())
+            {
+                <option value="@item.md_ID">@item.md_Title</option>
+            }
+        </select>
+
+
+    </div>
+    <div class="col-xl-1">
+        <button id="btnCalculateAzmayeshiedit" type="button" class="btn form-control buttonGeneral">
+            <i class="fa fa-calculator fa-fw me-1 VecGeneral"></i>
+            <span class="bGeneral-text">ثبت</span>
+        </button>
+    </div>.
+
+</div>
+
+
+
+
+<hr />
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Scripts/popper.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script>
+    $('#select_Allmoalefefisheditt').picker({ search: true });
+</script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Scripts/popper.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Scripts/popper.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script>
+    $("#btnCalculateAzmayeshiedit").click(function () {
+    @*var PeymanArr = [];
+        $.each($("#select_Allmoalefe_").val().toString().split(","), function (index, item) {
+        if (item !== "") {
+        if (item != 'Select') {
+        PeymanArr.push(item);
+        console.log(item);
+        }
+        }
+        });
+        console.log(PeymanArr);*@
+    var month = $("#select_Allmoalefefisheditt").val();
+    var month2 = @Model.ID;
+
+
+
+
+    $.ajax({
+    url: "@Url.Action("listtarifmoalfeditcreat", "Dashboard", new { area = "Reporter" })",
+
+    type: "Post",
+    dataType: "html",
+    data: { @*Fkpym: PeymanArr,*@ fk: month,id:month2 },
+    success: function (res) {
+    document.getElementById("loading-message").style.display = "none";
+    if (res = "True") {
+    alert("با موفقیت ثبت شد ");
+    location.reload();
+    }
+
+    },
+    error: function (res) {
+    console.log(res);
+
+    document.getElementById("loading-message").style.display = "none";
+    Toast.fire({
+    icon: 'error',
+    background: '#35434A',
+    color: 'white',
+    title: "عملیات  با خطا مواجه شد"
+    });
+    return false;
+    }
+    });
+
+    });
+</script>

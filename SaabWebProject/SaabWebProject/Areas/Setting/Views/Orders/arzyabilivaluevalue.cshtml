@@ -1,0 +1,590 @@
+﻿@model SaabWebProject.Models.ViewModels.Contracts.Function.FunctionModel
+@using SaabWebProject.Models.DomainModels;
+
+
+@{
+    Layout = null;
+
+    // محاسبه آمار سوال‌ها
+    int totalQuestions = 0;
+    int answeredQuestions = 0;
+
+    if (Model?.SoalList != null)
+    {
+        totalQuestions = Model.SoalList.Count;
+        foreach (var soal in Model.SoalList)
+        {
+            if (soal.GozinehList.Any(g => g.Selected))
+            {
+                answeredQuestions++;
+            }
+        }
+    }
+
+    int unansweredQuestions = totalQuestions - answeredQuestions;
+}
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+
+<style>
+    @@media (max-width: 768px) {
+        .responsive-table td,
+        .responsive-table th {
+            display: block;
+            width: 100%;
+            text-align: center;
+        }
+
+        .responsive-table tr {
+            margin-bottom: 1rem;
+            display: block;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .responsive-table thead {
+            display: none;
+        }
+
+        .responsive-table td textarea {
+            width: 100% !important;
+            margin-top: 8px;
+            text-align: center;
+        }
+
+        .form-check-inline {
+            display: inline-block !important;
+            width: 32%;
+            margin: 4px 1%;
+            text-align: center;
+        }
+
+        .form-check-label {
+            text-align: center;
+            display: inline-block;
+            width: auto;
+        }
+
+        .d-md-none {
+            text-align: center;
+            display: block;
+        }
+    }
+
+    .form-check-input[type="radio"] {
+        border-radius: 25px !important;
+        height: 14px !important;
+        width: 14px !important;
+        vertical-align: middle;
+    }
+
+    .table td,
+    .table th {
+        vertical-align: middle;
+        text-align: center;
+    }
+
+    .form-check-inline {
+        text-align: center;
+        margin: 5px;
+    }
+
+    .question-stats {
+        text-align: center;
+        margin: 20px 0;
+        font-size: 1.1rem;
+    }
+
+    .tableH_Lock {
+        max-height: 450px;
+    }
+</style>
+<div class="row mb-3">
+    @*<div class="col-xl-3">
+            <label class="form-label">نام و نام خانوادگی:</label>
+            <input type="text" id="nameinput" class="form-control" value="@Model.fullnamesabtusr" disabled />
+        </div>
+        <div class="col-xl-3">
+            <label class="form-label">شغل:</label>
+            <input type="text" id="jobInput" class="form-control" value="@Model.Job" />
+        </div>
+        <div class="col-xl-3">
+            <label class="form-label">تحصیلات:</label>
+            <input type="text" id="tahsilatInput" class="form-control" value="@Model.Tahsilat" />
+        </div>*@
+    <div class="col-xl-3" style="display:none">
+        <label class="form-label">
+            شماره اشتراک:
+        </label>
+        <input type="text" id="sabghehJobInput" class="form-control" value="@Model.SabghehJob" />
+    </div>
+    <div class="col-xl-3" style="display:none">
+        <label class="form-label">
+            رمز رایانه
+            :
+        </label>
+        <input type="text" id="phoneNumberInput" class="form-control" value="@Model.PhonNumber" />
+    </div>
+    @*<div class="col-xl-1">
+            <a href="#" class=" btn form-control buttonGeneral" id="moshhedeh" onclick="moshhedeh() ">
+                <i class="bi bi-eye fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text">مشاهده</span>
+            </a>
+        </div>*@
+    <div class="col-xl-1">
+
+
+
+
+    </div>
+        <div class="col-xl-1">
+            <a href="#" id="createMoalefeButtonModal" class="btn form-control buttonGeneral" data-bs-toggle="modal" data-bs-target="#modalLg1">
+                <i class="fa fa-plus-circle fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text">مشاهده سوابق  </span>
+            </a>
+        </div>
+        <!--<div class="col-xl-4">
+            <label class="form-label">محل سکونت</label>
+
+            <select class="form-select " id="sokonat">-->
+        @*<option hidden value="Select">انتخاب مورد</option>*@
+        <!--@if (Model.sokonat == 0)
+                {
+                    <option value="0">انتخاب کنید</option>
+
+                    <option value="1">مالکیت </option>
+
+                    <option value="2">استیجاری </option>
+
+                }
+                else if (Model.sokonat == 1)
+                {
+                    <option value="1">مالکیت </option>
+
+                    <option value="2">استیجاری </option>
+
+                }
+                else if (Model.sokonat == 2)
+                {
+                    <option value="2">استیجاری </option>
+
+                    <option value="1">مالکیت </option>
+
+
+                }
+                else
+                {
+                    <option value="0">انتخاب کنید</option>
+                    <option value="1">مالکیت </option>
+
+                    <option value="2">استیجاری </option>
+
+                }
+
+            </select>
+
+        </div>-->
+    </div>
+
+
+
+<!-- ✅ بخش نمایش آمار سوال‌ها -->
+<!-- ✅ نمایش آمار اولیه -->
+    <div class="question-stats">
+        <span>تعداد کل سوال‌ها: <strong id="totalQuestions">@totalQuestions</strong></span> |
+        <span>پاسخ داده شده: <strong id="answeredQuestions">@answeredQuestions</strong></span> |
+        <span>بی‌پاسخ: <strong id="unansweredQuestions">@unansweredQuestions</strong></span>
+    </div>
+
+
+    <!-- ✅ جدول سوالات -->
+    <div class="card">
+        <div class="table-responsive tableH_Lock">
+            <div class="tab-pane fade show active" id="allTab">
+                <div class="table-responsive">
+                    <table class="table table-bordered text-center responsive-table">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>سوال</th>
+                                <th>گزینه‌ها</th>
+                                <th>شرح</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model?.SoalList != null)
+                            {
+                                foreach (var item in Model.SoalList)
+                                {
+                                    <tr>
+                                        <td>
+                                            @{
+                                                var text = item.SoalText ?? "";
+                                                int chunkSize = 17;
+                                                var words = text.Split(' ');
+                                                var line = "";
+
+                                                foreach (var word in words)
+                                                {
+                                                    if ((line + word).Length > chunkSize)
+                                                    {
+                                                        <span>@line</span><br />
+                                                        line = "";
+                                                    }
+
+                                                    line += (line == "" ? "" : " ") + word;
+                                                }
+
+                                                if (!string.IsNullOrEmpty(line))
+                                                {
+                                                    <span>@line</span><br />
+                                                }
+                                            }
+                                        </td>
+                                        <td style="width:250px">
+                                            @foreach (var goz in item.GozinehList)
+                                            {
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio"
+                                                           id="gozineh_@goz.GozinehId"
+                                                           name="gozineh_@item.SoalId"
+                                                           value="@goz.GozinehId"
+                                                           @(goz.Selected ? "checked" : "") />
+
+                                                    <label class="form-check-label" for="gozineh_@goz.GozinehId">
+                                                        @goz.GozinehText
+                                                    </label>
+                                                </div>
+                                            }
+                                        </td>
+                                        <td>
+                                            <label class="d-md-none font-weight-bold">شرح:</label>
+                                            <textarea name="sharh_@item.SoalId"
+                                                      class="form-control"
+                                                      rows="2"
+                                                      style="resize: vertical; min-height: 60px;"
+                                                      placeholder="توضیح...">@item.SharhSoal</textarea>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-3">
+        <button onclick="submitAnswers()" class="btn btn-success">ثبت پاسخ‌ها</button>
+    </div>
+
+    <!-- ✅ اسکریپت شمارنده آمار سوال‌ها -->
+    <!-- ✅ اسکریپت ارسال پاسخ‌ها به سرور -->
+    @*<script>
+            function submitAnswers() {
+                const FK_usr = document.getElementById("select_peyman22")?.value;
+                const FK_doreh = document.getElementById("select_peyman")?.value;
+
+                if (!FK_usr || !FK_doreh) {
+                    alert("لطفاً کاربر و دوره را انتخاب کنید.");
+                    return;
+                }
+
+                const radios = document.querySelectorAll('input[type="radio"]:checked');
+                const dataToSend = [];
+
+                radios.forEach(radio => {
+                    const soalId = radio.name.replace("gozineh_", "");
+                    const gozinehId = radio.value;
+
+                    const sharhElement = document.querySelector(`textarea[name="sharh_${soalId}"]`);
+                    const sharhText = sharhElement ? sharhElement.value.trim() : "";
+
+                    dataToSend.push({
+                        FK_usr: parseInt(FK_usr),
+                        FK_doreh: parseInt(FK_doreh),
+                        FK_soal: parseInt(soalId),
+                        FK_gozeneh: parseInt(gozinehId),
+                        sharhsoal: sharhText
+                    });
+                });
+
+                fetch("/Setting/Orders/SaveAnswers", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    body: JSON.stringify(dataToSend)
+                })
+                    .then(response => response.text())
+                    .then(message => {
+                        alert(message);
+                    })
+                    .catch(error => {
+                        console.error("Error:", error);
+                        alert("خطای ارتباطی با سرور.");
+                    });
+            }
+        </script>*@
+    <script>
+   $("#createMoalefeButtonModal").click(function () {
+    var year = $("#select_peyman").val();
+    var usrID = $("#select_peyman22").val();
+
+    var url = '@Url.Content("/Setting/Orders/arzyabivaluekarbarmodalcheack")' + '?id=' + encodeURIComponent(year) + '&usrID=' + encodeURIComponent(usrID);
+
+    $("#big_modal_body1").load(url);
+});
+
+    function moshhedeh() {
+    //var month = $("#Month2").val();
+    var year = $("#select_peyman").val();
+
+    var usrID = $("#select_peyman22").val();
+    document.getElementById("loading-circle").style.display = "block";
+
+    if ( year == 0) {
+        alert("لطفاً ماه و سال را انتخاب کنید.");
+        return;
+    }
+
+    $.ajax({
+        url: '@Url.Action("arzyabilivaluevalue", "Orders", new { area = "Setting" })',
+        type: "GET",
+        data: { id: year, usrID: usrID },
+        success: function (result) {
+            document.getElementById("loading-circle").style.display = "none";
+
+            $("#test2").html(result);
+        },
+        error: function () {
+            alert("خطا در بارگذاری اطلاعات.");
+        }
+    });
+}
+    </script>
+    <script>
+        function submitAnswers() {
+            const FK_usr = document.getElementById("select_peyman22")?.value;
+            const FK_doreh = document.getElementById("select_peyman")?.value;
+
+            //const job = document.getElementById("jobInput")?.value || "";
+            //const tahsilat = document.getElementById("tahsilatInput")?.value || "";
+            const sabghehJob = document.getElementById("sabghehJobInput")?.value || "";
+            const phonNumber = document.getElementById("phoneNumberInput")?.value || "";
+            /*      const sokonat = document.getElementById("sokonat")?.value;*/
+            //console.log(sokonat);
+            if (!FK_usr || !FK_doreh) {
+                Swal.fire({
+                    icon: 'warning',
+                    text: "لطفاً کاربر و دوره را انتخاب کنید.",
+                    confirmButtonText: 'باشه'
+                });
+                return;
+            }
+
+            const unansweredCount = parseInt(document.getElementById("unansweredQuestions").textContent);
+
+            if (unansweredCount > 0) {
+                Swal.fire({
+                    title: 'برخی سوال‌ها بی‌پاسخ هستند!',
+                    text: "اگر سوالی را بی‌پاسخ بگذارید، از نمره کاربر کسر خواهد شد. آیا مایل به ادامه هستید؟",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'بله، ادامه بده',
+                    cancelButtonText: 'خیر، برمی‌گردم'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        sendData();
+                    }
+                });
+            } else {
+                sendData(); // همه پاسخ داده شده
+            }
+
+            //function sendData() {
+
+            //        document.getElementById("loading-circle").style.display = "block";
+
+            //    const radios = document.querySelectorAll('input[type="radio"]:checked');
+            //    const dataToSend = [];
+
+            //    radios.forEach(radio => {
+            //        const soalId = radio.name.replace("gozineh_", "");
+            //        const gozinehId = radio.value;
+
+            //        const sharhElement = document.querySelector(`textarea[name="sharh_${soalId}"]`);
+            //        const sharhText = sharhElement ? sharhElement.value.trim() : "";
+
+            //        dataToSend.push({
+            //            FK_usr: parseInt(FK_usr),
+            //            FK_doreh: parseInt(FK_doreh),
+            //            FK_soal: parseInt(soalId),
+            //            FK_gozeneh: parseInt(gozinehId),
+            //            //sokonat: parseInt(sokonat),
+            //            sharhsoal: sharhText
+            //        });
+            //    });
+
+            //    const payload = {
+            //        FK_usr: parseInt(FK_usr),
+            //        FK_doreh: parseInt(FK_doreh),
+            //        //Job: job,
+            //        //Tahsilat: tahsilat,
+            //        SabghehJob: sabghehJob,
+            //        PhonNumber: phonNumber,
+            //        //sokonat: sokonat,
+
+            //        Answers: dataToSend
+            //    };
+
+            //    fetch("/Setting/Orders/SaveUserDataAndAnswers", {
+            //        method: "POST",
+            //        headers: {
+            //            "Content-Type": "application/json",
+            //            "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val()
+            //        },
+            //        body: JSON.stringify(payload)
+            //    })
+            //        .then(response => response.text())
+            //        .then(message => {
+            //            document.getElementById("loading-circle").style.display = "none";
+
+            //            Swal.fire({
+            //                icon: 'success',
+            //                title: 'موفق!',
+            //                text: message,
+            //                confirmButtonText: 'باشه'
+            //            }).then((result) => {
+            //                if (result.isConfirmed) {
+            //                    location.reload();
+            //                }
+            //            });
+            //        })
+            //        .catch(error => {
+            //            console.error("Error:", error);
+            //            Swal.fire({
+            //                icon: 'error',
+            //                title: 'خطا',
+            //                text: 'خطا در ثبت اطلاعات.',
+            //                confirmButtonText: 'باشه'
+            //            });
+            //        });
+            //}
+            function sendData() {
+                document.getElementById("loading-circle").style.display = "block";
+
+                const dataToSend = [];
+
+                // پیدا کردن همه سوال‌ها از روی textarea ها
+                const allSharhTextareas = document.querySelectorAll('textarea[name^="sharh_"]');
+
+                allSharhTextareas.forEach(sharhElement => {
+                    const soalId = sharhElement.name.replace("sharh_", "");
+                    const sharhText = sharhElement.value.trim();
+
+                    // بررسی اینکه آیا گزینه‌ای انتخاب شده
+                    const selectedRadio = document.querySelector(`input[name="gozineh_${soalId}"]:checked`);
+                    const gozinehId = selectedRadio ? parseInt(selectedRadio.value) : null;
+
+                    // اضافه کردن به لیست ارسال
+                    dataToSend.push({
+                        FK_usr: parseInt(FK_usr),
+                        FK_doreh: parseInt(FK_doreh),
+                        FK_soal: parseInt(soalId),
+                        FK_gozeneh: gozinehId,
+                        sharhsoal: sharhText
+                    });
+                });
+
+                const payload = {
+                    FK_usr: parseInt(FK_usr),
+                    FK_doreh: parseInt(FK_doreh),
+                    SabghehJob: sabghehJob,
+                    PhonNumber: phonNumber,
+                    Answers: dataToSend
+                };
+
+                fetch("/Setting/Orders/SaveUserDataAndAnswers", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    body: JSON.stringify(payload)
+                })
+                    .then(response => response.text())
+                    .then(message => {
+                        document.getElementById("loading-circle").style.display = "none";
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'موفق!',
+                            text: message,
+                            confirmButtonText: 'باشه'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                location.reload();
+                            }
+                        });
+                    })
+                    .catch(error => {
+                        console.error("Error:", error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'خطا',
+                            text: 'خطا در ثبت اطلاعات.',
+                            confirmButtonText: 'باشه'
+                        });
+                    });
+            }
+
+        }
+    </script>
+
+    <script>
+        function updateStats() {
+            const allQuestions = new Set();
+            const answeredQuestions = new Set();
+
+            $('input[type="radio"]').each(function () {
+                const soalId = $(this).attr('name').replace("gozineh_", "");
+                allQuestions.add(soalId);
+                if ($(this).is(':checked')) {
+                    answeredQuestions.add(soalId);
+                }
+            });
+
+            const total = allQuestions.size;
+            const answered = answeredQuestions.size;
+            const unanswered = total - answered;
+
+            $('#totalQuestions').text(total);
+            $('#answeredQuestions').text(answered);
+            $('#unansweredQuestions').text(unanswered);
+        }
+
+        $(document).ready(function () {
+            $('input[type="radio"]').on('change', function () {
+                updateStats();
+            });
+
+            // اجرای اولیه آمار
+            updateStats();
+        });
+        $(document).ready(function () {
+            let lastChecked = {};
+
+            $('input[type="radio"]').on('mousedown', function (e) {
+                let name = $(this).attr('name');
+
+                if (lastChecked[name] === this) {
+                    $(this).prop('checked', false);
+                    lastChecked[name] = null;
+                    e.preventDefault(); // جلوگیری از انتخاب دوباره
+                } else {
+                    lastChecked[name] = this;
+                }
+            });
+        });
+
+    </script>

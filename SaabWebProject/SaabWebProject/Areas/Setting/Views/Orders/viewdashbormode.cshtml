@@ -1,0 +1,991 @@
+﻿
+@{
+    ViewBag.Title = "داشبورد مدیر عامل";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<style>
+
+    :root {
+        --bg-color-fields: #12334F;
+    }
+
+
+    /* حالت موبایل */
+    @@media (max-width: 768px) {
+        /* تمام داشبوردها و فیلدها ستون محور شوند */
+        .dashboard {
+            grid-template-columns: 1fr !important;
+            gap: 5px !important;
+        }
+
+        .field, .part {
+            flex-direction: column !important;
+            width: 100% !important;
+            height: auto !important;
+        }
+        /* فیلدهای بخش‌ها زیر هم شوند */
+        #field-1, #field-2, #field-3 {
+            flex-direction: column !important;
+            gap: 5px !important;
+        }
+        /* بخش‌های داخلی فیلدها زیر هم شوند */
+        #field1-part1, #field2-part1, #field3-part1,
+        #field1-part1-left, #field1-part1-right,
+        #field2-part1-left, #field2-part1-right,
+        #field3-part1-left, #field3-part1-right {
+            flex-direction: column !important;
+            width: 100% !important;
+            height: auto !important;
+        }
+        /* کاهش اندازه فونت کل جدول و متن‌ها */
+        body, table, th, td, .field, .part {
+            font-size: 10px !important;
+        }
+        /* نمودارها هم ارتفاعشون خودکار شود */
+        #field1-part2-chart,
+        #field2-part2-chart,
+        #field3-part2-chart {
+            height: 300px !important; /* می‌تونی ارتفاع دلخواه موبایل رو تنظیم کنی */
+        }
+
+        #field1-part3-table {
+            overflow-x: auto;
+        }
+
+        #table-3 td, #table-3 th {
+            font-size: 8px !important;
+        }
+
+        .header {
+            overflow: hidden;
+            width: 100%;
+            height: 30px;
+            background-color: var(--bg-color-fields);
+            margin: 10px 0px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            gap: 10px !important;
+        }
+
+
+        .txt-header {
+            width: 100px !important;
+            height: 100%;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            font-size: 6px !important;
+        }
+
+            .txt-header div {
+                width: fit-content !important;
+                height: 100%;
+                align-content: center;
+                padding: 0px 0px !important;
+                text-align: center;
+                font-size: 7px;
+            }
+
+            .txt-header p {
+                height: 100%;
+                width: 10px;
+                align-content: center;
+                text-align: center;
+                font-size: 10px;
+            }
+    }
+
+
+    .dashboard {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr); /* NumColumns = 12 */
+        gap: 10px;
+    }
+
+    .field {
+        /*        background: #2c3a50;*/
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        font-weight: bold;
+        overflow: hidden;
+        /*        padding:10px;*/
+    }
+
+    .part {
+        box-sizing: border-box;
+        width: 100%;
+        height: calc(100%/3);
+        display: flex;
+        /*        background-color:red;*/
+    }
+
+
+
+    .custom-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: iranyekan, sans-serif;
+        background: var(--bg-color-fields);
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid var(--bg-color-fields);
+    }
+
+        .custom-table thead {
+            /*        background: blue;*/
+        }
+
+        .custom-table th,
+        .custom-table td {
+            border: 1px solid #2A4B6B;
+            text-align: center;
+            font-size: 12px;
+        }
+
+
+        .custom-table th {
+            font-weight: bold;
+            padding: 10px;
+        }
+
+
+    /*    فیلد اول بخش اول*/
+
+
+    #field-1 {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    #field1-part1 {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+    }
+
+    #field1-part1-right {
+        width: 40%;
+        height: 100%;
+        /*        background-color: orangered;*/
+        display: flex;
+    }
+
+    #field1-part1-left {
+        width: 60%;
+        height: 100%;
+        /*        background-color: orangered;*/
+        display: flex;
+    }
+
+    #table-1 td {
+        width: calc(100%/3);
+    }
+
+    #table-2 td {
+        width: calc(100%/5);
+        /*        font-size:10px;*/
+        padding: 5px;
+    }
+
+    #table-3 td {
+        width: calc(100%/8);
+        /*        font-size:10px;*/
+        padding: 5px;
+    }
+
+    /*    فیلد اول بخش اول*/
+
+    /*    فیلد اول بخش دوم*/
+    #field1-part2-chart {
+        width: 100%;
+        height: 100%;
+        background-color: var(--bg-color-fields);
+        border-radius: 8px;
+    }
+    /*    فیلد اول بخش دوم*/
+
+    /*    فیلد اول بخش سوم*/
+
+    #field1-part3-table {
+        width: 100%;
+        height: 100%;
+        /*        background-color: orangered;*/
+        display: flex;
+    }
+
+
+    .no-border-section td {
+        border: none; /* حذف خطوط فقط برای این بخش */
+        background: none;
+        padding: 6px 12px;
+    }
+
+    .border-bottom {
+        border-bottom-width: 1px;
+        border-bottom-color: #2A4B6B;
+    }
+
+    /*    فیلد اول بخش سوم*/
+
+
+
+    #field-2 {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+        #field-2 .part {
+            height: 50%;
+        }
+
+    #field2-part1 {
+        gap: 10px;
+    }
+
+    #field2-part1-right {
+        width: 40%;
+        height: 100%;
+        /*        background-color: orangered;*/
+        display: flex;
+    }
+
+    #field2-part1-left {
+        width: 60%;
+        height: 100%;
+        /*                background-color: orangered;*/
+        display: flex;
+    }
+
+    #table-4 td {
+        width: calc(100%/4);
+        /*        font-size:10px;*/
+        padding: 5px;
+    }
+
+    #field2-part2-chart {
+        width: 100%;
+        height: 100%;
+        background-color: var(--bg-color-fields);
+        border-radius: 8px;
+    }
+
+
+    #field-3 {
+        display: flex;
+        /*        flex-direction: column;*/
+        gap: 10px;
+    }
+
+    #field3-part1 {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        gap: 10px;
+    }
+
+    #field3-part1-right {
+        width: 40%;
+        height: 100%;
+        /*                background-color: orangered;*/
+        display: flex;
+    }
+
+    #field3-part1-left {
+        width: 60%;
+        height: 100%;
+        /*                        background-color: orangered;*/
+        display: flex;
+    }
+
+    #field3-part2-chart {
+        width: 100%;
+        height: 100%;
+        background-color: var(--bg-color-fields);
+        border-radius: 8px;
+    }
+
+
+    .click {
+        color: aqua;
+        cursor: pointer;
+        transition: .3s
+    }
+
+        .click:hover {
+            background-color: aqua;
+            color: var(--bg-color-fields);
+        }
+
+        .click:active {
+            background-color: lightseagreen;
+        }
+
+    .header {
+        width: 100%;
+        height: 30px;
+        background-color: var(--bg-color-fields);
+        margin: 10px 0px;
+        border-radius: 8px;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        gap: 100px;
+    }
+
+
+    .txt-header {
+        /*        background-color:red;*/
+        width: 300px;
+        height: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: center
+    }
+
+        .txt-header div {
+            width: fit-content;
+            height: 100%;
+            align-content: center;
+            padding: 0px 10px;
+            text-align: center
+        }
+
+        .txt-header p {
+            height: 100%;
+            width: 10px;
+            align-content: center;
+            text-align: center
+        }
+
+
+    .modal3 {
+        display: none;
+        position: fixed; /* حفظ مودال مرکزی */
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        /*        overflow: auto;*/
+        padding-top: 50px;
+    }
+
+    .modal-content2 {
+        background-color: #082D59;
+        margin: 5% auto; /* مرکزی شدن محتوا */
+        padding: 20px;
+        border: 2px solid #00CAFC;
+        border-radius: 10px;
+        width: 80%;
+        max-width: 600px; /* حداکثر پهنا برای مودال */
+        height: auto;
+        max-height: 400px;
+        overflow-y: auto;
+        position: relative;
+    }
+
+    /* ترکیب دو کلاس close و close-icon */
+    .close-icon,
+    .close {
+        color: #00CAFC;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+        /* تنظیمات absolute برای موقعیت‌دهی در گوشه بالا چپ */
+        position: absolute;
+        top: 15px;
+        left: 20px;
+        z-index: 1001;
+    }
+
+        .close-icon:hover,
+        .close-icon:focus,
+        .close:hover,
+        .close:focus {
+            color: darkred;
+            text-decoration: none;
+            cursor: pointer;
+        }
+</style>
+<style>
+    /* استایل ساده برای مودال پاپ‌آپ */
+    .custom-modal {
+        position: absolute; /* جایابی با js انجام می‌شود */
+        z-index: 9999;
+        display: none;
+        min-width: 260px;
+        max-width: 90vw;
+        /*  border-radius: 8px;*/
+        overflow: visible;
+        transform-origin: top left;
+    }
+
+    .custom-modal-inner {
+        background-color: transparent; /* رنگ دلخواه */
+        color: #fff;
+        border-radius: 8px;
+        box-sizing: border-box;
+    }
+
+    /* محتوای لود شده */
+    .modal-content {
+        max-height: 60vh;
+        overflow: auto;
+    }
+
+    /* دکمه بستن */
+    .modal-close {
+        position: absolute;
+        top: -20px;
+        right: 20px;
+        background: var(--bs-tab-content-bg);
+        border: none;
+        color: aqua;
+        font-size: 22px;
+        cursor: pointer;
+        line-height: 1;
+        border-radius: 5px;
+        border: 1px solid aqua;
+        transition: .3s;
+    }
+
+        .modal-close:hover {
+            border-color: red;
+            color: red;
+        }
+
+    /* انیمیشن نمایشی */
+    .custom-modal.fade-in {
+        animation: modalIn 160ms ease-out;
+    }
+
+    @@keyframes modalIn {
+        from {
+            opacity: 0;
+            transform: scale(0.98);
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+</style>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>DashbordModirAmel</title>
+</head>
+<body>
+    <div id="mymodal3" class="custom-modal" style="display:none;">
+        <div class="custom-modal-inner" role="dialog" aria-modal="true" aria-labelledby="mymodal3-title">
+            <button type="button" class="modal-close" aria-label="بستن">&times;</button>
+            <div id="ss" class="modal-content">
+                <!-- محتوای partial بعد از load اینجا قرار می‌گیرد -->
+            </div>
+        </div>
+    </div>
+    <div class="tab-content" id="pills-tabContent">
+
+        <div class="header">
+            <div class="txt-header">
+                <div>شهرستان / امور</div>
+                <p>:</p>
+                <div>استان</div>
+            </div>
+            <div class="txt-header">
+                <div>تاریخ بروزرسانی</div>
+                <p>:</p>
+                <div>1404/8/19</div>
+            </div>
+            <div class="txt-header">
+                <div>امتیاز کل</div>
+                <p>:</p>
+                <div>70</div>
+            </div>
+
+        </div>
+
+        <div class="dashboard">
+
+            <!-- Field 1 -->
+            <div id="field-1" class="field" style="grid-column: span 6; grid-row: span 9; height: 800px;">
+                <div id="field1-part1" class="part">
+                    <div id="field1-part1-right">
+                        <table class="custom-table" id="table-1">
+                            <thead>
+                            <th colspan="3">وصول</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>وزن</td>
+                                    <td>درصد</td>
+                                    <td class="click" data-id="1">۱۲</td>
+                                </tr>
+                                <tr>
+                                    <td>رتبه</td>
+                                    <td>در شهرستانها</td>
+                                    <td class="click" data-id="2">8</td>
+                                </tr>
+                                <tr>
+                                    <td>حد انتظار</td>
+                                    <td>درصد</td>
+                                    <td class="click" data-id="3">105</td>
+                                </tr>
+                                <tr>
+                                    <td>میزان انحراف</td>
+                                    <td>درصد</td>
+                                    <td class="click" data-id="4">20-</td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="field1-part1-left">
+                        <table class="custom-table" id="table-2">
+                            <thead>
+                            <th colspan="5">درصد وصول کل با خاص</th>
+                            </thead>
+
+                            <tbody>
+                                <tr>
+                                    <td>مانده بدهی اول دوره</td>
+                                    <td>فروش جاری</td>
+                                    <td>جمع کل بدهی</td>
+                                    <td>مبلغ وصول</td>
+                                    <td>درصد وصول</td>
+                                </tr>
+                                <tr>
+                                    <td>میلیون ریال</td>
+                                    <td>میلیون ریال</td>
+                                    <td>میلیون ریال</td>
+                                    <td>میلیون ریال</td>
+                                    <td>درصد</td>
+                                </tr>
+                                <tr>
+
+                                    <td class="click" data-id="5">12000000</td>
+                                    <td class="click" data-id="6">7000000</td>
+                                    <td class="click" data-id="7">15000000</td>
+                                    <td class="click" data-id="8">10000000</td>
+                                    <td class="click" data-id="9">9000000</td>
+
+
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div id="field1-part2" class="part">
+                    <div id="field1-part2-chart"></div>
+                </div>
+                <div id="field1-part3" class="part">
+                    <div id="field1-part3-table">
+                        <table class="custom-table" id="table-3">
+                            <thead>
+                            <th colspan="8">درصد وصول جاری با خاص</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="border-left:none;"></td>
+                                    <td style="border-right:none;"></td>
+                                    <td>خانگی</td>
+                                    <td>سایر مصارف</td>
+                                    <td>عمومی</td>
+                                    <td>صنعتی</td>
+                                    <td>کشاورزی</td>
+                                    <td>روشنایی</td>
+
+                                </tr>
+                                <tr class="no-border-section">
+                                    <td class="border-bottom" rowspan="3">بدون خاص</td>
+                                    <td>بدهی</td>
+                                    <td class="click" data-id="10">1.400.000</td>
+                                    <td class="click" data-id="11">1.400.000</td>
+                                    <td class="click" data-id="12">1.400.000</td>
+                                    <td class="click" data-id="13">1.400.000</td>
+                                    <td class="click" data-id="14">1.400.000</td>
+                                    <td class="click" data-id="15">1.400.000</td>
+
+                                </tr>
+                                <tr class="no-border-section">
+                                    <td>درصد</td>
+                                    <td class="click" data-id="16">80</td>
+                                    <td class="click" data-id="17">80</td>
+                                    <td class="click" data-id="18">80</td>
+                                    <td class="click" data-id="19">80</td>
+                                    <td class="click" data-id="20">80</td>
+                                    <td class="click" data-id="21">80</td>
+
+                                </tr>
+                                <tr class="no-border-section">
+                                    <td class="border-bottom">تعداد</td>
+                                    <td class="border-bottom click" data-id="22">500.000</td>
+                                    <td class="border-bottom click" data-id="23">500.000</td>
+                                    <td class="border-bottom click" data-id="24">500.000</td>
+                                    <td class="border-bottom click" data-id="25">500.000</td>
+                                    <td class="border-bottom click" data-id="26">500.000</td>
+                                    <td class="border-bottom click" data-id="27">500.000</td>
+
+                                </tr>
+                                <tr class="no-border-section">
+                                    <td rowspan="3">بدون خاص</td>
+                                    <td>بدهی</td>
+                                    <td class="click" data-id="28">1.400.000</td>
+                                    <td class="click" data-id="29">1.400.000</td>
+                                    <td class="click" data-id="30">1.400.000</td>
+                                    <td class="click" data-id="31">1.400.000</td>
+                                    <td class="click" data-id="32">1.400.000</td>
+                                    <td class="click" data-id="33">1.400.000</td>
+
+                                </tr>
+                                <tr class="no-border-section">
+                                    <td>درصد</td>
+                                    <td class="click" data-id="34">80</td>
+                                    <td class="click" data-id="35">80</td>
+                                    <td class="click" data-id="36">80</td>
+                                    <td class="click" data-id="37">80</td>
+                                    <td class="click" data-id="38">80</td>
+                                    <td class="click" data-id="39">80</td>
+
+                                </tr>
+                                <tr class="no-border-section">
+                                    <td>تعداد</td>
+                                    <td class="click" data-id="40">500.000</td>
+                                    <td class="click" data-id="41">500.000</td>
+                                    <td class="click" data-id="42">500.000</td>
+                                    <td class="click" data-id="43">500.000</td>
+                                    <td class="click" data-id="44">500.000</td>
+                                    <td class="click" data-id="45">500.000</td>
+
+                                </tr>
+
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Field 2 -->
+            <div id="field-2" class="field" style="grid-column: span 6; grid-row: span 6; height: 530px;">
+                <div id="field2-part1" class="part">
+                    <div id="field2-part1-right">
+                        <table class="custom-table" id="table-1">
+                            <thead>
+                            <th colspan="3">تلفات</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>وزن</td>
+                                    <td>درصد</td>
+                                    <td class="click" data-id="46">12</td>
+                                </tr>
+                                <tr>
+                                    <td>رتبه</td>
+                                    <td>در شهرستانها</td>
+                                    <td class="click" data-id="47">8</td>
+                                </tr>
+                                <tr>
+                                    <td>حد انتظار</td>
+                                    <td>درصد</td>
+                                    <td class="click" data-id="48">9.5</td>
+                                </tr>
+                                <tr>
+                                    <td>میزان انحراف</td>
+                                    <td>درصد</td>
+                                    <td class="click" data-id="49">3.5-</td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="field2-part1-left">
+                        <table class="custom-table" id="table-4">
+
+                            <tbody>
+                                <tr>
+                                    <td>انرژی تحویلی</td>
+                                    <td>انرژی توزیعی</td>
+                                    <td>تلفات</td>
+                                    <td>تلفات</td>
+                                </tr>
+                                <tr>
+                                    <td>KWH</td>
+                                    <td>KWH</td>
+                                    <td>درصد</td>
+                                    <td>KWH</td>
+
+                                </tr>
+                                <tr>
+                                    <td class="click" data-id="50">7.000.000.000</td>
+                                    <td class="click" data-id="51">10.000.000.000</td>
+                                    <td class="click" data-id="52">14.5</td>
+                                    <td class="click" data-id="53">6.000.000.000</td>
+
+                                </tr>
+
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div id="field2-part2" class="part">
+                    <div id="field2-part2-chart"></div>
+                </div>
+            </div>
+
+            <!-- Field 3 -->
+            <div id="field-3" class="field" style="grid-column: span 6; grid-row: span 3; height: 260px;">
+                <div id="field3-part1" class="part">
+                    <div id="field3-part1-right">
+                        <table class="custom-table" id="table-1">
+                            <thead>
+                            <th colspan="3">حقوق و مزایا</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>جمع کل خالص پرداختی</td>
+                                    <td>جمع کل ذخایر</td>
+                                </tr>
+                                <tr>
+                                    <td>میلیون ریال</td>
+                                    <td>میلیون ریال</td>
+                                </tr>
+                                <tr>
+                                    <td class="click" data-id="54">900.000</td>
+                                    <td class="click" data-id="55">75.000</td>
+                                </tr>
+
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="field3-part1-left">
+                        <div id="field3-part2-chart"></div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+    <script src="~/Assets/plugins/apexcharts/dist/apexcharts.min.js"></script>
+    <script src="~/Assets/js/jquery3.6.0.js"></script>
+    <script src="~/Scripts/sweetalert2.js"></script>
+    <script>
+        function renderChart(chartSelector, seriesData) {
+            var isMobile = window.innerWidth <= 768;
+
+            var options = {
+                chart: {
+                    type: 'line',
+                    height: '100%',
+                    toolbar: { show: false },
+                    fontFamily: 'inherit',
+                },
+
+                series: seriesData,  // 🔹 داده‌ها از خارج تابع می‌آیند
+
+                stroke: {
+                    width: 3,
+                    curve: 'smooth'
+                },
+
+                xaxis: {
+                    categories: ["شنبه", "یکشنبه", "دوشنبه", "سه‌شنبه", "چهارشنبه", "پنجشنبه", "جمعه"],
+                    labels: {
+                        style: {
+                            fontFamily: 'inherit',
+                            colors: '#fff',
+                            fontSize: isMobile ? '8px' : '12px'
+                        }
+                    },
+                    axisTicks: { show: false }
+                },
+
+                yaxis: {
+                    labels: {
+                        offsetX: -20,
+                        style: {
+                            fontFamily: 'inherit',
+                            colors: '#fff',
+                            fontSize: isMobile ? '8px' : '12px'
+                        }
+                    },
+                    axisBorder: { show: true, color: "#ccc", width: 1, offsetX: 19 }
+                },
+
+                legend: {
+                    show: false,
+                    labels: {
+                        fontFamily: 'inherit',
+                        colors: '#fff',
+                        fontSize: isMobile ? '8px' : '12px'
+                    }
+                },
+
+                tooltip: { theme: 'dark' },
+                markers: { size: 4, strokeWidth: 2 }
+            };
+
+            var chart = new ApexCharts(document.querySelector(chartSelector), options);
+            chart.render();
+        }
+
+        // رندر سه نمودار با داده‌های متفاوت
+        renderChart("#field1-part2-chart", [
+            { name: "وصول شده", data: [10, 25, 18, 17, 28, 40, 35], color: "#1E90FF" },
+            { name: "حد انتظار", data: [5, 15, 20, 25, 28, 32, 37], color: "#9c9c9c" }
+        ]);
+
+        renderChart("#field2-part2-chart", [
+            { name: "وصول شده", data: [8, 12, 20, 28, 15, 25, 30], color: "#1E90FF" },
+            { name: "حد انتظار", data: [2, 10, 18, 12, 20, 22, 18], color: "#9c9c9c" }
+        ]);
+
+        renderChart("#field3-part2-chart", [
+            { name: "وصول شده", data: [15, 20, 25, 30, 22, 28, 35], color: "#1E90FF" },
+            { name: "حد انتظار", data: [10, 12, 20, 25, 18, 22, 27], color: "#9c9c9c" }
+        ]);
+    </script>
+
+    <script>
+  $(function () {
+    // آدرس پایه برای load (Razor Url.Action)
+    var loadUrl = '@Url.Action("sabteghdam", "Orders", new { area = "Setting" })';
+
+    // تابع کمکی برای قرارگیری مودال و جلوگیری از خارج شدن از صفحه
+    function placeModal($modal, targetOffset, targetHeight) {
+      var left = targetOffset.left;
+      var top = targetOffset.top + targetHeight + 5; // 5px فاصله
+      // اندازه‌ها
+      var modalWidth = $modal.outerWidth();
+      var modalHeight = $modal.outerHeight();
+      var winWidth = $(window).width();
+      var winHeight = $(window).height();
+      var scrollTop = $(window).scrollTop();
+
+      // اگر مودال از راست صفحه بیرون زد آن را به چپ ببریم
+      if (left + modalWidth > winWidth - 10) {
+        left = Math.max(10, winWidth - modalWidth - 10);
+      }
+      // اگر مودال از پایین viewport بیرون زد آن را بالاتر قرار بده (روی سطر بالا)
+      if ((top - scrollTop) + modalHeight > winHeight) {
+        // قرار دادن بالای المان (اگر جا داشته باشد)
+        var altTop = targetOffset.top - modalHeight - 5;
+        if (altTop > 10) top = altTop;
+        else top = Math.max(10 + scrollTop, winHeight - modalHeight - 10 + scrollTop);
+      }
+
+      $modal.css({
+        left: left + "px",
+        top: top + "px",
+        position: "absolute"
+      });
+    }
+
+    // باز شدن مودال موقع کلیک روی هر المان با کلاس .click
+    $(document).on("click", ".click", function (e) {
+      e.stopPropagation(); // جلوگیری از بابل شدن تا handler کلی سمت داکیومنت تداخل نکند
+      var $this = $(this);
+
+      // خواندن data-id یا اگر نبود از متن المان استفاده کن
+      var idd = $this.data("id");
+      if (!idd && $this.attr("href")) {
+        // اگر المان لینک دارد شاید id در کوئری‌استرینگ باشد
+        var href = $this.attr("href");
+        var m = href.match(/[?&]id=([^&]+)/);
+        if (m) idd = decodeURIComponent(m[1]);
+      }
+      if (!idd) {
+        // fallback: متن المان
+        idd = $.trim($this.text());
+      }
+
+      console.log("Clicked ID:", idd);
+
+      var offset = $this.offset();
+      var elementHeight = $this.outerHeight();
+
+      var $modal = $("#mymodal3");
+      // نمایش مودال (ابتدا نمایش موقت برای محاسبه ابعاد)
+      $modal.addClass("fade-in").css({
+        display: "block",
+        left: 0,
+        top: 0,
+        position: "absolute",
+        opacity: 1
+      });
+
+      // قرارگیری درست مودال نسبت به المان و جلوگیری از overflow
+      placeModal($modal, offset, elementHeight);
+
+      // لود محتوا (استفاده از encodeURIComponent)
+      var safeUrl = loadUrl + "?id=" + encodeURIComponent(idd);
+      $("#ss").html('<div style="padding:12px">در حال بارگذاری...</div>'); // پیام موقت
+      $("#ss").load(safeUrl, function (response, status, xhr) {
+        if (status === "error") {
+          $("#ss").html('<div style="padding:12px;color:#ffdcdc">خطا در بارگذاری محتوا.</div>');
+          console.error("Load error:", xhr.status, xhr.statusText, safeUrl);
+        } else {
+          // بعد از لود شدن ممکنه اندازه مودال تغییر کنه؛ باز جایابی کن
+          setTimeout(function () {
+            placeModal($modal, offset, elementHeight);
+          }, 60);
+        }
+      });
+    });
+
+    // بستن مودال با کلیک روی دکمه بستن
+    $(document).on("click", "#mymodal3 .modal-close", function (e) {
+      e.stopPropagation();
+      $("#mymodal3").hide().removeClass("fade-in");
+    });
+
+    // بستن مودال با کلیک بیرون از آن
+    $(document).on("click", function (e) {
+      var $modal = $("#mymodal3");
+      if ($modal.is(":visible")) {
+        // اگر کلیک شده داخل مودال نبود، مودال را ببند
+        if ($(e.target).closest("#mymodal3").length === 0) {
+          $modal.hide().removeClass("fade-in");
+        }
+      }
+    });
+
+    // وقتی صفحه اسکرول یا resize شد، اگر مودال باز است دوباره جایابی کن
+    $(window).on("resize scroll", function () {
+      var $modal = $("#mymodal3");
+      if ($modal.is(":visible")) {
+        // سعی کن المان هدف را از attribute ذخیره‌شده پیدا کنی؛
+        // اگر پیدا نشد کلا مودال رو ببند
+        var lastTarget = $modal.data("lastTarget");
+        if (lastTarget && $(lastTarget).length) {
+          placeModal($modal, $(lastTarget).offset(), $(lastTarget).outerHeight());
+        } else {
+          // امن: مودال را ببند یا جایابی ساده
+          $modal.hide().removeClass("fade-in");
+        }
+      }
+    });
+
+  });
+    </script>
+
+
+</body>
+</html>

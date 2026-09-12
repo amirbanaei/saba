@@ -1,0 +1,412 @@
+﻿@using SaabWebProject.Models.DomainModels;
+
+@{
+    ViewBag.Title = "تعریف وسایل اسناد";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    SaabEntities db = new SaabEntities();
+
+}
+@model IEnumerable<SaabWebProject.Models.DomainModels.dbAsnadcratname>
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+<script src="~/Assets/js/jalalidatepicker.min.js"></script>
+<link href="~/Assets/css/jalalidatepicker.min.css" rel="stylesheet" />
+<script src="~/Assets/js/jalaali.min.js"></script>
+<link href="~/MyStyles/jalalidatepicker.css" rel="stylesheet" />
+
+<style>
+    #dateDisplay {
+        float: left;
+    }
+
+    h5 {
+        margin-bottom: 0;
+    }
+
+    .tableH_Lock {
+        max-height: 260px;
+        /*height: 260px;*/
+    }
+
+    thead {
+        position: sticky;
+        top: 0;
+        text-align: center;
+        z-index: 2;
+    }
+
+    .inputFilter {
+        margin-bottom: 0px !important;
+    }
+
+    thead th {
+        vertical-align: middle;
+    }
+</style>
+
+
+<div class="tab-content">
+
+    <div class="row mt-2">
+        <!--<div class="col-xl-3">
+        <label class="form-label">تاریخ</label>-->
+        @*------------------------------------------------[1402/09/20]-|KH|-*@
+        <!--<input data-jdp jdp-btn-close data-jdp-miladi-input="datepickerFromEn_usr" id="datepickerFrom_usr" class="form-control">
+        <input id="datepickerFromEn_usr" type="hidden" />-->
+        @*-------------------------------------------------------------|KH|-*@
+        <!--</div>
+        <div class="col-xl-2">
+            <label class="form-label">روز هفته</label>
+            <input class="form-control" id="weekDay" disabled />
+        </div>
+        <div class="col-xl-2">
+            <label class="form-label">تعطیل رسمی/غیر رسمی</label>
+            <select class="form-select" id="tael">
+                <option value="0" hidden>انتخاب مورد</option>
+                <option value="1">رسمی</option>
+                <option value="2">غیر رسمی</option>
+            </select>
+        </div>-->
+        <div class="col-xl-4">
+            <label class="form-label">  نام کالا    </label>
+            <input class="form-control" id="vasileh" />
+        </div>
+        <div class="col-xl-2">
+            <label class="form-label"> نوع واحد  </label>
+            <select class="form-select select_peyman" id="nerghnintlink" name="select_peyman">
+                <option hidden value="Select">انتخاب مورد</option>
+                @foreach (var item in db.tbUnitParameter.ToList())
+                {
+                    <option value="@item.unt_ID">@item.unt_Name</option>
+                }
+            </select>
+            @*<label class="form-label">  نوع نرخ  </label>
+                <input class="form-control" id="nergh" />*@
+        </div>
+        <div class="col-xl-4">
+            <label class="form-label">  شماره کالا    </label>
+            <input class="form-control" id="numbertaghiz" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-11">
+        </div>
+        <div class="col-md-1">
+            <button id="btnTatilat" type="button" class="btn form-control buttonsabt">
+                <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                <span class="bSabt-text">ثبت</span>
+            </button>
+        </div>
+    </div>
+    <hr />
+    <div class="card">
+
+        <div class="table-content p-4">
+            <div class="tab-pane fade show active" id="allTab">
+                <div class="table-responsive tableH_Lock">
+                    <table class="table table-hover text-nowrap">
+                        <thead>
+                            <tr>
+                                <th> فعالیت </th>
+
+                                <th>
+                                    نام کالا
+                                    <div class="inputWithFilterIcon">
+                                        <input type="text" id="filter01-filter" class="inputFilter form-control" placeholder="">
+
+                                        <span><i class="fas fa-filter"></i></span>
+                                    </div>
+                                </th>
+                                <th>
+                                    نوع واحد
+                                    <div class="inputWithFilterIcon">
+                                        <input type="text" id="filter02-filter" class="inputFilter form-control" placeholder="">
+
+                                        <span><i class="fas fa-filter"></i></span>
+                                    </div>
+                                </th>
+                                <th>
+                                    شماره کالا
+                                    <div class="inputWithFilterIcon">
+                                        <input type="text" id="filter03-filter" class="inputFilter form-control" placeholder="">
+
+                                        <span><i class="fas fa-filter"></i></span>
+                                    </div>
+                                </th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                int II = 0;
+                                var nv = "";
+                                string sk = "";
+                            }
+                            @foreach (var it in Model)
+                            {
+                                II++;
+
+                                if (it.nerghnintlink != null)
+                                {
+                                    nv = it.tbUnitParameter.unt_Name;
+                                }
+                                else
+                                {
+                                    nv = "";
+                                }
+                                if (it.codmahsol != null)
+                                {
+                                    sk = it.codmahsol;
+                                }
+                                else
+                                {
+                                    sk = "";
+                                }
+                                <tr class="task-list-row"
+                                    data-filter01="@it.name"
+                                    data-filter02="@nv"
+                                    data-filter03="@sk">
+                                    <td>
+                                        <div class="ms-sm-4 mt-sm-0 mt-2 dropdown-toggle">
+                                            <a href="#" data-bs-toggle="dropdown" class="text-white text-opacity-75 text-decoration-none">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                            <div class="dropdown-menu">
+                                                @*<a data-bs-toggle="modal" data-bs-target="#modalLg1" class="dropdown-item edit" id="Edit_@item.ID">ویرایش</a>*@
+                                                <a data-bs-toggle="modal" data-bs-target="#modalLg" class="dropdown-item edit22344" id="edit22344_@it.ID">ویرایش</a>
+                                                @*<a class="dropdown-item Delete" id="Delete_@item.ID">حذف</a>*@
+                                                @*<a data-bs-toggle="modal" data-bs-target="#modalLg" class="dropdown-item edit" id="Edit_@item.ID">ویرایش</a>*@
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>@it.name</td>
+                                    <td>@nv</td>
+                                    <td>@sk</td>
+
+
+
+                                    @*<td cont-date="dateS_@II" hidden>
+
+                                            @((it.Dtatime != null) ? it.Dtatime.Value.ToString("MM / dd / yyyy") : null)
+
+                                        </td>
+                                        <td id="dateS_@II"></td>
+
+                                        <td>@it.day</td>
+                                        @if (it.Title == 1)
+                                        {
+                                            <td>رسمی</td>
+
+                                        }
+                                        else
+                                        {
+                                            <td>غیر رسمی</td>
+
+                                        }*@
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="card-arrow">
+            <div class="card-arrow-top-left"></div>
+            <div class="card-arrow-top-right"></div>
+            <div class="card-arrow-bottom-left"></div>
+            <div class="card-arrow-bottom-right"></div>
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/sweetalert2.js" type="text/javascript"></script>
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/src/jquery.md.bootstrap.datetimepicker.js"></script>
+<script>
+
+    var
+        filters = {
+            filter01: null,
+            filter02: null,
+            filter03: null,
+        };
+
+    function updateFilters() {
+        $('.task-list-row').hide().filter(function () {
+            var self = $(this),
+                result = true;
+
+            Object.keys(filters).forEach(function (filter) {
+                var filterData = self.data(filter);
+                if (filters[filter] && (filters[filter] != 'None') && (filters[filter] != 'همه')) {
+                    // تبدیل داده به رشته و بررسی مقدار
+                    result = result && (filterData && filterData.toString().indexOf(filters[filter]) !== -1);
+                }
+            });
+
+            return result;
+        }).show();
+    }
+
+    function changeFilter(filterName) {
+        filters[filterName] = this.value;
+        updateFilters();
+    }
+
+    // Assigned User Dropdown Filter
+    $('#filter01-filter').on('input', function () {
+        changeFilter.call(this, 'filter01');
+    });
+    $('#filter02-filter').on('input', function () {
+        changeFilter.call(this, 'filter02');
+    });
+    $('#filter03-filter').on('input', function () {
+        changeFilter.call(this, 'filter03');
+    });
+
+
+</script>
+<script>
+    $(".edit22344").click(function () {
+var idd = $(this).attr("id").split("_")[1];
+console.log(idd);
+    $("#big_modal_body").load('@Url.Content("/Reporter/Dashboard/edittarifmahsol")?id='+idd);
+});
+    var options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+    var dateString = new Date().toLocaleDateString('fa-IR-u-nu-latn', options);
+    document.getElementById('dateDisplay').textContent = "تاریخ امروز : " + dateString;
+</script>
+<script>
+    jalaliDatepicker.startWatch({
+        time: true,
+        days: ["شنبه", "1شنبه", "2شنبه", "3شنبه", "4شنبه", "5شنبه", "جمعه"],
+        persianDigits: true,
+        autoClose: true,
+        autocomplete: true,
+        showCloseBtn: true,
+        showEmptyBtn: false,
+        showCloseBtn: true,
+        zIndex: 100000,
+    });
+    //-----------------------------------------------------------------
+    var inputs = document.querySelectorAll("[data-jdp-miladi-input]");
+    for (var i = 0; i < inputs.length; i++) {
+        inputs[i].addEventListener("jdp:change", function (e) {
+            var miladiInput = document.getElementById(this.getAttribute("data-jdp-miladi-input"));
+            var date = this.value.replace(' ', '').slice(0, 10).split('/');
+            date = jalaali.toGregorian(parseInt(date[0]), parseInt(date[1]), parseInt(date[2]),)
+            // If it was empty
+            if (!this.value) {
+                date = "";
+            }
+            // If it was only history
+            else if (this.value.replace(' ', '').length < 11) {
+                date = date.gy + '-' + date.gm + '-' + date.gd
+            }
+            // If it was the date and time
+            else {
+                date = date.gy + '-' + date.gm + '-' + date.gd + ' ' + this.value.replace(' ', '').slice(10, 30)
+            }
+            miladiInput.value = date
+            var weekDay = getDayOfWeek(document.querySelector("#datepickerFromEn_usr").value.slice(0, 10))
+            document.querySelector("#weekDay").value = weekDay
+        });
+    }
+    //-----------------------------------------------------------------
+    function getDayOfWeek(gregorianDate) {
+        const [year, month, day] = gregorianDate.split('-').map(Number);
+        const date = new Date(year, month - 1, day);
+        const dayOfWeek = date.getDay();
+        const days = ['یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه', 'شنبه'];
+        return days[dayOfWeek];
+    }
+
+
+
+
+    $("#btnTatilat").click(function () {
+              var Filters  = [];
+          var obj = new Object();
+
+
+         console.log("djkjsdkl");
+        var val2 = $('#vasileh').val();
+        var val22 = $('#nerghnintlink').val();
+        var val232 = $('#numbertaghiz').val();
+
+          //var val24 = $('#weekDay').val();
+          console.log(val22);
+          //console.log(val24);
+          console.log(val2);
+
+        obj.name = val2;
+        obj.nerghnintlink = val22;
+        obj.codmahsol = val232
+          //obj.titr = val24;
+          console.log(obj);
+
+
+
+
+
+
+
+
+          sendAjax('@Url.Action("creatvazvaselh", "FinancialDocuments", new { area = "ManagementAccounting" })', obj);
+
+
+
+       ;
+
+  });
+
+
+
+    function sendAjax(url, data) {
+        console.log(url);
+
+        $.ajax({
+            beforeSend: function () {
+                document.getElementById("loading-message").style.display = "block";
+            },
+            url: url,
+            data: data,
+            type: "POST",
+            dataType: "html",
+            success: function (resp) {
+                console.log(resp);
+                document.getElementById("loading-message").style.display = "none";
+                if (resp == "True") {
+                    alert("با موفقیت ثبت شد");
+                    location.reload();
+                }
+
+                else {
+                    alert("resp")
+                }
+            },
+            error: function (resp) {
+                document.getElementById("loading-message").style.display = "none";
+                alert("دچار مشکل شده است ");
+                console.log(resp);
+            }
+        });
+    }
+</script>
+<script>
+    // Convert Gregorian date to jaali in the table
+    var tds = document.querySelectorAll("[cont-date]");
+    var valueD, id, target;
+    var options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    tds.forEach(td => {
+        valueD = new Date(td.textContent).toLocaleDateString('fa-IR-u-nu-latn', options).replace(',', '').replace(" ", "");
+        valueD = valueD.slice(0, 10) + " " + td.textContent.slice(10, 30)
+        id = td.getAttribute("cont-date");
+        target = document.getElementById(id);
+        target.textContent = valueD;
+    });
+</script>
+

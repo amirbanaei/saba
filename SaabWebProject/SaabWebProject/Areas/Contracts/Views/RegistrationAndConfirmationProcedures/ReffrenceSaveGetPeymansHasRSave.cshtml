@@ -1,0 +1,33 @@
+﻿@{
+    Layout = null;
+}
+@model IEnumerable<SaabWebProject.Models.DomainModels.tbReffrenceSave>
+
+<div class="col-xl-6">
+    <label class="form-label"> پیمان ها </label>
+    <select class="form-select" id="baste_peyman">
+        <option value="0">انتخاب نمایید..</option>
+        @foreach (var item in Model)
+        {
+            <option value="@item.FK_PeymanID">@item.tbPeymanContracts.pec_Title ( @item.IsFor)</option>
+        }
+    </select>
+</div>
+
+<div class="col-xl-3">
+    <label class="form-label"> بسته ها </label>
+    <div id="mybaste"></div>
+
+</div>
+
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+
+<script>
+    $(function(){
+        $("#mybaste").load('@Url.Content("/RegistrationAndConfirmationProcedures/ReffrenceSaveGetBaste")?peyman_id=0', function () {
+        });
+    });
+    $("#baste_peyman").change(function(){
+         $("#mybaste").load('@Url.Content("/RegistrationAndConfirmationProcedures/ReffrenceSaveGetBaste")?peyman_id='+ $(this).val());
+    });
+</script>

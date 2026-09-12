@@ -1,0 +1,428 @@
+﻿@using SaabWebProject.Models.DomainModels;
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+
+@{ SaabEntities db = new SaabEntities();
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var reportLabels = new List<string>
+{
+        "گزارشات مغایرت فاز و آمپر",
+        "دستکاری در کنتور",
+        "کنتور خراب",
+        "برق غیر مجاز از شبکه",
+        "از قلم افتاده"
+    };
+
+    var reportOptions = new List<string>
+{
+                "گزارش ناصحیح است "
+,
+        "گزارش نشده است",
+        "گزارش صحیح است "
+    };
+}
+
+<style>
+    .hidden {
+        display: none;
+    }
+
+    .section {
+        margin: 15px 0;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    label {
+        margin-left: 5px;
+    }
+
+    /* برای هر گزینه (چک/رادیو + متن) */
+    .checkbox-item {
+        display: inline-flex;
+        align-items: center;
+        margin-right: 15px;
+        margin-bottom: 5px;
+    }
+
+    .cheeckkk {
+        margin-bottom: 0px !important;
+        margin-left: 8px
+    }
+    /* در موبایل هر گزینه یک خط */
+    @@media (max-width: 600px) {
+        .checkbox-item {
+            display: flex;
+            width: 100%;
+        }
+    }
+
+    .report-item {
+        margin-bottom: 15px;
+    }
+
+        .report-item strong {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+    .report-options {
+        display: flex;
+        flex-wrap: wrap;
+    }
+</style>
+<style>
+    .modal-lg, .modal-xl {
+        margin-top: 8px !important;
+        max-width: 80% !important;
+    }
+
+    .modal-content {
+        /*width:121% !important;
+        padding: 0 !important;
+        margin:-2px;*/
+    }
+</style>
+<style>
+
+
+    .modal2 {
+        display: none;
+        position: absolute; /* Change this from fixed */
+        z-index: 1000; /* Adjust z-index as needed */
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: auto;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content2 {
+        background-color: black;
+        position: relative; /* Add relative positioning */
+        /*  margin: 15% auto;*/
+        padding: 20px;
+        border: 4px solid aqua;
+        border-radius: 30px;
+        width: 100%;
+        max-height: 100%;
+        overflow-y: auto;
+    }
+
+    .modal3 {
+        display: none;
+        position: absolute; /* Change this from fixed */
+        z-index: 1000; /* Adjust z-index as needed */
+        left: 0;
+        top: 0;
+        width: 65%;
+        height: auto;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    @@media (max-width: 768px) {
+        .modal3 {
+            left: -73px;
+            width: 103% !important;
+        }
+
+        .modal-content3 {
+            width: 121% !important;
+            /*padding: 0 !important;
+        margin:-2px;*/
+        }
+    }
+
+
+    .modal-content3 {
+        background-color: black;
+        position: relative; /* Add relative positioning */
+        /*  margin: 15% auto;*/
+        padding: 20px;
+        border: 4px solid aqua;
+        border-radius: 30px;
+        width: 100%;
+        max-height: 100%;
+        overflow-y: auto;
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+    .fade-in {
+        animation: fadeIn 1s ease-in-out; /* Adjust duration and timing function as needed */
+    }
+</style>
+<div class="section ">
+    <div class="row">
+        <div class="col-xl-4">
+            <label class="form-label">رمز رایانه:</label>
+            <input class="form-control" name="ComputerPassword" id="ComputerPassword" />
+        </div>
+        @*<div class="col-xl-4">
+                <label class="form-label">شماره شناسایی:</label>
+                <input class="form-control" name="ComputerPassword" />
+            </div>*@
+        <div class="col-xl-4">
+            <label class="form-label">شماره اشتراک:</label>
+            <input class="form-control" name="ComputerPassword" id="shomarehheshterak" />
+        </div>
+        <div class="col-xl-1">
+            <a href="#" onclick="DownloadExcel23()" class=" btn btn-outline-info form-control buttonGeneral" style="margin-bottom:5px;">
+                <i class="bi bi-eye fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text">مشاهده</span>
+            </a>
+        </div>
+
+        @*<div class="col-xl-6">
+            <label class="form-label">نام و نام خانوادگی مامور قرائت</label>
+
+            <select class="form-select " id="typegozarwsh">
+                <option value="0">انتخاب کنید</option>
+
+                @foreach (var it in db.tbUsers.ToList())
+                {
+                    <option value="@it.usr_ID">@it.FullName</option>
+
+                }
+
+            </select>
+
+
+        </div>*@
+    </div>
+    <!--<div class="row">
+        <div class="col-xl-4">
+            <label class="form-label">منطقه:</label>
+            <input class="form-control" name="ComputerPassword" />
+        </div>
+        <div class="col-xl-6">
+
+
+            <label class="form-label">روز کار:</label>
+            <input class="form-control" name="ComputerPassword" />
+        </div>
+    </div>-->
+    @*<input type="checkbox" id="closed" name="Closed" />
+        <label for="closed">در بسته</label>*@
+    @*<button id="btnGetLocation" class="btn btn-primary">نمایش موقعیت</button>
+        <div id="map" style="width: 100%; height: 400px; margin-top: 20px;"></div>*@
+    <!--<input type="checkbox" id="open" name="Open" />
+        <label for="open">درب بسته</label>
+    </div>-->
+    @*<div class="section">*@
+
+</div>
+
+<hr />
+<div id="myModal3" class="modal3" style="margin-left:25% !important;">
+    <div class="modal-content3">
+        <div class="row">
+            <i class="close fa fa-window-close"></i>
+        </div>
+
+        <div id="ss2">
+
+        </div>
+
+    </div>
+</div>
+<div id="test2">
+
+</div>
+
+@*<div class="section">
+
+    </div>*@
+
+<!--<div id="openSection" class="section hidden">
+    <!-- گزارش‌ها -->
+<!--@for (int i = 0; i < reportLabels.Count; i++)
+{
+    <div class="report-item">
+        <strong>@reportLabels[i] :</strong>
+        <div class="report-options">
+            @for (int j = 0; j < reportOptions.Count; j++)
+            {
+                <span class="checkbox-item">
+                    <input type="radio" id="label@(i+1)-check@(j+1)" name="Label@(i+1)" class=" form-check-input cheeckkk" value="@reportOptions[j]" />
+                    <label for="label@(i+1)-check@(j+1)" class="form-check-label">@reportOptions[j]</label>
+                </span>
+            }
+        </div>
+    </div>
+}
+
+<div class="section">
+    <input type="checkbox" id="mobileCheck" />
+    <label for="mobileCheck">اصلاح شماره همراه</label>
+    <input type="text" id="mobileInput" class="hidden form-control" placeholder="شماره همراه را وارد کنید" />
+</div>-->
+@*<div class="section">
+        <input type="checkbox" id="amountCheck" />
+        <label for="amountCheck">در خواست اصلاح صورت حساب</label>
+        <input type="number" id="amountInput" class="hidden form-control" placeholder="مبلغ را وارد کنید" />
+    </div>*@
+@*<div class="section">
+    <input type="checkbox" id="amountCheck" />
+    <label for="amountCheck">درخواست اصلاح صورت حساب</label>-->*@
+
+<!-- سِلکتور که اول مخفی هست -->
+<!--<select id="amountSelect" class="hidden form-select">
+    <option value="">انتخاب کنید</option>
+    <option value="1">مصرف کم باری</option>
+    <option value="2">مصرف میان باری</option>
+    <option value="3">مصرف پیک</option>
+    <option value="4">مصرف جمعه</option>
+</select>-->
+<!-- اینپوت مبلغ که اول مخفی هست -->
+<!--<input type="number" id="amountInput" class="hidden form-control" placeholder="مبلغ را وارد کنید" />
+    </div>
+    <div class="section">
+        <input type="checkbox" id="closed2" name="Closed" />
+        <label for="closed">صحت جدول زمان بندی</label>
+    </div>
+</div>-->
+@*<button class="btn " style="background: linear-gradient(129deg, rgba(29, 29, 27, 1) 0%, rgba(29, 113, 184, 1) 53%, rgba(54, 169, 225, 1) 100%) " id="Sabt">
+        <i class="bi bi-geo-alt-fill fa-fw me-1 VecGeneral"></i>
+        <span>گرفتن موقعیت مکانی</span>
+    </button>
+
+
+
+    <div class="row">
+        <div class="text-center mt-3">
+            <button onclick="submitAnswers()" class="btn " style="background: linear-gradient(129deg, rgba(29, 29, 27, 1) 0%, rgba(29, 113, 184, 1) 53%, rgba(54, 169, 225, 1) 100%) ">ثبت و تایید</button>
+        </div>   <div class="text-center mt-3">
+            <button onclick="submitAnswers()" class="btn " style="background: linear-gradient(129deg, rgba(29, 29, 27, 1) 0%, rgba(29, 113, 184, 1) 53%, rgba(54, 169, 225, 1) 100%) ">ذخیره</button>
+        </div>   <div class="text-center mt-3">
+            <button onclick="submitAnswers()" class="btn " style="background: linear-gradient(129deg, rgba(29, 29, 27, 1) 0%, rgba(29, 113, 184, 1) 53%, rgba(54, 169, 225, 1) 100%) ">ویرایش</button>
+        </div>
+
+
+
+    </div>*@
+
+
+
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script>
+
+        function DownloadExcel23() {
+    //var month = $("#Month2").val();
+            var shomarehheshterak = $("#shomarehheshterak").val();
+
+            var ComputerPassword = $("#ComputerPassword").val();
+    document.getElementById("loading-circle").style.display = "block";
+
+            if (shomarehheshterak == 0 && ComputerPassword==0) {
+        alert("لطفاً شماره اشتراک یا رمز رایانه  را وارد  کنید.");
+        return;
+            } $("#loading-circle .loadingText1").text("لطفا منتظر نمایش اطلاعات بمانید ...");
+            $("#loading-circle").css("display", "flex");
+            $("#myModal3").addClass("fade-in").css("display", "block");
+                 $("#ss2").load(
+     '@Url.Content("/Setting/Orders/viewcheacklistdovom")',
+                     { shomarehheshterak: shomarehheshterak, ComputerPassword: ComputerPassword },
+     function () {
+         // این قسمت بعد از کامل شدن لود اجرا می‌شود
+         document.getElementById("loading-message").style.display = "none";
+         $("#loading-circle").css("display", "none");
+         $("#typegozarwsh11").picker({ search: true });
+
+     }
+ );
+
+}</script>
+<script>
+    $(document).ready(function () {
+        $("#expandButton2").click(function () {
+            $("#myModal3").addClass("fade-in"); // Add the fade-in class
+            $("#myModal3").css("display", "block");
+        });
+
+        $(".close").click(function () {
+            $("#myModal3").removeClass("fade-in"); // Remove the fade-in class
+            $("#myModal3").css("display", "none");
+        });
+
+        $(window).click(function (event) {
+            if (event.target == $("#myModal3")[0]) {
+                $("#myModal3").removeClass("fade-in"); // Remove the fade-in class
+                $("#myModal3").css("display", "none");
+            }
+        });
+    });
+
+        //$(document).ready(function () {
+        //    $("#typegozarwsh").picker({ search: true });
+
+        //});
+        //document.getElementById("open").addEventListener("change", function () {
+        //    document.getElementById("openSection").classList.toggle("hidden", !this.checked);
+        //});
+
+        //document.getElementById("mobileCheck").addEventListener("change", function () {
+        //    document.getElementById("mobileInput").classList.toggle("hidden", !this.checked);
+        //});
+
+        ////document.getElementById("amountCheck").addEventListener("change", function () {
+        ////    document.getElementById("amountInput").classList.toggle("hidden", !this.checked);
+        ////});
+        //document.getElementById("amountCheck").addEventListener("change", function () {
+        //    document.getElementById("amountSelect").classList.toggle("hidden", !this.checked);
+        //    // وقتی چک‌باکس غیر فعال شد، ورودی مبلغ رو هم مخفی کنیم
+        //    if (!this.checked) {
+        //        document.getElementById("amountInput").classList.add("hidden");
+        //        document.getElementById("amountSelect").value = "";
+        //    }
+        //});
+
+        //document.getElementById("amountSelect").addEventListener("change", function () {
+        //    document.getElementById("amountInput").classList.toggle("hidden", this.value === "");
+        //});
+        //$("#btnGetLocation").on("click", function () {
+        //    $.getJSON("/Setting/Orders/GetLocation", function (data) {
+        //        if (data && data.lat && data.lon) {
+        //            initMap(data.lat, data.lon);
+        //        } else {
+        //            alert("موقعیت پیدا نشد");
+        //        }
+        //    });
+        //});
+
+        //function initMap(lat, lng) {
+        //    var map = new google.maps.Map(document.getElementById("map"), {
+        //        zoom: 14,
+        //        center: { lat: lat, lng: lng }
+        //    });
+        //    new google.maps.Marker({
+        //        position: { lat: lat, lng: lng },
+        //        map: map
+        //    });
+        //}
+    </script>

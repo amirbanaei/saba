@@ -1,0 +1,174 @@
+﻿
+@model List<SaabWebProject.Models.DomainModels.tbCategories>
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+<style>
+    .tableH_Lock {
+        max-height: 364px;
+        /*height: 260px;*/
+    }
+
+    thead {
+        position: sticky;
+        top: 0;
+        text-align: center;
+        z-index: 2;
+    }
+
+    .inputFilter {
+        margin-bottom: 0px !important;
+    }
+
+    thead th {
+        vertical-align: middle;
+    }
+</style>
+<div class="card" style="width: 100%;">
+    <div class="table-content p-4">
+        <div class="tab-pane fade show active" id="allTab">
+            <div class="table-responsive tableH_Lock">
+                <table class="table table-hover text-nowrap" style="text-align:center;">
+                    <thead>
+                        <tr>
+                            <th>عملیات</th> 
+                            <th>
+                                عنوان دسته بندی
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter01-filterR" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            <th>
+                                وضعیت
+
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr class="task-list-rowR "
+                                data-filter01="@item.Category_Name">
+                                <td>
+                                    <div class="ms-sm-4 mt-sm-0 mt-2 dropdown-toggle">
+                                        <a href="#" data-bs-toggle="dropdown" class="text-white text-opacity-75 text-decoration-none">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                        <div class="dropdown-menu">
+                                            <a data-bs-toggle="modal" style="cursor:pointer" data-bs-target="#modalLg" class="dropdown-item" onclick="EditCategory('@Url.Action("_EditCategory","Categories")','@item.Category_ID')">
+                                                ویرایش
+                                            </a>
+
+                                            @if (item.Status)
+                                            {
+
+                                                <a href="@Url.Action("DisableCategory","Categories",new {Id=item.Category_ID})" style="cursor:pointer" class="dropdown-item">
+                                                    غیرفعال
+                                                </a>
+
+
+                                            }
+                                            else
+                                            {
+
+                                                <a href="@Url.Action("DisableCategory","Categories",new {Id=item.Category_ID})" style="cursor:pointer" class="dropdown-item">
+                                                    فعال
+                                                </a>
+
+                                            }
+                                        </div>
+
+                                    </div>
+
+                                </td>
+                                <td>@item.Category_Name</td>
+                                <td>
+                                    @if (item.Status)
+                                    {
+                                        <i class="far fa-lg fa-fw me-2 fa-check-square" style="color:green"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="far fa-lg fa-fw me-2 fa-window-close" style="color:red"></i>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+
+<script src="/Scripts/jquery-3.3.1.min.js" type="text/javascript"></script>
+<script src="~/Scripts/sweetalert2.js" type="text/javascript"></script>
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+
+
+<script>
+
+    var
+        filtersR = {
+            filter01: null,
+        };
+
+    function updateFiltersR() {
+        $('.task-list-rowR').hide().filter(function () {
+            var self = $(this),
+                result = true;
+
+            Object.keys(filtersR).forEach(function (filter) {
+                var filterData = self.data(filter);
+                if (filtersR[filter] && (filtersR[filter] != 'None') && (filtersR[filter] != 'همه')) {
+                    // تبدیل داده به رشته و بررسی مقدار
+                    result = result && (filterData && filterData.toString().indexOf(filtersR[filter]) !== -1);
+                }
+            });
+
+            return result;
+        }).show();
+    }
+
+    function changeFilterR(filterName) {
+        filtersR[filterName] = this.value;
+        updateFiltersR();
+    }
+
+    // Assigned User Dropdown Filter
+    $('#filter01-filterR').on('input', function () {
+        changeFilterR.call(this, 'filter01');
+    });
+
+
+
+</script>
+<script>
+    function EditCategory(url, Id) {
+
+        if (url != "" && Id != "") {
+
+            $.ajax({
+                beforeSend: function () {
+                    document.getElementById("loading-message").style.display = "block";
+                },
+                url: url,
+                type: "get",
+                data: { Id: Id },
+                success: function (result) {
+                    document.getElementById("loading-message").style.display = "none";
+                    $("#big_modal_body").html(result);
+
+                }
+            });
+
+        }
+
+    }
+</script>

@@ -1,0 +1,64 @@
+﻿@model SaabWebProject.Models.DomainModels.tbPeymanContractPrice
+
+<div class="row prices_row_class" id="roww">
+    <div class="col-xl-1">
+        <div class="form-group mb-3">
+            <button type="button" class="btn form-control buttonGeneralMins minus_class " id="minu">
+                <i class="fa fa-multiply fa-fw me-1 VecGeneral"></i>
+            </button>
+        </div>
+    </div>
+    <div class="col-xl-2">
+        <div class="form-group mb-3">
+            <label class="form-label"> عنوان </label>
+            <input class="form-control" id="UnitTitle" value="@Model.UnitTitle" />
+        </div>
+    </div>
+    <div class="col-xl-1">
+        <div class="form-group mb-3">
+            <label class="form-label"> واحد </label>
+            <input class="form-control" id="Unit" value="@Model.Unit" />
+        </div>
+    </div>
+    <div class="col-xl-3">
+        <div class="form-group mb-3">
+            <label class="form-label"> نرخ واحد </label>
+            <input class="form-control PricePer numbers" placeholder="ریال" value="@Model.CountForPer" id="CountForPer" />
+        </div>
+    </div>
+    <div class="col-xl-2">
+
+        <div class="form-group mb-3">
+            <label class="form-label"> تعداد </label>
+            <input class="form-control Count" type="number" id="Count" value="@Model.Count" />
+        </div>
+    </div>
+    <div class="col-xl-3">
+        <div class="form-group mb-3">
+            <label class="form-label"> مبلغ کل </label>
+            <input class="form-control TotalPriceForEveryUnit numbers" placeholder="ریال" disabled  value="@Model.Price" id="Price" />
+        </div>
+    </div>
+
+</div>
+<span id="NextRow"></span>
+
+<script>
+        $(".numbers").keyup(function () {
+          var splited = $(this).val().split(".");
+          if(splited.length == 2){
+             var amount = splited[0].toString().replace(/[\D\s\._\-]+/g, "");
+             amount = amount ? parseInt(amount, 10) : 0;
+             $(this).val( ( amount === 0 ) ? "0." + splited[1] : amount.toLocaleString("en-US")+"." + splited[1]);
+          }else{
+             var amount = splited.toString().replace(/[\D\s\._\-]+/g, "");
+            console.log(amount);
+             amount = amount ? parseInt(amount, 10) : 0;
+                console.log(amount);
+
+             $(this).val(( amount === 0 ) ? "" : amount.toLocaleString("en-US"));
+          
+          }
+    });
+    
+</script>

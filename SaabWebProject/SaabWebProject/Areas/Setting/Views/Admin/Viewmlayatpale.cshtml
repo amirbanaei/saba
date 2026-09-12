@@ -1,0 +1,195 @@
+﻿@{
+    Layout = null;
+}
+<lin @section Styles{
+    <link href="~/Assets/plugins/BootstrapPersianDateTimePicker/src/jquery.md.bootstrap.datetimepicker.style.css" rel="stylesheet" />
+}
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+<div >
+    <div class="row" id="manageqarardad" style="margin-top:10px">
+        <span style="display:none">
+
+        </span>
+
+        <div class="col-xl-10"></div>
+
+
+        <div class="col-xl-1">
+            <a href="#" class=" btn form-control buttonGeneral" id="dwn2">
+                <i class="bi bi-download  fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text">دانلود فایل نمونه</span>
+            </a>
+        </div>
+
+        <div class="col-xl-1">
+            <a href="#" onclick="ShowDialogFile2()" class=" btn btn-outline-info form-control buttonGeneral" style="margin-bottom:5px;">
+                <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text">بارگذاری فایل</span>
+            </a>
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-xl-12" id="myTable" style=" z-index: 2 !important;margin-bottom:10px"></div>
+    </div>
+
+    <div class="row">
+        <div class="col-xl-12" id="myTable66"></div>
+    </div>
+    <input name="MyExcelStream2" type="file" style="display:none" />
+
+</div>
+
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+
+<script src="~/Scripts/popper.min.js"></script>
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Scripts/sweetalert2.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Scripts/popper.min.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/src/jquery.md.bootstrap.datetimepicker.js"></script>
+<script>
+     $("#myTable66").load('@Url.Content("/Setting/Admin/ViewmlaSteptaxList")');
+    </script>
+    <script>
+
+
+    $("input[name='MyExcelStream2']").change(function () {
+    var file = this.files[0];
+    var ext = file.name.split('.')[1];
+    if (ext == "xlsx" || ext == "xls") {
+
+    var  obj = new FormData();
+
+    obj.append("MyExcelStream", file);
+
+    console.log(file);
+    $.ajax({
+    beforeSend:function (){
+    document.getElementById("loading-message").style.display = "block";
+    },
+    url: "@Url.Action("ImportExcel_step", "Admin", new { area = "Setting" })",
+    type: "post",
+    contentType: false,
+    data: obj,
+    processData: false,
+    cache: false,
+    success: function (res) {
+    document.getElementById("loading-message").style.display = "none";
+    Swal.fire({
+    icon: 'success',
+    background: 'rgb(29,40,52)',
+    color: 'white',
+    confirmButtonText: 'باشه',
+    title: 'آپلود اکسل',
+    text: res,
+    });
+    location.reload();
+
+    },
+    error: function (res) {
+    console.log(res);
+    }
+    });
+    }
+    else {
+
+    Swal.fire({
+    icon: 'warning',
+    background: 'rgb(29,40,52)',
+    color: 'white',
+    confirmButtonText: 'باشه',
+    title: 'نوع فایل',
+    text: 'لطفا فایلی با پسوند اکسل وارد کنید',
+    });
+    return false;
+    }
+
+    });
+    /// Open Dialog File
+    function ShowDialogFile2() {
+    $("input[name='MyExcelStream2']").val(null);
+    $("input[name='MyExcelStream2']").click();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    $("#dwn2").click(function () {
+    console.log("kfsdk;");
+
+
+
+
+
+
+
+
+
+
+
+
+    $.ajax({
+    beforeSend: function () {
+    document.getElementById("loading-message").style.display = "block";//مهندس دارین برعککس میزارین
+    //این درسته
+    //شبیه هم ننوشتین
+    //خوب ورودی هام فرق داتشنت الاان فهمیدم چیشد + اضافه گذاشته بود
+    },
+    @*url: '@Url.Action("ExportMoalefeExcel", "Moalefe", new { area = "Salaries" })?year=' + $("#year_usr").val() + '&month=' + aa + '&FromDate=' + $("#datepickerFromEn_usr").val() + '&ToDate=' + $("#datepickerToEn_usr").val() + '&PeymanID=' + $("#baste_peyman2").val() + '&Basteh=' + Basteh,*@
+    type: 'GET',
+    dataType: 'html',
+
+
+    success: function (res) {
+    if (res === "False") {
+    // اجرای بلوک error در صورت مطابقت با "False"
+    alert("برای این ماه و این سال این بسته تایید نهایی شده است ");
+    window.location.reload();
+    console.log(res);
+    }
+    else {
+
+    document.getElementById("loading-message").style.display = "none";
+    @*window.location = '@Url.Action("ExportMoalefeExcel", "Moalefe",new { area = "Salaries" })?year=' + $("#year_usr").val() + '&month=' + aa + '&FromDate=' + $("#datepickerFromEn_usr").val() + '&ToDate=' + $("#datepickerToEn_usr").val() + '&PeymanID=' + $("#baste_peyman2").val() + '&Basteh=' + Basteh;*@
+    window.location = '@Url.Action("Step_tax", "Admin", new { area = "Setting" })'
+
+    }
+    },
+    error: function (res) {
+    alart("fdslsfdk")
+    console.log(res);
+    }
+    });
+    });
+
+
+
+
+    function UploadedFile(result) {
+    Toast.fire({
+    background: '#35434A',
+    color: 'white',
+    title: result
+    }).then(function () {
+    location.reload();
+    });
+    }
+    </script>
+
+

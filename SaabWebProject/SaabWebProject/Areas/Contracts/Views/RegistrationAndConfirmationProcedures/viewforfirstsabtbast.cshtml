@@ -1,0 +1,412 @@
+﻿@using SaabWebProject.Models.Classes;
+@using SaabWebProject.Models.DomainModels;
+
+@{
+    ViewBag.Title = "تعریف  مراحل ثبت";
+    Layout = null;
+    SaabEntities db = new SaabEntities();
+
+}
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+
+<script src="~/Assets/js/jalalidatepicker.min.js"></script>
+<link href="~/Assets/css/jalalidatepicker.min.css" rel="stylesheet" />
+<script src="~/Assets/js/jalaali.min.js"></script>
+<link href="~/MyStyles/jalalidatepicker.css" rel="stylesheet" />
+
+<link href="~/MyStyles/MyStyle.css" rel="stylesheet" />
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+
+<link href="~/MyStyles/MyStyle.css" rel="stylesheet" />
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+
+
+
+<div class="row" style="margin-top:10px">
+    <div class="col-xl-5">
+        <label class="form-label"> پیمان </label>
+        @*@Html.Action("_GetAllListPeymans_Select", "Peyman", new { area = "Contracts" })*@
+        <div id="peymans">
+
+        </div>
+        @*<select class="form-select select_peymanforbasteh" id="select_peymanforbasteh" name="select_peymanforbasteh">
+                <option hidden value="Select">انتخاب مورد</option>
+                <option hidden value="0">همه</option>
+
+                @foreach (var item in Model.ToList())
+                {
+                    <option value="@item.pec_ID">@item.pec_Title</option>
+                }
+            </select>*@
+
+    </div>
+    <div class="col-xl-3" id="userlabel">
+        <label class="form-label"> شهرستان  </label>
+        <input class="form-control" id="userinput" />
+        <div id="UserOFPeyman">
+
+        </div>
+
+    </div>
+
+
+
+    <!--<div class="col-xl-2"style="display:none">
+        <label class="form-label"> شهرستان </label>
+        @Html.Action("_GetAllListcitys_Select", "Peyman", new { area = "Contracts" })-->
+    @*<select class="form-select select_peymanforbasteh" id="select_peymanforbasteh" name="select_peymanforbasteh">
+            <option hidden value="Select">انتخاب مورد</option>
+            @foreach (var item in Model.ToList())
+            {
+                <option value="@item.pec_ID">@item.pec_Title</option>
+            }
+        </select>*@
+
+    <!--</div>-->
+    <div class="col-xl-2">
+        <label class="form-label"> نوع عملیات </label>
+        <select class="form-select soratvaz" id="soratvaz" name="soratvaz">
+            <option value="-1999">انتخاب کنید</option>
+
+            <option value="-1">فیش</option>
+            <option value="-2">صورت وضعیت</option>
+
+            @foreach (var item in db.tbEquipmentGroup.ToList())
+            {
+                <option value="@item.Eqpgrp_ID">@item.Eqpgrp_Name</option>
+            }
+        </select>
+
+    </div>
+    <div class="col-xl-2">
+        <label class="form-label"> نام بسته  </label>
+        @*<select class="form-select " id="sanad">
+                <option>انتخاب کنید</option>
+                @for (int I = 1; I <= 10; I++)
+                {
+                    <option value="@I">@I</option>
+
+                }
+
+            </select>*@
+        <input class="form-control" id="basteh" @*value="@Model.id.id2"*@ @*disabled*@ />
+    </div>
+
+
+</div>
+<div class="row">
+    <div class="col-xl-9">
+        @*<div class="col-xl-3">
+                <label class="form-label"> نام کاربر حقیقی </label>
+                <select class="form-select " id="namefard">
+
+                    <option>انتخاب کنید</option>
+                    @Html.Action("usr", "FinancialDocuments", new { area = "ManagementAccounting" })
+
+                </select>
+            </div>
+            <div class="col-xl-2">
+                <label class="form-label">مبلغ پرداخت</label>
+                <input class="form-control" id="pardaght" oninput="formatNumberInput222(this)" />
+            </div>
+
+            <div class="col-xl-2">
+                <label class="form-label"> تاریخ پرداخت </label>
+                <div class="col-xl-12">*@
+        @*------------------------------------------------[1402/10/14]-|KH|-*@
+        <!--<input data-jdp jdp-btn-close data-jdp-miladi-input="datepickerFromEn_Eq123" id="datepickerFrom_Eq123" class="form-control">
+        <input id="datepickerFromEn_Eq123" type="hidden" />-->
+        @*-------------------------------------------------------------|KH|-*@
+    </div>
+    @*<div class="col-xl-2">
+            <label class="form-label">  شماره پیگیری </label>
+            <input class="form-control" id="shomarehpardaght" />
+        </div>*@
+    @*<div class="col-xl-2 down1234" style="display:block">
+        </div>*@
+    <div class="col-xl-1">
+        <button class="btn form-control buttonsabt" id="btnCalculateAzmayeshi">
+            <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+            <span class="bSabt-text">ثبت</span>
+        </button>
+    </div>
+    <div class="col-xl-1 down" style="display:none">
+        <a href="#" class=" btn form-control buttonGeneral" style="margin-bottom:10px;" id="dwn" onclick="DownloadExcel() ">
+            <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+            <span class="bGeneral-text">دانلود فایل نمونه</span>
+        </a>
+    </div>
+    <div class="col-xl-1 uplod" style="display:none">
+        <button class="btn form-control buttonGeneral uploadSummery2">
+            <i class="bi bi-upload fa-fw me-1 VecGeneral" style="width:11px"></i>
+            <span class="bGeneral-text">بارگذاری پیوست</span>
+        </button>
+        <input id="summery_file2" style="display: none;" type="file" class="form-control" value="" />
+    </div>
+
+
+
+</div>
+
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+
+
+
+<script>
+    $(document).ready(function () {
+        $("#select_peymanforbasteh").picker({ search: true });
+
+    });
+</script>
+<script>
+        $(document).ready(function () {
+            $("#soratvaz").change(function () {
+                var selectedValue = $(this).val();
+
+                if (selectedValue == "-1" || selectedValue == "-2") {
+                    $(".down").css("display", "block");
+                    $(".uplod").css("display", "block");
+                } else {
+                    $(".down").css("display", "none");
+                    $(".uplod").css("display", "none");
+                }
+            });
+        });
+
+        $(document).ready(function () {
+            $("#select_peymanforbasteh").change(function () {
+                var selectedValue = $(this).val();
+
+                if (selectedValue == "-1" || selectedValue == "-2") {
+                    $(".down").css("display", "block");
+                    $(".uplod").css("display", "block");
+                    //$(".down1234").css("display", "none");
+
+                } else {
+                    $(".down").css("display", "none");
+                    $(".uplod").css("display", "none");
+                    //$(".down1234").css("display", "block");
+
+                }
+            });
+        });
+            $("#peymans").load('@Url.Content("/../Contracts/Peyman/_GetAllListPeymans_Selecthameh")', function () {
+        $("#select_peyman").attr("id", "select_peyman1");
+$("#select_peyman1").change(function () {
+    var id = $(this).val();
+    $("#userinput").css('display', 'none');
+
+    $("#UserOFPeyman").load('@Url.Content("/../Contracts/Peyman/_GetAllListcitys_Select")?id=' + id, function () {
+        // این کد پس از بارگذاری کامل اجرا می‌شود
+        console.log("Content loaded!");
+
+        // حالا المان‌های جدید در DOM موجود هستند
+        $.each($("#select_peymancitys"), function (index, item) {
+            console.log("Element found:", item);
+
+            // اعمال تنظیمات
+            $(item).attr("multiple", "multiple");
+            $(item).picker({ search: true });
+            $(item).on('sp-change', function () {
+                console.log("Changed:", $(this).val());
+            });
+        });
+
+        // نمایش المان‌های موردنظر
+        $("#userlabel").css('display', 'block');
+        $("#submitdiv").css('display', 'block');
+    });
+});
+    });
+</script>
+
+
+<script>
+
+      function DownloadExcel() {
+
+
+
+
+
+
+
+
+
+          $.ajax({
+              beforeSend: function () {
+                  document.getElementById("loading-message").style.display = "block";
+              },
+              @*url: '@Url.Action("ExportMoalefeExcel4", "Moalefe", new { area = "Salaries" })',*@
+              type: 'GET',
+              dataType: 'html',
+
+
+              success: function (res) {
+                             document.getElementById("loading-message").style.display = "none";
+            window.location = '@Url.Action("ExportMoalefeExcel7", "Moalefe", new { area = "Salaries" })';
+              },
+              error: function (res) {
+                  alart("fdslsfdk")
+                  console.log(res);
+              }
+          });
+      }
+    var fd = new FormData();
+
+    $(".uploadSummery2").click(function () {
+        $("#summery_file2").click();
+    });
+
+    $("#summery_file2").change(function (e) {
+        $.each(e.target.files, function (index, file) {
+            fd.append("MyExcelStream", file);
+        });
+    });
+
+         var obj = new FormData();
+
+  $(".uploadSummery").click(function () {
+    FK_DDOfTitle = $(this).attr("id").split("_")[2];
+    ID = $(this).attr("id").split("_")[1];
+      $("#summery_file5").click();
+});
+
+ $("#summery_file5").change(function (e) {
+    $.each(e.target.files, function (index, file) {
+        obj.append("MyExcelStream", file);
+        
+
+    });
+         @*sendAjax2('@Url.Action("ImportExcel_AddSabtmarahel", "Moalefe", new { area = "Salaries" })', obj);*@
+ });
+        function sendAjax2(url2, fd2) {
+            obj.append("Basteh", ID);
+
+
+
+
+            $.ajax({
+                url: url2,
+                type: 'POST',
+                data: fd2,
+                processData: false,
+                contentType: false,
+                success: function (resp1) {
+                    console.log("okeye");
+                    console.log(resp1);
+                    $("#loading-message").css("display", "none");
+                    fd = new FormData();
+                    if (resp1 == "با موفقیت انجام شد") {
+                        alert("با موفقیت ثبت شد");
+                        setTimeout(function () {
+                            location.reload(); // یا می‌توانید از location.reload(true) هم استفاده کنید
+                        }, 2000); // بازه زمانی به میلی‌ثانیه، اینجا 2000 میلی‌ثانیه (یعنی 2 ثانیه)
+                    }
+                    else {
+                        $("#loading-message").css("display", "none");
+                        console.log("jlk;;kkj");
+                        Toast.fire({
+
+                            icon: 'success',
+                            background: '#35434A',
+                            color: 'white',
+                            title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                        }).then(() => {
+                            $("#loading-message").css("display", "none");
+                        });
+                    }
+
+                },
+                error: function (resp1) {
+                    console.log(resp1);
+                    console.log("Nokeye");
+                    $("#loading-message").css("display", "none");
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                    }).then(() => {
+                        $("#loading-message").css("display", "none");
+                    });
+                }
+            });
+        }
+</script>
+<script>
+
+</script>
+<script>
+    $("#btnCalculateAzmayeshi").click(function () {
+    var PeymanArr = [];
+    $.each($("#select_peymancitys").val().toString().split(","), function (index, item) {
+        if (item !== "" && item !== 'Select') {
+            PeymanArr.push(item);
+        }
+    });
+
+    var namebasteh = $("#basteh").val();
+    var fishorsorat = $("#soratvaz").val();
+    var fkpymn = $("#select_peyman1").val();
+
+    if ($("#select_peyman_").val() === 'Select') {
+        alert("لطفا پیمان ها را انتخاب کنید");
+        return;
+    } else if ($("#CourseAz").val() === "0") {
+        alert("لطفا دوره را انتخاب کنید");
+        return;
+    } else if ($("#MonthAz").val() === "0") {
+        alert("لطفا ماه را انتخاب کنید");
+        return;
+    } else if ($("#YearAz").val() === "0") {
+        alert("لطفا سال را انتخاب کنید");
+        return;
+        }
+        console.log(PeymanArr);
+    var formData = new FormData();
+        PeymanArr.forEach((item) => {
+            formData.append("FKcity[]", item); // ارسال هر عنصر به صورت جداگانه
+        });
+        formData.append("fkpymn", fkpymn);
+        formData.append("namebasteh", namebasteh);
+        formData.append("fishorsorat", fishorsorat);
+
+    // اضافه کردن فایل‌ها
+        fd.forEach((value, key) => {
+        formData.append(key, value);
+    });
+        console.log(formData);
+
+    $.ajax({
+                  url: "@Url.Action("createmarhaleh1", "RegistrationAndConfirmationProcedures", new { area = "Contracts" })",
+        type: "POST",
+        processData: false,
+        contentType: false,
+        data: formData,
+        success: function (res) {
+            if (res == "True") {
+                alert("با موفقیت ثبت شد ");
+                location.reload();
+            }
+            console.log(res);
+        },
+        error: function (res) {
+            console.log(res);
+            Toast.fire({
+                icon: 'error',
+                background: '#35434A',
+                color: 'white',
+                title: "عملیات با خطا مواجه شد"
+            });
+        }
+    });
+});
+
+</script>

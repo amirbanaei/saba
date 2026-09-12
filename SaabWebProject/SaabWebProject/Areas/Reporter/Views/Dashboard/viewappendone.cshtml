@@ -1,0 +1,257 @@
+﻿@model SaabWebProject.Models.DomainModels.tbNamshnaght
+
+
+@using SaabWebProject.Models.DomainModels;
+
+@{
+    SaabEntities db = new SaabEntities();
+
+    Layout = null;
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .modal-dialog {
+        max-width: 80% !important;
+    }
+
+
+    .modal2 {
+        display: none;
+        position: absolute; /* Change this from fixed */
+        z-index: 1000; /* Adjust z-index as needed */
+        left: 0;
+        top: 0;
+        width: 65%;
+        height: auto;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content2 {
+        background-color: black;
+        position: relative; /* Add relative positioning */
+        /*  margin: 15% auto;*/
+        padding: 20px;
+        border: 4px solid aqua;
+        border-radius: 30px;
+        width: 100%;
+        max-height: 100%;
+        overflow-y: auto;
+    }
+
+    .modal3 {
+        display: none;
+        position: absolute; /* Change this from fixed */
+        z-index: 1000; /* Adjust z-index as needed */
+        left: 0;
+        top: 0;
+        width: 65%;
+        height: auto;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content3 {
+        background-color: black;
+        position: relative; /* Add relative positioning */
+        margin: 65% auto;
+        padding: 20px;
+        border: 4px solid aqua;
+        border-radius: 30px;
+        width: 100%;
+        max-height: 100%;
+        overflow-y: auto;
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+    .fade-in {
+        animation: fadeIn 1s ease-in-out; /* Adjust duration and timing function as needed */
+    }
+</style>
+
+
+
+<div class="row">
+    <h5>اطلاعات پایه و تعهدی</h5>
+</div>
+<div class="row">
+
+    <div class="col-xl-2">
+        <label class="form-label"> شغل کارمند</label>
+
+        <input class="form-control  AmountInput control " id="totalAmountInput" name="totalAmountInput" type="text" maxlength="15" />
+        @*<textarea class="form-control AmountInput" id="totalAmountInput" name="totalAmountInput" maxlength="15"></textarea>
+            <input class="form-control AmountInput" id="totalAmountInput" />*@
+    </div>
+    <div class="col-xl-2">
+        <label class="form-label"> عنوان فعالیت </label>
+
+        <input class="form-control AmountInput control form-control30 " id="totalAmountInput3" name="totalAmountInput" type="text" maxlength="15" />
+        @*<textarea class="form-control AmountInput" id="totalAmountInput" name="totalAmountInput" maxlength="15"></textarea>
+            <input class="form-control AmountInput" id="totalAmountInput" />*@
+    </div>
+    <div class="col-xl-2">
+        <label class="form-label"> تعداد تعهد</label>
+
+        <input class="form-control AmountInput control " id="totalAmountInput" name="totalAmountInput4" type="text" maxlength="15" />
+        @*<textarea class="form-control AmountInput" id="totalAmountInput" name="totalAmountInput" maxlength="15"></textarea>
+            <input class="form-control AmountInput" id="totalAmountInput" />*@
+    </div>
+    <div class="col-xl-2">
+        <div class="row">
+            <div class="col-xl-12">
+                <label class="form-label"> بازه اجرایی تعهد </label>
+
+            </div>
+            <div class="col-xl-12">
+                <select id="totalAmountInput5" class="form-select">
+                    <option value="0">انتخاب کنید  </option>
+
+                    <option value="1">روز</option>
+                    <option value="2">ماه </option>
+                    <option value="3">سال</option>
+
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-2">
+        <div class="row">
+            <div class="col-xl-12">
+                <label class="form-label"> فردی /گروهی </label>
+
+            </div>
+            <div class="col-xl-12">
+                <select id="totalAmountInput6" class="form-select">
+                    <option value="0">انتخاب کنید  </option>
+
+                    <option value="1">فردی</option>
+                    <option value="2">گروهی</option>
+                    <option value="3">هردو</option>
+
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xl-10"></div>
+    <div class="col-xl-1">
+        <button id="sabttitle"  data-bs-toggle="modal" data-bs-target="#modalLg1" class="btn form-control buttonGeneralPlus">
+            ثبت
+        </button>
+    </div>
+</div>
+<script>
+    $("#sabttitle").click(function () {
+        // جمع‌آوری داده‌ها
+        var dataList = []; // ایجاد یک آرایه برای ذخیره تمام داده‌ها
+        var id = 1;
+        $("input.form-control30").each(function () {
+            var inputId = $(this).attr("id");
+            var value = $("#totalAmountInput4").val();
+            var value2 = $("#totalAmountInput6").val();
+            var value3 = $(this).val();
+            //var value4 = $(this).val();
+            //var value5 = $(this).val();
+            var Fardi = null;
+            var grohi = null;
+
+            if (value) { // اگر ورودی پر شده است
+                //var parts = inputId.split('_'); // تقسیم ID به اجزا
+                //var type = parts[0];   // مثلا 'fardi'
+                //var phase = parts[1];  // مثلا 'takfaz'
+                //var area = parts[2];   // مثلا 'shahri'
+                //id = parts[3];
+                if (value2 == 3) {
+                    grohi = true,
+                        Fardi = true
+
+                }
+
+                else if (value2 == 2) {
+                    grohi = true
+
+                }
+                else if (value2 == 1) {
+                    Fardi = true
+
+}
+                // ID رکورد در دیتابیس
+                dataList.push({
+                    Fk_NAME: @Model.ID,
+                    Fardi: Fardi,
+                    grohi: grohi,
+                    Title: value3,
+                    count: value
+                });
+                // ارسال داده‌ها به سرور
+            }
+            else {
+                             if (value2 == 3) {
+                    grohi = true,
+                        Fardi = true
+
+                }
+
+                else if (value2 == 2) {
+                    grohi = true
+
+                }
+                else if (value2 == 1) {
+                    Fardi = true
+
+}
+                // ID رکورد در دیتابیس
+                dataList.push({
+                    Fk_NAME: @Model.ID,
+                    Fardi: Fardi,
+                    grohi: grohi,
+                    Title: value3,
+                    count: value
+                });
+            }
+        });
+
+
+
+
+        if (dataList.length > 0) {
+            updateDatabase(dataList);
+            console.log(dataList);
+        }
+    });
+    function updateDatabase(dataList) {
+        $.ajax({
+            url: '/Reporter/Dashboard/UpdateRecaddone', // آدرس اکشن کنترلر شما
+            method: 'POST',
+            data: JSON.stringify(dataList), // ارسال آرایه به سرور
+
+            contentType: 'application/json',
+            success: function (response) {
+                console.log("Record updated successfully.");
+                if (response == "true") {
+                      $("#big_modal_body1").load('@Url.Content("~/Reporter/Dashboard/A1_Shenakht_Mod01")?id=' +@Model.ID);
+
+
+                }
+            },
+            error: function (error) {
+                console.error("Error updating record:", error);
+            }
+        });
+    }
+</script>

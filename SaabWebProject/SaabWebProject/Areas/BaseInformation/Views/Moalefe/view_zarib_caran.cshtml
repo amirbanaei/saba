@@ -1,0 +1,159 @@
+﻿
+@using SaabWebProject.Models.DomainModels;
+
+@{
+
+    ViewBag.Title = "ضریب سرانه بدهی";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    SaabEntities db = new SaabEntities();
+
+}
+<div class="row">
+    <div class="col-xl-2">
+        <div class="row">
+            <div class="col-xl-12">
+                <label class="form-label">
+                    ضریب بدهی
+
+                </label>
+
+            </div>
+            <div class="col-xl-12">
+                <input class="form-control" id="numbersoart" value="0" />
+            </div>
+        </div>
+
+    </div>
+    <div class="col-xl-4">
+        <label class="form-label">نام مولفه </label>
+
+        <select class="form-select select_peymanhazf" id="selecthazfpymn" name="selecthazf">
+            <option hidden value="Select">انتخاب مورد</option>
+            @foreach (var item in db.tbContractMoalefeDastmozdi.ToList())
+            {
+                <option value="@item.md_ID"> @item.md_Title</option>
+            }
+        </select>
+
+    </div>
+    <div class="col-xl-4">
+        <label class="form-label">نام شهرستان  </label>
+
+        <select class="form-select select_peymanhazf" id="citys" name="selecthazf">
+            <option hidden value="Select">انتخاب مورد</option>
+            @foreach (var item in db.tbCities.ToList())
+            {
+                <option value="@item.ID"> @item.Name</option>
+
+
+            }
+        </select>
+
+    </div>
+    @*<div class="col-xl-2">
+            <label class="form-label">سال</label>
+
+            <select id="year_Eq111" name="year_Eq111" class="form-select">
+                <option value="0">انتخاب کنید</option>
+
+                @{
+
+
+                    for (var i = 4; i >= 0; i--)
+                    {
+                        var s = DateTime.Now.AddYears(-i);
+
+                        <option value="@cs2.GetYear(s)">@cs2.GetYear(s)</option>
+                    }
+                }
+            </select>
+
+        </div>*@
+
+
+
+    @*<div class="col-xl-2" id="Monthly">
+            <label class="form-label">ماه</label>
+            <select class="form-select" id="Monthly121">
+                <option value="0">انتخاب کنید..</option>
+                <option value="1">فروردین</option>
+                <option value="2">اردیبهشت</option>
+                <option value="3">خرداد</option>
+                <option value="4">تیر</option>
+                <option value="5">مرداد</option>
+                <option value="6">شهریور</option>
+                <option value="7">مهر</option>
+                <option value="8">آبان</option>
+                <option value="9">آذر</option>
+                <option value="10">دی</option>
+                <option value="11">بهمن</option>
+                <option value="12">اسفند</option>
+
+            </select>
+        </div>*@
+</div>
+<div class="row">
+    <div class="col-xl-11">
+    </div>
+    <div class="col-xl-1">
+
+        @*<button id="btnCreate" type="button" class="form-control buttonGeneral">
+                <i class="fa fa-info fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text"> <a data-bs-toggle="modal" data-bs-target="#modalLg1" class="Details ">جزئیات</a></span>
+
+            </button>*@
+        <button class="btn form-control buttonGeneral" id="btnhazf">
+            <i class="fa fa-eye fa-fw me-1 VecGeneral"></i>
+            <span class="bGeneral-text">مقدار دستی معادل کار</span>
+        </button>
+    </div>
+</div>
+<div id="ListUsers">
+    @Html.Action("view_zarib_caran_list", "Moalefe", new { area = "BaseInformation" })
+</div>
+
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Scripts/popper.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#selecthazfpymn").picker({ search: true });
+        $("#citys").picker({ search: true });
+
+    });
+    $(document).ready(function () {
+        $('#btnhazf').click(function () {
+            var codPersonal = $('#numbersoart').val();
+            //var year = $('#year_Eq111').val();
+            var citys = $('#citys').val();
+            var valuemoadel = $('#selecthazfpymn').val();
+
+            //if (year == "0" || month == "0") {
+            //    alert('لطفاً همه فیلدها را انتخاب کنید.');
+            //    return;
+            //}
+
+            var url = `/BaseInformation/Moalefe/create_sabt?citys=${citys}&codPersonal=${codPersonal}&value=${valuemoadel}`;
+
+            $.ajax({
+                type: 'GET',
+                url: url,
+                success: function (response) {
+                    if (response === "TRue") {
+                        alert('عملیات موفق بود.');
+                    } else {
+                        alert('پاسخ: ' + response);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('خطا در انجام درخواست.');
+                }
+            });
+        });
+    });
+</script>

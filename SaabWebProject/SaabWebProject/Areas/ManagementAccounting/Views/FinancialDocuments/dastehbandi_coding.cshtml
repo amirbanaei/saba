@@ -1,0 +1,363 @@
+﻿<!--@using SaabWebProject.Models.DomainModels;
+
+
+<!DOCTYPE html>
+
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>موقعیت GPS روی نقشه</title>-->
+<!-- اضافه کردن Leaflet CSS -->
+<!--<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <style>
+        #map {
+            height: 400px;
+            width: 100%;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>دریافت موقعیت و نمایش روی نقشه</h2>
+    <button onclick="getLocation()">📍 دریافت موقعیت</button>
+    <p id="status"></p>
+    <div id="map"></div>-->
+<!-- اضافه کردن Leaflet JS -->
+<!--<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        let map;
+        let marker;
+
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            } else {
+                document.getElementById("status").innerHTML = "❌ مرورگر شما از GPS پشتیبانی نمی‌کند.";
+            }
+        }
+
+        function showPosition(position) {
+            var latitude = position.coords.latitude;
+            var longitude = position.coords.longitude;
+
+            document.getElementById("status").innerHTML =
+                "📍 موقعیت دریافت شد:<br>عرض جغرافیایی: " + latitude +
+                "<br>طول جغرافیایی: " + longitude;
+
+            // ارسال مختصات به سرور
+            sendToServer(latitude, longitude);
+
+            // نمایش روی نقشه
+            showOnMap(latitude, longitude);
+        }
+
+        function sendToServer(latitude, longitude) {
+            fetch('/ManagementAccounting/FinancialDocuments/SaveGPS', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ Latitude: latitude, Longitude: longitude })
+            })
+                .then(response => response.text())
+                .then(data => {
+                    console.log("✅ سرور پاسخ داد:", data);
+                    document.getElementById("status").innerHTML += "<br>✅ موقعیت ارسال شد!";
+                })
+                .catch(error => {
+                    console.error("❌ خطا در ارسال:", error);
+                    document.getElementById("status").innerHTML += "<br>❌ خطا در ارسال!";
+                });
+        }
+
+        function showOnMap(latitude, longitude) {
+            if (!map) {
+                map = L.map('map').setView([latitude, longitude], 15); // مقدار زوم: 15
+
+                // اضافه کردن لایه نقشه (OpenStreetMap)
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap'
+                }).addTo(map);
+            }
+
+            // اگر نشانگر قبلاً وجود داشت، آن را حذف کن
+            if (marker) {
+                map.removeLayer(marker);
+            }
+
+            // اضافه کردن نشانگر روی نقشه
+            marker = L.marker([latitude, longitude]).addTo(map)
+                .bindPopup("📍 موقعیت شما")
+                .openPopup();
+        }
+
+        function showError(error) {
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    document.getElementById("status").innerHTML = "❌ دسترسی به موقعیت رد شد.";
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    document.getElementById("status").innerHTML = "⚠️ اطلاعات موقعیت در دسترس نیست.";
+                    break;
+                case error.TIMEOUT:
+                    document.getElementById("status").innerHTML = "⏳ درخواست موقعیت زمان‌بر شد.";
+                    break;
+                case error.UNKNOWN_ERROR:
+                    document.getElementById("status").innerHTML = "❌ خطای ناشناخته.";
+                    break;
+            }
+        }
+    </script>
+
+</body>
+</html>-->
+<!--<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>موقعیت GPS روی نقشه</title>-->
+<!-- اضافه کردن Leaflet CSS -->
+<!--<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <style>
+        #map {
+            height: 400px;
+            width: 100%;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>دریافت موقعیت و نمایش روی نقشه</h2>
+    <button onclick="getLocation()">📍 دریافت موقعیت</button>
+    <p id="status"></p>
+    <div id="map"></div>-->
+<!-- اضافه کردن Leaflet JS -->
+<!--<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        let map;
+        let marker;
+
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, handleGeoError, {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0
+                });
+            } else {
+                document.getElementById("status").innerHTML = "❌ مرورگر شما از GPS پشتیبانی نمی‌کند.";
+                getIPLocation(); // استفاده از موقعیت‌یابی IP در صورت عدم پشتیبانی GPS
+            }
+        }
+
+        function showPosition(position) {
+            let latitude = position.coords.latitude;
+            let longitude = position.coords.longitude;
+
+            document.getElementById("status").innerHTML =
+                "📍 موقعیت دریافت شد:<br>عرض جغرافیایی: " + latitude +
+                "<br>طول جغرافیایی: " + longitude;
+
+            // نمایش روی نقشه
+            showOnMap(latitude, longitude);
+        }
+
+        function handleGeoError(error) {
+            console.warn(`❌ خطا در دریافت GPS: ${error.message}`);
+            document.getElementById("status").innerHTML = "⚠️ GPS غیرفعال است، استفاده از موقعیت تقریبی...";
+            getIPLocation(); // اگر GPS غیرفعال بود، از موقعیت‌یابی IP استفاده کن
+        }
+
+        function getIPLocation() {
+            fetch("http://ip-api.com/json/")
+                .then(response => response.json())
+                .then(data => {
+                    let latitude = data.lat;
+                    let longitude = data.lon;
+
+                    document.getElementById("status").innerHTML += "<br>🌍 موقعیت تقریبی دریافت شد.";
+
+                    // نمایش روی نقشه
+                    showOnMap(latitude, longitude);
+                })
+                .catch(error => {
+                    console.error("❌ خطا در دریافت موقعیت IP:", error);
+                    document.getElementById("status").innerHTML += "<br>❌ دریافت موقعیت تقریبی ناموفق بود.";
+                });
+        }
+
+        function showOnMap(latitude, longitude) {
+            if (!map) {
+                map = L.map('map').setView([latitude, longitude], 15);
+
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap'
+                }).addTo(map);
+            }
+
+            if (marker) {
+                map.removeLayer(marker);
+            }
+
+            marker = L.marker([latitude, longitude]).addTo(map)
+                .bindPopup("📍 موقعیت شما")
+                .openPopup();
+        }
+    </script>
+
+</body>
+</html>-->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>نمایش نقاط و آدرس</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            font-family: sans-serif;
+        }
+
+        #map {
+            flex: 1;
+        }
+
+        #panel {
+            width: 350px;
+            max-width: 40%;
+            background: #fff;
+            padding: 10px;
+            overflow: auto;
+            box-shadow: 0 0 8px rgba(0,0,0,0.2);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin-top: 10px;
+        }
+
+            table th, table td {
+                border: 1px solid #ddd;
+                padding: 6px;
+                text-align: left;
+            }
+
+        tr:hover {
+            background: #f0f0f0;
+            cursor: pointer;
+        }
+
+        input {
+            width: 80px;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="map"></div>
+    <div id="panel">
+        <h3>ورود نقاط (۴ مختصات)</h3>
+        <form id="pointsForm">
+            <div>
+                <label>Lat1:</label><input type="text" id="lat1" required><br>
+                <label>Lng1:</label><input type="text" id="lng1" required>
+            </div>
+            <div>
+                <label>Lat2:</label><input type="text" id="lat2" required><br>
+                <label>Lng2:</label><input type="text" id="lng2" required>
+            </div>
+            <div>
+                <label>Lat3:</label><input type="text" id="lat3" required><br>
+                <label>Lng3:</label><input type="text" id="lng3" required>
+            </div>
+            <div>
+                <label>Lat4:</label><input type="text" id="lat4" required><br>
+                <label>Lng4:</label><input type="text" id="lng4" required>
+            </div>
+            <button type="submit">نمایش روی نقشه</button>
+        </form>
+
+        <table id="pointsTable">
+            <thead><tr><th>Lat</th><th>Lng</th><th>Address</th></tr></thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <script>
+        const map = L.map('map').setView([35.6892, 51.3890], 5);
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
+        let drawnLayers = [];
+
+        function clearDrawn() {
+            drawnLayers.forEach(l => map.removeLayer(l));
+            drawnLayers = [];
+            document.querySelector('#pointsTable tbody').innerHTML = '';
+        }
+
+        async function reverseGeocode(lat, lng) {
+            try {
+                const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`;
+                const res = await fetch(url);
+                const data = await res.json();
+                return data.display_name || 'نامعلوم';
+            } catch {
+                return 'نامعلوم';
+            }
+        }
+
+        document.getElementById('pointsForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            clearDrawn();
+
+            const points = [
+                { Lat: parseFloat(document.getElementById('lat1').value), Lng: parseFloat(document.getElementById('lng1').value) },
+                { Lat: parseFloat(document.getElementById('lat2').value), Lng: parseFloat(document.getElementById('lng2').value) },
+                { Lat: parseFloat(document.getElementById('lat3').value), Lng: parseFloat(document.getElementById('lng3').value) },
+                { Lat: parseFloat(document.getElementById('lat4').value), Lng: parseFloat(document.getElementById('lng4').value) },
+            ];
+
+            const tbody = document.querySelector('#pointsTable tbody');
+
+            for (const p of points) {
+                const marker = L.marker([p.Lat, p.Lng]).addTo(map);
+                drawnLayers.push(marker);
+
+                const address = await reverseGeocode(p.Lat, p.Lng);
+
+                marker.bindPopup(`<b>Lat:</b> ${p.Lat}<br><b>Lng:</b> ${p.Lng}<br><b>Address:</b> ${address}`);
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${p.Lat}</td><td>${p.Lng}</td><td>${address}</td>`;
+                tbody.appendChild(tr);
+
+                tr.addEventListener('click', () => {
+                    marker.openPopup();
+                    map.setView([p.Lat, p.Lng], 15);
+                });
+            }
+
+            // زوم روی تمام نقاط
+            const group = L.featureGroup(drawnLayers);
+            map.fitBounds(group.getBounds(), { padding: [40, 40] });
+        });
+    </script>
+
+</body>
+</html>
+

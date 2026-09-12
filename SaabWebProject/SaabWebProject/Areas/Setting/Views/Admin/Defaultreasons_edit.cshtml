@@ -1,0 +1,142 @@
+﻿@{
+    ViewBag.TitleLargModal = "پیمان ها جدید";
+    Layout = null;
+}
+
+@model SaabWebProject.Models.DomainModels.tbDefault_reasons
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div id="formControls" class="mb-5">
+        <div class="card">
+            <div class="card-body pb-2">
+                <form>
+                    <div class="row">
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label">عنوان</label>
+                                <select class="form-select" id="titleSelect">
+                                    <option value="0">انتخاب کنید..</option>
+                                    <option value="1">خودرو</option>
+                                    <option value="2">عملکرد</option>
+                                    <option value="3">محدودیت</option>
+                                    <option value="4">ابزار</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- Add the rest of your form fields here -->
+                    <!-- Example: -->
+
+
+
+                    <div class="row Resons_rows" id="roww">
+
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3 flex-grow-1">
+                                <label class="form-label"> علت  </label>
+                                <input class="form-control" id="Reason" value="@Model.Reason" />
+                            </div>
+                        </div>
+                        <div class="col-xl-4">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> توضیحات </label>
+                                <input class="form-control" id="Description" value="@Model.Description" />
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- Add any other form fields as needed -->
+
+
+                    <div class="row">
+                        <div class="col-xl-11 col-md-11" style="margin-top:4.5%"></div>
+                        <div class="col-xl-1 col-md-1">
+
+                                <button id="btnCreate1" type="button" class="btn form-control buttonsabt">
+                                    <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                                    <span class="bSabt-text">ثبت</span>
+                                </button>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="card-arrow">
+                <div class="card-arrow-top-left"></div>
+                <div class="card-arrow-top-right"></div>
+                <div class="card-arrow-bottom-left"></div>
+                <div class="card-arrow-bottom-right"></div>
+            </div>
+        </div>
+    </div>
+    <script src="~/Scripts/jquery-3.3.1.js"></script>
+    <script>
+        $(function () {
+            var titleNumber = @Model.TitleNumber;
+            $("#titleSelect").val(titleNumber);
+        });
+    </script>
+    <script>
+        $("#btnCreate1").click(function () {
+            var Filters = [];
+            if ($("#titleSelect").val() == 0) {
+                alert("لطفا عنوان را انتخاب نمائید");
+            } else {
+
+          
+            
+                var obj = new Object();
+                
+
+                obj.Reason = $("#Reason" ).val();
+                obj.TitleNumber = $("#titleSelect").val();
+                obj.Description = $("#Description").val();
+                Filters.push(obj);
+            };
+              //Defaultedit_Add
+
+              sendAjax('@Url.Action("Defaultedit_Add", "Admin", new { area = "Setting" })', Filters);
+            }
+    );
+
+    function sendAjax(url, data) {
+                console.log(url);
+
+                $.ajax({
+                    beforeSend: function () {
+                        document.getElementById("loading-message").style.display = "block";
+                    },
+                    url: url,
+                    data: { Filters: data },
+                    type: "POST",
+                    dataType: "html",
+                    success: function (resp) {
+
+                        console.log(resp);
+                        
+                        document.getElementById("loading-message").style.display = "none";
+
+                        if (resp == "True") {
+                            alert("با موفقیت ثبت شد");
+                        } else {
+                            alert("در ثبت دچار خطا شده ایم ! لطفا بعدا تلاش نمائید")
+                        }
+                    },
+                    error: function (resp) {
+                        document.getElementById("loading-message").style.display = "none";
+                        alert("دچار مشکل شده است ");
+                        console.log(resp);
+                    }
+                });
+            }
+    </script>
+
+}
+

@@ -1,0 +1,508 @@
+﻿@model IEnumerable<SaabWebProject.Models.DomainModels.madarek_sabtdoreh_4>
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+@using System.Globalization
+
+@using SaabWebProject.Models.DomainModels;
+
+@{
+    SaabEntities db = new SaabEntities();
+}
+<style>
+    .td-vaziat {
+        /*        position:relative;*/
+        display: flex;
+        gap: 15px;
+        justify-content: center; /* عمودی وسط */
+        height: 100%;
+    }
+
+    .radio-box input {
+        margin: 0 !important;
+    }
+
+    .radio-box label {
+        height: 100% !important;
+    }
+
+    .btnDownload {
+        text-decoration: none;
+    }
+
+    .td-center-item {
+        justify-items: center;
+        align-items: center;
+    }
+    /*     -------------------------------------------*/
+
+</style>
+<style>
+
+
+    .modal2 {
+        display: none;
+        position: absolute; /* Change this from fixed */
+        z-index: 1000; /* Adjust z-index as needed */
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: auto;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content2 {
+        background-color: black;
+        position: relative; /* Add relative positioning */
+        /*  margin: 15% auto;*/
+        padding: 20px;
+        border: 4px solid aqua;
+        border-radius: 30px;
+        width: 100%;
+        max-height: 100%;
+        overflow-y: auto;
+    }
+
+    .modal3 {
+        display: none;
+        position: absolute; /* Change this from fixed */
+        z-index: 1000; /* Adjust z-index as needed */
+        left: 0;
+        top: 0;
+        width: 65%;
+        height: auto;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    @@media (max-width: 768px) {
+        .modal3 {
+            left: -73px;
+            width: 103% !important;
+        }
+
+        .modal-content3 {
+            width: 100% !important;
+            /*padding: 0 !important;
+        margin:-2px;*/
+        }
+    }
+
+
+    .modal-content3 {
+        background-color: black;
+        position: relative; /* Add relative positioning */
+        /*  margin: 15% auto;*/
+        padding: 20px;
+        border: 4px solid aqua;
+        border-radius: 30px;
+        width: 100%;
+        max-height: 100%;
+        overflow-y: auto;
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+    .fade-in {
+        animation: fadeIn 1s ease-in-out; /* Adjust duration and timing function as needed */
+    }
+</style>
+<div class="table-content p-4">
+    <div class="tab-pane fade show active" id="allTab">
+        <div class="table-responsive tableH_Lock">
+
+            <table class="table table-hover" style="text-align:center;">
+                <thead>
+                    <tr>
+                        <th>
+                            فعالیت
+                            <div class="inputWithFilterIcon">
+                                <input type="text" id="filter00-filter" class="inputFilter form-control" placeholder="">
+                                <span><i class="fas fa-filter"></i></span>
+                            </div>
+                        </th>
+                        <th>
+                            نام و نام خانوادگی
+                            <div class="inputWithFilterIcon">
+                                <input type="text" id="filter01-filter" class="inputFilter form-control" placeholder="">
+                                <span><i class="fas fa-filter"></i></span>
+                            </div>
+                        </th>
+                        <th>
+                            نام مدرک
+                            <div class="inputWithFilterIcon">
+                                <input type="text" id="filter02-filter" class="inputFilter form-control" placeholder="">
+                                <span><i class="fas fa-filter"></i></span>
+                            </div>
+                        </th>
+                        @*<th>
+                                شرح
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter03-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>*@
+                        <th>
+                            تاریخ
+                            <div class="inputWithFilterIcon">
+                                <input type="text" id="filter04-filter" class="inputFilter form-control" placeholder="">
+                                <span><i class="fas fa-filter"></i></span>
+                            </div>
+                        </th>
+                        <th>
+                            وضعیت
+                            <div class="inputWithFilterIcon">
+                                <input type="text" id="filter05-filter" class="inputFilter form-control" placeholder="">
+                                <span><i class="fas fa-filter"></i></span>
+
+                            </div>
+                        </th>
+                        <th>
+                            دانلود فایل
+                            <div class="inputWithFilterIcon">
+                                <input type="text" id="filter06-filter" class="inputFilter form-control" placeholder="">
+                                <span><i class="fas fa-filter"></i></span>
+
+                            </div>
+                        </th>
+
+                        @*<th>
+                                ثبت
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter07-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+
+                                </div>
+                            </th>*@
+
+
+                    </tr>
+                </thead>
+                <tbody>
+
+
+                    @foreach (var item in Model.Where(s => s.FK_usr != null).ToList())
+                    {
+                        var pc = new PersianCalendar();
+                        string persianDate = "";
+                        if (item.timesabt.HasValue)
+                        {
+                            var dt = item.timesabt.Value; // استفاده از Value برای DateTime واقعی
+                            persianDate = string.Format("{0}/{1:00}/{2:00}", pc.GetYear(dt), pc.GetMonth(dt), pc.GetDayOfMonth(dt));
+                        }
+                        int vaz = 1;
+                        string vazzziat = "در انتظار تایید ";
+
+                        {
+                            var findddb = db.madarek_vaziatdoreh_5.Where(s => s.FK_sabtdoreh == item.ID).FirstOrDefault();
+                            if (findddb != null)
+                            {
+                                if (findddb.vaziat != 2)
+                                {
+                                    vaz = 0;
+                                    if (findddb.vaziat == 0)
+                                    {
+                                        vazzziat = "تایید ";
+                                    }
+                                    if (findddb.vaziat == 1)
+                                    {
+                                        vazzziat = " رد";
+                                    }
+                                }
+                                else
+                                {
+                                    vazzziat = " اصلاح";
+
+                                }
+                            }
+
+
+                        }
+
+                        string vaziatText = "انتظار تایید ";
+
+                        if (item.vaziat == 0)
+                        {
+                            vaziatText = "تایید";
+                        }
+                        else if (item.vaziat == 1)
+                        {
+                            vaziatText = "رد";
+                        }
+                        else if (item.vaziat == 2)
+                        {
+                            vaziatText = "اصلاح";
+                        }
+
+
+
+
+
+
+
+
+                        <tr class="task-list-row"
+                            data-filter01="@item.tbUsers.FullName"
+                            data-filter02="@item.madarek_1.name"
+                            @*data-filter02="@item.sharh"*@
+                            data-filter03="@persianDate"
+                            data-filter05="@vazzziat"
+                            @*data-filter04="@item.vaziat"*@>
+
+                            <!--<td>
+                                <div class="ms-sm-4 mt-sm-0 mt-2 dropdown-toggle">
+                                    <a href="#" data-bs-toggle="dropdown" class="text-white text-opacity-75 text-decoration-none">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                    <div class="dropdown-menu">
+
+                                        <a--> @*data-bs-toggle="modal" data-bs-target="#modalLg1"*@ <!--onclick="DownloadExcel23(@item.ID)" class="dropdown-item edit" id="Edit_@item.ID">مشاهده</a>-->
+                                        @*<a class="dropdown-item Delete" id="Delete_@item.ID">حذف</a>*@
+
+
+
+                                    <!--</div>
+                                </div>
+                            </td>-->
+                            <td>
+                                <div class="ms-sm-4 mt-sm-0 mt-2 dropdown-toggle">
+                                    <a href="#" data-bs-toggle="dropdown" class="text-white text-opacity-75 text-decoration-none">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                    <div class="dropdown-menu">
+                                        <!--<a data-bs-toggle="modal" data-bs-target="#modalLg1"--> @*onclick="DownloadExcel23(@item.ID)"*@ <!--class="dropdown-item edit" id="Edit_@item.ID">مشاهده</a>-->
+                                        <a @*data-bs-toggle="modal" data-bs-target="#modalLg1"*@ @*onclick="DownloadExcel23(@item.ID)"*@ class="dropdown-item edit" id="Edit_@item.ID">مشاهده</a>
+
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td>@item.tbUsers.FullName</td>
+                            <td>@item.madarek_1.name</td>
+                            <td>@persianDate</td> <!-- تاریخ شمسی -->
+                            <td>
+                                @*@if (item.vaziat == 0)
+            {
+                <span><i class="bi bi-eye"></i> تأیید</span>
+            }
+            else if (item.vaziat == 1)
+            {
+                <span><i class="bi bi-eye-slash"></i> رد</span>
+            }
+            else if (item.vaziat == 2)
+            {
+                <span><i class="bi bi-arrow-clockwise"></i> عودت</span>
+            }*@
+                                @vazzziat
+
+
+                            </td>
+
+                            @*<td class="td-vaziat">
+
+            <div class="radio-box">
+                <input type="radio" id="vaziat0_@item.madarek_1.name" value="0" name="vaziat_@item.madarek_1.name" />
+                <label class="radio-lable" for="vaziat0_@item.madarek_1.name">قابل قبول</label>
+            </div>
+            <div class="radio-box">
+                <input type="radio" id="vaziat1_@item.madarek_1.name" value="1" name="vaziat_@item.madarek_1.name" />
+                <label class="radio-lable" for="vaziat1_@item.madarek_1.name">نیاز به اصلاح</label>
+            </div>
+            <div class="radio-box">
+                <input type="radio" id="vaziat2_@item.madarek_1.name" value="2" name="vaziat_@item.madarek_1.name" />
+                <label class="radio-lable" for="vaziat2_@item.madarek_1.name">غیر قابل قبول</label>
+            </div>
+
+        </td>*@
+                            @if (item.System_FIle != null)
+                            {
+                                <!--<td>-->
+                                @*<a style="cursor:pointer; z-index:10000;" target="_blank" href="@Url.Content("~/Areas/Suggestion/Contents/" + item.System_FIle)">دانلود</a>*@
+                                <!--</td>-->
+                                <td class="td-center-item">
+                                    <a class="btnDownload input1 btn form-control buttonGeneralPlus" target="_blank" href="~/Areas/Suggestion/Contents/@item.System_FIle"><i class="bi bi-download"></i></a>
+                                </td>
+
+                            }
+                            else
+                            {
+                                <td>ندارد</td>
+                            }
+                            @*<td class="td-center-item">
+            <a href="#" class=" input1 btn form-control buttonGeneralPlus" id="Send">
+                <i class="bi bi-clipboard-check"></i>
+            </a>
+        </td>*@
+                        </tr>
+                    }
+                </tbody>
+                @*<i class="bi bi-eye"></i>
+                    <i class="bi bi-eye-slash"></i>
+                    <i class="bi bi-arrow-clockwise"></i>*@
+
+
+            </table>
+        </div>
+
+    </div>
+
+</div>
+
+<div id="myModal3" class="modal3" style="margin-left:25% !important;">
+    <div class="modal-content3">
+        <div class="row">
+            <i class="close fa fa-window-close"></i>
+        </div>
+
+        <div id="ss2">
+
+        </div>
+
+    </div>
+</div>
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script>
+         function DownloadExcel23(id) {
+    document.getElementById("loading-circle").style.display = "block";
+
+    $("#loading-circle .loadingText1").text("لطفا منتظر نمایش اطلاعات بمانید ...");
+    $("#loading-circle").css("display", "flex");
+    $("#myModal3").addClass("fade-in").css("display", "block");
+
+    $("#ss2").load(
+        '@Url.Content("/Setting/Orders/modalCheckMadrak")?id=' + id,
+        function () {
+            document.getElementById("loading-message").style.display = "none";
+            $("#loading-circle").css("display", "none");
+            $("#typegozarwsh11").picker({ search: true });
+        }
+    );
+}
+
+
+    $(document).ready(function () {
+        $("#expandButton2").click(function () {
+            $("#myModal3").addClass("fade-in"); // Add the fade-in class
+            $("#myModal3").css("display", "block");
+        });
+
+        $(".close").click(function () {
+            $("#myModal3").removeClass("fade-in"); // Remove the fade-in class
+            $("#myModal3").css("display", "none");
+            $("#ss2").html(""); // پاک کردن محتوای قبلی
+
+        });
+
+        $(window).click(function (event) {
+            if (event.target == $("#myModal3")[0]) {
+                $("#myModal3").removeClass("fade-in"); // Remove the fade-in class
+                $("#myModal3").css("display", "none");
+            }
+        });
+    });
+
+        var
+            filters = {
+                filter01: null,
+                filter02: null,
+                filter03: null,
+                filter04: null,
+                filter05: null,
+            };
+
+        function updateFilters() {
+            $('.task-list-row').hide().filter(function () {
+                var self = $(this),
+                    result = true;
+
+                Object.keys(filters).forEach(function (filter) {
+                    var filterData = self.data(filter);
+                    if (filters[filter] && (filters[filter] != 'None') && (filters[filter] != 'همه')) {
+                        // تبدیل داده به رشته و بررسی مقدار
+                        result = result && (filterData && filterData.toString().indexOf(filters[filter]) !== -1);
+                    }
+                });
+
+                return result;
+            }).show();
+        }
+
+        function changeFilter(filterName) {
+            filters[filterName] = this.value;
+            updateFilters();
+        }
+
+        // Assigned User Dropdown Filter
+        $('#filter01-filter').on('input', function () {
+            changeFilter.call(this, 'filter01');
+        });
+        $('#filter02-filter').on('input', function () {
+            changeFilter.call(this, 'filter02');
+        });
+        $('#filter03-filter').on('input', function () {
+            changeFilter.call(this, 'filter03');
+        });
+        $('#filter04-filter').on('input', function () {
+            changeFilter.call(this, 'filter04');
+        });
+        $('#filter05-filter').on('input', function () {
+            changeFilter.call(this, 'filter05');
+        });
+</script>
+
+
+<script>
+    function openModalCheckMadrak() {
+        var modal = document.getElementById("modalCheckMadrak");
+        modal.style.display = "block";
+        modal.classList.add("fade-in");
+    }
+
+    function closeModalCheckMadrak() {
+        document.getElementById("modalCheckMadrak").style.display = "none";
+    }
+
+    window.onclick = function (event) {
+        var modal = document.getElementById("modalCheckMadrak");
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    }
+    $(document).on("click", ".edit", function () {
+        var id = $(this).attr("id").split("_")[1];
+        DownloadExcel23(id);
+    });
+
+    @*$(".edit").click(function () {
+        var idd = $(this).attr("id").split("_")[1];
+        console.log(idd);
+
+        var url = '@Url.Action("modalCheckMadrak", "Orders", new { area="Setting" })?id=' + idd;
+
+
+        $("#big_modal_body1").load(url, function () {
+            openModalCheckMadrak(); // modal بعد از لود باز شود
+        });
+    });*@
+
+    $(document).on("change", "input[name='vaziat']", function () {
+        const value = $(this).val();
+        $(".accept, .reject, .edit").hide(); // همه مخفی
+
+        if (value === "0") $(".accept").show();
+        if (value === "1") $(".reject").show();
+        if (value === "2") $(".edit").show();
+    });
+
+</script>

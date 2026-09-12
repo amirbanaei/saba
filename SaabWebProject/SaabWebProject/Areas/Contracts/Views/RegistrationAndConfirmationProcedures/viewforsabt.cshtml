@@ -1,0 +1,314 @@
+﻿@model SaabWebProject.Models.ViewModels.Contracts.Function.FunctionModel
+@using SaabWebProject.Models.DomainModels;
+
+@{ SaabEntities db = new SaabEntities();
+
+    ViewBag.Title = "گزارش کارها";
+    Layout = null;
+}
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+
+
+@{
+    int iddd = 0;
+}  @{        var find = db.tbmarahesabt4.Where(p => p.FK_basteh == Model.ID && p.number == Model.name2 && p.del != true).FirstOrDefault();
+
+    if (Model.Moalfe == "controlmarahel")
+    {
+        find = db.tbmarahesabt4.Where(p => p.FK_basteh == Model.ID && p.number == Model.name2 && p.del != true&&p.control==true).FirstOrDefault();
+
+    }
+    else if (Model.Moalfe == "taeed")
+    {
+        find = db.tbmarahesabt4.Where(p => p.FK_basteh == Model.ID && p.number == Model.name2 && p.del != true&&p.taeed==true).FirstOrDefault();
+
+    }
+    else
+    {
+        find = db.tbmarahesabt4.Where(p => p.FK_basteh == Model.ID && p.number == Model.name2 && p.del != true && p.sabt == true).FirstOrDefault();
+
+    }
+}
+    <div class="row">
+
+        <div class="col-xl-5">
+            <label class="form-label">کاربران زیرمجموعه</label>
+            <span id="div_users1"></span>
+        </div>
+        @if (Model.Moalfe == "controlmarahel")
+        {
+            {
+                iddd = 1;
+                //string name = "";
+                //foreach(var it in db.tbmarahesabt4.Where(p=>p.FK_basteh==Model.ID&&p.number==Model.name2&&p.del!=true&& p.control == true).ToList() )
+                //{
+                //    name += it.tbUsers.FullName;
+                //    name += "_";
+                //}
+            }
+
+
+
+            <div class="col-xl-3">
+                <label class="form-label">مهلت کنترل را انتخاب فرمایید <span class="text-danger">*</span></label>
+                @if (find != null)
+                {
+                    if (find.mohlat != null)
+                    {
+                        <input class="form-control" id="controlmarahel1233" value="@find.mohlat" @*disabled*@ />
+
+                    }
+                    else
+                    {
+                        <input class="form-control" id="controlmarahel1233" value="0" />
+
+                    }
+
+                }
+                else
+                {
+                    <input class="form-control" id="controlmarahel1233" @*value="@Model.id.id2"*@ @*disabled*@ />
+
+                }
+            </div>
+
+
+        }
+        else if (Model.Moalfe == "taeed")
+        {
+            {
+                iddd = 2;
+                //string name = "";
+                //foreach (var it in db.tbmarahesabt4.Where(p => p.FK_basteh == Model.ID && p.number == Model.name2 && p.del != true && p.taeed == true).ToList())
+                //{
+                //    name += it.tbUsers.FullName;
+                //    name += "_";
+                //}
+            }
+
+            <div class="col-xl-3">
+                <label class="form-label">مهلت تایید را انتخاب فرمایید <span class="text-danger">*</span></label>
+                @if (find != null)
+                {
+                    if (find.mohlat != null)
+                    {
+                        <input class="form-control" id="taeed122" value="@find.mohlat" @*disabled*@ />
+
+                    }
+                    else
+                    {
+                        <input class="form-control" id="taeed122" value="0" />
+
+                    }
+                }
+                else
+                {
+                    <input class="form-control" id="taeed122" />
+
+                }
+            </div>
+        }
+        else
+        {
+            {
+
+                iddd = 3;
+            }
+            <div class="col-xl-2">
+                <label class="form-label">زمان شروع<span class="text-danger">*</span></label>
+                <select class="form-select" id="statsabt" name="select_users1">
+                    @if (find != null)
+                    {
+                        <option value="@find.day1">@find.day1</option>
+
+
+                    }
+
+                    @for (var it = 1; it <= 30; it++)
+                    {
+                        <option value="@it">@it</option>
+                    }
+                </select>
+            </div>
+            <div class="col-xl-2">
+                <label class="form-label">مهلت ثیت را انتخاب فرمایید <span class="text-danger">*</span></label>
+                @if (find != null)
+                {
+                    int x = (int)(find.day2 - find.day1);
+                    <input class="form-control" id="endsabt" value="@x " @*disabled*@ />
+
+                }
+                else
+                {
+                    <input class="form-control" id="endsabt" @*value="@Model.id.id2"*@ @*disabled*@ />
+
+                }
+            </div>
+        }
+
+        <div class="col-xl-2">
+            <label class="form-label">سال شروع<span class="text-danger">*</span></label>
+
+            @if (find != null)
+            {
+                <input class="form-control" id="Year" value="@find.Year" />
+
+            }
+            else
+            { <input class="form-control" id="Year" @*value="@Model.id.id2"*@ @*disabled*@ />
+
+            }
+        </div>
+
+        <div class="col-xl-2">
+            <label class="form-label">ماه <span class="text-danger">*</span></label>
+            @if (find != null)
+            {
+                <input class="form-control" id="Month" value="@find.Month" />
+
+            }
+            else
+            { <input class="form-control" id="Month" @*value="@Model.id.id2"*@ @*disabled*@ />
+
+            }
+        </div>
+        <div class="col-xl-2">
+            <div class="form-check">
+                <div class="row">
+                    <div class="col-xl-1" style="width: 1%;">
+                        <input class="form-check-input" name="radiobutton_1" type="checkbox" id="darhaman">
+                    </div>
+                    <div class="col-xl-10" style="margin-top: 4px; padding-right: 0px;width:85%">
+                        <label class="form-check-label" for="defaultRadio1">در همان ماه</label>
+                    </div>
+                </div>
+            </div>
+            @*<label class="form-label">در همان روز<span class="text-danger">*</span></label>
+                <input class="form-check-input " type="checkbox"
+                       name="selectAllOwner"
+                       id="darhaman" />*@
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-11"></div>
+        <div class="col-xl-1">
+            <button id="btnCalculateAzmayeshi" type="button" class="btn form-control buttonGeneral">
+                <i class="fa fa-calculator fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text">ثبت</span>
+            </button>
+        </div>.
+    </div>
+    <script>
+      $("#div_users1").load('@Url.Content("/../Users/Users/_PartialViewUsersListWithSearchAndMultiple")', function () {
+      $("#select_users1").attr("id", "users");
+      $('#users').attr("multiple", "multiple");
+      $('#users').picker({ search: true });
+      $('#users').on('sp-change', function () { });
+     var myArray = [];
+
+ @foreach (var d in db.tbmarahesabt4.Where(p=>p.FK_basteh==Model.ID&&p.number==Model.name2&&p.del!=true))
+ {
+
+
+if (d.sabt == true && iddd == 3)
+                {
+              @:myArray.push(@d.FK_usr);
+
+                }
+     else if (d.taeed == true && iddd == 2)
+                {
+                       @:myArray.push(@d.FK_usr);
+
+                }
+       else if (d.control == true && iddd == 1)
+             {
+                    @:myArray.push(@d.FK_usr);
+
+             }
+ }
+
+          myArray.forEach((x) => $("#users").picker('set', x));
+      });
+    $("#btnCalculateAzmayeshi").click(function () {
+        console.log($("#taeed122").val());
+    var PeymanArr = [];
+              $.each($("#users").val().toString().split(","), function (index, item) {
+        if (item !== "") {
+            if (item != 'Select') {
+                PeymanArr.push(item);
+                console.log(item);
+            }
+        }
+              });
+              console.log(PeymanArr);
+              var month = $("#users1").val();
+                var Month = $("#Month").val();
+                var Year = $("#Year").val();
+                var isDarHamanChecked = $("#darhaman").is(":checked"); // true یا false
+                console.log("در همان ماه:", isDarHamanChecked);
+                var fin = 0;
+                var day1 = 0;
+                var day2 = 0;
+                var mohlat = 0;
+                var FK_basteh =@Model.ID;
+                var number =@Model.name2;
+                var esm =@iddd;
+                console.log(esm);
+                console.log(number);
+                console.log(@iddd);
+
+                if (esm == 1) {
+                    console.log(1);
+                    fin = 1;
+                    mohlat = $("#controlmarahel1233").val();
+                } else if (esm == 2) {
+                    fin = 2; console.log(2);
+
+                    mohlat = $("#taeed122").val();
+                } else if (esm == 2) {
+                    fin = 3; console.log(3);
+
+                    day2 = $("#endsabt").val();
+                    day1 = $("#statsabt").val();
+                }
+                else {
+                    console.log(4);
+
+                    fin = 3;
+                    day2 = $("#endsabt").val();
+                    day1 = $("#statsabt").val();
+                }
+
+                console.log(fin);
+        console.log(mohlat); console.log($("#controlmarahel1233").val());
+
+
+        $.ajax({
+            url: "@Url.Action("viewforsabtsabt", "RegistrationAndConfirmationProcedures", new { area = "Contracts" })",
+            type: "Post",
+            dataType: "html",
+            data: { FK_usr: PeymanArr, FK_basteh: FK_basteh, isDarHamanChecked: isDarHamanChecked, number: number, fin1: fin, day1: day1, day2: day2, mohlat: mohlat, Month: Month, Year: Year },            success: function (res) {
+                document.getElementById("loading-message").style.display = "none";
+                if (res = "True") {
+                    alert("با موفقیت ثبت شد ");
+                    location.reload();
+                }
+
+            },
+            error: function (res) {
+                console.log(res);
+
+                document.getElementById("loading-message").style.display = "none";
+                Toast.fire({
+                    icon: 'error',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "عملیات  با خطا مواجه شد"
+                });
+                return false;
+            }
+        });
+
+});
+    </script>

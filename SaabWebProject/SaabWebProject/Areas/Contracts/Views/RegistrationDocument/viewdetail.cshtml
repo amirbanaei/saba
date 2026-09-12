@@ -1,0 +1,375 @@
+﻿
+@using SaabWebProject.Models.Classes;
+@using SaabWebProject.Models.DomainModels;
+
+@{
+    Layout = null;
+            SaabEntities db = new SaabEntities();
+
+}
+@model IEnumerable<SaabWebProject.Models.DomainModels.tbExcelDocument>
+@{
+    var mod = Model.FirstOrDefault();
+    var del = db.tbExcelDocument.Where(p => p.FK_DEocument == mod.FK_DEocument).Select(s=>s.FK_DEocument).FirstOrDefault();
+}
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+
+<div class="card">
+    <div class="table-content p-4">
+        <div class="tab-pane fade show active" id="allTab">
+            <div class="table-responsive">
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr style="text-align:center">
+                            @*<a href="~/Areas/Contracts/Views/Functions/Py_Accept.cshtml">~/Areas/Contracts/Views/Functions/Py_Accept.cshtml></a>*@
+
+                            @*<th>
+                                    @Html.DisplayName("فعالیت")
+                                </th*@>
+
+
+                            <th>
+                                @Html.DisplayName("#")
+                            </th>
+
+                            <th>
+                                @Html.DisplayName("کاربر حقیقی")
+                            </th>
+
+                            <th>
+                                @Html.DisplayName("کد پرسنلی کاربر حقیقی")
+                            </th>
+                            <th>
+                                @Html.DisplayName("آیتم مورد نظر")
+                            </th>
+                            <th>
+                                @Html.DisplayName("میلغ پرداختی ")
+                            </th>
+
+                            <th>
+                                @Html.DisplayName("مبلغ قیش")
+                            </th>
+
+
+
+
+
+
+
+
+                        </tr>
+
+
+
+                    </thead>
+                    <tbody style="text-align:center">
+
+                        @if (Model != null)
+                        {
+
+                            var i = 0;
+                            foreach (var item in Model)
+                            {
+                                if (item != null)
+                                {
+
+
+                                    i++;
+                                    <tr>
+
+
+                                        <td>
+                                            @i
+                                        </td>
+                                        <td>
+                                            @item.tbUsers.FullName
+
+                                        </td>
+                                        <td>
+                                            @item.tbUsers.usr_Personal_ID
+
+                                        </td>
+
+                                        <td>
+                                            @item.tbContractMoalefeDastmozdi.md_Title
+
+                                        </td>
+                                        <td>
+                                            @(item.Value.HasValue ? item.Value.Value.ToString("N0") : "0")
+
+                                        </td>
+
+
+
+
+
+
+
+                                        <td>
+                                            @(item.value_moghayerat.HasValue ? item.value_moghayerat.Value.ToString("N0") : "0")
+
+                                        </td>
+
+
+
+                                    </tr>
+                                }
+
+                            }
+
+                            // Your foreach loop code here
+                        }
+
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div class="row">
+        <div class="col-xl-10">
+
+        </div>
+        <div class="col-xl-1">
+            <div class="form-group mb-3">
+                <button id="sabtdoc" type="button" class="btn form-control buttonsabt">
+                    <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                    <span class="bSabt-text">ثبت شود </span>
+                </button>
+            </div>
+        </div>
+
+
+
+        <div class="col-xl-1">
+            <div class="form-group mb-3">
+                <button id="delet" type="button" class="btn form-control buttonsabt">
+                    <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                    <span class="bSabt-text">دوباره ثبت خواهم کرد </span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+<script>
+    // Convert Gregorian date to jaali in the table
+    var tds = document.querySelectorAll("[cont-date]");
+    var valueD, id, target;
+    var options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    tds.forEach(td => {
+        valueD = new Date(td.textContent).toLocaleDateString('fa-IR-u-nu-latn', options).replace(',', '').replace(" ", "");
+        valueD = valueD.slice(0, 10) + " " + td.textContent.slice(10, 30)
+        id = td.getAttribute("cont-date");
+        target = document.getElementById(id);
+        target.textContent = valueD;
+    });
+</script>
+<script>
+
+    $("#sabtdoc").click(function () {
+        Toast.fire({
+            icon: 'success',
+            background: '#35434A',
+            color: 'white',
+            title: "اطلاعات با موفقیت آپدیت شد"
+        });
+        location.reload();
+
+
+    });
+
+
+    $("#delet").click(function () {
+        var fd = new FormData();
+
+
+        fd.append("ID", @del);
+
+        sendAjax111('@Url.Action("deletvieww", "RegistrationDocument",new { area = "Contracts" })', fd);
+
+
+        //Toast.fire({
+        //    icon: 'success',
+        //    background: '#35434A',
+        //    color: 'white',
+        //    title: "اطلاعات با موفقیت آپدیت شد"
+        //});
+        //location.reload();
+
+
+    });
+     function sendAjax111(url2, fd2) {
+        //console.log();
+        //console.log(ID);
+        //$("#loading-message").css("display", "block");
+        //fd2.append("ID", ID);
+        //fd2.append("FK_DDOfTitle", FK_DDOfTitle);
+        //fd2.append("FK_PeymanID", $("#select_peyman4").val());
+        //fd2.append("TypeOfDocument", $("#typeOfDocument").val());
+        //fd2.append("Year", $("#year4").val());
+        //fd2.append("Month", $("#month4").val());
+        //fd2.append("SooratNumber", $("#soorat_number").val());
+        //fd2.append("Type", $("#select_EquipmentGroup").val());
+
+
+        $.ajax({
+            url: url2,
+            type: 'POST',
+            data: fd2,
+            processData: false,
+            contentType: false,
+            success: function (resp1) {
+                    console.log("okeye");
+
+                $("#loading-message").css("display", "none");
+                fd = new FormData();
+                if (resp1 == "True") {
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "اطلاعات با موفقیت آپدیت شد"
+                    }).then(() => {
+                        location.reload();                    });
+                } else {
+                    $("#loading-message").css("display", "none");
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                    }).then(() => {
+                        $("#loading-message").css("display", "none");
+                    });
+
+
+                }
+
+            },
+            error: function (resp1) {
+                    console.log("Nokeye");
+                    console.log(resp1);
+
+                $("#loading-message").css("display", "none");
+                Toast.fire({
+                    icon: 'success',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                }).then(() => {
+                    $("#loading-message").css("display", "none");
+                });
+            }
+        });
+    }
+
+
+
+
+
+
+
+
+
+$(".edit").click(function () {
+    var idd = $(this).attr("id").split("_")[1];
+    console.log(idd);
+
+    var url = "/FinancialDocuments/editview?id=" + idd;
+    $("#big_modal_body1").load(url);
+});
+
+    $(".Details").click(function () {
+
+        var idd = $(this).attr("id").split("_")[1];
+        console.log(idd);
+
+        var url = "/FinancialDocuments/datailfk?id=" + idd;
+        $("#big_modal_body1").load(url)
+        @*var idd = $(this).attr("id").split("_")[1];
+$("#big_modal_body1").load('@Url.Content("/FinancialDocuments/Detail")?id=' + idd);*@
+    });
+         var obj = new FormData();
+
+  $(".uploadSummery").click(function () {
+    FK_DDOfTitle = $(this).attr("id").split("_")[2];
+    ID = $(this).attr("id").split("_")[1];
+      $("#summery_file5").click();
+});
+
+ $("#summery_file5").change(function (e) {
+    $.each(e.target.files, function (index, file) {
+        obj.append("files", file);
+    });
+         sendAjax2('@Url.Action("upload", "FinancialDocuments", new { area = "ManagementAccounting" })', obj);
+ });
+
+
+ function sendAjax2(url2, fd2) {
+     obj.append("ID", ID);
+
+
+
+
+     $.ajax({
+         url: url2,
+         type: 'POST',
+         data: fd2,
+         processData: false,
+         contentType: false,
+         success: function (resp1) {
+             console.log("okeye");
+             console.log(resp1);
+             $("#loading-message").css("display", "none");
+             fd = new FormData();
+             if (resp1 == "True") {
+                 alert("با موفقیت ثبت شد");
+                 setTimeout(function () {
+                     location.reload(); // یا می‌توانید از location.reload(true) هم استفاده کنید
+                 }, 2000); // بازه زمانی به میلی‌ثانیه، اینجا 2000 میلی‌ثانیه (یعنی 2 ثانیه)
+             }
+             else {
+                 $("#loading-message").css("display", "none");
+                 console.log("jlk;;kkj");
+                 Toast.fire({
+
+                     icon: 'success',
+                     background: '#35434A',
+                     color: 'white',
+                     title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                 }).then(() => {
+                     $("#loading-message").css("display", "none");
+                 });
+             }
+
+         },
+         error: function (resp1) {
+             console.log(resp1);
+             console.log("Nokeye");
+             $("#loading-message").css("display", "none");
+             Toast.fire({
+                 icon: 'success',
+                 background: '#35434A',
+                 color: 'white',
+                 title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+             }).then(() => {
+                 $("#loading-message").css("display", "none");
+             });
+         }
+     });
+ }
+</script>
+

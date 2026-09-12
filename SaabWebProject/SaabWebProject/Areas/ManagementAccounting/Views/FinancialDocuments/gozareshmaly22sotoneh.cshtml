@@ -1,0 +1,526 @@
+﻿@using SaabWebProject.Models.DomainModels;
+@model SaabWebProject.Models.ViewModels.Contracts.Function.FunctionModel
+
+@using SaabWebProject.Models.Classes;
+@{
+    SaabEntities db = new SaabEntities();
+
+    ViewBag.Title = "گزارش مالی 1";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@*@model IEnumerable<SaabWebProject.Models.DomainModels.dbAsnafsherkatsanad>*@
+@{
+    double summm = 0;
+    double summmbedh = 0;
+    double sumkol = 0;
+
+}
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+
+
+@*@foreach (var item in Model)
+    {
+
+        summm += (double)item.bestankar;
+        summmbedh += (double)item.bedehkar;
+        //sumkol += (double)item.bedehkar;
+
+    }
+    @{
+        sumkol = (double)(summm - summmbedh);
+    }*@
+@*<div class="col-xl-11">
+    </div>
+
+    <div class="col-xl-1">
+        <button class="click2 btn buttonGeneralPlus form-control Payam6898">
+            <i class="fa fa-eye VecGeneral" style="font-size:1rem"></i>
+
+
+        </button>
+
+    </div>*@
+<style>
+    .totalInput {
+        margin-bottom: 0 !important;
+    }
+
+    th {
+        vertical-align: middle;
+    }
+</style>
+<div class="card">
+    <div class="table-content p-4">
+        <div class="tab-pane fade show active" id="allTab">
+            <div class="table-responsive">
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr style="border-bottom: 1px solid #ffffff00">
+
+                            <th>ردیف </th>
+
+                            <!--<th>-->
+                            @*@if (Model.id.id2 != "")
+                                {
+                                    <input class="form-control" id="sanad" value="@Model.id.id2" disabled />
+                                }
+                                else
+                                {
+                                    <input class="form-control" id="sanad" />
+                                }*@
+                            <!--</th>-->
+                            <th colspan="2">مشخصات حساب </th>
+
+                        
+                            <th colspan="2">مانده نهایی</th>
+
+                            @*<th style=" text-align: left;">جمع کل : </th>
+                                <th><input class="form-control totalInput" id="bedehkarKol" value="@String.Format("{0:N0}",summm)" disabled title="@String.Format("{0:N0}",summm)" /></th>
+                                <th><input class="form-control totalInput" id="bestankarKol" value="@String.Format("{0:N0}",summmbedh)" disabledm title="@String.Format("{0:N0}",summmbedh)" /></th>
+                                <th><input class="form-control totalInput" id="sumkol" value="@String.Format("{0:N0}",sumkol)" disabled title="@String.Format("{0:N0}",sumkol)" /></th>*@
+
+                        </tr>
+
+
+
+
+                        <tr style="text-align:center">
+                            @*<a href="~/Areas/Contracts/Views/Functions/Py_Accept.cshtml">~/Areas/Contracts/Views/Functions/Py_Accept.cshtml></a>*@
+
+                            @*<th>
+                                    @Html.DisplayName("فعالیت")
+                                </th>*@
+                            @*<th>
+                                    @Html.DisplayName("#")
+                                </th>*@
+                            <th>
+                                @Html.DisplayName("ردیف")
+                            </th>
+                            <th>
+                                @Html.DisplayName("کد")
+                            </th>
+                            <th>
+                                @Html.DisplayName("نام حساب")
+                            </th>
+                            @*<th>
+                                @Html.DisplayName("جمع بدهکار ")
+                            </th>
+
+                            <th>
+                                @Html.DisplayName("حمع بستانکار")
+                            </th>*@
+                            <th>
+                                @Html.DisplayName("مانده بدهکار")
+                            </th>
+                            <th>
+                                @Html.DisplayName("مانده بستانکار")
+                            </th>
+                            @*<th>
+                                    @Html.DisplayName("شرح")
+                                </th>*@
+
+
+
+
+
+                        </tr>
+
+
+
+                    </thead>
+                    <tbody style="text-align:center">
+
+                        @if (Model != null)
+                        {
+
+                            var i = 0;
+                            foreach (var item in Model.gozareshmally.Where(s => s.FK_ID == 0).ToList())
+                            {
+                                if (item != null)
+                                {
+
+
+                                    //double sumkolradif = (double)(item.bestankar - item.bedehkar);
+
+                                    i++;
+                                    <tr>
+
+
+                                        @*<td>
+                            @i
+                        </td>*@
+
+                                        <td>@i</td>
+                                        <td>@item.coding</td>
+                                        <td>@item.namecoding</td>
+                                        @*<td> @String.Format("{0:N0}", item.SUMBEDEHKAR)</td>
+                                        <td> @String.Format("{0:N0}", item.SUMBESTENKAR)</td>*@
+                                        @if (item.SUM < 0)
+                                        {
+                                            <td> @String.Format("{0:N0}", item.SUM)</td>
+                                            <td> 0</td>
+
+                                        }
+                                        else
+                                        {
+                                            <td> 0</td>
+
+                                            <td> @String.Format("{0:N0}", item.SUM)</td>
+
+                                        }
+
+                                        @*@if (item.FK_name != null)
+                        {
+                            var fin = db.dbAsnadcratname.Where(p => p.ID == item.FK_name).FirstOrDefault();
+                            string tolll = "";
+                            var currentItem = fin; // شروع از آیتم فعلی
+
+                            bool isFirst = true; // متغیری برای پیگیری اینکه آیا اولین رکورد است یا خیر
+
+                            // ادامه جستجو تا زمانی که IDre برابر null شود
+                            while (currentItem != null && currentItem.IDre != null)
+                            {
+                                // پیدا کردن رکورد بعدی با استفاده از IDre فعلی
+                                currentItem = db.dbAsnadcratname.Where(p => p.ID == currentItem.IDre).FirstOrDefault();
+
+                                // اگر رکورد پیدا شد، آن را به tolll اضافه کنید
+                                if (currentItem != null)
+                                {
+                                    if (isFirst)
+                                    {
+                                        tolll += currentItem.name;
+
+                                        tolll += "_";
+                                        // در ابتدا بدون فاصله
+                                        isFirst = false; // بعد از اولین اضافه کردن، isFirst را false می‌کنیم
+                                    }
+                                    else
+                                    {
+                                        tolll += "_" + currentItem.name; // اگر اولین رکورد نیست، فاصله اضافه می‌شود
+                                    }
+                                }
+                            }
+                            <td>" @fin.name _ @tolll _@fin.codmahsol"</td>
+
+                        }
+                        <td cont-date="dateS_@i" hidden>
+
+                            @((item.date != null) ? item.date.Value.ToString("MM / dd / yyyy") : null)
+
+                        </td>
+                        <td id="dateS_@i"></td>
+                        <td>@item.Titel</td>
+
+                        <td> @String.Format("{0:N0}", item.bestankar)</td>
+                        <td> @String.Format("{0:N0}", item.bedehkar)</td>
+
+
+                        <td> @String.Format("{0:N0}", sumkolradif)</td>*@
+
+
+
+
+                                        @*@if (item.File_SystemName != null)
+                        {
+                            <td style="color:green">
+                                <a target="_blank" href="~/Areas/ManagementAccounting/Contents/RegistrationDucumentAttachmentsFile/@item.File_SystemName">
+                                    دانلود
+                                </a>
+                            </td>
+                        }
+                        else
+                        {
+                            <td>بارگزای نشده</td>
+                        }*@
+
+
+
+
+                                        @*<td>@item.sanadmalyy</td>
+
+
+                        <td>
+                            @if (item.titel.Length > 20)
+                            {
+                                <span title="@item.titel">@item.titel.Substring(0, 20)...</span>
+                            }
+                            else
+                            {
+                                @item.titel
+                            }
+                        </td>*@
+
+
+
+                                    </tr>
+                                }
+
+                                foreach (var item1 in Model.gozareshmally.Where(s => s.FK_ID == item.ID).ToList())
+                                {
+                                    if (item != null)
+                                    {
+
+
+                                        //double sumkolradif = (double)(item.bestankar - item.bedehkar);
+
+                                        i++;
+                                        <tr>
+
+
+                                            @*<td>
+                                @i
+                            </td>*@
+
+                                            <td>@i</td>
+                                            <td>@item1.coding</td>
+                                            <td style="color:red">@item1.namecoding</td>
+                                            @*<td> @String.Format("{0:N0}", item1.SUMBEDEHKAR)</td>
+                                            <td> @String.Format("{0:N0}", item1.SUMBESTENKAR)</td>*@
+                                            @if (item1.SUM < 0)
+                                            {
+                                                <td> @String.Format("{0:N0}", item1.SUM)</td>
+                                                <td> 0</td>
+
+                                            }
+                                            else
+                                            {
+                                                <td> 0</td>
+
+                                                <td> @String.Format("{0:N0}", item1.SUM)</td>
+
+                                            }
+
+                                            @*@if (item.FK_name != null)
+                            {
+                                var fin = db.dbAsnadcratname.Where(p => p.ID == item.FK_name).FirstOrDefault();
+                                string tolll = "";
+                                var currentItem = fin; // شروع از آیتم فعلی
+
+                                bool isFirst = true; // متغیری برای پیگیری اینکه آیا اولین رکورد است یا خیر
+
+                                // ادامه جستجو تا زمانی که IDre برابر null شود
+                                while (currentItem != null && currentItem.IDre != null)
+                                {
+                                    // پیدا کردن رکورد بعدی با استفاده از IDre فعلی
+                                    currentItem = db.dbAsnadcratname.Where(p => p.ID == currentItem.IDre).FirstOrDefault();
+
+                                    // اگر رکورد پیدا شد، آن را به tolll اضافه کنید
+                                    if (currentItem != null)
+                                    {
+                                        if (isFirst)
+                                        {
+                                            tolll += currentItem.name;
+
+                                            tolll += "_";
+                                            // در ابتدا بدون فاصله
+                                            isFirst = false; // بعد از اولین اضافه کردن، isFirst را false می‌کنیم
+                                        }
+                                        else
+                                        {
+                                            tolll += "_" + currentItem.name; // اگر اولین رکورد نیست، فاصله اضافه می‌شود
+                                        }
+                                    }
+                                }
+                                <td>" @fin.name _ @tolll _@fin.codmahsol"</td>
+
+                            }
+                            <td cont-date="dateS_@i" hidden>
+
+                                @((item.date != null) ? item.date.Value.ToString("MM / dd / yyyy") : null)
+
+                            </td>
+                            <td id="dateS_@i"></td>
+                            <td>@item.Titel</td>
+
+                            <td> @String.Format("{0:N0}", item.bestankar)</td>
+                            <td> @String.Format("{0:N0}", item.bedehkar)</td>
+
+
+                            <td> @String.Format("{0:N0}", sumkolradif)</td>*@
+
+
+
+
+                                            @*@if (item.File_SystemName != null)
+                            {
+                                <td style="color:green">
+                                    <a target="_blank" href="~/Areas/ManagementAccounting/Contents/RegistrationDucumentAttachmentsFile/@item.File_SystemName">
+                                        دانلود
+                                    </a>
+                                </td>
+                            }
+                            else
+                            {
+                                <td>بارگزای نشده</td>
+                            }*@
+
+
+
+
+                                            @*<td>@item.sanadmalyy</td>
+
+
+                            <td>
+                                @if (item.titel.Length > 20)
+                                {
+                                    <span title="@item.titel">@item.titel.Substring(0, 20)...</span>
+                                }
+                                else
+                                {
+                                    @item.titel
+                                }
+                            </td>*@
+
+
+
+                                        </tr>
+                                    }
+
+
+                                }
+                            }
+
+                            // Your foreach loop code here
+                        }
+
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+<script src="~/Assets/js/jquery3.6.0.js"></script>
+<script src="~/Scripts/sweetalert2.js"></script>
+<script>
+    // Convert Gregorian date to jaali in the table
+    var tds = document.querySelectorAll("[cont-date]");
+    var valueD, id, target;
+    var options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    tds.forEach(td => {
+        valueD = new Date(td.textContent).toLocaleDateString('fa-IR-u-nu-latn', options).replace(',', '').replace(" ", "");
+        valueD = valueD.slice(0, 10) + " " + td.textContent.slice(10, 30)
+        id = td.getAttribute("cont-date");
+        target = document.getElementById(id);
+        target.textContent = valueD;
+    });
+</script>
+<script>
+        $(".Payam6898").on('click', function () {
+ //var personal = $("#UserOfPeyman").find(":selected").val();
+            @*window.location.replace('@Url.Action("MaMoorin_Dashboard2", "Dashboard", new { area = "Reporter" })' + '?id=' + personal);*@
+      //var idd = $(this).attr("id").split("_")[1];
+      //console.log(idd);
+        $.ajax({
+     url: '@Url.Action("viewsanadmallysher", "FinancialDocuments", new { area = "ManagementAccounting" })',
+  /*   *//*data: { id: personal }*//*,*/
+     type: "POST",
+     dataType: "html",
+     success: function (resp) {
+         // در صورت موفقیت آمیز بودن دریافت اطلاعات، به صفحه‌ی جدید هدایت شوید
+         window.location.replace('@Url.Action("viewsanadmallysher", "FinancialDocuments", new { area = "ManagementAccounting" })' /*+ '?id=' + idd*/);
+
+         @*window.location.replace('@Url.Action("viewasnadmalyylistid", "FinancialDocuments", new { area = "ManagementAccounting" })' +?id =' + idd);*@
+     },
+     error: function (resp2) {
+         // در صورت بروز خطا، اقدام مناسب را انجام دهید
+     }
+ });
+ });
+$(".edit").click(function () {
+    var idd = $(this).attr("id").split("_")[1];
+    console.log(idd);
+
+    var url = "/FinancialDocuments/viewsanadeditid?id=" + idd;
+    $("#big_modal_body1").load(url);
+});
+
+    $(".Details").click(function () {
+
+        var idd = $(this).attr("id").split("_")[1];
+        console.log(idd);
+
+        var url = "/FinancialDocuments/datailfk?id=" + idd;
+        $("#big_modal_body1").load(url)
+        @*var idd = $(this).attr("id").split("_")[1];
+$("#big_modal_body1").load('@Url.Content("/FinancialDocuments/Detail")?id=' + idd);*@
+    });
+         var obj = new FormData();
+
+  $(".uploadSummery").click(function () {
+    FK_DDOfTitle = $(this).attr("id").split("_")[2];
+    ID = $(this).attr("id").split("_")[1];
+      $("#summery_file5").click();
+});
+
+ $("#summery_file5").change(function (e) {
+    $.each(e.target.files, function (index, file) {
+        obj.append("files", file);
+    });
+         sendAjax2('@Url.Action("upload", "FinancialDocuments", new { area = "ManagementAccounting" })', obj);
+ });
+
+
+ function sendAjax2(url2, fd2) {
+     obj.append("ID", ID);
+
+
+
+
+     $.ajax({
+         url: url2,
+         type: 'POST',
+         data: fd2,
+         processData: false,
+         contentType: false,
+         success: function (resp1) {
+             console.log("okeye");
+             console.log(resp1);
+             $("#loading-message").css("display", "none");
+             fd = new FormData();
+             if (resp1 == "True") {
+                 alert("با موفقیت ثبت شد");
+                 setTimeout(function () {
+                     location.reload(); // یا می‌توانید از location.reload(true) هم استفاده کنید
+                 }, 2000); // بازه زمانی به میلی‌ثانیه، اینجا 2000 میلی‌ثانیه (یعنی 2 ثانیه)
+             }
+             else {
+                 $("#loading-message").css("display", "none");
+                 console.log("jlk;;kkj");
+                 Toast.fire({
+
+                     icon: 'success',
+                     background: '#35434A',
+                     color: 'white',
+                     title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                 }).then(() => {
+                     $("#loading-message").css("display", "none");
+                 });
+             }
+
+         },
+         error: function (resp1) {
+             console.log(resp1);
+             console.log("Nokeye");
+             $("#loading-message").css("display", "none");
+             Toast.fire({
+                 icon: 'success',
+                 background: '#35434A',
+                 color: 'white',
+                 title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+             }).then(() => {
+                 $("#loading-message").css("display", "none");
+             });
+         }
+     });
+ }
+</script>
+
+
+

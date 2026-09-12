@@ -1,0 +1,341 @@
+﻿@using SaabWebProject.Models.DomainModels;
+
+@{ SaabEntities db = new SaabEntities();
+
+    //ViewBag.Title = "ثبت و تایید ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+
+<div class="row" style="margin-top:10px">
+    <div class="col-xl-4">
+        <label class="form-label"> شغل  </label>
+        <select class="form-select select_peyman" id="select_peyman" name="select_peyman">
+            <option hidden value="Select">انتخاب مورد</option>
+            @foreach (var item in db.Create_job_1.ToList())
+            {
+                <option value="@item.ID">@item.name</option>
+            }
+        </select>
+    </div>
+    <div class="col-xl-4">
+        <label class="form-label"> شهر /امور </label>
+        <select class="form-select select_peyman1" id="select_peyman1" name="select_peyman1">
+            <option hidden value="Select">انتخاب مورد</option>
+            @foreach (var item in db.tbCities.ToList())
+            {
+                <option value="@item.ID">@item.Name</option>
+            }
+        </select>
+    </div>
+    <div class="col-xl-2">
+        <label class="form-label">ماه</label>
+        <select class="form-select my_Select" id="MonthAz">
+            <option value="0">انتخاب مورد</option>
+            <option value="1">فروردین</option>
+            <option value="2">اردیبهشت</option>
+            <option value="3">خرداد</option>
+            <option value="4">تیر</option>
+            <option value="5">مرداد</option>
+            <option value="6">شهریور</option>
+            <option value="7">مهر</option>
+            <option value="8">آبان</option>
+            <option value="9">آذر</option>
+            <option value="10">دی</option>
+            <option value="11">بهمن</option>
+            <option value="12">اسفند</option>
+        </select>
+    </div>
+    <div class="col-xl-2">
+        <div class="col-xl-12">
+            <label class="form-label">سال</label>
+        </div>
+        <div class="col-xl-12">
+            <div class="col-xl-12">
+                <select class="form-select" id="YearAz">
+                    <option value="0">انتخاب مورد</option>
+
+                    @{
+                        System.Globalization.PersianCalendar cs2 = new System.Globalization.PersianCalendar();
+                        int currentYear = cs2.GetYear(DateTime.Now);
+
+                        for (var i = 4; i >= 0; i--)
+                        {
+                            var s = DateTime.Now.AddYears(-i);
+
+                            <option value="@cs2.GetYear(s)">@cs2.GetYear(s)</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xl-9"></div>
+    <div class="col-xl-1">
+        <a href="#" class=" btn form-control buttonGeneral" id="dwn">
+            <i class="bi bi-download  fa-fw me-1 VecGeneral"></i>
+            <span class="bGeneral-text">دانلود فایل نمونه</span>
+        </a>
+    </div>
+    <div class="col-xl-1 uplod">
+        <button class="btn form-control buttonGeneral uploadSummery2">
+            <i class="bi bi-upload fa-fw me-1 VecGeneral" style="width:11px"></i>
+            <span class="bGeneral-text">بارگذاری پیوست</span>
+        </button>
+        <input id="summery_file2" style="display: none;" type="file" class="form-control" value="" />
+    </div>
+
+    <div class="col-xl-1">
+        <button class="btn form-control buttonsabt" id="sabtcountmaraheledir">
+            <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+            <span class="bSabt-text">ثبت</span>
+        </button>
+    </div>
+</div>
+<div id="table"></div>
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script>
+    //$.each($("#select_peyman"), function (index, item) {
+    //    $("#select_peyman").attr("id", "select_peyman_");
+    //    $('#select_peyman_').attr("multiple", "multiple");
+    //    $('#select_peyman_').picker({ search: true });
+    //    $('#select_peyman_').on('sp-change', function () { });
+    //});
+                $("#dwn").click(function () {
+        console.log("kfsdk;");
+
+
+
+
+
+
+                document.getElementById("loading-circle").style.display = "block";
+
+
+
+
+
+
+        $.ajax({
+        beforeSend: function () {
+        document.getElementById("loading-message").style.display = "block";//مهندس دارین برعککس میزارین
+        //این درسته
+        //شبیه هم ننوشتین
+        //خوب ورودی هام فرق داتشنت الاان فهمیدم چیشد + اضافه گذاشته بود
+        },
+        @*url: '@Url.Action("ExportMoalefeExcel", "Moalefe", new { area = "Salaries" })?year=' + $("#year_usr").val() + '&month=' + aa + '&FromDate=' + $("#datepickerFromEn_usr").val() + '&ToDate=' + $("#datepickerToEn_usr").val() + '&PeymanID=' + $("#baste_peyman2").val() + '&Basteh=' + Basteh,*@
+        type: 'GET',
+        dataType: 'html',
+
+
+        success: function (res) {
+        if (res === "False") {
+        // اجرای بلوک error در صورت مطابقت با "False"
+        alert("برای این ماه و این سال این بسته تایید نهایی شده است ");
+        window.location.reload();
+        console.log(res);
+        }
+        else {
+
+            document.getElementById("loading-message").style.display = "none";
+
+        @*window.location = '@Url.Action("ExportMoalefeExcel", "Moalefe",new { area = "Salaries" })?year=' + $("#year_usr").val() + '&month=' + aa + '&FromDate=' + $("#datepickerFromEn_usr").val() + '&ToDate=' + $("#datepickerToEn_usr").val() + '&PeymanID=' + $("#baste_peyman2").val() + '&Basteh=' + Basteh;*@
+            window.location = '@Url.Action("EXCEL_timearzyab_mostakrin22", "Formula", new { area = "Salaries" })?year=' + $("#YearAz").val() + '&month=' + $("#MonthAz").val() + '&job=' + $("#select_peyman").val();
+            setTimeout(function () {
+                document.getElementById("loading-message").style.display = "none";
+                document.getElementById("loading-circle").style.display = "none";
+            }, 20000); // ۲ ثانیه بعد مخفی شه (می‌تونی بیشتر بذاری)
+        }
+        },
+        error: function (res) {
+        alart("fdslsfdk")
+        console.log(res);
+        }
+        });
+        });
+</script>
+<script>
+    $("#sabtcountmaraheledir").click(function () {
+    //var PeymanArr = [];
+    //$.each($("#select_peymancitys").val().toString().split(","), function (index, item) {
+    //    if (item !== "" && item !== 'Select') {
+    //        PeymanArr.push(item);
+    //    }
+    //});
+
+
+        var select_peyman = $("#select_peyman").val();
+        var YearAz = $("#YearAz").val();
+        var MonthAz = $("#MonthAz").val();
+        var select_peyman1 = $("#select_peyman1").val();
+
+    //    if ($("#nameghrogi").val() === 'Select') {
+    //    alert("لطفا پیمان ها را انتخاب کنید");
+    //    return;
+    //    } else if ($("#nameghrogi").val() === "0") {
+    //    alert("لطفا دوره را انتخاب کنید");
+    //    return;
+    //    } else if ($("#nameghrogi").val() === "0") {
+    //    alert("لطفا ماه را انتخاب کنید");
+    //    return;
+    //    } else if ($("#nameghrogi").val() === "0") {
+    //    alert("لطفا سال را انتخاب کنید");
+    //    return;
+    //    }
+    ////    console.log(PeymanArr);
+    var formData = new FormData();
+    //    PeymanArr.forEach((item) => {
+    //        formData.append("FKcity[]", item); // ارسال هر عنصر به صورت جداگانه
+        //    });
+        //formData.append("YearAz", YearAz);
+        //formData.append("MonthAz", MonthAz);
+        //formData.append("select_peyman1", select_peyman1);
+        //formData.append("select_peyman", select_peyman);
+        //formData.append("asmonth", asmonth);
+        //formData.append("year", year);
+        //formData.append("month", month);
+        //formData.append("tatime", tatime);
+        //formData.append("astime", astime);
+        //formData.append("time", time);
+        formData.append("year", YearAz);
+        formData.append("month", MonthAz);
+        //formData.append("select_peyman1", select_peyman1);
+        formData.append("jobId", select_peyman);
+        @*formData.append("FK_table4", @Model.FK_namegozarwsh);*@
+
+
+        fd.forEach((value, key) => {
+        formData.append(key, value);
+    });
+        console.log(formData);
+        document.getElementById("loading-circle").style.display = "block";
+
+    $.ajax({
+                  @*url: "@Url.Action("createmarhaleh1editt999", "Orders", new { area = "Setting" })",*@
+                                    url: "@Url.Action("GetDataFromExcel_filetaeed88", "Orders", new { area = "Setting" })",
+
+        type: "POST",
+        processData: false,
+        contentType: false,
+        data: formData,
+        success: function (res) {
+            document.getElementById("loading-circle").style.display = "none";
+
+            if (res == "True") {
+                alert("با موفقیت ثبت شد ");
+                location.reload();
+            }
+            else {
+                alert(res);
+
+            }
+            console.log(res);
+        },
+        error: function (res) {
+            console.log(res);
+            Toast.fire({
+                icon: 'error',
+                background: '#35434A',
+                color: 'white',
+                title: "عملیات با خطا مواجه شد"
+            });
+        }
+    });
+});
+
+</script>
+<script>
+    var fd = new FormData();
+
+    $(".uploadSummery2").click(function () {
+        $("#summery_file2").click();
+    });
+
+    $("#summery_file2").change(function (e) {
+        $.each(e.target.files, function (index, file) {
+            fd.append("MyExcelStream", file);
+        });
+    });
+       $("#btnCalculateAzmayeshi").click(function () {
+           var PeymanArr = [];
+           $.each($("#select_peyman_").val().toString().split(","), function (index, item) {
+               if (item !== "") {
+                   if (item != 'Select') {
+                       PeymanArr.push(item);
+                       console.log(item);
+                   }
+               }
+           });
+           var year = $("#YearAz").val();
+           var month = $("#MonthAz ").val();
+
+           if ($("#select_peyman_").val() == 'Select') {
+               alert("لطفا پیمان ها را انتخاب کنید");
+           }
+
+           else if ($("#MonthAz").val() == 0) {
+               alert("لطفا ماه را انتخاب کنید");
+           }
+           else if ($("#YearAz").val() == 0) {
+               alert("لطفا سال را انتخاب کنید");
+           }
+
+           else {
+               $(".loader").css('display', 'block');
+               $("#loading-circle .loadingText1").text("لطفا منتظر نمایش اطلاعات بمانید ...");
+               $("#loading-circle").css("display", "flex");
+               $.ajax({
+                   url: "@Url.Action("sabttaeedfilter", "RegistrationAndConfirmationProcedures", new { area = "Contracts" })",
+                   type: "Post",
+                   dataType: "html",
+                   data: { Fkpym: PeymanArr, month3: month, year3: year },
+                   success: function (res) {
+                       $(".loader").css('display', 'none');
+
+                       document.getElementById("loading-message").style.display = "none";
+                       $("#loading-circle").css("display", "none"); // پنهان کردن لودینگ
+
+                       document.getElementById("loading-message").style.display = "none";
+                       $("#table").html(res)
+                       //$("#modalLg").modal('show')
+
+                   },
+                   error: function (res) {
+                       console.log(res);
+
+                       document.getElementById("loading-message").style.display = "none";
+                       Toast.fire({
+                           icon: 'error',
+                           background: '#35434A',
+                           color: 'white',
+                           title: "عملیات  با خطا مواجه شد"
+                       });
+                       return false;
+                   }
+               });
+           }
+       });
+
+</script>
+
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+
+
+
+<script>
+    $(document).ready(function () {
+        $("#select_peyman").picker({ search: true });
+
+    });
+    $(document).ready(function () {
+        $("#select_peyman1").picker({ search: true });
+
+    });
+</script>   

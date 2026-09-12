@@ -1,0 +1,534 @@
+﻿@{
+    ViewBag.Title = "نقشه راه گزارش ها";
+    Layout = null;
+}
+@model SaabWebProject.Models.ViewModels.Contracts.Function.FunctionModel
+@using SaabWebProject.Models.DomainModels;
+
+@{ SaabEntities db = new SaabEntities(); }
+    <style>
+
+        .loader {
+            position: relative;
+            /*        top: calc(50% - 32px);
+        left: calc(50% - 32px);*/
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            perspective: 800px;
+            margin: 0px 10px;
+        }
+
+        .inner {
+            position: absolute;
+            box-sizing: border-box;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+        }
+
+            .inner.one {
+                left: 0%;
+                top: 0%;
+                animation: rotate-one 1s linear infinite;
+                border-bottom: 2px double #00ffff;
+            }
+
+            .inner.two {
+                right: 0%;
+                top: 0%;
+                animation: rotate-two 1s linear infinite;
+                border-right: 2px double #00ffff;
+            }
+
+            .inner.three {
+                right: 0%;
+                bottom: 0%;
+                animation: rotate-three 1s linear infinite;
+                border-top: 2px double #00ffff;
+            }
+
+        @@keyframes rotate-one {
+            0% {
+                transform: rotateX(35deg) rotateY(-45deg) rotateZ(0deg);
+            }
+
+            100% {
+                transform: rotateX(35deg) rotateY(-45deg) rotateZ(360deg);
+            }
+        }
+
+        @@keyframes rotate-two {
+            0% {
+                transform: rotateX(50deg) rotateY(10deg) rotateZ(0deg);
+            }
+
+            100% {
+                transform: rotateX(50deg) rotateY(10deg) rotateZ(360deg);
+            }
+        }
+
+        @@keyframes rotate-three {
+            0% {
+                transform: rotateX(35deg) rotateY(55deg) rotateZ(0deg);
+            }
+
+            100% {
+                transform: rotateX(35deg) rotateY(55deg) rotateZ(360deg);
+            }
+        }
+
+        p {
+            margin-bottom: 0px !important;
+        }
+
+        .container .row {
+            align-content: center;
+            align-items: center;
+        }
+
+
+
+
+        @@keyframes slideUp {
+            0% {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .row .content {
+            display: none; /* اول مخفی */
+        }
+
+        .row.show .content {
+            display: flex;
+            animation: slideUp 0.6s ease forwards;
+        }
+
+        .row.show .loader {
+            display: none; /* وقتی نمایش داده شد، loader مخفی میشه */
+        }
+
+        @@keyframes slideInFromLeft {
+            0% {
+                opacity: 0;
+                transform: translateX(-40px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        #finalButtonWrapper {
+            display: none;
+        }
+
+            #finalButtonWrapper.show {
+                display: block;
+                animation: slideInFromLeft 0.6s ease forwards;
+            }
+
+
+        /* From Uiverse.io by RaspberryBee */
+        /* The switch - the box around the slider */
+        .switch {
+            margin-left: 5px;
+            font-size: 17px;
+            position: relative;
+            display: inline-block;
+            width: 3.5em;
+            height: 2em;
+        }
+
+            /* Hide default HTML checkbox */
+            .switch input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+
+        /* The slider */
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #00ffff40;
+            transition: .4s;
+            border-radius: 20px;
+        }
+
+            .slider:before {
+                position: absolute;
+                content: "";
+                height: 1.4em;
+                width: 1.4em;
+                border-radius: 20px;
+                left: 0.3em;
+                bottom: 0.3em;
+                transform: rotate(270deg);
+                background-color: rgb(255, 255, 255);
+                transition: .4s;
+            }
+
+        .switch input:checked + .slider {
+            background-color: #00fd4094;
+        }
+
+        .switch input:focus + .slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+        .switch input:checked + .slider:before {
+            transform: translateX(1.5em);
+        }
+    </style>
+@{ 
+    int vaziat = 0;
+    var find = db.tbvaziat_jobs.Where(s => s.job == Model.IDIDID&&s.data==Model.fromDate &&s.vaziat==1).FirstOrDefault();
+    if (find != null)
+    {
+        vaziat = 1;
+    }
+
+}
+    <div class="tab-content" id="pills-tabContent" style="margin-top: 30px;">
+        <div class="row" style="margin-bottom: 10px;">
+            <div class="col-xl-2">
+                <label class="switch">
+                    <input type="checkbox" id="reportTrigger" @(vaziat == 1 ? "checked" : "")>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="col-xl-2">
+                @if (Model.IDIDID == 1)
+                {
+
+                    <a href="@Url.Content("~/Setting/Orders/CreatOlaveat1218")" class="btn form-control buttonsabt" target="_blank">
+                        <i class="bi bi-eye"></i>
+                    </a>
+                }
+                else if (Model.IDIDID == 2)
+                {
+                    <a href="@Url.Content("~/Setting/Orders/Olaveat1218")" class="btn form-control buttonsabt" target="_blank">
+                        <i class="bi bi-eye"></i>
+                    </a>
+                }
+                else if (Model.IDIDID == 3)
+                {
+                    <div class="col-xl-1">
+                        <button id="shart" type="button" class="btn form-control buttonsabt">
+                            <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                            <span class="bSabt-text">پردازش شرط ها</span>
+                        </button>
+                    </div>
+                }
+                @if (Model.IDIDID == 4)
+                {
+
+                    <a href="@Url.Content("~/Setting/Orders/CreatOlaveat12182")" class="btn form-control buttonsabt" target="_blank">
+                        <i class="bi bi-eye"></i>
+                    </a>
+                }
+                else if (Model.IDIDID == 5)
+                {
+                    <a href="@Url.Content("~/Setting/Orders/Olaveat1218_olaviat")" class="btn form-control buttonsabt" target="_blank">
+                        <i class="bi bi-eye"></i>
+                    </a>
+                }
+                else if (Model.IDIDID == 6)
+                {
+                    <div class="col-xl-1">
+                        <button id="olavait" type="button" class="btn form-control buttonsabt">
+                            <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                            <span class="bSabt-text">پردازش اولویت ها</span>
+                        </button>
+                    </div>
+                }
+                else if (Model.IDIDID == 7)
+                {
+                    <a href="@Url.Content("~/Setting/Orders/view_link_fard")" class="btn form-control buttonsabt" target="_blank">
+                        <i class="bi bi-eye"></i>
+                    </a>
+                }
+                else if (Model.IDIDID == 8)
+                {
+                    <div class="col-xl-1">
+                        <button id="regtankar" type="button" class="btn form-control buttonsabt">
+                            <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                            <span class="bSabt-text">ریختن کارها</span>
+                        </button>
+                    </div>
+                }
+            </div>
+
+            <div class="col-xl-7"></div>
+            <div class="col-xl-1">
+                <button id="sabticon" type="button" class="btn form-control buttonsabt">
+                    <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                    <span class="bSabt-text">ثبت</span>
+                </button>
+            </div>
+        </div>
+        <script>
+            var reports = [
+                { name: "گزارش ۱۶۲۴", value: 2 },
+                { name: "گزارش ۱۶۲۵", value: 1 },
+                { name: "گزارش ۱۶۲۶", value: 1 },
+                { name: "گزارش ۱۶۲۷", value: 0 },
+                { name: "گزارش ۱۶۲۸", value: 1 },
+                { name: "گزارش ۱۶۲۹", value: 1 }
+            ];
+        </script>
+
+        <div class="container" id="reportsContainer" style="display: flex; flex-direction: column; gap: 10px;">
+            <!-- اینجا ردیف‌ها با JS ساخته می‌شوند -->
+        </div>
+
+
+
+    </div>
+
+    <script>
+
+
+    $("#sabticon").click(function () {
+
+        var isChecked = $("#reportTrigger").is(":checked"); // bool → true/false
+        var fromDate = $("#astime").val();
+        $("#loading-circle .loadingText1").text("لطفا منتظر نمایش اطلاعات بمانید ...");
+        $("#loading-circle").css("display", "flex");
+        $.ajax({
+            url: "/Setting/Orders/SaveOlaveat121tbvaziat_jobs",
+            type: "POST",
+            data: { name: isChecked, name2:@Model.IDIDID, fromDate: fromDate },   // ارسال bool
+            success: function (res) {
+                if (res.status === true) {
+                    alert("با موفقیت ثبت شد");
+                    document.getElementById("loading-circle").style.display = "block";
+
+                } else {
+                    alert("خطا در ثبت");
+                }
+            },
+            error: function () {
+                alert("خطای ارتباط با سرور");
+            }
+        });
+
+    });
+
+        $("#shart").click(function () {
+
+            var fromDate = $("#astime").val();
+            $("#loading-circle .loadingText1").text("لطفا منتظر نمایش اطلاعات بمانید ...");
+            $("#loading-circle").css("display", "flex");
+            $.ajax({
+                url: "/Setting/Orders/MohasebeHotomat_DateTimefromDate",
+                type: "POST",
+                data: { fromDate: fromDate },
+
+                //beforeSend: function () {
+                //    alert("پردازش شرط‌ها شروع شد...");
+                //},
+
+                success: function (res) {
+
+                    if (res.status === true) {
+                        document.getElementById("loading-circle").style.display = "block";
+
+                        let msg =
+                            "✅ پردازش کامل شد\n\n" 
+                     ;
+
+                       
+                        
+
+                        alert(msg);
+
+                    } else {
+                        alert("❌ خطا: " + res.message);
+                    }
+                },
+
+                error: function () {
+                    alert("خطای ارتباط با سرور");
+                }
+            });
+
+        });
+
+        $("#olavait").click(function () {
+
+            var fromDate = $("#astime").val();
+
+            $("#loading-circle .loadingText1").text("در حال محاسبه اولویت‌ها ...");
+            $("#loading-circle").css("display", "flex");
+
+            $.ajax({
+                url: "/Setting/Orders/olavaitmoh21_DateTimefromDate",
+                type: "POST",
+                data: { fromDate: fromDate },
+
+                success: function (res) {
+
+                    $("#loading-circle").hide();
+
+                    if (res.status === true) {
+
+                        let msg =
+                            "✅ پردازش اولویت انجام شد\n\n";
+
+                        //if (res.topSample.length > 0) {
+                        //    msg += "🔹 نمونه ۱۰ رکورد اول:\n";
+                        //    res.topSample.forEach(r => {
+                        //        msg += r.Valunic + " → Rank: " + r.Rank + "\n";
+                        //    });
+                        //}
+
+                        alert(msg);
+
+                    } else {
+                        alert("❌ خطا: " + res.message);
+                    }
+                },
+
+                error: function () {
+                    $("#loading-circle").hide();
+                    alert("خطای ارتباط با سرور");
+                }
+            });
+
+        });
+        $("#regtankar").click(function () {
+
+            var fromDate = $("#astime").val();
+
+            $("#loading-circle .loadingText1").text("در حال ریختن کارها لطفا صبور باشد  ...");
+            $("#loading-circle").css("display", "flex");
+
+            $.ajax({
+                url: "/Setting/Orders/DistributeJobsByRank2",
+                type: "POST",
+                data: { fromDate: fromDate },
+
+                success: function (res) {
+
+                    $("#loading-circle").hide();
+
+                    if (res =="ok") {
+
+                        //let msg =
+                        //    "✅ پردازش اولویت انجام شد\n\n" +
+                        //    "تاریخ شمسی: " + res.inputDateShamsi + "\n" +
+                        //    "تعداد کل محاسبه: " + res.totalCalculated + "\n" +
+                        //    "تعداد یکتا: " + res.uniqueValunic + "\n" +
+                        //    "بیشترین رتبه: " + res.maxRank + "\n\n";
+
+                        //if (res.topSample.length > 0) {
+                        //    msg += "🔹 نمونه ۱۰ رکورد اول:\n";
+                        //    res.topSample.forEach(r => {
+                        //        msg += r.Valunic + " → Rank: " + r.Rank + "\n";
+                        //    });
+                        //}
+
+                        alert("با موفقیت کارها ارجاع شد");
+
+                    } else {
+                        alert("❌ خطا: " + res);
+                    }
+                },
+
+                error: function () {
+                    $("#loading-circle").hide();
+                    alert("خطای ارتباط با سرور");
+                }
+            });
+
+        });
+
+
+    $(document).ready(function () {
+        const container = document.getElementById("reportsContainer");
+        const buttonWrapper = document.getElementById("finalButtonWrapper");
+        const checkbox = document.getElementById("reportTrigger");
+        // برای دکمه ثبت کلاس یا آی‌دی بذار، من اینجا با کلاس انتخابش کردم:
+        const btnSabt = document.querySelector(".buttonsabt2");
+        const STEP_DELAY = 1500;
+
+        // ۱. متغیر کنترلی (۱ یعنی انیمیشن اجرا بشه، ۰ یعنی دکمه ثبت نشون داده بشه)
+let checkStatus = @vaziat;
+
+        // ۲. تابع اصلی برای مدیریت نمایش
+        function updateUI() {
+            if (checkbox.checked) {
+                // حالت نمایش گزارش‌ها
+                btnSabt.parentElement.style.display = "none"; // دکمه ثبت مخفی
+                runReportAnimation();
+            } else {
+                // حالت نمایش دکمه ثبت
+                btnSabt.parentElement.style.display = "block"; // دکمه ثبت ظاهر
+                container.innerHTML = ""; // لیست گزارش‌ها پاک بشه
+                buttonWrapper.classList.remove("show");
+            }
+        }
+
+        // ۳. تابع اجرای انیمیشن
+        function runReportAnimation() {
+            container.innerHTML = "";
+            buttonWrapper.classList.remove("show");
+
+            reports.forEach((report, index) => {
+                let iconClass = report.value === 1 ? "bi bi-check-circle" : (report.value === 2 ? "bi bi-x-circle" : "bi bi-clock");
+                let iconColor = report.value === 1 ? "lawngreen" : (report.value === 2 ? "red" : "orange");
+
+                const rowHtml = `
+                <div class="row align-items-center" id="row-${index}">
+                    <div class="loader">
+                        <div class="inner one"></div>
+                        <div class="inner two"></div>
+                        <div class="inner three"></div>
+                    </div>
+                    <div class="content">
+                        <div class="col-xl-1">
+                            <i class="${iconClass}" style="color:${iconColor}"></i>
+                        </div>
+                        <div class="col-xl-3">
+                            <p>${report.name}</p>
+                        </div>
+                    </div>
+                </div>`;
+
+                container.insertAdjacentHTML('beforeend', rowHtml);
+
+                setTimeout(() => {
+                    const currentRow = document.getElementById(`row-${index}`);
+                    if (currentRow && checkbox.checked) {
+                        currentRow.classList.add("show");
+
+                        if (index === reports.length - 1 && reports.every(r => r.value === 1)) {
+                            buttonWrapper.classList.add("show");
+                        }
+                    }
+                }, STEP_DELAY * (index + 1));
+            });
+        }
+
+        // ۴. تنظیم وضعیت اولیه بر اساس متغیر checkStatus
+        checkbox.checked = (checkStatus === 1);
+        updateUI();
+
+        // ۵. گوش دادن به تغییرات دستی (اگر disabled نباشد)
+        checkbox.addEventListener('change', updateUI);
+    });
+    </script>

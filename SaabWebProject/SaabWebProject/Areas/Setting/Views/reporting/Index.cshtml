@@ -1,0 +1,183 @@
+﻿
+@{
+
+    ViewBag.Title = "ثبت دستورات";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="">
+    <div class="card">
+        <div class="card-body pb-2">
+            <div class="row" style="margin-top:10px">
+                <div class="col-xl-5">
+                    <label class="form-label"> پیمان  </label>
+                    <div id="peymans2">
+
+                    </div>
+
+                </div>
+                <div class="col-xl-2">
+                    <div class="form-group mb-3">
+                        <label class="form-label"> ماه </label>
+                        <select class="form-select my_Select" id="Month2">
+                            <option value="0">انتخاب کنید..</option>
+                            <option value="1">فروردین</option>
+                            <option value="2">اردیبهشت</option>
+                            <option value="3">خرداد</option>
+                            <option value="4">تیر</option>
+                            <option value="5">مرداد</option>
+                            <option value="6">شهریور</option>
+                            <option value="7">مهر</option>
+                            <option value="8">آبان</option>
+                            <option value="9">آذر</option>
+                            <option value="10">دی</option>
+                            <option value="11">بهمن</option>
+                            <option value="12">اسفند</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-xl-2">
+                    <label class="form-label">سال</label>
+
+                    <select id="Year2" name="year_Eq" class="form-select">
+                        <option value="0">انتخاب کنید</option>
+
+                        @{
+                            System.Globalization.PersianCalendar cs2 = new System.Globalization.PersianCalendar();
+                            int currentYear = cs2.GetYear(DateTime.Now);
+                            for (var i = 4; i >= 0; i--)
+                            {
+                                var s = DateTime.Now.AddYears(-i);
+
+                                <option value="@cs2.GetYear(s)">@cs2.GetYear(s)</option>
+                            }
+                        }
+                    </select>
+
+                </div>
+                <div class="col-xl-3" id="userlabel">
+                    <label class="form-label"> مقدار  </label>
+                    <input class="form-control" id="value2" />
+
+
+                </div>
+            </div>
+
+            <div class="row" style="margin-bottom:10px;">
+                <div class="col-xl-11"></div>
+                <div class="col-xl-1" id="submitdiv">
+                    <button class="btn buttonsabt form-control" id="btnCreate15552">
+                        <i class="fa fa-thumbs-up fa-fw me-1 VecGeneral"></i>
+                        <span class="bSabt-text">ثبت</span>
+                    </button>
+                </div>
+            </div>
+            <div id="test2">
+
+            </div>
+        </div>
+
+        <div class="card-arrow">
+            <div class="card-arrow-top-left"></div>
+            <div class="card-arrow-top-right"></div>
+            <div class="card-arrow-bottom-left"></div>
+            <div class="card-arrow-bottom-right"></div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+@*<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>*@
+
+<script>
+
+        $(function(){
+        $("#peymans2" ).load('@Url.Content("/../Contracts/Peyman/_GetAllListPeymans_Select")',function(){
+                 $("#select_peyman").attr("id", "select_peyman3");
+
+
+
+
+        });
+             $("#peymans3" ).load('@Url.Content("/../Contracts/Peyman/_GetAllListPeymans_Select")',function(){
+         $("#select_peyman").attr("id", "select_peyman4");
+
+
+
+
+     });
+             $("#isuser").load('@Url.Content("/../Users/Users/_GetAllHaghighiUsers_Select")',function(){
+                  $("#select_users1").attr("id", "select_users2");
+                    var $elem = $('#select_users2');
+                    $elem.picker({ search: true });
+                    $elem.on('sp-change', function(){
+
+                 });
+             });
+             $("#isNotuser").load('@Url.Content("/../Users/Users/_HoghoghiUserList")',function(){
+                 $("#select_users1").attr("id", "select_users3");
+                    var $elem = $('#select_users3');
+                    $elem.picker({ search: true });
+                    $elem.on('sp-change', function(){
+
+                 });
+              });
+
+
+    });
+
+
+
+
+    $("#btnCreate15552").click(function () {
+    console.log("inje");
+    var Filters = [];
+    var obj = new Object();
+    obj.year = $("#Year2").val();
+    obj.fk = $("#select_peyman3").val();
+    //obj.ShortTitle = $("#sss").val();
+    obj.month = $("#Month2").val();
+    obj.number_sorat = $("#value2").val();
+
+    console.log($("#Year2").val());
+
+    console.log($("#select_peyman3").val());
+
+    console.log($("#Month2").val());
+
+    console.log($("#value2").val());
+    Filters.push(obj);
+    console.log(Filters)
+    sendAjax1('@Url.Action("viewkasrimoshin", "Orders", new { area = "Setting" })', obj);
+});
+            function sendAjax1(url, data) {
+                console.log(data)
+
+                $.ajax({
+                    beforeSend: function () {
+                        document.getElementById("loading-message").style.display = "block";
+                    },
+                    url: url,
+                    data: data, // اصلاح شده
+                    type: "POST",
+                    dataType: "html",
+                    success: function (resp) {
+                        console.log(resp);
+                        document.getElementById("loading-message").style.display = "none";
+                        if (resp == "True") {
+                            alert("با موفقیت ثبت شد");
+                            location.reload();
+                        } else {
+                            alert("در ثبت دچار خطا شده ایم ! لطفا بعدا تلاش نمائید")
+                        }
+                    },
+                    error: function (resp) {
+                        document.getElementById("loading-message").style.display = "none";
+                        alert("دچار مشکل شده است ");
+                        console.log(resp);
+                    }
+                });
+            }
+
+</script>

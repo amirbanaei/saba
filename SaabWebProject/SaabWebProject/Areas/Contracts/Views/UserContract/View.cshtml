@@ -1,0 +1,415 @@
+﻿@{
+    Layout = null;
+}
+@using SaabWebProject.Models.Classes;
+
+@model List<SaabWebProject.Models.DomainModels.tbUserContracts>
+<input type="file" value="" id="input_file" style="display:none;" />
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+<style>
+    .tableH_Lock {
+        max-height: 410px;
+        /*height: 260px;*/
+    }
+
+    thead {
+        position: sticky;
+        top: 0;
+        text-align: center;
+        z-index: 2;
+    }
+
+    .inputFilter {
+        margin-bottom: 0px !important;
+    }
+
+    thead th {
+        vertical-align: middle;
+    }
+</style>
+
+<div class="card">
+    <div class="table-content p-4">
+        <div class="tab-pane fade show active" id="allTab">
+            <div class="table-responsive tableH_Lock ">
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr style="text-align:center">
+                            <th>
+                                @Html.DisplayName("فعالیت")
+                            </th>
+                            <th>
+                                @Html.DisplayName("#")
+                            </th>
+                            <th>
+                                @Html.DisplayName("نام کاربر")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter01-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            <th>
+                                @Html.DisplayName("از تاریخ")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter02-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            <th>
+                                @Html.DisplayName("تا تاریخ")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter03-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+
+                            <th>
+                                @Html.DisplayName("نوع قرارداد")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter04-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            <th>
+                                @Html.DisplayName("عنوان شغل")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter05-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null)
+                        {
+                            int counter = 0;
+                            string noeGharardad = "";
+                            string onvanShoghl = "";
+                            foreach (var item in Model)
+                            {
+                                if (item.usc_TypeOfContract == false)
+                                {
+                                    noeGharardad = "وقت مزدی";
+                                }
+                                else
+                                {
+                                    noeGharardad = "کارمزدی";
+                                }
+                                //====================================
+                                if (item.tbUsers.usr_typeshoghl == null)
+                                {
+                                    onvanShoghl = "مامور خدمات مشترکین";
+                                }
+                                else
+                                {
+                                    onvanShoghl = @item.tbUsers.tbjob.Name;
+                                }
+                                <tr class="task-list-row "
+                                    data-filter01="@item.tbUsers.FullName"
+                                    data-filter02="@item.usc_ShmasiStartTime"
+                                    data-filter03="@item.usc_ShmasiENDTime"
+                                    data-filter04="@noeGharardad"
+                                    data-filter05="@onvanShoghl">
+                                    <td>
+                                        <div class="ms-sm-4 mt-sm-0 mt-2 dropdown-toggle">
+                                            <a href="#" data-bs-toggle="dropdown" class="text-white text-opacity-75 text-decoration-none">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                            <div class="dropdown-menu">
+                                                @if (UserStuf.PosID == "2173")
+                                                {
+                                                    <a data-bs-toggle="modal" data-bs-target="#modalLg1" class="dropdown-item details" id="details_@item.usc_ID">مشاهده جزئیات</a>
+
+                                                }  else if (UserStuf.PosID == "2190")
+                                                {
+                                                    <a data-bs-toggle="modal" data-bs-target="#modalLg1" class="dropdown-item details" id="details_@item.usc_ID">مشاهده جزئیات</a>
+
+                                                }
+                                                else
+                                                {
+                                                    <a class="dropdown-item delete" id="delete_@item.usc_ID">حذف</a>
+                                                    <a data-bs-toggle="modal" data-bs-target="#modalLg1" class="dropdown-item details" id="details_@item.usc_ID">مشاهده جزئیات</a>
+                                                    <a class="dropdown-item details" id="" href="~/Areas/Contracts/Contents/ContractsFile/@item.usc_FileSystemName">مشاهده قرارداد امضا شده</a>
+                                                }
+
+                                                @*<a class="dropdown-item uplload2" id="btn_file2_@item.usc_ID">
+            <span>آپلود قرارداد امضا شده</span>
+        </a>*@
+                                                <input id="inp_file" style="display:none" type="file" class="form-control" value="" />
+
+
+                                            </div>
+
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        @{counter = counter + 1;}
+
+                                        <span>@counter</span>
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.tbUsers.FullName)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.usc_ShmasiStartTime)
+                                    </td>
+
+                                    <td>
+
+                                        @Html.DisplayFor(modelItem => item.usc_ShmasiENDTime)
+                                    </td>
+
+
+                                    <td>
+                                        @noeGharardad
+                                    </td>
+                                    <td>
+                                        @onvanShoghl
+                                    </td>
+
+                                </tr>
+                            }
+
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+<script>
+
+    var
+        filters = {
+            filter01: null,
+            filter02: null,
+            filter03: null,
+            filter04: null,
+            filter05: null,
+        };
+
+    function updateFilters() {
+        $('.task-list-row').hide().filter(function () {
+            var self = $(this),
+                result = true;
+
+            Object.keys(filters).forEach(function (filter) {
+                var filterData = self.data(filter);
+                if (filters[filter] && (filters[filter] != 'None') && (filters[filter] != 'همه')) {
+                    // تبدیل داده به رشته و بررسی مقدار
+                    result = result && (filterData && filterData.toString().indexOf(filters[filter]) !== -1);
+                }
+            });
+
+            return result;
+        }).show();
+    }
+
+    function changeFilter(filterName) {
+        filters[filterName] = this.value;
+        updateFilters();
+    }
+
+    // Assigned User Dropdown Filter
+    $('#filter01-filter').on('input', function () {
+        changeFilter.call(this, 'filter01');
+    });
+    $('#filter02-filter').on('input', function () {
+        changeFilter.call(this, 'filter02');
+    });
+    $('#filter03-filter').on('input', function () {
+        changeFilter.call(this, 'filter03');
+    });
+    $('#filter04-filter').on('input', function () {
+        changeFilter.call(this, 'filter04');
+    });
+    $('#filter05-filter').on('input', function () {
+        changeFilter.call(this, 'filter05');
+    });
+
+</script>
+<script>
+    $(".details").click(function () {
+        var idd = $(this).attr("id").split("_")[1];
+        $("#big_modal_body1").load('@Url.Content("/UserContract/UserContract_Details")?contractId='+idd);
+    });
+   $(".delete").click(function () {
+        var idd = $(this).attr("id").split("_")[1];
+
+     /*document.getElementById("loading-message").style.display = "block";*/
+
+
+
+
+
+     Swal.fire({
+         title: 'آیا از حدف قرارداد مطمئن هستید؟',
+         icon: 'question',
+         showCancelButton: true,
+         background: 'rgb(29,40,52)',
+         color: 'white',
+         confirmButtonColor: '#3085d6',
+         cancelButtonColor: '#d33',
+         confirmButtonText: 'بله ',
+         cancelButtonText: 'خیر'
+     }).then((result) => {
+
+         if (result.isConfirmed == true) {
+             $(".loader").css('display', 'block');
+              $.ajax({
+     url: '@Url.Action("UserContract_Delete", "UserContract", new { area = "Contracts" })',
+     data: { userContractID: idd },
+     type: "Post",
+     dataType: "html",
+     success: function (resp) {
+         $("#loading-message").css("display", "none");
+         if (resp == "True") {
+             Toast.fire({
+                 icon: 'success',
+                 background: '#35434A',
+                 color: 'white',
+                 title: "قرارداد با موفقیت حذف شد"
+             }).then(() => {
+                 location.reload();
+             });
+         } else {
+             Toast.fire({
+                 icon: 'success',
+                 background: '#35434A',
+                 color: 'white',
+                 title: "نمیتوانید این قرارداد را حذف کنید"
+             }).then(() => {
+             });
+         }
+
+     },
+     error: function (resp2) {
+         $("#loading-message").css("display", "none");
+         Toast.fire({
+             icon: 'success',
+             background: '#35434A',
+             color: 'white',
+             title: "حذف قرارداد با خطا مواجه شده است"
+         }).then(() => {
+             location.reload();
+         });
+     }
+ });
+         }
+
+     });
+
+
+
+
+
+
+
+
+      });
+
+ //   $(".uplload2").click(function(){
+   // $("#input_file").click();
+   // })
+
+    var Toast = Swal.mixin({
+        toast: true,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    });
+</script>
+
+@* آپلود فایل *@
+<script>
+        var fd = new FormData();
+
+        $(".uplload2").click(function () {
+        $("#inp_file").click();
+    });
+
+    $("#inp_file").change(function (e) {
+               // fd.append("id", 1);
+                $.each(e.target.files, function (index, file) {
+                    fd.append("files", file);
+                });
+                    sendAjax1('@Url.Action("UploadFile", "UserContract",new { area = "Contracts" })',fd)
+
+     });
+        var Toast = Swal.mixin({
+        toast: true,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    });
+    function sendAjax1(url2,fd2) {
+            $("#loading-message").css("display", "block");
+             fd2.append("ID", $(".uplload2").attr("id").split("_")[2]);
+                                   $.ajax({
+                                       url: url2,
+                                       type: 'POST',
+                                       data: fd2,
+                                       processData: false,
+                                       contentType: false,
+                                       success: function (resp1) {
+                                           $("#loading-message").css("display", "none");
+
+                                           if (resp1 == "True") {
+                                               Toast.fire({
+                                                   icon: 'success',
+                                                   background: '#35434A',
+                                                   color: 'white',
+                                                   title: "اطلاعات با موفقیت آپدیت شد"
+                                               }).then(() => {
+                                                   location.reload();
+                                               });
+                                           } else {
+                                               $("#loading-message").css("display", "none");
+                                               Toast.fire({
+                                                   icon: 'success',
+                                                   background: '#35434A',
+                                                   color: 'white',
+                                                   title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                                               }).then(() => {
+                                                   $("#loading-message").css("display", "none");
+                                               });
+
+
+                                           }
+
+                                       },
+                                       error: function (resp1) {
+                                           $("#loading-message").css("display", "none");
+                                           Toast.fire({
+                                               icon: 'success',
+                                               background: '#35434A',
+                                               color: 'white',
+                                               title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                                           }).then(() => {
+                                               $("#loading-message").css("display", "none");
+                                           });
+                                       }
+                                   });
+
+
+
+    }
+
+
+</script>

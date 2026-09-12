@@ -1,0 +1,139 @@
+﻿@model List<SaabWebProject.Models.DomainModels.tbFormula>
+@using SaabWebProject.Models.DomainModels;
+
+@{
+    ViewBag.Title = "فرم پویا";
+    Layout = null;
+}
+
+<!-- CSS -->
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+
+<!-- فرم -->
+<div class="container mt-4">
+    <!-- اسم فرمول -->
+    <input type="text" class="form-control mb-3" name="main_name" placeholder="نام فرمول">
+
+    <!-- دکمه افزودن -->
+    <button type="button" class="btn btn-success mb-3" id="addRowBtn">افزودن ردیف</button>
+
+    <!-- محل قرارگیری ردیف‌ها -->
+    <div id="dynamicFieldsContainer" class="row g-3"></div>
+
+    <!-- دکمه ثبت نهایی -->
+    <button type="button" class="btn btn-primary mt-3" id="submitFormula">ذخیره نهایی</button>
+</div>
+
+<!-- JS -->
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        let count = 0;
+
+        function createSelector(name) {
+            return `
+                <select class="form-select" name="${name}">
+                    <option hidden value="Select">انتخاب کنید</option>
+                    <option value="1">گزینه ۱</option>
+                    <option value="2">گزینه ۲</option>
+                    <option value="3">گزینه ۳</option>
+                    <option value="4">گزینه ۴</option>
+                    <option value="5">گزینه ۵</option>
+                    <option value="6">گزینه ۶</option>
+                </select>`;
+        }
+
+        $('#addRowBtn').click(function () {
+            count++;
+
+            let row = $(`
+                <div class="col-12 field-row">
+                    <div class="card p-3 position-relative">
+                
+                             <div class="col-md-1 d-flex justify-content-start">
+            <button type="button" class="btn btn-danger removeRowBtn" title="حذف">❌</button>
+        </div>
+                        <div class="row g-2">
+
+                            <div class="col-md-3">
+                                ${createSelector('select1_' + count)}
+                            </div>
+                            <div class="col-md-3">
+                                ${createSelector('select2_' + count)}
+                            </div>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" name="customInput_${count}" placeholder="اولویت">
+                            </div>
+                            <div class="col-md-3">
+                                <select class="form-select select_peyman" name="select_peyman[]">
+                                    <option hidden value="Select">انتخاب مورد</option>
+                                    @foreach (var item in Model.ToList())
+                                    {
+                                        <option value="@item.FKMoalefeDastMozdi">@item.tbContractMoalefeDastmozdi.md_Title</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `);
+
+            $('#dynamicFieldsContainer').append(row);
+            row.find('.select_peyman').picker({ search: true });
+        });
+
+        // حذف ردیف
+        $('#dynamicFieldsContainer').on('click', '.removeRowBtn', function () {
+            $(this).closest('.field-row').remove();
+        });
+
+        // ثبت نهایی
+        $('#submitFormula').click(function () {
+            const name = $('input[name="main_name"]').val().trim();
+            if (!name) {
+                alert("لطفاً نام فرمول را وارد کنید.");
+                return;
+            }
+
+            const rows = [];
+
+            $('.field-row').each(function () {
+                const vorodi = $(this).find('select[name^="select1_"]').val();
+                const ghorogi = $(this).find('select[name^="select2_"]').val();
+                const olaviat = $(this).find('input[name^="customInput_"]').val();
+                const fk_frml = $(this).find('select.select_peyman').val();
+
+                if (olaviat && vorodi && ghorogi && fk_frml) {
+                    rows.push({
+                        olaviat: olaviat,
+                        vorodi: vorodi,
+                        ghoroji: ghorogi,
+                        fk_frml: fk_frml
+                    });
+                }
+            });
+
+            if (rows.length === 0) {
+                alert("لطفاً حداقل یک ردیف کامل اضافه کنید.");
+                return;
+            }
+
+            $.ajax({
+                url: '/Salaries/Formula/SaveFormulaData',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ name: name, rows: rows }),
+                success: function () {
+                    alert("با موفقیت ذخیره شد.");
+                    location.reload();
+                //    window.location.href = '/Salaries/Formula/پl';
+                },
+                error: function () {
+                    alert("خطا در ذخیره‌سازی.");
+                }
+            });
+        });
+    });
+</script>

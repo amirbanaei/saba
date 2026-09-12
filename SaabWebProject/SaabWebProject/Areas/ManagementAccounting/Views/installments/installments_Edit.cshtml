@@ -1,0 +1,974 @@
+﻿@{
+    ViewBag.Title = "ویرایش اقساط";
+    Layout = null;
+}
+@model SaabWebProject.Models.DomainModels.tbinstallments
+
+<link href="~/MyStyles/cardstyle.css" rel="stylesheet" />
+<link href="~/MyStyles/inputstyleandformstyle.css" rel="stylesheet" />
+<link href="~/Content/installments.css" rel="stylesheet" />
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+<style>
+    .modal-lg, .modal-xl {
+        margin-top: 10px !important;
+        max-width: 90% !important;
+    }
+</style>
+<div class="p-4">
+    <div class="row">
+        @if (Model.Peyman_ID != null)
+        {
+            <div class="col-xl-6">
+                <label class="form-label"> پیمان </label>
+
+                <div class="inputDiv form-control colo"> @Model.tbPeymanContracts.pec_Title </div>
+
+            </div>
+        }
+        else
+        {
+            <div class="col-xl-2">
+                <label class="form-label"> کاربر </label>
+                <div class="inputDiv form-control colo">@Model.tbUsers.FullName</div>
+            </div>
+        }
+
+        <div class="col-xl-2">
+            <label class="form-label"> مبلغ کل (ریال) </label>
+            <input value="@Model.Total_Amount" class="form-control AmountInput control " id="totalAmountInput_edit" name="totalAmountInput_edit" type="text" maxlength="15" />
+
+        </div>
+        <div class="col-xl-2">
+            <label class="form-label"> نوع محاسبه </label>
+            <select class="form-select" id="select_TypeOfCalculate_edit">
+                @if (Model.Calculation_type == false)
+                {
+                    <option value="1">دستی</option>
+                    <option selected value="2">خودکار</option>
+                }
+                else
+                {
+                    <option selected value="1">دستی</option>
+                    <option value="2">خودکار</option>
+                }
+            </select>
+        </div>
+        @*------------------------------------------------[1402/08/27]-|KH|-*@
+        <div class="col-xl-1">
+            <label class="form-label">ماه</label>
+
+            <select id="month3" name="month_pr" class="form-select ">
+                @*<option value="0" hidden>انتخاب ماه</option>*@
+                @{
+
+                    for (var i = 1; i <= 12; i++)
+                    {
+                        <option selected="selected" value="@i">@i </option>
+                    }
+                }
+                <option selected="selected" value="@Model.Month" hidden>@Model.Month</option>
+            </select>
+        </div>
+        <div class="col-xl-1">
+            <label class="form-label">سال</label>
+            <div>
+                <select id="years2" name="year_Eq" class="form-select">
+                    @{
+
+
+                        System.Globalization.PersianCalendar cs2 = new System.Globalization.PersianCalendar();
+
+                        for (var i = 4; i >= 0; i--)
+                        {
+                            var s = DateTime.Now.AddYears(-i + 2);
+                            <option selected="selected" value="@cs2.GetYear(s)">@cs2.GetYear(s)</option>
+                        }
+
+
+                    }
+                    <option selected="selected" hidden value="@Model.Year">@Model.Year</option>
+
+                </select>
+            </div>
+        </div>
+        <div class="col-xl-4">
+            <label class="form-label "> نام مولفه    </label>
+
+            <select class="form-select select_peyman" id="select_moalfe2" name="select_peyman">
+                @if (Model.Fk_molfe != null)
+                {
+                    <option hidden value="@Model.Fk_molfe">@Model.tbContractMoalefeDastmozdi.md_Title</option>
+
+                }
+                else
+                {
+                    <option hidden value="0">انتخاب کنید</option>
+
+                }
+                @Html.Action("moalfe_fk2", "installments", new { area = "ManagementAccounting" })
+            </select>
+        </div>
+
+        @*-------------------------------------------------------------|KH|-*@
+
+
+        @*<div class="row" style="margin-top:20px; margin-bottom:20px">
+                <div class="col-xl-6" style="margin:-10px">
+                </div>
+                @if (Model.Peyman_ID != null)
+                {
+                    <div class="col-xl-3 form-check checkbox-circle" style="border-radius:20px;padding-top:2px;background-color:#0d3244;border-color: #00ffff ">
+                        <input class="form-check-input CheckBox2" type="checkbox" value="1" name="actionsFish" id="CheckBox12"
+                               style="
+                                border-radius: 15px;       /*[1402/08/23]-|KH|-*/
+                                margin: 4px -13px 5px 5px; /*[1402/08/23]-|KH|-*/
+                                height: 5px;
+                                height: 25px;
+                                width: 25px;
+                                background-color: #0069d9;
+                                border-color: #38c198">
+                        <label class="form-check-label" for="flexCheckDefault" style="padding-top:4px">اعمال در تراز مالی</label>
+                    </div>
+                    <div class="col-xl-3 form-check" style="border-radius:20px;padding-top:2px;margin-right:5px;background-color:#0d3244;border-color: #00ffff ">
+                        <input class="form-check-input CheckBox2" type="checkbox" value="2" name="actionsFish" id="CheckBox22"
+                               style="
+                                border-radius: 15px;       /*[1402/08/23]-|KH|-*/
+                                margin: 4px -13px 5px 5px; /*[1402/08/23]-|KH|-*/
+                                height: 5px;
+                                height: 25px;
+                                width: 25px;
+                                background-color: #0069d9;
+                                border-color: #38c198
+            ">
+                        <label class="form-check-label" for="flexCheckDefault" style="padding-top:4px">اعمال در فیش حقوقی</label>
+                    </div>
+                }
+                else
+                {
+                    <div class="col-xl-3 form-check checkbox-circle" style="border-radius:20px;padding-top:2px;background-color:#0d3244;border-color: #00ffff ">
+                        <input class="form-check-input CheckBox2" type="checkbox" value="1" name="actionsFish" id="CheckBox12"
+                               style="
+                                border-radius: 15px;       /*[1402/08/23]-|KH|-*/
+                                margin: 4px -13px 5px 5px; /*[1402/08/23]-|KH|-*/
+                                height: 5px;
+                                height: 25px;
+                                width: 25px;
+                                background-color: #0069d9;
+                                border-color: #38c198">
+                        <label class="form-check-label" for="flexCheckDefault" style="padding-top:4px">اعمال در تراز مالی</label>
+                    </div>
+
+                    <div class="col-xl-3 form-check" style="border-radius:20px;padding-top:2px;margin-right:5px;background-color:#0d3244;border-color: #00ffff;display:none ">
+                        <input class="form-check-input CheckBox2" type="checkbox" value="3" name="actionsFish" id="CheckBox32"
+                               style="
+                                border-radius: 15px;       /*[1402/08/23]-|KH|-*/
+                                margin: 4px -13px 5px 5px; /*[1402/08/23]-|KH|-*/
+                                height: 5px;
+                                height: 25px;
+                                width: 25px;
+                                background-color: #0069d9;
+                                border-color: #38c198">
+                        <label class="form-check-label" for="flexCheckDefault" style="padding-top:4px">اعمال در صورت وضعیت</label>
+                    </div>
+                }
+
+            </div>*@
+
+        @if (Model.Calculation_type == false)
+        {
+            <div class="col-xl-2" id="SectionnumberOfInstallment_edit_edit">
+                <label class="form-label"> تعداد اقساط ماهانه </label>
+                <input value="@Model.numberOfInstallment" class="form-control control AmountInput" id="numberOfInstallment_edit" name="numberOfInstallment_edit" type="number" min="1" max="6" />
+            </div>
+        }
+        else
+        {
+            <div class="col-xl-2" id="SectionnumberOfInstallment_edit_edit" style="display:none;">
+                <label class="form-label"> تعداد اقساط ماهانه </label>
+                <input value="@Model.numberOfInstallment" class="form-control control AmountInput" id="numberOfInstallment_edit" name="numberOfInstallment_edit" type="number" min="1" max="6" />
+            </div>
+        }
+
+    </div>
+
+    <div class="row" style="margin-bottom:10px">
+        <div class="col-xl-11"></div>
+        <div class="col-xl-1">
+            <button onclick="ShowInstallments1_edit()" class="btn form-control buttonGeneral">
+                <i class="fa fa-calculator fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text">محاسبه اقساط</span>
+            </button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-12">
+            <label class="form-label"> شرح </label>
+            <textarea class="form-control control" id="Title_Edit">@Model.Title</textarea>
+        </div>
+    </div>
+
+    <hr style="margin-top:0" />
+    <div id="SectionInstallmentInputs_edit" class="row ">
+        @foreach (var item in Model.tb_Subset_of_installments.ToList())
+        {
+            @*<div class="col-md-5 ">
+                    <label class="form-label "> مبلغ قسط (ریال) ماه  @item.number  </label>
+                    <div class="d-flex align-items-center ">
+                        <span class="mx-2"></span>
+                        <input class="form-control installmentAmountInput_edit" id="installmentInput_@item.number" value="@item.value" disabled />
+                    </div>
+                </div>*@
+
+            <div class="InstallmentInputsPlus col-xl-4 ">
+                <div class="row">
+                    <div class="col-xl-1" style="width: 6%; padding-top: 6px;">
+                        <span>+</span>
+                    </div>
+                    <div class="col-xl-11" style="width:94%">
+                        <label class="form-label"> مبلغ قست ریال @item.number</label>
+                        <div class="inputDiv colo form-control installmentAmountInput">@string.Format("{0:N0}", item.value)</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-1">
+                <label class="form-label">ماه</label>
+                <div class="inputDiv colo form-control installmentAmountInput">@item.Month</div>
+            </div>
+            <div class="col-xl-1">
+                <label class="form-label">سال</label>
+                <div class="inputDiv colo form-control installmentAmountInput">@item.Year</div>
+            </div>
+
+
+
+        }
+        <div class="InstallmentInputsPlus col-xl-4">
+            <div class="row">
+                <div class="col-xl-1" style="width: 6%; padding-top: 6px;">
+                    <span>=</span>
+                </div>
+                <div class="col-xl-11" style="width:94%">
+                    <label class="form-label"> جمع کل (ریال) اقساط </label>
+                    <input class="form-control installmentAmountInput_edit installmentAmountInput_editLast_edit" id="khaktoosaretoon" value="@Model.Total_Amount" disabled />
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <hr style="margin-top:0" />
+    <div class="row">
+        <div class="col-xl-10">
+        </div>
+        <div class="col-xl-1">
+            <button class="btn form-control uploadSummery_edit buttonGeneral" type="button">
+                <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text">بارگذاری پیوست</span>
+            </button>
+            <input id="summery_file_edit" style="display: none" type="file" class="form-control" value="" />
+        </div>
+        <div class="col-xl-1">
+            <button class="btn form-control buttonsabt" id="btnEdit">
+                <i class="fa fa-edit fa-fw me-1 VecGeneral"></i>
+                <span class="bSabt-text">ویرایش</span>
+            </button>
+
+        </div>
+    </div>
+
+</div>
+
+@* تغییر نوع محاسبه *@
+<script>
+
+    $(document).ready(function () {
+
+
+        $("#select_TypeOfCalculate_edit").on('change', function (e) {
+            typeVal = e.target.value;
+            if (typeVal == 1) {
+                $("#SectionnumberOfInstallment_edit_edit").hide()
+            }
+            else if (typeVal == 2) {
+                $("#SectionnumberOfInstallment_edit__edit").show()
+            }
+        });
+    });
+</script>
+
+<script>
+
+       $("#pymn11").load('@Url.Content("/../Contracts/Peyman/_GetAllListPeymans_Select")',function(){
+                $("#select_peyman").attr("id", "select_peyman44");
+           $("#select_peyman44").picker({ search: true });
+
+
+                  });
+           $("#TYPE").load('@Url.Content("/../ManagementAccounting/installments/typeOfCalculate")',function(){
+                $("#select_TypeOfCalculate_edit").attr("id", "select_TypeOfCalculate_edit1");
+                $("#select_TypeOfCalculate_edit1").picker({ search: true });
+           });
+</script>
+<script>
+    $('input[type=radio][name=UserOrPeyman]').change(function () {
+        if (this.value == 'User') {
+            $("#select_users").closest("div").show()
+            $("#select_peyman").closest("div").hide()
+        }
+        else if (this.value == 'Peyman') {
+            $("#select_peyman").closest("div").show()
+            $("#select_users").closest("div").hide()
+        }
+    });
+</script>
+
+<script>
+    var fd = new FormData();
+</script>
+<script>
+           $(".uploadSummery_edit").click(function () {
+                 $("#summery_file_edit").click();
+           });
+
+            $("#summery_file_edit").change(function (e) {
+                   $.each(e.target.files, function (index, file) {
+                      fd.append("files", file);
+                   });
+            });
+    $("#btnEdit").click(function () {
+        /*------------------------------------------------[1402/08/27]-|KH|-*/
+        if ($("#totalAmountInput_edit").val() == 0) {
+            alert("لطفا مبلغ را وارد نمائید");
+        }
+        else if ($("#select_TypeOfCalculate_edit").val() == 0) {
+            alert("لطفا نوع محاسبه را انتخاب نمائید");
+
+        }
+        else if ($("#month_pr").val() == 0) {
+            alert("لطفا ماه را انتخاب نمائید");
+
+        }
+        /*-------------------------------------------------------------|KH|-*/
+        else if (($("#Title_Edit").val() == 0))
+        {
+            alert("لطفا شرح را وارد  نمائید");
+        } else {
+              sendAjax23('@Url.Action("Edit_UploadAttachmentFile", "installments",new { area = "ManagementAccounting" })', fd);
+        }
+
+
+    });
+
+    function sendAjax23(url2, fd2) {
+        var typee = $("#select_TypeOfCalculate_edit").val();
+       fd2.append("installment_ID", @Model.installment_ID);
+
+        if (typee == 1) {
+            fd2.append("Calculation_type", true);
+        }
+        else if (typee == 2) {
+            fd2.append("Calculation_type", false);
+        }
+
+        var inputString = $("#totalAmountInput_edit").val();
+        var resultString = inputString.replace(/,/g, '');
+        fd2.append("numberOfInstallment", $("#numberOfInstallment_edit").val());
+        fd2.append("Title", $("#Title_Edit").val());
+        fd2.append("Total_Amount", resultString);
+        fd2.append("Month", $('#month3').val());
+        fd2.append("Year", $('#years2').val());
+        fd2.append("Moalfe_fk", $('#select_moalfe2').val());
+        var checkedCheckboxValues2 = [];
+
+        $(".CheckBox2").each(function () {
+            var checkboxId = $(this).attr("id");
+            var checkboxValue2 = $(this).prop("checked");
+            var checkboxValue3 = $(this).val();
+
+            // If the checkbox is checked, add its value to the array
+            if (checkboxValue2) {
+                console.log(checkboxValue3);
+                console.log(checkboxValue2);
+                checkedCheckboxValues2.push(checkboxValue2);
+            }
+        });
+
+        // Now checkedCheckboxValues contains the values of checked checkboxes
+        console.log(checkedCheckboxValues2);
+
+
+        // Append the array to FormData with the key "Moalfe_fk"
+        fd2.append("cheackbox", checkedCheckboxValues2);
+        console.log($('#month3').val());
+        console.log(fd2);
+        $.ajax({
+            url: url2,
+            type: 'POST',
+            data: fd2,
+            processData: false,
+            contentType: false,
+            success: function (resp1) {
+                var Filters = [];
+                var count = 0;
+                $('.installmentAmountInput_edit').each(function (i, obj) {
+                    console.log($(this).attr("id"));
+                    if ($(this).attr("id").split("_").length == 2) {
+                        count++;
+                        var parts = $(this).attr("id").split("_");
+                        var obj = new Object();
+                        var inputString = $(this).val();
+                        var resultString = inputString.replace(/,/g, '');
+                        obj.value = resultString;
+                        console.log($(this).val());
+                        obj.number = count;
+                        obj.fk_installment_ID = @Model.installment_ID;
+                        var Year_id = "Year2_" + parts[1];
+                        var Monthid = "Month2_" + parts[1];
+                        console.log(resultString);
+                        console.log(count);
+                        console.log(Year_id);
+                        console.log(Monthid)
+                        console.log($("#" + Monthid).val());
+                        obj.Year = $("#" + Year_id).val();
+                        obj.Month = $("#" + Monthid).val();
+
+                        // شرط اضافه شده
+                        if (Filters.length === 0 ||
+                            (Filters.length > 0 &&
+                                (Filters[Filters.length - 1].Year !== obj.Year || Filters[Filters.length - 1].Month !== obj.Month))) {
+
+                            console.log(obj.Year);
+                            console.log(obj.month);
+                            Filters.push(obj);
+                        }
+
+                    }
+                });
+                $('.installmentAmountInputManuallyedit').each(function (i, obj) {
+                    console.log($(this).attr("id"));
+                    if ($(this).attr("id").split("_").length == 2) {
+                        count++;
+                        var obj = new Object();
+                        var parts = $(this).attr("id").split("_");
+
+                        var inputString = $(this).val();
+                               var resultString = inputString.replace(/,/g, '');
+                        obj.value = resultString;
+                        console.log($(this).val());
+                        obj.number = count;
+                        obj.fk_installment_ID = @Model.installment_ID;
+                        var Year_id = "Year2_" + parts[1];
+                        var Monthid = "Month2_" + parts[1];
+                        console.log(resultString);
+                        console.log(count);
+                        console.log(Year_id);
+                        console.log(Monthid)
+                        console.log($("#" + Monthid).val());
+                        obj.Year = $("#" + Year_id).val();
+                        obj.Month = $("#" + Monthid).val();
+
+                        // شرط اضافه شده
+                        if (Filters.length === 0 ||
+                            (Filters.length > 0 &&
+                            (Filters[Filters.length - 1].Year !== obj.Year || Filters[Filters.length - 1].Month !== obj.Month))) {
+
+                            console.log(obj.Year);
+                            console.log(obj.month);
+                            Filters.push(obj);
+                        }
+
+                    }
+                });
+
+                console.log(Filters.month);
+                if (resp1 != 0) {
+                    console.log(Filters);
+                     sendAjax1('@Url.Action("tbinstallments_Edit", "installments", new { area = "ManagementAccounting" })', Filters);
+
+                } else {
+                    $("#loading-message").css("display", "none");
+                    Toast.fire({
+                        icon: 'error',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                    }).then(() => {
+                        $("#loading-message").css("display", "none");
+                    });
+                }
+            },
+            error: function (resp1) {
+                console.log(resp1);
+                console.log("Nokeye");
+                $("#loading-message").css("display", "none");
+                Toast.fire({
+                    icon: 'error',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                }).then(() => {
+                    $("#loading-message").css("display", "none");
+                });
+            }
+        });
+    }
+      function sendAjax1(url, data) {
+                console.log(url);
+                $.ajax({
+                    beforeSend: function () {
+                        document.getElementById("loading-message").style.display = "block";
+                    },
+                    url: url,
+                    data: { Filters: data },
+                    type: "POST",
+                    dataType: "html",
+                    success: function (resp) {
+                        console.log(resp);
+                        document.getElementById("loading-message").style.display = "none";
+                        if (resp == "True") {
+                            alert("با موفقیت ویرایش شد");
+                            location.reload();
+                        } else {
+                            alert("در ثبت دچار خطا شده ایم ! لطفا بعدا تلاش نمائید")
+                        }
+                    },
+                    error: function (resp) {
+    console.log("khata");
+                        document.getElementById("loading-message").style.display = "none";
+                        alert("دچار مشکل شده است ");
+                        console.log(resp);
+                    }
+                });
+            }
+</script>
+
+
+<script>
+
+    $(document).ready(function () {
+
+        $("#select_TypeOfCalculate_edit").on('change', function (e) {
+            typeVal = e.target.value;
+            if (typeVal == 1) {
+                $("#SectionnumberOfInstallment_edit_edit").hide()
+            }
+            else if (typeVal == 2) {
+                $("#SectionnumberOfInstallment_edit_edit").show()
+            }
+        });
+    });
+</script>
+
+
+
+
+@* کلیک بر روی محاسبه اقساط *@
+<script>
+
+    // Number WithOut Comma
+    var NumberWithOutComma = (str) => str.split(',').join('');
+
+    // Number With Comma
+    var NumberWithComma = (value) => value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+    // محاسبه اقساط
+    function ShowInstallments1_edit() {
+
+        let select_TypeOfCalculate_edit = $('#select_TypeOfCalculate_edit').val()
+
+        if (select_TypeOfCalculate_edit > 2 || select_TypeOfCalculate_edit < 1) {
+            alert("لطفا نوع محاسبه را انتخاب کنید.")
+            return false;
+        }
+
+        // محاسبه دستی
+        else if (select_TypeOfCalculate_edit == 1) {
+            let totalAmountInput_edit = $("#totalAmountInput_edit").val();
+            totalAmountInput_edit = NumberWithOutComma(totalAmountInput_edit);
+            let InputnumberOfInstallment_edit = $("#numberOfInstallment_edit");
+            var num = parseFloat(InputnumberOfInstallment_edit.val());
+            let inputSection = $("#SectionInstallmentInputs_edit")
+
+            if (totalAmountInput_edit <= 0) {
+                alert("لطفا مبلغ را وارد کنید.")
+                InputnumberOfInstallment_edit.val("");
+                inputSection.empty();
+                return false;
+            }
+            if (num > 6) {
+                InputnumberOfInstallment_edit.val(6);
+                num = 6;
+            }
+            else if (num < 1) {
+                InputnumberOfInstallment_edit.val(1);
+                num = 1;
+            }
+            inputSection.empty();
+            installmentMoney = totalAmountInput_edit / num;
+
+            $.ajax({
+                //beforeSend: function () {
+                //    document.getElementById("loading-message").style.display = "block";
+                //},
+                url: "../../ManagementAccounting/installments/InstallmentManually2",
+                type: "get",
+                data: { totalAmountInput: totalAmountInput_edit },
+                success: function (result) {
+                    $("#SectionInstallmentInputs_edit").html(result)
+                    $("#inputTotalManuallyInstall").val(NumberWithComma($("#inputTotalManuallyInstall").val()))
+
+                }
+            });
+
+        }
+        // محاسبه خودکار
+        else if (select_TypeOfCalculate_edit == 2) {
+
+            let totalAmountInput_edit = $("#totalAmountInput_edit").val();
+            totalAmountInput_edit = NumberWithOutComma(totalAmountInput_edit)
+            let InputnumberOfInstallment_edit = $("#numberOfInstallment_edit");
+            var num = parseFloat(InputnumberOfInstallment_edit.val());
+            let inputSection = $("#SectionInstallmentInputs_edit")
+
+            if (totalAmountInput_edit <= 0) {
+                alert("لطفا مبلغ را وارد کنید.")
+                InputnumberOfInstallment_edit.val("");
+                inputSection.empty();
+                return false;
+            }
+            //if (num > 6) {
+            //    InputnumberOfInstallment_edit.val(6);
+            //    num = 6;
+            //}
+            if (num < 1) {
+                InputnumberOfInstallment_edit.val(1);
+                num = 1;
+            }
+            inputSection.empty();
+            console.log(num);
+            installmentMoney = totalAmountInput_edit / num;
+            var month = parseInt($('#years2').val(), 10);
+            var month3 = month;
+
+            var t = parseInt($('#month3').val(), 10); // Convert to integer
+
+            for (let i = 1; i <= num; i++) {
+                // first
+                var index = t;
+                console.log($('#years2').val());
+                var month2 = month;
+                if (t === 12) {
+                    index = 1;
+                    month2 += 1; // Increment the value of month2;
+                }
+                if (i == 1) {
+                    $("#SectionInstallmentInputs_edit").append(`
+                            <div class="row">
+                                <div class=" col-md-5 ">
+                                    <div class="row">
+                                        <div class="col-xl-1" style="width: 6%; padding-top: 6px;">
+                                              <span></span>
+                                        </div>
+                                        <div class="col-xl-11" style="width:94%">
+                                            <label class="form-label"> مبلغ قسط (ریال) ماه `+ i + ` </label>
+                                            <input class="form-control control  installmentAmountInput_edit " id=installmentInput_`+ i + ` value=` + installmentMoney + ` disabled />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xl-2 ">
+                                     <label class="form-label ">ماه</label>
+                                     <input class="form-control control installmentAmountInput " id=Month2_`+ i + ` value=` + index + ` disabled />
+                                </div>
+                                <div class="col-xl-2 ">
+                                     <label class="form-label ">سال</label>
+                                     <input class="form-control  control" id=Year2_`+ i + ` value=` + month2 + ` disabled />
+                                </div>
+                           </div>
+
+                                `);
+                }
+                // middle
+                else {
+                      t += 1;
+                    console.log(t);
+                    //var month3 = parseInt($('#years2').val(), 10);
+                    if (t > 12) {
+                        t-= 12;
+                        month3 += 1;
+                    }
+                    console.log(i);
+                    $("#SectionInstallmentInputs_edit").append(`
+                                 <div class="row">
+                                      <div class="InstallmentInputsPlus col-md-5 ">
+                                           <div class="row">
+                                                <div class="col-xl-1" style="width: 6%; padding-top: 6px;">
+                                                     <span>+</span>
+                                                </div>
+                                                <div class="col-xl-11" style="width:94%">
+                                                     <label class="form-label "> مبلغ قسط (ریال) ماه `+ i + `</label>
+                                                     <input class="form-control control  installmentAmountInput_edit" id=installmentInput_`+ i + ` value=` + installmentMoney + ` disabled />
+                                                </div>
+                                           </div>
+                                       </div>
+                                       <div class="col-xl-2 ">
+                                            <label class="form-label ">ماه</label>
+                                            <input class="form-control control installmentAmountInput" id="Month2_`+ i + `" value="` + t + `" disabled />
+                                       </div>
+
+                                       <div class="col-xl-2 ">
+                                            <label class="form-label ">سال</label>
+                                            <input class="form-control control" id="Year2_`+ i + `" value="` + month3 + `" disabled />
+                                       </div>
+                                  </div>
+
+`);
+                }
+            }
+            let sum = 0;
+            for (let z = 1; z <= num; z++) {
+                console.log($(`#installmentInput_` + z + ``).val());
+                sum += parseFloat($(`#installmentInput_` + z + ``).val());
+            }
+
+            $("#SectionInstallmentInputs_edit").append(`
+                    <div class="InstallmentInputsPlus col-md-5 ">
+                        <div class="row">
+                             <div class="col-xl-1" style="width: 6%; padding-top: 6px;">
+                                  <span>=</span>
+                             </div>
+                             <div class="col-xl-11" style="width:94%">
+                                  <label class="form-label "> جمع کل (ریال) اقساط </label>
+                                  <input class="form-control installmentAmountInput_edit installmentAmountInput_editLast_edit" id='khaktoosaretoon' value=`+ sum + ` disabled />
+                             </div>
+                        </div>
+                   </div>
+             `);
+
+            let sum2 = 0;
+            //let ii = 0
+            $('.installmentAmountInput_edit').each(function (i, obj) {
+                obj.value = Math.floor(obj.value);
+                sum2 += parseFloat(obj.value);
+                obj.value = obj.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                ii = i;
+            });
+            let little = (2 * totalAmountInput_edit) - sum2;
+            little = Math.ceil(installmentMoney) + little;
+            $("#installmentInput_1").val(little.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+        }
+    }
+</script>
+
+
+<script src="/Scripts/sweetalert2.js" type="text/javascript"></script>
+@* InstallmentManually *@
+<script>
+
+    @* click on plus the Input Installment *@
+    function plusInputInstallmentManually(e) {
+        var nodes = document.querySelectorAll('.installmentAmountInputManuallyedit');
+        var nodesLength=parseInt(nodes.length)
+        var last = nodes[nodesLength - 1];
+        var node = 2
+        if (last.value<1) {
+            var Toast = Swal.mixin({
+                toast: true,
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: "اقساط ماه گذشته را تکمیل کنید"
+            }).then(() => {
+                //location.reload();
+            });
+            return false;
+        }
+         node++;
+        nodesLength++;
+        $("#SectionInstallmentInputs_edit").append(`
+           
+           <div class="col-xl-4">
+                <div class="row">
+                    <div class="col-xl-1" style="width: 6%; padding-top: 6px;">
+                        <span>+</span>
+                    </div>
+                    <div class="col-xl-11" style="width:94%">
+                         <label class="form-label "> مبلغ قسط (ریال) ماه `+nodesLength++ +` </label>
+                         <input class="form-control AmountInput  control  installmentAmountInputManuallyedit" onkeyup="inputAddCommaLive(this)" onchange="InputInstallmentManuallyChange(this)" value="0" id=installmentInput_`+ nodesLength + ` />
+                     </div>
+                </div>
+            </div>
+            <div class="col-xl-1">
+                <label class="form-label">سال</label>
+                <select id="Year2_`+ nodesLength +`"name="year_Eq" class="form-select">
+                    @{
+                
+                        for (var i = 4; i >= 0; i--)
+                        {
+                            var s = DateTime.Now.AddYears(-i + 2);
+                            <option selected="selected" value="@cs2.GetYear(s)">@cs2.GetYear(s)</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <div class="col-xl-1">
+                <label class="form-label">ماه</label>
+                <select id="Month2_`+ nodesLength +`" name="month_Eq" class="form-select">
+                    @{
+                        for (var i = 1; i <= 12; i++)
+                        {
+                            <option selected="selected" value="@i">@i</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div  class="col-xl-6">
+            <div/>`)
+    }
+
+    @* Changed Input Installment *@
+    function InputInstallmentManuallyChange(e) {
+        let btns = document.querySelectorAll(".installmentAmountInputManuallyedit")
+        let sum = 0;
+        btns.forEach((btn) => {
+            console.log(btn.value);
+            if (btn.value == "") {
+                btn.value = 0;
+            }
+            sum += parseInt(NumberWithOutComma(btn.value));
+        })
+        let totalAmount = $(".TAmountManually").val();
+
+        let disabledBu = document.querySelector("#btnPlusInput");
+        let totalAmount2 = totalAmount - sum;
+        if (totalAmount2 < 0) {
+            alert("مبلغ وارد شده بیشتر از حد مجاز است.")
+            console.log(totalAmount2)
+            /*------------------------------------------------[1402/08/11]-|KH|-*/
+            e.value = $("#inputTotalManuallyInstall").val();
+            $("#inputTotalManuallyInstall").val(0)
+            //----------------------------------------------
+            disabledBu.disabled = true // غیر فعال کردن لید پلاس
+            /*-------------------------------------------------------------|KH|-*/
+            return false;
+        }
+        /*------------------------------------------------[1402/08/11]-|KH|-*/
+        if (totalAmount2 > 0) {
+            disabledBu.disabled = false; // فعال کردن لید پلاس
+        }
+        else {
+            disabledBu.disabled = true // غیر فعال کردن لید پلاس
+        }
+        /*-------------------------------------------------------------|KH|-*/
+
+        $("#inputTotalManuallyInstall").val(NumberWithComma(totalAmount2))
+    }
+
+
+    function InsManuRemainingClicked(e) {
+        let disabledBu = document.querySelector("#btnPlusInput");
+        var nodes = document.querySelectorAll('.installmentAmountInputManuallyedit');
+        var last = nodes[nodes.length - 1];
+        let lastVal = parseInt(NumberWithOutComma(last.value));
+        if (lastVal > 0) {
+            lastVal += parseInt(NumberWithOutComma($("#inputTotalManuallyInstall").val()));
+            last.value = NumberWithComma(lastVal);
+            /*------------------------------------------------[1402/08/16]-|KH|-*/
+            disabledBu.disabled = true // غیر فعال کردن لید پلاس
+            /*-------------------------------------------------------------|KH|-*/
+        }
+        else {
+            last.value = $("#inputTotalManuallyInstall").val();
+            /*------------------------------------------------[1402/08/16]-|KH|-*/
+            disabledBu.disabled = true // غیر فعال کردن لید پلاس
+            /*-------------------------------------------------------------|KH|-*/
+        }
+        $("#inputTotalManuallyInstall").val(0);
+    }
+</script>
+
+
+@* Inputs Gets Comma On Changing *@
+<script>
+
+    $(".inputForInstallment").on("keydown", function (event) {
+        const BACKSPACE_KEY = 8
+        const _colonPositions = [3, 7, 11, 15, 19]
+        const _newValue = $(this).val().trim()
+        const _currentPosition = _newValue.length
+        if (event.keyCode !== BACKSPACE_KEY) {
+            if (_colonPositions.some(position => position === _currentPosition)) {
+                $(".inputForInstallment").val(_newValue.concat(','))
+            }
+        }
+    })
+
+    $(".AmountInput").on("keyup", function (event) {
+
+        // کاربر متنی انتخابی انتخاب میکند
+        var selection = window.getSelection().toString();
+        if (selection !== '') {
+            return;
+        }
+
+        // زمانی که جهت ها کلیک میشوند
+        if ($.inArray(event.keyCode, [38, 40, 37, 39]) !== -1) {
+            return;
+        }
+
+        var $this = $(this);
+
+        // گرفتن مقدار
+        var input = $this.val();
+
+        var input = input.replace(/[\D\s\._\-]+/g, "");
+        input = input ? parseInt(input, 10) : 0;
+
+        $this.val(function () {
+            return (input === 0) ? "" : input.toLocaleString("en-US");
+        });
+    });
+
+    function inputAddCommaLive(event) {
+        var selection = window.getSelection().toString();
+        if (selection !== '') {
+            return;
+        }
+        if ($.inArray(event.keyCode, [38, 40, 37, 39]) !== -1) {
+            return;
+        }
+        var $this = $(event);
+        var input = $this.val();
+        var input = input.replace(/[\D\s\._\-]+/g, "");
+        input = input ? parseInt(input, 10) : 0;
+        $this.val(function () {
+            return (input === 0) ? "" : input.toLocaleString("en-US");
+        });
+    }
+</script>
+
+@section Scripts{
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+    <script src="~/Scripts/jquery-ui.js"></script>
+    <script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+
+    <script>
+
+        $('#ClaculateType').on('change', function () {
+            $("#big_modal_body").load('@Url.Content("../../ManagementAccounting/installments/_Manual")');
+        });
+    </script>
+
+
+}
+

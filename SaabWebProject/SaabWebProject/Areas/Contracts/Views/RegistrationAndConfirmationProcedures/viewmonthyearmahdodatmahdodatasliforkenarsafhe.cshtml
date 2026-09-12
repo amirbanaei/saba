@@ -1,0 +1,707 @@
+﻿
+@model SaabWebProject.Models.ViewModels.Contracts.Function.FunctionModel
+@using SaabWebProject.Models.DomainModels;
+
+@{ SaabEntities db = new SaabEntities();
+
+    ViewBag.Title = "گزارش کارها";
+    Layout = null;
+}
+
+
+
+<div class="table-content">
+    <div class="tab-pane fade show active" id="allTab">
+        <div class="table-responsive tableH_Lock2">
+            <table id="secondaryTable" class="table table-hover text-nowrap">
+                <thead class="sticky-header">
+                    <tr>
+                        <th>@Model.namemoalfeh</th>
+                        @*<th class="TitelL323234324"> کدپرسنلی </th>*@
+                        <th>متوسط تعیین شده </th>
+                        <th>متوسط تایید شده</th>
+                        <th>سقف تایید  شده</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @{
+                        int II = 0; var name = "";
+                        var city = "";
+                    }
+                    @foreach (var it in Model.tickmomahdodatkenar.ToList())
+                    {
+                        string cityvalue = "";
+
+                        II++;
+                        {
+
+
+
+                        }
+                        <tr class="">
+                            <!--<td>
+                            <div class="ms-sm-4 mt-sm-0 mt-2 dropdown-toggle">
+                                <a href="#" data-bs-toggle="dropdown" class="text-white text-opacity-75 text-decoration-none">
+                                    <i class="fa fa-edit"></i>
+                                </a>
+                                <div class="dropdown-menu">-->
+                            @*<a data-bs-toggle="modal" data-bs-target="#modalLg1" class="dropdown-item edit" id="Edit_@item.ID">ویرایش</a>*@
+                            @*<a class="dropdown-item Delete" id="Delete_@item.ID">حذف</a>*@
+                            @*<a data-bs-toggle="modal" data-bs-target="#modalLg" class="dropdown-item edit" id="Edit_@item.ID">ویرایش</a>*@
+
+
+                            <!--</div>
+
+
+                                </div>
+                            </td>-->
+                            <td>@it.namebasteh</td>
+
+                            @*<td>@it.usr_Personal_ID</td>*@
+
+                            <td id="sabtshodeh" data-container="@it.IDBasteh">
+                                @string.Format("{0:N0}", it.value)
+                            </td>
+                            <td id="taeedshodeh" data-backdrop="@it.IDBasteh">0</td>
+                            <td id="maxtaeedshodeh">0</td>
+
+
+
+
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<div class="row mt-10px">
+    <div class="col-xl-11">
+    </div>
+    @*<div class="col-xl-1">
+            <button id="btnSaveEsmahdod2" type="button" class="btn form-control buttonsabt">
+                <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                <span class="bSabt-text">ثبت</span>
+            </button>
+        </div>*@
+</div>
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Scripts/sweetalert2.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Scripts/popper.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+
+<script>
+    function changeFilter412(filterName) {
+        console.log(filterName);
+    }
+    function formatNumberWithCommas(number) {
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+    function removeCommas(number) {
+        return number.replace(/,/g, '');
+    }
+
+    //function changeFilter41432() {
+    //    const mainTableRows = document.querySelectorAll('#mainTable tbody tr');
+    //    const secondaryTableRows = document.querySelectorAll('#secondaryTable tbody tr');
+
+    //    // یک دیکشنری برای ذخیره داده‌ها با IDBasteh
+    //    const dataMap = {};
+    //    console.log(mainTableRows);
+    //    // پردازش سطرهای جدول اصلی
+    //    mainTableRows.forEach(row => {
+    //        // بررسی اگر سطر مخفی باشد (با استفاده از getComputedStyle)
+    //        const computedStyle = window.getComputedStyle(row);
+    //        if (computedStyle.display === 'none') {
+    //            console.log("1");
+    //            return; // این سطر را نادیده می‌گیریم و به سراغ سطر بعدی می‌رویم
+    //        }
+
+    //        // دریافت داده‌ها از ویژگی‌های data- در خود <tr>
+    //        const idTackBasteh = row.querySelector('input.form-technololghhhh').dataset.keyboard; // دریافت data-keyboard
+    //        const delayValue = parseFloat(row.querySelector('input.form-technololghhhh').dataset.delay); // دریافت data-delay
+    //        console.log("2");
+    //        const input = row.querySelector('input.form-technololghhhh');
+
+    //        const valueFromInput = parseFloat(removeCommas(input.value));
+    //        console.log("Value from input after removing commas:", valueFromInput);
+    //        console.log("valueFromInput" + valueFromInput);
+
+    //        console.log(delayValue);
+
+    //        // بررسی اگر delayValue عددی و معتبر باشد
+
+    //            // اضافه کردن داده‌ها به dataMap
+    //            if (!dataMap[idTackBasteh]) {
+    //                dataMap[idTackBasteh] = {
+    //                    totalDelay: 0,
+    //                    count: 0,
+    //                    valueFromInput: 0,
+    //                    maxFromInput:0
+    //                };
+    //            }
+    //            console.log(dataMap);
+
+    //            // جمع‌آوری مجموع تاخیر و تعداد
+    //        dataMap[idTackBasteh].totalDelay += delayValue;
+    //        dataMap[idTackBasteh].valueFromInput += valueFromInput;
+
+    //            dataMap[idTackBasteh].count++;
+    //        if (valueFromInput > dataMap[idTackBasteh].maxFromInput) {
+    //            dataMap[idTackBasteh].maxFromInput = valueFromInput;
+    //        }
+    //    });
+
+
+    //    // به‌روزرسانی جدول دوم با داده‌های محاسبه‌شده
+    //    secondaryTableRows.forEach(row => {
+    //        const idBasteh = row.querySelector('[data-container]')?.dataset.container; // دریافت IDBasteh
+    //        console.log(dataMap);
+    //        if (dataMap[idBasteh]) {
+    //            const avgValue = dataMap[idBasteh].totalDelay / dataMap[idBasteh].count;
+    //            const avgValue2 = dataMap[idBasteh].valueFromInput / dataMap[idBasteh].count;
+    //            const maxValueFromInput = dataMap[idBasteh].maxFromInput; // بیشینه مقدار `valueFromInput`
+
+    //            row.querySelector('#sabtshodeh').textContent = formatNumberWithCommas(avgValue.toFixed(0));
+    //            row.querySelector('#taeedshodeh').textContent =  formatNumberWithCommas(avgValue2.toFixed(2));
+    //            row.querySelector('#maxtaeedshodeh').textContent = formatNumberWithCommas(maxValueFromInput.toFixed(0));
+
+    //            console.log(avgValue);
+
+    //            // میانگین را با دو رقم اعشار نمایش می‌دهد
+    //        }
+    //        else {
+    //            row.querySelector('#sabtshodeh').textContent = 0;
+    //            row.querySelector('#taeedshodeh').textContent = 0;
+    //            row.querySelector('#maxtaeedshodeh').textContent = 0;
+
+    //        }
+    //    });
+
+    //    console.log("Filter updated.");
+    //}
+
+
+
+
+
+
+
+
+
+
+
+
+    //دثص
+    function changeFilter41432() {
+        const mainTableRows = document.querySelectorAll('#mainTable tbody tr');
+        const secondaryTableRows = document.querySelectorAll('#secondaryTable tbody tr');
+
+        const dataMap = {}; // نگهداری داده‌ها بر اساس IDBasteh
+        const totalStats = {
+            totalDelay: 0,
+            totalValueFromInput: 0,
+            maxFromInput: 0,
+            count: 0
+        };
+
+        mainTableRows.forEach(row => {
+            const computedStyle = window.getComputedStyle(row);
+            if (computedStyle.display === 'none') return;
+
+            const input = row.querySelector('input');
+            if (!input) return;
+
+            const idTackBasteh = input.dataset.keyboard;
+            const delayValue = parseFloat(input.dataset.delay);
+            const valueFromInput = parseFloat(removeCommas(input.value));
+
+            if (isNaN(delayValue) || isNaN(valueFromInput)) return;
+
+            // ذخیره مقادیر کلی
+            totalStats.totalDelay += delayValue;
+            totalStats.totalValueFromInput += valueFromInput;
+            totalStats.count++;
+
+            if (valueFromInput > totalStats.maxFromInput) {
+                totalStats.maxFromInput = valueFromInput;
+            }
+
+            // ذخیره مقادیر به تفکیک IDBasteh
+            if (!dataMap[idTackBasteh]) {
+                dataMap[idTackBasteh] = {
+                    totalDelay: 0,
+                    count: 0,
+                    valueFromInput: 0,
+                    maxFromInput: 0
+                };
+            }
+
+            dataMap[idTackBasteh].totalDelay += delayValue;
+            dataMap[idTackBasteh].valueFromInput += valueFromInput;
+            dataMap[idTackBasteh].count++;
+
+            if (valueFromInput > dataMap[idTackBasteh].maxFromInput) {
+                dataMap[idTackBasteh].maxFromInput = valueFromInput;
+            }
+        });
+
+        // به‌روزرسانی جدول دوم
+        secondaryTableRows.forEach(row => {
+            const idBasteh = row.querySelector('[data-container]')?.dataset.container;
+            if (!idBasteh) return;
+
+            if (dataMap[idBasteh]) {
+                const avgValue = dataMap[idBasteh].totalDelay / dataMap[idBasteh].count;
+                const avgValue2 = dataMap[idBasteh].valueFromInput / dataMap[idBasteh].count;
+                const maxValueFromInput = dataMap[idBasteh].maxFromInput;
+
+                row.querySelector('#sabtshodeh').textContent = formatNumberWithCommas(avgValue.toFixed(0));
+                row.querySelector('#taeedshodeh').textContent = formatNumberWithCommas(avgValue2.toFixed(2));
+                row.querySelector('#maxtaeedshodeh').textContent = formatNumberWithCommas(maxValueFromInput.toFixed(0));
+            } else {
+                row.querySelector('#sabtshodeh').textContent = 0;
+                row.querySelector('#taeedshodeh').textContent = 0;
+                row.querySelector('#maxtaeedshodeh').textContent = 0;
+            }
+        });
+        console.log(totalStats.count);
+
+        // اضافه کردن یک سطر کلی به جدول دوم
+        if (totalStats.count > 0) {
+            const overallAvgValue = totalStats.totalDelay / totalStats.count;
+            const overallAvgValue2 = totalStats.totalValueFromInput / totalStats.count;
+            const overallMaxValue = totalStats.maxFromInput;
+            console.log(overallAvgValue);
+            console.log(overallMaxValue);
+            console.log(overallAvgValue2);
+
+            let totalRow = document.querySelector('#secondaryTable tfoot #totalRow');
+            if (!totalRow) {
+                const tfoot = document.querySelector('#secondaryTable tfoot') || document.createElement('tfoot');
+                totalRow = document.createElement('tr');
+                totalRow.id = "totalRow";
+                totalRow.innerHTML = `
+             <td>براساس فیلتر</td>
+             <td id="total_sabtshodeh"></td>
+             <td id="total_taeedshodeh"></td>
+             <td id="total_maxtaeedshodeh"></td>
+         `;
+                tfoot.appendChild(totalRow);
+                document.querySelector('#secondaryTable').appendChild(tfoot);
+            }
+
+            document.querySelector('#total_sabtshodeh').textContent = formatNumberWithCommas(overallAvgValue.toFixed(0));
+            document.querySelector('#total_taeedshodeh').textContent = formatNumberWithCommas(overallAvgValue2.toFixed(2));
+            document.querySelector('#total_maxtaeedshodeh').textContent = formatNumberWithCommas(overallMaxValue.toFixed(0));
+        }
+        else {
+            const overallAvgValue = 0;
+            const overallAvgValue2 = 0;
+            const overallMaxValue = 0;
+            console.log(overallAvgValue);
+            console.log(overallMaxValue);
+            console.log(overallAvgValue2);
+
+            let totalRow = document.querySelector('#secondaryTable tfoot #totalRow');
+            if (!totalRow) {
+                const tfoot = document.querySelector('#secondaryTable tfoot') || document.createElement('tfoot');
+                totalRow = document.createElement('tr');
+                totalRow.id = "totalRow";
+                totalRow.innerHTML = `
+          <td>براساس فیلتر</td>
+          <td id="total_sabtshodeh"></td>
+          <td id="total_taeedshodeh"></td>
+          <td id="total_maxtaeedshodeh"></td>
+      `;
+                tfoot.appendChild(totalRow);
+                document.querySelector('#secondaryTable').appendChild(tfoot);
+            }
+
+            document.querySelector('#total_sabtshodeh').textContent = formatNumberWithCommas(overallAvgValue.toFixed(0));
+            document.querySelector('#total_taeedshodeh').textContent = formatNumberWithCommas(overallAvgValue2.toFixed(2));
+            document.querySelector('#total_maxtaeedshodeh').textContent = formatNumberWithCommas(overallMaxValue.toFixed(0));
+        }
+        console.log("Filter updated.");
+    }
+    //-----
+    //function changeFilter41432() {
+    //    const mainTableRows = document.querySelectorAll('#mainTable tbody tr');
+    //    const secondaryTableRows = document.querySelectorAll('#secondaryTable tbody tr');
+
+    //    // یک دیکشنری برای ذخیره داده‌ها با IDBasteh
+    //    const dataMap = {};
+    //    console.log(mainTableRows);
+
+    //    // پردازش سطرهای جدول اصلی
+    //    mainTableRows.forEach(row => {
+    //        // بررسی اگر سطر مخفی باشد (با استفاده از getComputedStyle)
+    //        const computedStyle = window.getComputedStyle(row);
+    //        if (computedStyle.display === 'none') {
+    //            console.log("1");
+    //            return; // این سطر را نادیده می‌گیریم و به سراغ سطر بعدی می‌رویم
+    //        }
+
+    //        // دریافت داده‌ها از ویژگی‌های data- در خود <tr>
+    //        const input = row.querySelector('input');
+    //        if (!input) {
+    //            console.warn("No input element found in this row.");
+    //            return; // اگر ورودی پیدا نشد، این سطر نادیده گرفته می‌شود
+    //        }
+
+    //        const idTackBasteh = input.dataset.keyboard; // دریافت data-keyboard
+    //        const delayValue = parseFloat(input.dataset.delay); // دریافت data-delay
+    //        console.log("2");
+
+    //        const valueFromInput = parseFloat(removeCommas(input.value)); // مقدار input بعد از حذف کاماها
+    //        console.log("Value from input after removing commas:", valueFromInput);
+    //        console.log("valueFromInput: " + valueFromInput);
+    //        console.log("delayValue: " + delayValue);
+
+    //        // بررسی اگر delayValue عددی و معتبر باشد
+    //        if (isNaN(delayValue) || isNaN(valueFromInput)) {
+    //            console.warn("Invalid delayValue or valueFromInput for row with ID:", idTackBasteh);
+    //            return; // اگر مقادیر نامعتبر باشند، این سطر نادیده گرفته می‌شود
+    //        }
+
+    //        // اضافه کردن داده‌ها به dataMap
+    //        if (!dataMap[idTackBasteh]) {
+    //            dataMap[idTackBasteh] = {
+    //                totalDelay: 0,
+    //                count: 0,
+    //                valueFromInput: 0,
+    //                maxFromInput: 0
+    //            };
+    //        }
+
+    //        // جمع‌آوری مجموع تاخیر و تعداد
+    //        dataMap[idTackBasteh].totalDelay += delayValue;
+    //        dataMap[idTackBasteh].valueFromInput += valueFromInput;
+
+    //        dataMap[idTackBasteh].count++;
+
+    //        // بررسی و به‌روزرسانی مقدار بیشینه
+    //        if (valueFromInput > dataMap[idTackBasteh].maxFromInput) {
+    //            dataMap[idTackBasteh].maxFromInput = valueFromInput;
+    //        }
+    //    });
+
+    //    // به‌روزرسانی جدول دوم با داده‌های محاسبه‌شده
+    //    secondaryTableRows.forEach(row => {
+    //        const idBasteh = row.querySelector('[data-container]')?.dataset.container; // دریافت IDBasteh
+    //        if (!idBasteh) {
+    //            console.warn("No IDBasteh found in secondary row.");
+    //            return; // اگر IDBasteh پیدا نشد، این سطر را نادیده می‌گیریم
+    //        }
+
+    //        if (dataMap[idBasteh]) {
+    //            const avgValue = dataMap[idBasteh].totalDelay / dataMap[idBasteh].count;
+    //            const avgValue2 = dataMap[idBasteh].valueFromInput / dataMap[idBasteh].count;
+    //            const maxValueFromInput = dataMap[idBasteh].maxFromInput; // بیشینه مقدار `valueFromInput`
+
+    //            // به‌روزرسانی داده‌ها در جدول دوم
+    //            row.querySelector('#sabtshodeh').textContent = formatNumberWithCommas(avgValue.toFixed(0));
+    //            row.querySelector('#taeedshodeh').textContent = formatNumberWithCommas(avgValue2.toFixed(2));
+    //            row.querySelector('#maxtaeedshodeh').textContent = formatNumberWithCommas(maxValueFromInput.toFixed(0));
+
+    //            console.log("AvgValue: " + avgValue);
+    //            console.log("AvgValue2: " + avgValue2);
+    //            console.log("MaxValueFromInput: " + maxValueFromInput);
+    //        } else {
+    //            // اگر داده‌ای برای idBasteh پیدا نشد، مقادیر را به 0 تنظیم می‌کنیم
+    //            row.querySelector('#sabtshodeh').textContent = 0;
+    //            row.querySelector('#taeedshodeh').textContent = 0;
+    //            row.querySelector('#maxtaeedshodeh').textContent = 0;
+    //        }
+
+
+
+
+    //    });
+
+    //    console.log("Filter updated.");
+    //}
+
+
+
+    $(document).ready(function () {
+        function formatNumberWithCommas(number) {
+            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        function removeCommas(number) {
+            return number.replace(/,/g, '');
+        }
+
+        // بررسی ورودی هنگام تایپ
+        $("input.form-technololghhhh").on('input', function () {
+            let $input = $(this);
+            let value = removeCommas($input.val());
+            let maxAllowed = parseFloat($input.data("delay")); // مقدار حداکثر
+            let bindValue = parseFloat($input.data("bind")); // مقدار اولیه محدودیت
+            let backdropKey = $input.data("backdrop"); // شناسه گروه
+            let inputsInGroup = $(`input.form-technololghhhh[data-backdrop="${backdropKey}"]`);
+            console.log("maxAllowed" + maxAllowed);
+            // اطمینان از عددی بودن مقدار
+            if ($.isNumeric(value)) {
+                value = parseFloat(value);
+                console.log("value" + value);
+                console.log("bindValue" + bindValue);
+
+                // بررسی اینکه مقدار از مقدار `data-bind` بیشتر نباشد
+                if (value > bindValue) {
+                    console.log("bindValue2" + bindValue);
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'خطا',
+                        text: `مقدار وارد شده نباید از ${formatNumberWithCommas(bindValue)} بیشتر باشد.`,
+                        confirmButtonText: 'باشه'
+                    });
+                    $input.val(formatNumberWithCommas(0)); // مقدار را به مقدار `data-bind` برگردانید
+                    return; // متوقف کردن پردازش بیشتر
+                }
+
+                // محاسبه میانگین برای گروه
+                let total = 0;
+                let count = 0;
+                inputsInGroup.each(function () {
+                    let groupValue = removeCommas($(this).val());
+                    if ($.isNumeric(groupValue)) {
+                        total += parseFloat(groupValue);
+                        count++;
+                    }
+                });
+
+                let average = count > 0 ? (total / count).toFixed(2) : 0;
+                console.log("avra" + average);
+                console.log("total" + total);
+                console.log("count" + count);
+
+                // بررسی اینکه مقدار از میانگین یا `maxAllowed` بیشتر نباشد
+                if (average > maxAllowed) {
+                    console.log("maxAllowed2" + maxAllowed);
+                    console.log("maxAllowed3" + average);
+                    let valuee = average - maxAllowed;
+                    valuee = valuee * count;
+                    value = (value - valuee).toFixed(2);
+                    let limit = Math.min(maxAllowed, average); // حد مجاز
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'خطا',
+                        text: `مقدار وارد شده نباید از ${formatNumberWithCommas(value)} بیشتر باشد.`,
+                        confirmButtonText: 'باشه'
+                    });
+                    $input.val(formatNumberWithCommas(0)); // مقدار را به حد مجاز برگردانید
+                } else {
+                    $input.val(formatNumberWithCommas(value)); // فرمت با کاما اعمال شود
+                }
+
+                // مقادیر خالی را به 0 تغییر دهید
+                inputsInGroup.each(function () {
+                    let groupValue = removeCommas($(this).val());
+                    if (!$.isNumeric(groupValue) || groupValue === "") {
+                        $(this).val(formatNumberWithCommas(0));
+                    }
+                });
+
+                // به روز رسانی همه اعضای گروه
+                inputsInGroup.each(function () {
+                    $(this).data("average", average); // ذخیره میانگین در داده
+                });
+            }
+        });
+
+
+        // اعمال فرمت اولیه
+        $("input.form-technololghhhh").each(function () {
+            let value = $(this).val();
+            if ($.isNumeric(value)) {
+                $(this).val(formatNumberWithCommas(value)); // فرمت با کاما
+            }
+        });
+    });
+
+    var
+        filters = {
+            filter01: null,
+            filter02: null,
+            filter03: null,
+            filter04: null,
+            filter05: null,
+            filter06: null,
+            filter07: null,
+            filter08: null,
+            filter09: null,
+            filter10: null,
+        };
+
+    function updateFilters4() {
+        $('.task-list-row2').hide().filter(function () {
+            var self = $(this),
+                result = true; // not guilty until proven guilty
+
+            Object.keys(filters).forEach(function (filter) {
+                if (filters[filter] && (filters[filter] != 'None') && (filters[filter] != 'همه')) {
+                    // تطبیق جزئی (contains) به جای تطبیق کامل
+                    result = result && self.data(filter).indexOf(filters[filter]) !== -1;
+                }
+            });
+
+            return result;
+        }).show();
+    }
+
+    function changeFilter4(filterName) {
+        filters[filterName] = this.value;
+        updateFilters4();
+    }
+
+    // Assigned User Dropdown Filter
+    $('#filter01-filter').on('input', function () {
+        changeFilter.call(this, 'filter01');
+    });
+    $('#filter02-filter').on('input', function () {
+        changeFilter.call(this, 'filter02');
+    });
+    $('#filter03-filter').on('input', function () {
+        changeFilter.call(this, 'filter03');
+    });
+    $('#filter04-filter').on('input', function () {
+        changeFilter.call(this, 'filter04');
+    });
+    $('#filter05-filter').on('input', function () {
+        changeFilter4.call(this, 'filter05');
+    });
+    $('#filter06-filter').on('input', function () {
+        changeFilter4.call(this, 'filter06');
+    });
+    $('#filter07-filter').on('input', function () {
+        changeFilter4.call(this, 'filter07');
+    });
+    $('#filter08-filter').on('input', function () {
+        changeFilter4.call(this, 'filter08');
+    });
+    $('#filter09-filter').on('input', function () {
+        changeFilter4.call(this, 'filter09');
+    });
+    $('#filter10-filter').on('input', function () {
+        changeFilter4.call(this, 'filter10');
+    });
+
+    function selectAllRadios(type, columnId) {
+        // انتخاب همه رادیوها با کلاس و ستون مشخص‌شده
+        const radios = document.querySelectorAll(`.form-check-input.${type}[data-column="${columnId}"]`);
+        const tr = document.querySelectorAll('tr.vasile');
+        console.log(tr[0])
+        console.log(radios)
+        let allChecked = true;
+
+        // Check if all radios are already checked
+        var cont = 0;
+        radios.forEach(function (radio) {
+            if (!radio.checked) {
+                if (window.getComputedStyle(tr[cont]).display != 'none') {
+                    allChecked = false;
+                }
+
+            }
+            cont += 1
+        });
+        var cont = 0;
+        // If all are checked, uncheck all, otherwise check all
+        radios.forEach(function (radio) {
+
+            if (window.getComputedStyle(tr[cont]).display != 'none') {
+                radio.checked = !allChecked;
+            }
+            cont += 1
+        });
+
+        // رادیوی اصلی در سربرگ را بر اساس وضعیت رادیوهای ستون تنظیم می‌کنیم
+        const headerRadio = document.querySelector(`#selectAllMamur_${columnId}`);
+        console.log(headerRadio)
+        if (allChecked) {
+            headerRadio.checked = false;
+        } else {
+            headerRadio.checked = true;
+        }
+    }
+
+    function formatNumberWithCommas(number) {
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+    $("input.form-control44334").on('input', function () {
+        var value = $(this).val();
+        value = removeCommas(value); // Remove existing commas
+        if ($.isNumeric(value)) {
+            $(this).val(formatNumberWithCommas(value)); // Format with commas
+        }
+    });
+    $("input.form-control44334").each(function () {
+        var value = $(this).val();
+        if ($.isNumeric(value)) {
+            $(this).val(formatNumberWithCommas(value)); // اعمال فرمت
+        }
+    });
+    function removeCommas(number) {
+        return number.replace(/,/g, '');
+    }
+    $("#btnSaveEsmahdod2").click(function () {
+        // جمع‌آوری داده‌ها
+        var dataList = []; // ایجاد یک آرایه برای ذخیره تمام داده‌ها
+
+        $("input.form-control44334").each(function () {
+            var bindValue = $(this).data("bind"); // گرفتن مقدار data-bind
+            var keyboardValue = $(this).data("keyboard"); // گرفتن مقدار data-keyboard
+            var isChecked = $(this).is(":checked"); // بررسی اینکه آیا رادیو انتخاب شده است یا خیر
+
+            // تعیین مقدار value بر اساس اینکه آیا چک شده یا خیر
+            var value = isChecked ? "true" : "false";
+
+            // اضافه کردن داده به dataList
+            dataList.push({
+                FK_usr: keyboardValue, // استفاده از data-keyboard به عنوان FK_usr
+                FK_name: bindValue, // استفاده از data-bind به عنوان FK_moalfe
+                Position: value
+            });
+        });
+
+        // ارسال داده‌ها به سرور
+        if (dataList.length > 0) {
+            updateDatabasemah4(dataList);
+            console.log(dataList);
+        }
+    });
+    function updateDatabasemah4(dataList) {
+        $.ajax({
+            url: '/Reporter/Dashboard/UpdateRecordmahdodat3', // آدرس اکشن کنترلر شما
+            method: 'POST',
+            data: JSON.stringify(dataList), // ارسال آرایه به سرور
+
+            contentType: 'application/json',
+            success: function (response) {
+                console.log("Record updated successfully.");
+                if (response == "true") {
+                    alert("با موفقیت ثبت شد");
+                    location.reload();
+
+                }
+            },
+            error: function (error) {
+                console.error("Error updating record:", error);
+            }
+        });
+    }
+</script>

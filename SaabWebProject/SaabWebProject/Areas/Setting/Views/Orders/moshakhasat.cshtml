@@ -1,0 +1,238 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+<script src="~/Assets/js/jalalidatepicker.min.js"></script>
+<link href="~/Assets/css/jalalidatepicker.min.css" rel="stylesheet" />
+<script src="~/Assets/js/jalaali.min.js"></script>
+<link href="~/MyStyles/jalalidatepicker.css" rel="stylesheet" />
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>moshakhasat</title>
+</head>
+<body>
+    <div>
+        <ul class="nav nav-tabs nav-tabs-v2 ps-4 pe-4" id="pills-tab" style="margin-bottom:30px">
+            <li class="nav-item me-3">
+                <a class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" href="#page-1">
+                    <button class=" nav-btn">ثبت مدرک</button>
+                </a>
+            </li>
+            <li class="nav-item me-3">
+                <a class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" href="#page-2">
+                    <button class=" nav-btn">لینک افراد ثبت کننده</button>
+                </a>
+            </li>
+            <li class="nav-item me-3">
+                <a class="nav-link" id="pills-profile2-tab" data-bs-toggle="pill" href="#page-3">
+                    <button class=" nav-btn">لینک افراد تایید کننده </button>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="tab-content" id="pills-tabContent">
+        <div class="tab-pane fade show active" id="page-1">
+            <div class="card" style="padding:2vh;">
+                <div class="row">
+                    <div class="col-xl-2">
+                        <label class="form-label">عنوان مدرک</label>
+                        <input id="person-fullname" class="form-control" type="text" />
+                    </div>
+                    <div class="col-xl-4">
+                        <label class="form-label">شرح</label>
+                        <input id="person-description" class="form-control" type="text" />
+                    </div>
+                    <div class="col-xl-2">
+
+                        <label class="form-label">تاریخ ثبت مدرک </label>
+                        <input data-jdp jdp-btn-close data-jdp-miladi-input="miladi_date1" id="datepickerFrom_shw1" class="form-control pdate" name="datepickerFrom_shw1">
+                        <input id="miladi_date1" type="hidden" />
+                    </div>
+                    <div class="col-xl-3"></div>
+                    <div class="col-xl-1">
+                        <button id="person-sabt" class="form-control buttonGeneral" data-bs-toggle="modal" data-bs-target="#modalLg">
+                            <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                            <span class="bGeneral-text">ثبت</span>
+                        </button>
+                    </div>
+
+                </div>
+                <div class="card-arrow">
+                    <div class="card-arrow-top-left"></div>
+                    <div class="card-arrow-top-right"></div>
+                    <div class="card-arrow-bottom-left"></div>
+                    <div class="card-arrow-bottom-right"></div>
+                </div>
+            </div>
+
+
+            <script>
+                jalaliDatepicker.startWatch({
+                    time: false,
+                    days: ["شنبه", "1شنبه", "2شنبه", "3شنبه", "4شنبه", "5شنبه", "جمعه"],
+                    persianDigits: true,
+                    autoClose: true,
+                    autocomplete: true,
+                    showEmptyBtn: false,
+                    showCloseBtn: true,
+                    zIndex: 100000,
+                });
+
+                var inputs = document.querySelectorAll("[data-jdp-miladi-input]");
+                for (var i = 0; i < inputs.length; i++) {
+                    inputs[i].addEventListener("jdp:change", function (e) {
+                        var miladiInput = document.getElementById(this.getAttribute("data-jdp-miladi-input"));
+                        var date = this.value.replace(' ', '').slice(0, 10).split('/');
+                        date = jalaali.toGregorian(parseInt(date[0]), parseInt(date[1]), parseInt(date[2]));
+                        if (!this.value) {
+                            date = "";
+                        } else if (this.value.replace(' ', '').length < 11) {
+                            date = date.gy + '-' + date.gm + '-' + date.gd;
+                        } else {
+                            date = date.gy + '-' + date.gm + '-' + date.gd + ' ' + this.value.replace(' ', '').slice(10, 30);
+                        }
+                        miladiInput.value = date;
+                    });
+                }
+
+            </script>
+        </div>
+        <div class="tab-pane fade " id="page-2">
+
+            @Html.Action("Linksee", "Orders", new { area = "Setting" })
+
+        </div>
+        <div class="tab-pane fade" id="page-3">
+            @Html.Action("Linkcheek", "Orders", new { area = "Setting" })
+
+
+        </div>
+        <div class="tab-pane fade" id="page-3">
+
+        </div>
+    </div>
+</body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</html>
+
+
+<script>
+    @*$(document).ready(function () {
+
+        $("#person-sabt").click(function (e) {
+            e.preventDefault();
+
+            var model = {
+                FullName: $("#person-fullname").val(),
+                Description: $("#person-description").val(),
+                FromDateShamsi: $("#datepickerFrom_shw1").val(),
+                FromDateMiladi: $("#miladi_date1").val()
+            };
+
+            $.ajax({
+                url: '@Url.Action("Save", "Person", new { area = "Setting" })', // مسیر اکشن بک‌اند
+                type: 'POST',
+                data: JSON.stringify(model),
+                contentType: 'application/json; charset=utf-8',
+                success: function (res) {
+                    if (res.success) {
+                        alert(res.message);
+                        // اگر بخوای بعد از ثبت جدول یا بخشی از صفحه رفرش بشه:
+                        // $("#myTable2").load('@Url.Content("/Setting/Orders/arzyabi_timelist")');
+                    } else {
+                        alert(res.message || "خطا در ثبت اطلاعات");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                    alert("خطا در ارتباط با سرور");
+                }
+            });
+        });
+
+    });*@
+</script>
+@*<script>
+        $(document).ready(function () {
+            $("#person-sabt").click(function (e) {
+                e.preventDefault();
+
+                var model = {
+                    FullName: $("#person-fullname").val(),
+                    Description: $("#person-description").val(),
+                    FromDateMiladi: $("#miladi_date1").val() // فقط تاریخ میلادی به صورت رشته ISO  yyyy-MM-dd یا yyyy-MM-dd HH:mm:ss
+                };
+
+                $.ajax({
+                    url: '@Url.Action("sabtmoshakhasat", "Dashboard", new { area = "Reporter" })',
+                    type: 'POST',
+                    data: JSON.stringify(model),
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (res) {
+                        if (res.success) {
+                            alert(res.message);
+                        } else {
+                            alert(res.message || "خطا در ثبت اطلاعات");
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                        alert("خطا در ارتباط با سرور");
+                    }
+                });
+            });
+        });
+    </script>*@
+<script>
+    $(document).ready(function () {
+    $("#person-sabt").click(function (e) {
+        e.preventDefault();
+
+        var model = {
+            FullName: $("#person-fullname").val(),
+            Description: $("#person-description").val(),
+            FromDateMiladi: $("#miladi_date1").val() // باید فرمت yyyy-MM-dd باشه
+        };
+
+        console.log("مدل ارسالی به سرور:", model); // برای تست
+
+        $.ajax({
+            url: '@Url.Action("sabtmoshakhasat", "Orders", new { area = "Setting" })',
+            type: 'POST',
+            data: JSON.stringify(model),
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            success: function (res) {
+                if (res.success) {
+                    alert(res.message);
+                } else {
+                    alert(res.message || "خطا در ثبت اطلاعات");
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Error:", error);
+                console.error("Response:", xhr.responseText);
+                alert("خطا در ارتباط با سرور");
+            }
+        });
+    });
+});
+
+</script>
+

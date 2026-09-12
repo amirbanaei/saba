@@ -1,0 +1,1709 @@
+﻿
+@{
+    ViewBag.Title = "تعریف امکانات و تجهیزات";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section Styles{
+    <link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+    <link href="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.style.css" rel="stylesheet" />
+}
+<style>
+    /*  #multi1 {
+        display: none;
+    }*/
+</style>
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+
+<div class="">
+    <ul class="nav nav-tabs nav-tabs-v2 ps-4 pe-4">
+        <li class="nav-item me-3">
+            <a href="#Definition_Facilities" class="nav-link active" data-bs-toggle="pill">
+                <button class=" nav-btn">تعریف امکانات</button>
+            </a>
+        </li>
+        <li class="nav-item me-3">
+            <a href="#Definition_PeymanFacilities" class="nav-link" data-bs-toggle="pill">
+                <button class=" nav-btn">تعریف امکانات پیمان</button>
+            </a>
+        </li>
+        <li class="nav-item me-3">
+            <a href="#Namayaesh_Tajhizat_SabtShode" class="nav-link" data-bs-toggle="pill">
+                <button class=" nav-btn">نمایش  تجهیزات ثبت شده</button>
+            </a>
+        </li>
+    </ul>
+    <div class="tab-content p-4">
+        @*تعریف امکانات*@
+        <div class="tab-pane fade show active" id="Definition_Facilities">
+            <div class="row">
+                <div class="col-xl-11" style=""></div>
+                <div class="col-xl-1" style="">
+                    <button style="" class="btn form-control buttonGeneral" id="GetInfo" data-bs-toggle="modal" data-bs-target="#modalLg">
+                        <i class="bi bi-eye fa-fw me-1 VecGeneral"></i>
+                        <span class="bGeneral-text">نمایش اطلاعات ثبت شده</span>
+                    </button>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-xl-6" style="border-left:1px #39414d solid !important; ">
+                    <h5>گروه بندی امکانات</h5>
+
+
+                    @using (Html.BeginForm("CreateGroup", "DefFacilitiesEquipment", FormMethod.Post, new { id = "EquipmentGroupForm" }))
+                    {
+                        <div class="row" @*style="padding-left: 8px;"*@>
+                            <div class="col-xl-6">
+                                <label class="form-label"> عنوان گروه </label>
+                                <input class="form-control" name="GroupTitle" />
+                            </div>
+
+                            @*<div class="col-xl-3">
+                                    <button type="button" class="btn form-control buttonGeneral">
+                                        <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                                        <span class="bGeneral-text">دانلود فایل نمونه</span>
+                                    </button>
+                                </div>*@
+                            <div class="col-xl-2">
+                                <a href="#" class=" btn form-control buttonGeneral" style="margin-bottom:10px;" id="dwn" onclick="DownloadExcel() ">
+                                    <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                                    <span class="bGeneral-text">دانلود فایل نمونه</span>
+                                </a>
+                            </div>
+                            @*<div class="col-xl-3">
+                                    <button type="button" class="btn form-control buttonGeneral">
+                                        <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                                        <span class="bGeneral-text">بارگذاری اطلاعات</span>
+                                    </button>
+                                </div>*@
+                            <div class="col-xl-2">
+                                <a href="#" onclick="ShowDialogFile()" class=" btn btn-outline-info form-control buttonGeneral uploadSummery" style="margin-bottom:5px;">
+                                    <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                                    <span class="bGeneral-text">بارگذاری اطلاعات</span>
+                                </a>
+                                <input id="summery_file5" style="display:none" type="file" class="form-control" value="" />
+
+                            </div>
+                            <div class="col-xl-2">
+                                <button type="submit" class="btn form-control buttonsabt" id="SubmitGroup">
+                                    <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                                    <span class="bSabt-text">ثبت</span>
+                                </button>
+                            </div>
+
+
+                        </div>
+                    }
+
+
+                </div>
+                <div class="col-xl-6">
+                    <h5>دسته بندی گروه ها</h5>
+
+                    @using (Html.BeginForm("CreateBunch", "DefFacilitiesEquipment", FormMethod.Post, new { id = "EquipmentGroupForm" }))
+                    {
+                        <div class="row">
+                            <div class="col-xl-3">
+
+                                <label class="form-label"> گروه </label>
+                                @Html.Action("_ListGroup", "DefFacilitiesEquipment", new { area = "Contracts" })
+
+                            </div>
+
+                            <div class="col-xl-3">
+                                <label class="form-label"> عنوان دسته </label>
+                                <input class="form-control" name="BunchTitle" />
+                            </div>
+
+
+                            @*<div class="col-xl-3">
+                                    <div class="form-group mb-3">
+
+                                        <button type="button" class="btn form-control buttonGeneral">
+                                            <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                                            <span class="bGeneral-text">دانلود فایل نمونه</span>
+                                        </button>
+                                    </div>
+                                </div>*@
+                            <div class="col-xl-2">
+                                <a href="#" class=" btn form-control buttonGeneral" style="margin-bottom:10px;" id="dwn" onclick="DownloadExcel2() ">
+                                    <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                                    <span class="bGeneral-text">دانلود فایل نمونه  </span>
+                                </a>
+                            </div>
+
+                            <div class="col-xl-2">
+                                <a href="#" onclick="ShowDialogFile2()" class=" btn btn-outline-info form-control buttonGeneral uploadSummery2" style="margin-bottom:5px;">
+                                    <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                                    <span class="bGeneral-text">بارگذاری اطلاعات</span>
+                                </a>
+                                <input id="summery_file6" style="display:none" type="file" class="form-control" value="" />
+
+                            </div>
+                            @*<div class="col-xl-3">
+                                    <div class="form-group mb-3">
+                                        <button type="button" class="btn form-control buttonGeneral">
+                                            <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                                            <span class="bGeneral-text">بارگذاری اطلاعات</span>
+                                        </button>
+                                    </div>
+                                </div>*@
+                            <div class="col-xl-2">
+                                <div class="form-group mb-3">
+                                    <button type="submit" class="btn form-control buttonsabt">
+                                        <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                                        <span class="bSabt-text">ثبت</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+            </div>
+            <hr />
+            <h5>مشخصات مورد نیاز</h5>
+            @using (Html.BeginForm("UpdateBunch", "DefFacilitiesEquipment", FormMethod.Post, new { id = "EquipmentGroupForm" }))
+            {
+                <div class="row" style="margin-top:30px">
+                    <div class="col-xl-3">
+                        <div class="form-group mb-4">
+                            <label class="form-label"> گروه </label>
+                            <div id="groupforbunch2">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3">
+                        <div class="form-group mb-4">
+                            <label class="form-label"> دسته </label>
+                            <select class="form-select" id="SelectBunch" name="bunch">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-xl-1">
+                        <div class="form-group mb-4">
+                            <label class="form-label"> تعداد </label>
+                            <input class="form-control" id="Count" name="cnt" type="number" />
+
+                        </div>
+                    </div>
+                    <div class="col-xl-3"></div>
+                    <div class="col-xl-1">
+                        <button type="submit" class="btn form-control buttonsabt" id="btn">
+                            <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                            <span class="bSabt-text">ثبت</span>
+                        </button>
+
+                    </div>
+                    <div class="col-xl-1">
+                        <button type="button" class="btn form-control buttonGeneral" id="btnsubmit" style="">
+                            <i class="fa fa-plus-circle fa-fw me-1 VecGeneral"></i>
+                            <span class="bGeneral-text">افزودن</span>
+
+                        </button>
+
+                    </div>
+
+                </div>
+            }
+
+
+
+
+
+            <div class="row" id="moshakhast" style="display:none;">
+                <hr />
+                <h5> عناوین مشخصات </h5>
+                <div id="anavin">
+
+                </div>
+            </div>
+
+
+            <div class="row" style="margin-top:20px">
+                <div class="col-xl-8"></div>
+                <div class="col-xl-1">
+                    <div class="form-group mb-3">
+
+                        <button class="btn form-control buttonGeneral" id="btn1" style="display:none;">
+                            <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                            <span class="bGeneral-text">دانلود فایل نمونه</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="col-xl-1">
+                    <button class="btn form-control buttonGeneral" id="btn2" style="display:none;">
+                        <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                        <span class="bGeneral-text">بارگذاری پیوست ها</span>
+                    </button>
+                </div>
+                <div class="col-xl-1">
+                    <button class="btn form-control buttonGeneral" id="btn3" style="display:none;">
+                        <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                        <span class="bGeneral-text">بارگذاری اطلاعات</span>
+                    </button>
+                </div>
+                <div class="col-xl-1">
+                    <button class="btn form-control buttonsabt" id="btn4" style="display:none;">
+                        <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                        <span class="bSabt-text">ثبت</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+
+        @*امکانات پیمان*@
+        <div class="tab-pane fade show" id="Definition_PeymanFacilities">
+            <div class="row">
+                <div class="col-xl-8">
+
+                    @using (Html.BeginForm("UpdateBunch", "DefFacilitiesEquipment", FormMethod.Post, new { id = "EquipmentGroupForm" }))
+                    {
+                        <div class="row">
+                            <div class="col-xl-6">
+                                <div class="form-group mb-3">
+                                    <label class="form-label"> پیمان </label>
+                                    <div id="peyman2">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3">
+                                <div class="form-group mb-4">
+                                    <label class="form-label"> گروه </label>
+                                    <div id="groupforbunch">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3">
+                                <div class="form-group mb-4">
+                                    <label class="form-label"> دسته </label>
+                                    <select class="form-select" id="SelectBunch2" name="bunch">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                    }
+                </div>
+                <div class="col-xl-1">
+                    <a href="#" class=" btn form-control buttonGeneral" id="dwn" onclick="DownloadExcel20() ">
+                        <i class="bi bi-download  fa-fw me-1 VecGeneral"></i>
+                        <span class="bGeneral-text">دانلود فایل نمونه با مشخصات مورد نیاز هر خودرو</span>
+                    </a>
+                </div>
+                <div class="col-xl-1">
+                    <a href="#" class=" btn form-control buttonGeneral" id="dwn" onclick="DownloadExcel201() ">
+                        <i class="bi bi-download  fa-fw me-1 VecGeneral"></i>
+                        <span class="bGeneral-text">دانلود فایل نمونه</span>
+                    </a>
+                </div>
+
+                <div class="col-xl-1">
+                    <a data-bs-toggle="modal" data-bs-target="#modalLg1" href="#" onclick="ShowDialogFile900()" class=" btn form-control buttonGeneral" ">
+                        <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                        <span class="bGeneral-text">بارگذاری فایل</span>
+                    </a>
+                </div>
+
+
+                <div class="col-xl-1">
+                    <a data-bs-toggle="modal" data-bs-target="#modalLg1" href="#" onclick="ShowDialogFile9()" class=" btn form-control buttonGeneral" ">
+                        <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                        <span class="bGeneral-text">بارگذاری فایل با مشخصات مورد نیاز</span>
+                    </a>
+                </div>
+                <input name="MyExcelStream89" type="file" style="display:none" />
+                <input name="MyExcelStream8900" type="file" style="display:none" />
+
+                @*<div class="col-xl-1">
+                        <button id="AddFild" class="btn form-control buttonsabt" style="">
+                            <i class="fa fa-thumbs-up fa-fw me-1 VecGeneral"></i>
+                            <span class="bSabt-text"> تایید</span>
+                        </button>
+                    </div>*@
+            </div>
+
+            <div class="row" style="margin-top: 20px; display: none; margin-bottom:20px" id="multi1">
+                <div class="col-xl-3 CheckBoxT1" style="border-radius:20px;background-color:#0d3244;border-color: #00ffff ">
+                    <div class="form-check ">
+                        <div class="row">
+                            <div class="col-xl-1" style="width: 1%;">
+                                <input class="form-check-input" type="radio" value="1" name="actionsFish1" id="RadioButton1" />
+                            </div>
+                            <div class="col-xl-10" style="padding-right: 0px;width:85%">
+                                <label class="form-check-label" for="RadioButton1" style="padding-top:4px">سوخت</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 CheckBoxT2" style="border-radius:20px;margin-right:5px;background-color:#0d3244;border-color: #00ffff ">
+                    <div class="form-check">
+                        <div class="row">
+                            <div class="col-xl-1" style="width: 1%;">
+                                <input class="form-check-input" type="radio" value="2" name="actionsFish1" id="RadioButton2" />
+                            </div>
+                            <div class="col-xl-10" style="padding-right: 0px;width:85%">
+                                <label class="form-check-label" for="RadioButton2" style="padding-top:4px">اجاره</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" style="margin-top:20px; display:none ;margin-bottom:20px" id="multi">
+                <div class="col-xl-3 CheckBoxT3" style="border-radius:20px;background-color:#0d3244;border-color: #00ffff ">
+                    <div class="form-check ">
+                        <div class="row" style="display: none" id="multi">
+                            <div class="col-xl-1" style="width: 1%;">
+                                <input class="form-check-input" type="radio" value="3" name="actionsFish2" id="RadioButton3" />
+                            </div>
+                            <div class="col-xl-10" style="padding-right: 0px;width:85%">
+                                <label class="form-check-label" for="RadioButton3" style="padding-top:4px">تیرسان</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 CheckBoxT4" style="border-radius:20px;margin-right:5px;background-color:#0d3244;border-color: #00ffff ">
+                    <div class="form-check">
+                        <div class="row" style="display: none" id="multi">
+                            <div class="col-xl-1" style="width: 1%;">
+                                <input class="form-check-input " type="radio" value="4" name="actionsFish2" id="RadioButton4" />
+                            </div>
+                            <div class="col-xl-10" style="padding-right: 0px;width:85%">
+                                <label class="form-check-label" for="RadioButton4" style="padding-top:4px">غیر تیرسان</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+
+
+            <div class="row">
+                <label class="form-label" id="moshakhast2" style="display:none;"> @*داده های مشخصات*@ </label>
+                <div id="data_anavin">
+
+                </div>
+            </div>
+            <div class="row" style="margin-top:10px">
+                <div class="col-xl-1">
+
+                    <button id="CopyFild" class="btn form-control buttonGeneralPlus" style="">
+                        <i class="fa fa-plus VecGeneral"></i>
+                    </button>
+
+                </div>
+                <div class="col-xl-10">
+
+                </div>
+                <div class="col-xl-1">
+
+                    <button id="SaveData" type="button" class="btn form-control buttonsabt" style="">
+                        <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                        <span class="bSabt-text">ثبت</span>
+                    </button>
+
+                </div>
+            </div>
+            @*<div class="row" style="margin-top:30px">
+                    <div class="col-xl-3">
+                        <div class="form-group mb-3">
+
+                            <button class="btn btn-outline-info form-control">دانلود فایل نمونه</button>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3">
+                        <div class="form-group mb-3">
+
+                            <button class="btn btn-outline-info form-control">بارگذاری پیوست ها</button>
+                        </div>
+                    </div>
+                    <div class="col-xl-3">
+                        <div class="form-group mb-3">
+                            <button class="btn btn-outline-info form-control">بارگذاری اطلاعات</button>
+                        </div>
+                    </div>
+                    <div class="col-xl-3">
+                        <div class="form-group mb-3">
+                            <button class="btn btn-outline-theme form-control">ثبت</button>
+                        </div>
+                    </div>
+                </div>*@
+
+
+
+
+        </div>
+
+        @*نمایش تجهیزات ثبت شده*@
+        <div id="Namayaesh_Tajhizat_SabtShode" class="tab-pane fade show">
+            <div class="row" id="namayeshtajhizat" style="display: flex">
+                <div class="col-xl-4">
+                    <label class="form-label"> پیمان </label>
+                    <div id="pyman">
+                    </div>
+                </div>
+                <div class="col-xl-3">
+                    <label class="form-label"> گروه </label>
+                    <div id="groupforbunch3">
+                    </div>
+                </div>
+                <div class="col-xl-3">
+                    <label class="form-label"> دسته </label>
+                    <select class="form-select" id="SelectBunch3" name="bunch">
+                    </select>
+                </div>
+
+                <div class="col-xl-1"></div>
+                <div class="col-xl-1">
+                    <a href="#" class="btn form-control buttonGeneral" id="showTable">
+                        <i class="fa fa-eye fa-fw me-1 VecGeneral"></i>
+                        <span class="bGeneral-text">نمایش</span>
+                    </a>
+                </div>
+
+
+            </div>
+
+
+            <div class="row" id="TableSpecif">
+
+            </div>
+
+
+
+            <div class="row" style="margin-top:30px">
+                <div id="pic1" style="display: none;overflow-x: scroll">
+
+                    <img src="~/Areas/Contracts/ReportFiles/AbzarKar.jpg" />
+                </div>
+                <div id="pic2" style="display: none;overflow-x: scroll">
+                    <img src="~/Areas/Contracts/ReportFiles/VasileNaghliyeSabtSHode.jpg" />
+
+                </div>
+                <div id="pic3" style="display: none;overflow-x: scroll">
+
+                    <img src="~/Areas/Contracts/ReportFiles/ListVasileNaghliye.jpg" />
+
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+@* change group *@
+
+
+@*<script>
+
+                $('#datepickerFrom_Eq').MdPersianDateTimePicker({
+                    targetTextSelector: '#datepickerFrom_Eq',
+                    targetDateSelector: '#datepickerFromEn_Eq',
+                    dateFormat: 'yyyy-MM-dd',
+                    isGregorian: false,
+                    enableTimePicker: true,
+                    disableBeforeToday: false
+                });
+
+                $('#datepickerTo_Eq').MdPersianDateTimePicker({
+                    targetTextSelector: '#datepickerTo_Eq',
+                    targetDateSelector: '#datepickerToEn_Eq',
+                    dateFormat: 'yyyy-MM-dd',
+                    isGregorian: false,
+                    enableTimePicker: true,
+                    disableBeforeToday: false
+                });
+    </script>*@
+
+
+@section Scripts{
+    <script src="~/Scripts/jquery-ui.js"></script>
+    <script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+
+    <script>
+     var obj = new FormData();
+
+  $(".uploadSummery").click(function () {
+    //FK_DDOfTitle = $(this).attr("id").split("_")[2];
+    //ID = $(this).attr("id").split("_")[1];
+      $("#summery_file5").click();
+});
+
+ $("#summery_file5").change(function (e) {
+    $.each(e.target.files, function (index, file) {
+        obj.append("MyExcelStream", file);
+
+    });
+         sendAjax2('@Url.Action("ImportExcel_AddSabtmarahel", "DefFacilitiesEquipment", new { area = "Contracts" })', obj);
+ });
+
+
+ function sendAjax2(url2, fd2) {
+     //obj.append("Basteh", ID);
+
+
+
+
+     $.ajax({
+         url: url2,
+         type: 'POST',
+         data: fd2,
+         processData: false,
+         contentType: false,
+         success: function (resp1) {
+             console.log("okeye");
+             console.log(resp1);
+             $("#loading-message").css("display", "none");
+             fd = new FormData();
+             if (resp1 == "با موفقیت انجام شد") {
+                 alert("با موفقیت ثبت شد");
+                 setTimeout(function () {
+                     location.reload(); // یا می‌توانید از location.reload(true) هم استفاده کنید
+                 }, 2000); // بازه زمانی به میلی‌ثانیه، اینجا 2000 میلی‌ثانیه (یعنی 2 ثانیه)
+             }
+             else {
+                 $("#loading-message").css("display", "none");
+                 console.log("jlk;;kkj");
+                 Toast.fire({
+
+                     icon: 'success',
+                     background: '#35434A',
+                     color: 'white',
+                     title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                 }).then(() => {
+                     $("#loading-message").css("display", "none");
+                 });
+             }
+
+         },
+         error: function (resp1) {
+             console.log(resp1);
+             console.log("Nokeye");
+             $("#loading-message").css("display", "none");
+             Toast.fire({
+                 icon: 'success',
+                 background: '#35434A',
+                 color: 'white',
+                 title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+             }).then(() => {
+                 $("#loading-message").css("display", "none");
+             });
+         }
+     });
+ }
+    </script>
+
+
+    <script>
+     var obj = new FormData();
+
+  $(".uploadSummery2").click(function () {
+    //FK_DDOfTitle = $(this).attr("id").split("_")[2];
+    //ID = $(this).attr("id").split("_")[1];
+      $("#summery_file6").click();
+});
+
+ $("#summery_file6").change(function (e) {
+    $.each(e.target.files, function (index, file) {
+        obj.append("MyExcelStream", file);
+
+    });
+         sendAjax3('@Url.Action("ImportExcel_Addsabtdasteh", "DefFacilitiesEquipment", new { area = "Contracts" })', obj);
+ });
+
+
+ function sendAjax3(url2, fd2) {
+     //obj.append("Basteh", ID);
+
+
+
+
+     $.ajax({
+         url: url2,
+         type: 'POST',
+         data: fd2,
+         processData: false,
+         contentType: false,
+         success: function (resp1) {
+             console.log("okeye");
+             console.log(resp1);
+             $("#loading-message").css("display", "none");
+             fd = new FormData();
+             if (resp1 == "با موفقیت انجام شد") {
+                 alert("با موفقیت ثبت شد");
+                 setTimeout(function () {
+                     location.reload(); // یا می‌توانید از location.reload(true) هم استفاده کنید
+                 }, 2000); // بازه زمانی به میلی‌ثانیه، اینجا 2000 میلی‌ثانیه (یعنی 2 ثانیه)
+             }
+             else {
+                 $("#loading-message").css("display", "none");
+                 console.log("jlk;;kkj");
+                 Toast.fire({
+
+                     icon: 'success',
+                     background: '#35434A',
+                     color: 'white',
+                     title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                 }).then(() => {
+                     $("#loading-message").css("display", "none");
+                 });
+             }
+
+         },
+         error: function (resp1) {
+             console.log(resp1);
+             console.log("Nokeye");
+             $("#loading-message").css("display", "none");
+             Toast.fire({
+                 icon: 'success',
+                 background: '#35434A',
+                 color: 'white',
+                 title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+             }).then(() => {
+                 $("#loading-message").css("display", "none");
+             });
+         }
+     });
+ }
+    </script>
+
+
+
+
+
+    <script>
+        let Count = 1;
+
+        $("#GetInfo").click(function() {
+            $.ajax({
+                url: "@Url.Action("_GetInformationEquipmentGroup","DefFacilitiesEquipment")",
+                success: function(result) {
+                    $("#big_modal_body").html(result);
+                }
+            });
+        });
+
+
+        $(".picker").picker();
+        const Toast = Swal.mixin({
+            toast: true,
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+        $(function () {
+
+
+            $('#year_Eq').picker({ search: true });
+            $('#month_Eq').picker({ search: true });
+
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('.delete-btn').click(function () {
+                // دریافت شناسه سطر که باید حذف شود
+                var rowId = $(this).closest('.row').data('row-id');
+
+                // حذف سطر با استفاده از شناسه مورد نیاز
+                $('[data-row-id="' + rowId + '"]').remove();
+                Count--
+                console.log(Count);
+
+            });
+        });
+
+    </script>
+    <script>
+
+        $("#CopyFild").click(function () {
+
+
+            var EqGroup = $("#select_EquipmentGroupForBunch2").val();
+            var EqBunch = $("#SelectBunch2").val();
+
+
+            if (EqGroup.length == 0) {
+                Toast.fire({
+                    icon: 'warning',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "لطفا گروه را انتخاب کنید"
+                });
+                return false;
+            } else if (EqBunch.length == 0) {
+
+                Toast.fire({
+                    icon: 'warning',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "لطفا دسته را انتخاب کنید"
+                });
+                return false;
+            } else {
+                $.ajax({
+                    url: "@Url.Action("GetSpecifications", "DefFacilitiesEquipment", new { area = "Contracts" })",
+
+                    type: "Post",
+                    dataType: "html",
+                    data: {  FK_EqpBunch_ID: EqBunch,counter:Count },
+                    success: function (result) {
+                        $("#data_anavin").append(result);
+
+                //        $('.delete-btn').on('click', function () {
+                //            console.log(Count);
+                //  debugger;
+                //            Count--;
+                //            console.log(Count);
+                //             debugger;
+                //$(this).closest('.line-container').remove();
+            //});
+
+                    },
+                    error: function (result) {
+                        Toast.fire({
+                            icon: 'warning',
+                            background: '#35434A',
+                            color: 'white',
+                            title: "ثبت اطلاعات با خطا مواجه شد برای مشاهده خطا به کنسول مرورگر مراجعه کنید"
+                        });
+                        console.log(result);
+                        return false;
+                    }
+
+                });
+                Count++;
+
+            }
+
+
+
+
+
+
+        });
+
+
+
+        $("#AddFild").click(function () {
+
+            var EqGroup = $("#select_EquipmentGroupForBunch2").val();
+            var EqBunch = $("#SelectBunch2").val();
+
+
+            if (EqGroup.length == 0) {
+                Toast.fire({
+                    icon: 'warning',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "لطفا گروه را انتخاب کنید"
+                });
+                return false;
+            } else if (EqBunch.length == 0) {
+
+                Toast.fire({
+                    icon: 'warning',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "لطفا دسته را انتخاب کنید"
+                });
+                return false;
+            } else {
+                $.ajax({
+                    url: "@Url.Action("GetSpecifications", "DefFacilitiesEquipment", new { area = "Contracts" })",
+                    type: "Post",
+                    dataType: "html",
+                    data: {  FK_EqpBunch_ID: EqBunch },
+                    success: function (result) {
+                        $("#data_anavin").html(result);
+            //             $('.delete-btn').on('click', function () {
+            //    Count--;
+
+            //    $(this).closest('.line-container').remove();
+            //});
+
+                        //$('#datepickerFrom_Eq').MdPersianDateTimePicker({
+                        //    targetTextSelector: '#datepickerFrom_Eq',
+                        //    targetDateSelector: '#datepickerFromEn_Eq',
+                        //    dateFormat: 'yyyy-MM-dd',
+                        //    isGregorian: false,
+                        //    enableTimePicker: true,
+                        //    disableBeforeToday: false
+                        //});
+
+                    },
+                    error: function (result) {
+                        Toast.fire({
+                            icon: 'warning',
+                            background: '#35434A',
+                            color: 'white',
+                            title: "ثبت اطلاعات با خطا مواجه شد برای مشاهده خطا به کنسول مرورگر مراجعه کنید"
+                        });
+                        console.log(result);
+                        return false;
+                    }
+
+                });
+            }
+
+        });
+
+        $("input[name='MyExcelStream8900']").change(function () {
+
+          $(".loader").css('display', 'block');
+
+              var file = this.files[0];
+              var ext = file.name.split('.')[1];
+              if (ext == "xlsx" || ext == "xls") {
+
+                  var  obj = new FormData();
+
+                  obj.append("MyExcelStream", file);
+                  obj.append("Basteh", $("#SelectBunch2").val());
+                  obj.append("PeymanID", $("#select_peyman2").val());
+                  console.log(file);
+                  $.ajax({
+                  beforeSend:function (){
+                    document.getElementById("loading-message").style.display = "block";
+                  },
+                     url: "@Url.Action("ImportExcel_Moalefe_abzar3", "Moalefe",new { area="Salaries" })",
+                     type: "post",
+                     contentType: false,
+                     data: obj,
+                     processData: false,
+                     cache: false,
+                      success: function (res) {
+                          $(".loader").css('display', 'none');
+
+                          document.getElementById("loading-message").style.display = "none";
+                          //UploadedFile(res);
+
+                          if (res == "True") {
+                              alert("باموفقیت ثبت شد ");
+                              location.reload();
+                          }
+                          else {
+                              alert("دچار مشکل شده  ");
+
+                          }
+                          // نمایش مدال SweetAlert2
+
+                          // نمایش مدال شما
+                         // if (res.lenght() > 300) {
+                              //$("#big_modal_body1").html(res);
+
+                         // } else {
+                         //     alert(res);
+                         // }
+
+
+
+
+                     },
+                      error: function (res) {
+                          $(".loader").css('display', 'none');
+
+                         console.log(res);
+                     }
+                 });
+              }
+              else {
+
+                  Swal.fire({
+                      icon: 'warning',
+                      background: 'rgb(29,40,52)',
+                      color: 'white',
+                      confirmButtonText: 'باشه',
+                      title: 'نوع فایل',
+                      text: 'لطفا فایل را صحیح وارد کنید',
+                  });
+                  return false;
+              }
+
+
+
+          });
+
+
+          $("input[name='MyExcelStream89']").change(function () {
+
+          $(".loader").css('display', 'block');
+
+              var file = this.files[0];
+              var ext = file.name.split('.')[1];
+              if (ext == "xlsx" || ext == "xls") {
+
+                  var  obj = new FormData();
+
+                  obj.append("MyExcelStream", file);
+                  obj.append("Basteh", $("#SelectBunch2").val());
+                  obj.append("PeymanID", $("#select_peyman2").val());
+                  console.log(file);
+                  $.ajax({
+                  beforeSend:function (){
+                    document.getElementById("loading-message").style.display = "block";
+                  },
+                     url: "@Url.Action("ImportExcel_Moalefe_abzar", "Moalefe",new { area="Salaries" })",
+                     type: "post",
+                     contentType: false,
+                     data: obj,
+                     processData: false,
+                     cache: false,
+                      success: function (res) {
+                          $(".loader").css('display', 'none');
+
+                          document.getElementById("loading-message").style.display = "none";
+                          //UploadedFile(res);
+
+                          if (res == "True") {
+                              alert("باموفقیت ثبت شد ");
+                              location.reload();
+                          }
+                          else {
+                              alert("دچار مشکل شده  ");
+
+                          }
+                          // نمایش مدال SweetAlert2
+
+                          // نمایش مدال شما
+                         // if (res.lenght() > 300) {
+                              //$("#big_modal_body1").html(res);
+
+                         // } else {
+                         //     alert(res);
+                         // }
+
+
+
+
+                     },
+                      error: function (res) {
+                          $(".loader").css('display', 'none');
+
+                         console.log(res);
+                     }
+                 });
+              }
+              else {
+
+                  Swal.fire({
+                      icon: 'warning',
+                      background: 'rgb(29,40,52)',
+                      color: 'white',
+                      confirmButtonText: 'باشه',
+                      title: 'نوع فایل',
+                      text: 'لطفا فایل را صحیح وارد کنید',
+                  });
+                  return false;
+              }
+
+
+
+          });
+          /// Open Dialog File
+        function ShowDialogFile9() {
+              $("input[name='MyExcelStream89']").val(null);
+              $("input[name='MyExcelStream89']").click();
+          }
+        function ShowDialogFile900() {
+            $("input[name='MyExcelStream8900']").val(null);
+            $("input[name='MyExcelStream8900']").click();
+        }
+        function DownloadExcel20() {
+            console.log($("#SelectBunch2").val());
+            if ($("#SelectBunch2").val() == null) {
+                alert("لطقا دسته را انتخاب فرمایید")
+            }
+
+            else {
+                        console.log($("#SelectBunch2").val());
+
+
+
+
+
+
+
+
+
+
+
+
+            $.ajax({
+                beforeSend: function () {
+                    document.getElementById("loading-message").style.display = "block";//مهندس دارین برعککس میزارین
+                    //این درسته
+                    //شبیه هم ننوشتین
+                    //خوب ورودی هام فرق داتشنت الاان فهمیدم چیشد + اضافه گذاشته بود
+                },
+                @*url: '@Url.Action("ExportMoalefeExcel", "Moalefe", new { area = "Salaries" })?year=' + $("#year_usr").val() + '&month=' + aa + '&FromDate=' + $("#datepickerFromEn_usr").val() + '&ToDate=' + $("#datepickerToEn_usr").val() + '&PeymanID=' + $("#baste_peyman2").val() + '&Basteh=' + Basteh,*@
+                type: 'GET',
+                dataType: 'html',
+
+
+                success: function (res) {
+                    if (res === "False") {
+                        // اجرای بلوک error در صورت مطابقت با "False"
+                        alert("برای این ماه و این سال این بسته تایید نهایی شده است ");
+                        window.location.reload();
+                        console.log(res);
+                    }
+                    else {
+
+                        document.getElementById("loading-message").style.display = "none";
+                        @*window.location = '@Url.Action("ExportMoalefeExcel", "Moalefe",new { area = "Salaries" })?year=' + $("#year_usr").val() + '&month=' + aa + '&FromDate=' + $("#datepickerFromEn_usr").val() + '&ToDate=' + $("#datepickerToEn_usr").val() + '&PeymanID=' + $("#baste_peyman2").val() + '&Basteh=' + Basteh;*@
+                        window.location = '@Url.Action("sabtabzarmashin", "Moalefe",new { area = "Salaries" })?ID='+ $("#SelectBunch2").val();
+
+                    }
+                },
+                error: function (res) {
+                    alart("fdslsfdk")
+                    console.log(res);
+                }
+            });
+
+    }
+
+        function UploadedFile(result) {
+                    Toast.fire({
+                        background: '#35434A',
+                        color: 'white',
+                        title: result
+                    }).then(function () {
+                        location.reload();
+                    });
+            }
+
+    }
+
+        function DownloadExcel201() {
+            console.log($("#select_EquipmentGroupForBunch2").val());
+            if ($("#select_EquipmentGroupForBunch2").val() == null) {
+                alert("لطقا دسته را انتخاب فرمایید")
+            }
+
+            else {
+                console.log($("#select_EquipmentGroupForBunch2").val());
+
+
+
+
+
+
+
+
+
+
+
+
+            $.ajax({
+                beforeSend: function () {
+                    document.getElementById("loading-message").style.display = "block";//مهندس دارین برعککس میزارین
+                    //این درسته
+                    //شبیه هم ننوشتین
+                    //خوب ورودی هام فرق داتشنت الاان فهمیدم چیشد + اضافه گذاشته بود
+                },
+                @*url: '@Url.Action("ExportMoalefeExcel", "Moalefe", new { area = "Salaries" })?year=' + $("#year_usr").val() + '&month=' + aa + '&FromDate=' + $("#datepickerFromEn_usr").val() + '&ToDate=' + $("#datepickerToEn_usr").val() + '&PeymanID=' + $("#baste_peyman2").val() + '&Basteh=' + Basteh,*@
+                type: 'GET',
+                dataType: 'html',
+
+
+                success: function (res) {
+                    if (res === "False") {
+                        // اجرای بلوک error در صورت مطابقت با "False"
+                        alert("برای این ماه و این سال این بسته تایید نهایی شده است ");
+                        window.location.reload();
+                        console.log(res);
+                    }
+                    else {
+
+                        document.getElementById("loading-message").style.display = "none";
+                        @*window.location = '@Url.Action("ExportMoalefeExcel", "Moalefe",new { area = "Salaries" })?year=' + $("#year_usr").val() + '&month=' + aa + '&FromDate=' + $("#datepickerFromEn_usr").val() + '&ToDate=' + $("#datepickerToEn_usr").val() + '&PeymanID=' + $("#baste_peyman2").val() + '&Basteh=' + Basteh;*@
+                        window.location = '@Url.Action("sabtabzarmashinorabzar", "Moalefe",new { area = "Salaries" })?ID=' + $("#select_EquipmentGroupForBunch2").val();
+
+                    }
+                },
+                error: function (res) {
+                    alart("fdslsfdk")
+                    console.log(res);
+                }
+            });
+
+    }
+
+        function UploadedFile(result) {
+                    Toast.fire({
+                        background: '#35434A',
+                        color: 'white',
+                        title: result
+                    }).then(function () {
+                        location.reload();
+                    });
+            }
+
+    }
+
+        $("#btn4").click(function () {
+
+
+            var EqGroup = $("#select_EquipmentGroupForBunch1").val();
+            var EqBunch = $("#SelectBunch").val();
+
+
+            var CountSpec = $("#Count").val();
+            if (CountSpec != 0) {
+
+                var ListSpec = [];
+
+                for (var i = 1; i <= CountSpec; i++) {
+                    var Spec = $("#Spec_" + i).val();
+                    if (Spec == null || Spec == "") {
+                        Toast.fire({
+                            icon: 'warning',
+                            background: '#35434A',
+                            color: 'white',
+                            title: "اطلاعات فیلد" + i + "خالی می باشد"
+                        });
+                        return false;
+                    }
+                    else {
+                        ListSpec.push(Spec);
+                    }
+
+                }
+
+                if (ListSpec.length >= 1) {
+
+                    $.ajax({
+                        url: "@Url.Action("AddSpecification", "DefFacilitiesEquipment",new {area="Contracts"})",
+                        type: "Post",
+                        dataType: "html",
+                        data: { ListSpec: ListSpec, FK_EqpGroup_ID: EqGroup, FK_EqpBunch_ID: EqBunch },
+                        success: function (result) {
+                            if (result == "True") {
+                                Toast.fire({
+                                    icon: 'success',
+                                    background: '#35434A',
+                                    color: 'white',
+                                    title: "اطلاعات با موفقیت ثبت شد"
+                                });
+                            }
+                        },
+                        error: function (result) {
+                            Toast.fire({
+                                icon: 'warning',
+                                background: '#35434A',
+                                color: 'white',
+                                title: "ثبت اطلاعات با خطا مواجه شد برای مشاهده خطا به کنسول مرورگر مراجعه کنید"
+                            });
+                            console.log(result);
+                            return false;
+                        }
+                    })
+
+                }
+
+
+            }
+            else {
+                Toast.fire({
+                    icon: 'warning',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "فیلدی برای ثبت وجود ندارد"
+                });
+                return false;
+            }
+
+        });
+
+
+    $("#select_peyman").removeAttr("multiple");
+        $("#btnsubmit").click(function () {
+
+            $("#anavin").load('@Url.Content("/DefFacilitiesEquipment/_ListAnavin")?count=' + $("#Count").val());
+            $("#anavin2").load('@Url.Content("/DefFacilitiesEquipment/_ListAnavin")?count=' + $("#Count").val());
+        });
+    </script>
+
+    <script>
+        $("#SubmitGroup").click(function () {
+
+              var res = "@TempData["response"]";
+    if (res == "True"){
+         document.getElementById("loading-message").style.display = "none";
+        Toast.fire({
+             icon: 'success',
+             background: '#35434A',
+             color: 'white',
+             title: "اطلاعات با موفقیت ذخیره شد"
+         });
+    }
+    if (res == "False"){
+             document.getElementById("loading-message").style.display = "none";
+            Toast.fire({
+                 icon: 'warning',
+                 background: '#35434A',
+                 color: 'white',
+                 title: "اطلاعات ذخیره نشد"
+             });
+        }
+        if (res == "NULL") {
+            document.getElementById("loading-message").style.display = "none";
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: " فیلد را پر کنید"
+            });
+        }
+        })
+
+    </script>
+
+    @*<script>
+            $("#btn4").click(function () {
+                var res = new Object();
+                var feautreTitles = [];
+            $(function () {
+                $.each($('input[name="FeatureTitle"]'), function (index, item) {
+                    var title = $(this).val();
+                    feautreTitles.push(title);
+                });
+
+            });
+                var bunchid = $("#SelectBunch").val();
+                console.log(feautreTitles);
+                res.titles = feautreTitles;
+                res.bid = bunchid;
+                console.log(res)
+
+                $.ajax({
+                    url: '@Url.Action("CreateFeatures", "DefFacilitiesEquipment", new { area = "Contracts" })',
+                    dataType: "html",
+                    type: 'POST',
+                    data: { res: res},
+                               success: function (resp) {
+                                   $("#loading-message").css("display", "none");
+                                   console.log(resp);
+                                   Toast.fire({
+                                       icon: 'success',
+                                       background: '#35434A',
+                                       color: 'white',
+                                       title: " با موفقیت ثبت شد"
+                                   }).then(() => {
+                                       location.reload();
+                                   });
+
+                                },
+                                error: function (resp) {
+                                    console.log(resp);
+                                    console.log("nashod");
+                                    Toast.fire({
+                                        icon: 'warning',
+                                        background: '#35434A',
+                                        color: 'white',
+                                        title: "عملیات با خطا مواجه شده است"
+                                    }).then(() => {
+                                    });
+                                 $("#loading-message").css("display", "none");
+
+                                }
+                           });
+
+            });
+
+        </script>*@
+
+    <script>
+        $("#groupforbunch" ).load('@Url.Content("/../Contracts/DefFacilitiesEquipment/_ListGroupForBunch")',function(){
+             $("#select_EquipmentGroupForBunch").attr("id", "select_EquipmentGroupForBunch2");
+                 $("#select_EquipmentGroupForBunch2").change(function () {
+            var id = $(this).val();
+
+
+                     if (id === "3") {
+                         //$("#multi").css("display", "block");
+                         //$("#multi1").css("display", "flex");
+
+                     }
+                     else {
+                         $("#multi").css("display", "none");
+                         $("#multi1").css("display", "none");
+                     }
+
+            $("#SelectBunch2").load('@Url.Content("/DefFacilitiesEquipment/_ListBunch")?id='+id)
+
+        });
+
+        });
+          $("#groupforbunch2" ).load('@Url.Content("/../Contracts/DefFacilitiesEquipment/_ListGroupForBunch")',function(){
+             $("#select_EquipmentGroupForBunch").attr("id", "select_EquipmentGroupForBunch1");
+          $("#select_EquipmentGroupForBunch1").change(function () {
+            var id = $(this).val();
+
+            $("#SelectBunch").load('@Url.Content("/DefFacilitiesEquipment/_ListBunch")?id='+id)
+
+        });
+          });
+           $("#groupforbunch3" ).load('@Url.Content("/../Contracts/DefFacilitiesEquipment/_ListGroupForBunch")',function(){
+             $("#select_EquipmentGroupForBunch").attr("id", "select_EquipmentGroupForBunch3");
+          $("#select_EquipmentGroupForBunch3").change(function () {
+            var id = $(this).val();
+
+            $("#SelectBunch3").load('@Url.Content("/DefFacilitiesEquipment/_ListBunch")?id='+id)
+
+        });
+          });
+
+    </script>
+    <script>
+        $("#pyman" ).load('@Url.Content("/../Contracts/Peyman/_GetAllListPeymans_SingleSelect")',function(){
+            $("#select_peyman1").attr("id", "select_peyman3");
+
+
+        });
+           $("#peyman2" ).load('@Url.Content("/../Contracts/Peyman/_GetAllListPeymans_SingleSelect")',function(){
+               $("#select_peyman1").attr("id", "select_peyman2");
+
+
+
+        });
+
+
+        $("#Show_Report").click(function () {
+
+            var selectvalue = $("#ReadyReports").find(":selected").val();
+
+            if (selectvalue == 1) {
+
+                $("#pic1").css('display', 'block');
+                $("#pic2").css('display', 'none');
+                $("#pic3").css('display', 'none');
+
+
+            }
+            else if (selectvalue == 2) {
+                $("#pic1").css('display', 'none');
+                $("#pic2").css('display', 'block');
+                $("#pic3").css('display', 'none');
+
+            }
+           else if (selectvalue == 3) {
+                $("#pic1").css('display', 'none');
+                $("#pic2").css('display', 'none');
+                $("#pic3").css('display', 'block');
+
+
+            }
+            else{
+                $("#pic1").css('display', 'none');
+                $("#pic2").css('display', 'none');
+                $("#pic3").css('display', 'none');
+            }
+
+        })
+    </script>
+    <script>
+        $("#ReadyReports").on('change', function () {
+
+            var selectvalue = $(this).find(":selected").val();
+
+            if (selectvalue == 1 || selectvalue == 2 || selectvalue == 3 || selectvalue == 4) {
+                $("#namayeshtajhizat").css('display', 'none');
+
+            }
+            if (selectvalue == 0) {
+                $("#namayeshtajhizat").css('display', 'flex');
+
+            }
+        })
+    </script>
+
+    <script>
+        $("#SaveData").click(function () {
+            var Specs = $(".SpecData").length;
+
+            var equipments = [];
+            var specif = new Object();
+            var shomarande = 0;
+            debugger;
+            for (var i = 1; i < Count; i++) {
+                var equipment = new Object();
+
+                let Specifics = [];
+
+                equipment.TotalPrice = $("#col_mablagh_" + i).val().replaceAll(",", "");;
+                equipment.Unit = $("#vahed_" + i).val();
+                if ($("#malk_" + i).val() == 1) {
+                    equipment.personal = true
+                }
+                else {
+                    equipment.personal = false
+
+                }
+
+                equipment.UnitCount = $("#tedad_vahed_" + i).val();
+                equipment.Soght = $("#soght_" + i).val().replace(/,/g, '');
+                equipment.egareh = $("#egareh_" + i).val().replace(/,/g, '');
+                equipment.uniform = $("#uniform_" + i).val().replace(/,/g, '')
+
+                equipment.Fk_usr = $("#UserID_" + i).val();
+                equipment.type = $("#noe_" + i).val();
+                equipment.model = $("#model_" + i).val();
+                equipment.codtaghiz = $("#codtaghiz_" + i).val();
+
+
+                equipment.EachValue = $("#vahed_harozv_" + i).val().replaceAll(",", "");
+                equipment.Users = $("#select_users_" + i).val().toString();;
+                equipment.TypeTazmin = $("#TazminType_" + i).val();
+                equipment.TazminPrice = $("#TazminMoney_" + i).val().replaceAll(",", "");
+                equipment.ExpiredDate = $("#datepickerFromEn_Eq_" + i).val();
+                equipment.FK_Bunch = $("#SelectBunch2").val();
+                equipment.FK_Peyman = $("#select_peyman2").val();
+
+                if ($("#RadioButton3").is(":checked")) {
+                    equipment.tersanornottersan = true;
+
+                }
+                else {
+                    equipment.tersanornottersan = false;
+
+                }
+
+                // برای گروه دوم
+                if ($("#RadioButton1").is(":checked")) {
+                        // اجرای کد مربوط به انتخاب "تیرسان" در گروه دوم
+                    equipment.Rent_or_fuel = true;
+
+                }
+
+                else {
+                    equipment.Rent_or_fuel = false;
+
+                }
+
+
+
+                equipment.Count_InQardad = $("#Tedad_InQardad_" + i).val();
+                let counterman = 0;
+                for (var j = shomarande; j < shomarande + (Specs / (Count-1)); j++) {
+                    console.log(j);
+                    console.log(shomarande + (Specs / Count));
+                    //var spec = $(".SpecData_" + i)[counterman];
+                    var specif = new Object();
+                    specif.FK_Spec_ID = $(".SpecData_" + i)[counterman].id.split('_')[1];
+                    specif.SpcData = $(".SpecData_" + i)[counterman].value;
+                    console.log(specif.SpcData);
+                    console.log(specif.FK_Spec_ID);
+
+                    Specifics.push(specif);
+                    counterman++;
+                }
+                shomarande = shomarande+( Specs / Count);
+                equipment.tbEquipmentSpecificationData = Specifics;
+                equipments.push(equipment);
+
+           }
+
+
+
+
+
+
+
+
+
+
+
+            if (Specs >= 1) {
+                $.ajax({
+                    url: "@Url.Action("SaveSpecData", "DefFacilitiesEquipment")",
+                    type: "post",
+                    data: {equipments:equipments},
+                    dataType:"html",
+                    success: function (result) {
+                        Toast.fire({
+                            icon: 'success',
+                            background: '#35434A',
+                            color: 'white',
+                            title: "داده ها با موفقیت ثبت شد"
+                        }).then(() => {
+                            location.reload();
+                        });
+                    }
+                    , error: function () {
+                        Toast.fire({
+                            icon: 'warning',
+                            background: '#35434A',
+                            color: 'white',
+                            title: "عملیات با خطا مواجه شده است"
+                        }).then(() => {
+                        });
+                    }
+                })
+            }
+
+
+        });
+    </script>
+
+
+
+
+
+    <script>
+        $("#showTable").on('click', function () {
+
+              $.ajax({
+                    url: "@Url.Action("_ShowSpecificationTable", "DefFacilitiesEquipment")",
+                    type: "post",
+                  data: { Basteh: $("#SelectBunch3").val(), peyman: $("#select_peyman3").val()},
+                    dataType:"html",
+                  success: function (result) {
+                      $("#TableSpecif").html(result);
+                    }
+                    , error: function () {
+
+                    }
+                })
+
+
+        })
+    </script>
+
+
+    <script>
+      function DownloadExcel() {
+
+
+
+
+
+
+
+
+
+          $.ajax({
+              beforeSend: function () {
+                  document.getElementById("loading-message").style.display = "block";
+              },
+              @*url: '@Url.Action("ExportMoalefeExcel4", "Moalefe", new { area = "Salaries" })',*@
+              type: 'GET',
+              dataType: 'html',
+
+
+              success: function (res) {
+                             document.getElementById("loading-message").style.display = "none";
+            window.location = '@Url.Action("ExportMoalefeExcel7", "DefFacilitiesEquipment", new { area = "Contracts" })';
+              },
+              error: function (res) {
+                  alart("fdslsfdk")
+                  console.log(res);
+              }
+          });
+      }
+              function DownloadExcel2() {
+
+
+
+
+
+
+
+
+
+          $.ajax({
+              beforeSend: function () {
+                  document.getElementById("loading-message").style.display = "block";
+              },
+              @*url: '@Url.Action("ExportMoalefeExcel4", "Moalefe", new { area = "Salaries" })',*@
+              type: 'GET',
+              dataType: 'html',
+
+
+              success: function (res) {
+                             document.getElementById("loading-message").style.display = "none";
+            window.location = '@Url.Action("ExportMoalefeExcel8", "DefFacilitiesEquipment", new { area = "Contracts" })';
+              },
+              error: function (res) {
+                  alart("fdslsfdk")
+                  console.log(res);
+              }
+          });
+      }
+
+
+
+
+
+
+
+        function DownloadExcel33() {
+
+
+
+
+
+
+
+
+
+        $.ajax({
+            beforeSend: function () {
+                document.getElementById("loading-message").style.display = "block";
+            },
+            @*url: '@Url.Action("ExportMoalefeExcel4", "Moalefe", new { area = "Salaries" })',*@
+            type: 'GET',
+            dataType: 'html',
+
+
+            success: function (res) {
+                           document.getElementById("loading-message").style.display = "none";
+          window.location = '@Url.Action("ExportMoalefeExcel8", "DefFacilitiesEquipment", new { area = "Contracts" })';
+            },
+            error: function (res) {
+                alart("fdslsfdk")
+                console.log(res);
+            }
+        });
+    }
+
+
+  var Toast = Swal.mixin({
+      toast: true,
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+          toast.addEventListener('mouseenter', Swal.stopTimer)
+          toast.addEventListener('mouseleave', Swal.resumeTimer)
+      }
+  });
+    </script>
+
+}

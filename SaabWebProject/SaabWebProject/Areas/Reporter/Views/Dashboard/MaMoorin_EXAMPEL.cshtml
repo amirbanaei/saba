@@ -1,0 +1,3262 @@
+﻿@model IEnumerable<SaabWebProject.Models.DomainModels.tbMoalefeValuePishkhan>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+
+    ViewBag.Title = "گزارش مامورین";
+
+
+}
+@using SaabWebProject.Models.Classes;
+<link href="~/Content/DashboardMamorin.css" rel="stylesheet" />
+<style>
+
+    .app-content .card {
+    }
+    /*.bg-cover-3:after {
+        background-image: url('../../../../Assets/css/images/form.png')!important;
+    }*/
+    .chartStyle {
+        width: 100%;
+        height: 347px;
+    }
+
+    @@media only screen and (max-width : 768px) {
+        .zoo {
+            height: 2300px;
+        }
+    }
+
+    .card .card-arrow-bottom-left:before, .card .card-arrow-bottom-right:before, .card .card-arrow-top-left:before, .card .card-arrow-top-right:before {
+        content: "";
+        position: absolute;
+        width: 2px;
+        height: 8px;
+        background: aqua;
+        opacity: .75;
+    }
+
+    .card .card-arrow-bottom-left:after, .card .card-arrow-bottom-right:after, .card .card-arrow-top-left:after, .card .card-arrow-top-right:after {
+        content: "";
+        position: absolute;
+        width: 10px;
+        height: 2px;
+        background: aqua;
+        opacity: .75;
+    }
+
+
+
+
+    .Bluebutton {
+        background-color: #000;
+        border: .5px solid #67B7DC;
+        border-radius: 50px;
+        color: #fff;
+        padding: 8px;
+        box-shadow: 0 0 10px 0 #67B7DC, 0 0 10px 0 #67B7DC, 0 0 10px 0 #67B7DC inset;
+        width: 60%;
+        height: 100PX;
+        margin: 20px;
+    }
+
+    .Whitebutton {
+        background-color: #000;
+        border: .5px solid white;
+        border-radius: 50px;
+        color: #fff;
+        padding: 8px;
+        box-shadow: 0 0 10px 0 white, 0 0 10px 0 white, 0 0 10px 0 white inset;
+        width: 60%;
+        height: 100PX;
+        margin: 20px;
+        margin-top: 100px;
+    }
+
+    .whitegradientButton {
+        border: 1px solid aqua;
+    }
+
+    .numbers {
+        direction: rtl;
+    }
+
+    #qaraddad:hover {
+        cursor: pointer;
+    }
+
+    #qarardademzashode:hover {
+        cursor: pointer;
+    }
+
+    #qarardademzashode {
+        text-decoration: none;
+    }
+</style>
+@{
+    <h5>
+        @Model.FirstOrDefault().tbUsers.FullName
+    </h5>
+}
+<div class="row m-2">
+    @*<div class="col-xl-2">
+            <div class="card" style="backdrop-filter:blur(10px);background: rgba(0,0,0,0.3)">
+                <div class="card-body" style="height:220px">
+                    <div class="cardTitle">
+                        توسعه مهارت
+                    </div>
+                    <span style="font-size:14px">تخصص پایه : @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-تخصص اصلی").mlfval_Value</span>
+                    <div class="Coral d-flex justify-content-center align-items-center" style="margin-top:10px">
+                        <button id="earth">
+                            <span style="z-index: 1;top: 35%;font-size:22px">@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-مهارت های جانبی").mlfval_Value%</span>
+                            <span class="Coralwave1"></span>
+                            <span class="Coralwave2"></span>
+                            <span class="Coralwave3"></span>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-arrow">
+                    <div class="card-arrow-top-left"></div>
+                    <div class="card-arrow-top-right"></div>
+                    <div class="card-arrow-bottom-left"></div>
+                    <div class="card-arrow-bottom-right"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-5">
+            <div class="card" style="backdrop-filter:blur(10px);background: rgba(0,0,0,0.3)">
+                <div class="card-body" style="height:220px">
+                    <div class="cardTitle">
+                        فیش حقوقی<span style="font-size: 12px;color: #c4c4c4;"> (جهت دریافت فیش حقوقی، ماه و سال مورد نظر را انتخاب نمایید)</span>
+                    </div>
+                    <div class=" d-flex justify-content-center">
+                        <div id="ticker">
+                            <div id="rotator">
+                                <span>بهمن</span>
+                                <span>اسفند</span>
+                                <span>فروردین</span>
+                                <span>اردیبهشت</span>
+                                <span>خرداد</span>
+                                <span>تیر</span>
+                                <span>مرداد</span>
+                                <span>شهریور</span>
+                                <span>مهر</span>
+                                <span>آبان</span>
+                                <span>آذر</span>
+                                <span>دی</span>
+                            </div>
+                            <div id="result"></div>
+                        </div>
+                        <div id="ticker2">
+                            <div id="rotator2">
+                                <span>1400</span>
+                                <span>1401</span>
+                                <span>1402</span>
+                                <span>1398</span>
+                                <span>1399</span>
+
+                            </div>
+                            <div id="result"></div>
+                        </div>
+                    </div>
+                    <div style="margin-top:-40px">
+                        <button class="btn btn-outline-theme float-start" id="donld" title="دریافت">
+                            <svg style="width:20px" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 13.5l3 3m0 0l3-3m-3 3v-6m1.06-4.19l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-arrow">
+                    <div class="card-arrow-top-left"></div>
+                    <div class="card-arrow-top-right"></div>
+                    <div class="card-arrow-bottom-left"></div>
+                    <div class="card-arrow-bottom-right"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3">
+            <div class="card" style="backdrop-filter:blur(10px);background: rgba(0,0,0,0.3)">
+                <div class="card-body" style="height:220px">
+                    <div class="cardTitle">
+                        رتبه و میزان رشد
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-xl-12">
+                            میزان رشد =<span style="color: #0cff59;font-size: 18px;">
+                                @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-ارزیابی-میزان رشد").mlfval_Value%
+                            </span>
+                        </div>
+                        <div class="col-xl-7">
+                            <div class="mt-5">
+                                رتبه = @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-ارزیابی-رتبه").mlfval_Value
+                                <br />
+
+                                درمیان @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-ارزیابی-جمع نفرات").mlfval_Value مامور
+                            </div>
+                        </div>
+                        <div class="col-xl-4 d-flex justify-content-center">
+                            <img width="100" src="~/Areas/Reporter/Content/MamoorinDashboard/StaffTraining.png" />
+                            <img src="~/Areas/Reporter/Content/download (4).svg" />
+                        </div>
+                    </div>
+                    <br />
+                    <div class="chartStyle" style="height:180px;direction:ltr" id="chartdivRank"></div>
+                </div>
+                <div class="card-arrow">
+                    <div class="card-arrow-top-left"></div>
+                    <div class="card-arrow-top-right"></div>
+                    <div class="card-arrow-bottom-left"></div>
+                    <div class="card-arrow-bottom-right"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-2">
+            <div class="card" style="backdrop-filter:blur(10px);background: rgba(0,0,0,0.3)">
+                <div class="card-body d-flex justify-content-center align-items-center" style="height:220px;overflow:auto">
+                    <div style="text-align: right;
+                                width: fit-content;
+                                border-radius: 10px;
+                                border: 1px solid white;
+                                padding: 2px 8px;">
+
+                        </div>
+                    <div id="wrapper">
+                        <a href="#" id="sharh" data-bs-toggle="modal" data-bs-target="#modalLg" class="my-super-cool-btn">
+                            <div class="dots-container">
+                                <div class="dot"></div>
+                                <div class="dot"></div>
+                                <div class="dot"></div>
+                                <div class="dot"></div>
+                            </div>
+                            <span style="font-size:17px">شرح وظایف</span>
+                        </a>
+                    </div>
+                    <div class="row">
+                            <div class="col-xl-4"></div>
+                            <div class="col-xl-4">
+                                <a href="#" id="sharh" class="" data-bs-toggle="modal" data-bs-target="#modalLg">
+                                    <center>
+                                        <img width="115" style="margin-left:-32px;margin-top:3px" src="~/Areas/Reporter/Content/MamoorinDashboard/JobDescription.png" />
+                                    </center>
+
+
+                                </a>
+                            </div>
+                            <div class="col-xl-4"></div>
+                        </div>
+                        <br />
+                        <br />
+                </div>
+                <div class="card-arrow">
+                    <div class="card-arrow-top-left"></div>
+                    <div class="card-arrow-top-right"></div>
+                    <div class="card-arrow-bottom-left"></div>
+                    <div class="card-arrow-bottom-right"></div>
+                </div>
+            </div>
+        </div>*@
+
+
+
+    <style>
+        @@media only screen and (max-width : 1093px) {
+            .ma {
+                margin-bottom: 8px;
+            }
+
+            .cool {
+                width: 50% !important;
+            }
+        }
+    </style>
+
+    <div class="col-xl-8 col-12 ma">
+        <style>
+            @@media only screen and (max-width : 768px) {
+                .coll {
+                    margin-bottom: 5px !important;
+                }
+
+                .cool {
+                    width: 50% !important;
+                }
+            }
+
+            .small-button {
+                padding: 6px 12px;
+                font-size: 12px;
+                border-radius: 4px;
+                background-color: #04faf7;
+                border: 1px solid #ccc;
+                color: #0d1b38;
+                width: 100%;
+            }
+
+            select {
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='16' style='color:red' fill='aqua' class='bi bi-caret-down-fill' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+                background-repeat: no-repeat;
+                background-position: left center;
+                background-color: inherit;
+                padding-left: 5px;
+            }
+
+            .iranian-month-label {
+                display: inline-block;
+                padding: 10px;
+                border-radius: 4px;
+            }
+        </style>
+
+
+        <div class="card" style="backdrop-filter:blur(10px);background: rgba(0,0,0,0.3);height:100%;    ">
+
+
+            <div class="card-body">
+                <div class="row">
+
+                    <div class="cardTitle ">
+                        <div class="row m-2">
+                            <div class="col-xl-3">
+                                <span style="border-radius:5px;border-right:2px solid #00a6fc ;background:linear-gradient(to right ,transparent,#294c68 50%);padding-right:5px"> فیش حقوقی</span>
+
+                            </div>
+                            <div class="col-xl-1"></div>
+                            <div class="col-xl-4">
+                                <label for="iranian-month-select" style="font-size:13px;color:#04faf7">ازتاریخ</label>
+
+                                <select id="monthYearSelect1" style="    width: 100px; "></select>
+
+                            </div>
+
+                            <div class="col-xl-4">
+                                <label for="iranian-month-select" style="font-size:13px;color:#04faf7">تاتاریخ</label>
+
+                                <select id="monthYearSelect2" style="    width: 100px; "></select>
+
+
+
+
+
+
+
+
+
+
+
+
+                                @*<div class="form-group ">
+                                                                            <style>
+                                                                                select {
+                                                                                    -webkit-appearance: none;
+                                                                                    -moz-appearance: none;
+                                                                                    appearance: none;
+                                                                                    /*اضافه کردن آیکون فلش به عنوان background-image*/
+                                                                                    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='16' style='color:red' fill='aqua' class='bi bi-caret-down-fill' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+                                                                                    background-repeat: no-repeat;
+                                                                                    background-position: left center;
+                                                                                    background-color: inherit;
+                                                                                    /*تنظیم اندازه آیکون فلش*/
+                                                                                    padding-left: 10px;
+                                                                                    color: white;
+                                                                                    font-size: 15PX;
+                                                                                }
+
+                                                                                option {
+                                                                                    color: inherit;
+                                                                                }
+                                                                            </style>
+
+                                                                            <label for="iranian-month-select" style="font-size:13px;color:#04faf7">تا تاریخ</label>
+                                                                            <select style="    border-radius: 5px;
+                                        padding-right: 3px;
+                                    ">
+                                                                                <option value="Farvardin">فروردین 1402 </option>
+                                                                                <option value="Ordibehesht">اردیبهشت 1402</option>
+                                                                                <option value="Khordad">خرداد 1402 </option>
+                                                                                <option value="Tir">تیر 1402</option>
+                                                                                <option value="Mordad">مرداد 1402 </option>
+                                                                                <option value="Shahrivar">شهریور 1402</option>
+                                                                                <option value="Mehr">مهر 1402</option>
+                                                                                <option value="Aban">1402 آبان</option>
+                                                                                <option value="Azar">آذر 1402</option>
+                                                                                <option value="Dey">دی 1402</option>
+                                                                                <option value="Bahman">بهمن 1402</option>
+                                                                                <option value="Esfand">1402 اسفند</option>
+                                                                            </select>
+
+                                                                        </div>*@
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xl-7"></div>
+                        <div class="col-xl-4" style="font-size:10px;"> بازه زمانی شما حداکثر 6 ماه است</div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-xl-4" style="padding-right:5px; color: #04faf7;font-size:15px">دریافت فیش حقوقی:</div>
+                    </div>
+                    <br />
+                    <br />
+
+                    <div id="buttonContainer" class="row"></div>
+
+
+                    @*<div class="btn-group">
+                            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                                Sony
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="#">Tablet</a>
+                                <a class="dropdown-item" href="#">Smartphone</a>
+                                <span class="dropdown-item">بهمن</span>
+                                <span class="dropdown-item">اسفند</span>
+                                <span class="dropdown-item">فروردین</span>
+                                <span class="dropdown-item">اردیبهشت</span>
+                                <span class="dropdown-item">خرداد</span>
+                                <span class="dropdown-item">تیر</span>
+                                <span class="dropdown-item">مرداد</span>
+                                <span class="dropdown-item">شهریور</span>
+                                <span class="dropdown-item">مهر</span>
+                                <span class="dropdown-item">آبان</span>
+                                <span class="dropdown-item">آذر</span>
+                                <span class="dropdown-item">دی</span>
+                            </div>
+                        </div>*@
+
+                    @*<div class=" d-flex justify-content-center">
+                            <div id="ticker">
+                                <div id="rotator">
+                                    <span>بهمن</span>
+                                    <span>اسفند</span>
+                                    <span>فروردین</span>
+                                    <span>اردیبهشت</span>
+                                    <span>خرداد</span>
+                                    <span>تیر</span>
+                                    <span>مرداد</span>
+                                    <span>شهریور</span>
+                                    <span>مهر</span>
+                                    <span>آبان</span>
+                                    <span>آذر</span>
+                                    <span>دی</span>
+                                </div>
+                                <div id="result"></div>
+                            </div>
+                            <div id="ticker2">
+                                <div id="rotator2">
+                                    <span>1400</span>
+                                    <span>1401</span>
+                                    <span>1402</span>
+                                    <span>1398</span>
+                                    <span>1399</span>
+
+                                </div>
+                                <div id="result"></div>
+                            </div>
+                        </div>*@
+                    @*<div style="margin-top:-40px">
+                            <button class="btn btn-outline-theme float-start" id="donld" title="دریافت">
+                                <svg style="width:20px" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 13.5l3 3m0 0l3-3m-3 3v-6m1.06-4.19l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z" />
+                                </svg>
+                            </button>
+                        </div>*@
+                    @*</div>*@
+                </div>
+            </div>
+            <div class="card-arrow">
+                <div class="card-arrow-top-left"></div>
+                <div class="card-arrow-top-right"></div>
+                <div class="card-arrow-bottom-left"></div>
+                <div class="card-arrow-bottom-right"></div>
+            </div>
+
+
+        </div>
+    </div>
+
+
+
+
+    <div class="col-12 col-xl-4">
+        <div class="card" style="backdrop-filter:blur(10px);background: rgba(0,0,0,0.3) ;height:100%;">
+            <div class="card-body" @*style="height:195px"*@>
+                <div class="row-m-2">
+
+
+                    <div class="col-xl-8">
+                        <span style="border-radius:5px;border-right:2px solid #00a6fc ;background:linear-gradient(to right ,transparent,#294c68 32%);padding-right:5px">  مهارت های جانبی</span>
+                    </div>
+
+                </div>
+                <br />
+                <br />
+                <div class="row">
+                    <div class="col-12 col-xl-6">
+                        <span style="color:#e4947b;padding-right:5px">  تخصص پایه:قرایت دیماندی</span>
+                    </div>
+                    <div class="col-12 col-xl-6">
+                        <style>
+                            .progress {
+                                position: relative;
+                                /*margin: -64px;
+                                float: left;*/
+                                text-align: center;
+                                height: 48px;
+                                background-color: inherit;
+                                margin-top: 20px;
+                            }
+
+                            .barOverflow {
+                                /* Wraps the rotating .bar */
+                                position: relative;
+                                overflow: hidden;
+                                /* Comment this line to understand the trick */
+                                width: 90px;
+                                height: 45px;
+                                /* Half circle (overflow) */
+                                margin-bottom: -14px;
+                                /* bring the numbers up */
+                            }
+
+                            .bar2 {
+                                position: absolute;
+                                top: 0;
+                                left: 0;
+                                width: 90px;
+                                height: 90px;
+                                /* full circle! */
+                                border-radius: 50%;
+                                box-sizing: border-box;
+                                border: 20px solid #0d1b38;
+                                /* half gray, */
+                                border-bottom-color: #172fd1;
+                                /* half azure */
+                                border-right-color: #172fd1;
+                            }
+
+                            @@media only screen and (max-width : 768px) {
+                                .textD {
+                                    /*left: 60% !important;*/
+                                    margin: 28px !important;
+                                    margin-right: 39px !important;
+                                }
+
+                                .percent2 {
+                                    /*left: 67% !important;*/
+                                    margin: 28px !important;
+                                    margin-right: 28px !important;
+                                }
+                            }
+
+                            .textD {
+                                text-align: center;
+                                position: absolute;
+                                margin: 28px;
+                                margin-right: 39px;
+                                /*left: 60%;
+                                top: 60%;*/
+                                /* top: 50%; /
+                                / z-index: 1; */
+                                color: aqua;
+                                font-size: 14px;
+                            }
+                        </style>
+
+                        <div class="progress">
+                            <div class="barOverflow">
+                                <div class="bar2"></div>
+                            </div>
+                            <span class="textD">@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-مهارت های جانبی").mlfval_Value%</span></span><a class="percent2" style="text-align: center;
+                                position: absolute;
+                             margin: 28px;
+    margin-right: 26px;
+                                /* top: 50%; /
+                                / z-index: 1; */
+                                font-size:14px;
+                                color: aqua;">% </a>
+                        </div>
+
+
+                        @*<span style="border-radius: 50px;
+                            border: 1px solid white;
+                            padding: 10px;
+                            font-weight: bolder;
+                            font-size: 20px;">@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-مهارت های جانبی").mlfval_Value%</span>*@
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="card-arrow">
+                <div class="card-arrow-top-left"></div>
+                <div class="card-arrow-top-right"></div>
+                <div class="card-arrow-bottom-left"></div>
+                <div class="card-arrow-bottom-right"></div>
+            </div>
+        </div>
+
+
+    </div>
+    @*
+
+        @*<div class="row" dir="ltr" style="margin:10px">
+
+                <div class="col-xl-12">
+                    <div class="card" style="background-color:#123">
+                        <div class="card-body">
+                            <div style="text-align: right;
+                                    width: fit-content;
+                                    border-radius: 10px;
+                                    border: 1px solid white;
+                                    padding: 2px 8px;">
+                                فیش حقوقی
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-1"> <img width="100" src="~/Areas/Reporter/Content/MamoorinDashboard/salary.png" /></div>
+                                <div class="col-xl-11">
+                                    <style>
+                                        div.scrollmenu {
+                                            overflow: auto;
+                                            white-space: nowrap;
+                                            text-align: center;
+                                        }
+
+                                            div.scrollmenu a {
+                                                display: inline-block;
+                                                color: white;
+                                                text-align: center;
+                                                text-decoration: none;
+                                                border-radius: 10px;
+                                                margin: 0px;
+                                                width: 90px;
+                                                background-image: linear-gradient(to right, #03111a, #0D1C59);
+                                                padding: 7px 11px 6px 11px;
+                                            }
+
+                                                div.scrollmenu a:hover {
+                                                    background-color: #777;
+                                                }
+                                    </style>
+                                    <div class="row">
+                                        <div class="col-xl-6">
+                                            <div style="text-align:center">سال 1402</div>
+                                            <div class="scrollmenu">
+                                                <a class="fish" id="01">فروردین</a>
+                                                <a class="fish" id="02">اردیبهشت</a>
+                                                <a class="fish">خرداد</a>
+                                                <a class="fish">تیر</a>
+                                                <a class="fish">مرداد</a>
+                                                <a class="fish">شهریور</a>
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-6">
+                                            <div style="text-align:center">سال 1401</div>
+                                            <div class="scrollmenu">
+
+                                                <a class="fish">شهریور</a>
+                                                <a class="fish">مهر</a>
+                                                <a class="fish">آبان</a>
+                                                <a class="fish" id="09">آذر</a>
+                                                <a class="fish" id="10">دی</a>
+                                                <a class="fish" id="11">بهمن</a>
+                                                <a class="fish" id="12">اسفند</a>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+
+
+                        </div>
+                        <div class="card-arrow">
+                            <div class="card-arrow-top-left"></div>
+                            <div class="card-arrow-top-right"></div>
+                            <div class="card-arrow-bottom-left"></div>
+                            <div class="card-arrow-bottom-right"></div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>*@
+</div>
+
+
+@*<div class="row" dir="ltr" style="margin:10px">
+
+        <div class="col-xl-12">
+            <div class="card" style="background-color:#123">
+                <div class="card-body">
+                    <div style="text-align: right;
+                            width: fit-content;
+                            border-radius: 10px;
+                            border: 1px solid white;
+                            padding: 2px 8px;">
+                        فیش حقوقی
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-1"> <img width="100" src="~/Areas/Reporter/Content/MamoorinDashboard/salary.png" /></div>
+                        <div class="col-xl-11">
+                            <style>
+                                div.scrollmenu {
+                                    overflow: auto;
+                                    white-space: nowrap;
+                                    text-align: center;
+                                }
+
+                                    div.scrollmenu a {
+                                        display: inline-block;
+                                        color: white;
+                                        text-align: center;
+                                        text-decoration: none;
+                                        border-radius: 10px;
+                                        margin: 0px;
+                                        width: 90px;
+                                        background-image: linear-gradient(to right, #03111a, #0D1C59);
+                                        padding: 7px 11px 6px 11px;
+                                    }
+
+                                        div.scrollmenu a:hover {
+                                            background-color: #777;
+                                        }
+                            </style>
+                            <div class="row">
+                                <div class="col-xl-6">
+                                    <div style="text-align:center">سال 1402</div>
+                                    <div class="scrollmenu">
+                                        <a class="fish" id="01">فروردین</a>
+                                        <a class="fish" id="02">اردیبهشت</a>
+                                        <a class="fish">خرداد</a>
+                                        <a class="fish">تیر</a>
+                                        <a class="fish">مرداد</a>
+                                        <a class="fish">شهریور</a>
+                                    </div>
+                                </div>
+                                <div class="col-xl-6">
+                                    <div style="text-align:center">سال 1401</div>
+                                    <div class="scrollmenu">
+
+                                        <a class="fish">شهریور</a>
+                                        <a class="fish">مهر</a>
+                                        <a class="fish">آبان</a>
+                                        <a class="fish" id="09">آذر</a>
+                                        <a class="fish" id="10">دی</a>
+                                        <a class="fish" id="11">بهمن</a>
+                                        <a class="fish" id="12">اسفند</a>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+
+                </div>
+                <div class="card-arrow">
+                    <div class="card-arrow-top-left"></div>
+                    <div class="card-arrow-top-right"></div>
+                    <div class="card-arrow-bottom-left"></div>
+                    <div class="card-arrow-bottom-right"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>*@
+
+
+
+<div class="row m-2">
+    <style>
+        /* Your existing CSS styles */
+        /* ... */
+        /* Make the card take the whole page when enlarged */
+
+        #cardContainer.enlarged {
+            font-size: 50px;
+            height: 80px;
+        }
+        /* Additional style for the Enlarge/Restore button */
+
+        #enlargeButton {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background-color: #4895EF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+    </style>
+
+    <div class="col-xl-6    " id="cardContainer">
+        <div class="card xxx" style="backdrop-filter:blur(10px);background: rgba(0,0,0,0.3);">
+            <style>
+                /*@@media only screen and (max-width : 768px) {
+                    .xxx {
+                        height: 240px !important;
+                    }
+                }*/
+            </style>
+            <div class="card-body position-relative" @*style="height:180px;*@>
+                <div class=" cardTitle" ">
+                    <div class="row m-2">
+                        <div class="col-xl-4">
+                            <span style="border-radius:5px;border-right:2px solid #00a6fc ;background:linear-gradient(to right ,transparent,#294c68 50%);padding-right:5px">
+                                تراز مالی
+                            </span>
+
+                        </div>
+                        <div class=" col-xl-2"></div>
+
+                        <div class="col-xl-6">
+                            @{ int x = Convert.ToInt32(Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-مانده مطالبات").mlfval_Value);
+                                int y = Convert.ToInt32(Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-مانده ذخایر").mlfval_Value);
+                                int z = Convert.ToInt32(Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-مانده اقساط").mlfval_Value);
+                                int l = Convert.ToInt32(Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-مانده پاداش و جرایم").mlfval_Value);}
+
+                            @if (Convert.ToInt32(x + y + z) > 0)
+                            {
+                                <div class="d-flex justify-content-end align-items-center" style="margin-bottom:-20px">
+                                    <span style="color: #90e2ee;
+        font-size: 15px
+    ">
+                                        @*<i class="bi bi-chevron-left">  <i class="bi bi-chevron-left">   <i class="bi bi-chevron-left"></i></i>  </i>*@
+
+
+                                        <i class="bi bi-chevron-double-left"></i>
+                                    </span>
+
+                                    <span class="mx-2 number" style="color:#4895EF;font-size:20px">
+                                        @Convert.ToInt32(x + y + z + l)
+                                    </span>
+                                    <span style="color:#4895EF;font-size:12px">ریال بستانکار</span>
+
+                                    <span style="color: #90e2ee; font-size: 15px "> <i class="bi bi-chevron-double-right"></i></span>
+
+
+                                </div>
+
+                            }
+                            else
+                            {
+                                <div class="d-flex justify-content-end align-items-center" style="margin-bottom:-20px">
+                                    <span style="color: #90e2ee;
+        font-size: 15px
+    ">
+                                        <i class="bi bi-chevron-double-left"></i>
+                                    </span>
+                                    <span class="mx-2 number" style="        color: #4895EF;
+        font-size: 20px">
+
+                                        @Convert.ToInt32(Convert.ToInt32(x + y + z + l) * -1)
+                                    </span>
+                                    <span style="color:#4895EF;font-size:12px">   ریال بدهکار</span>
+
+                                    <span style="color: #90e2ee; font-size: 15px "> <i class="bi bi-chevron-double-right"></i></span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="row mt-4" dir="rtl">
+                    <div class="col-xl-12">
+                        <style>
+                            table {
+                                border-collapse: separate;
+                                border-spacing: 0;
+                            }
+
+                            tbody tr td:first-child {
+                                border-top-right-radius: 10px;
+                                border-bottom-right-radius: 10px
+                            }
+
+                            tbody tr td:last-child {
+                                border-top-left-radius: 10px;
+                                border-bottom-left-radius: 10px
+                            }
+
+                            thead tr th:first-child {
+                                border-top-right-radius: 10px;
+                                border-bottom-right-radius: 10px
+                            }
+
+                            thead tr th:last-child {
+                                border-top-left-radius: 10px;
+                                border-bottom-left-radius: 10px
+                            }
+
+                            th,
+                            td {
+                                padding: 10px;
+                            }
+
+                            thead th {
+                                background-color: #0d1b38 !important;
+                                color: #e4947b;
+                            }
+
+                            tbody tr:nth-child(odd) {
+                                border-radius: 30px;
+                            }
+
+                            tbody tr:nth-child(even) {
+                                border-radius: 40px;
+                                color: #edfa63;
+                            }
+
+
+                            tbody tr:first-child {
+                                border-radius: 45px;
+                            }
+
+                            .row {
+                                --bs-gutter-x: 11px;
+                                --bs-gutter-y: 0;
+                            }
+
+                            .table > :not(caption) > * > * {
+                                padding: 0.5rem 0.5rem;
+                                /* background-color: #0d1b38; */
+                                border-bottom-width: 1px;
+                                box-shadow: inset 0 0 0 9999px var(--bs-table-accent-bg);
+                            }
+
+                            @@media only screen and (max-width : 768px) {
+
+                                th {
+                                    font-size: 10px;
+                                }
+                            }
+                        </style>
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>مانده مطالبات</th>
+                                        <th>مانده ذخایر</th>
+                                        <th>مانده اقساط</th>
+                                        <th>مانده پاداش و جرایم</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody style="text-align:center">
+                                    <tr>
+                                        <td class="numbers">@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-مانده مطالبات").mlfval_Value </td>
+                                        <td class="numbers">@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-مانده ذخایر").mlfval_Value </td>
+                                        <td class="numbers">@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-مانده اقساط").mlfval_Value  </td>
+                                        <td class="numbers">@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-مانده پاداش و جرایم").mlfval_Value  </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                    @*<div class="col-xl-3 d-flex justify-content-center ">*@
+                    @*<img width="150" src="~/Areas/Reporter/Content/MamoorinDashboard/DebetAndCredit.png" />*@
+                    @*<img style="width:80px;margin-top:10px" src="~/Areas/Reporter/Content/download.svg" />*@
+                    @*</div>*@
+
+
+                </div>
+
+                @*<div style="color:lightgreen;margin-top:-40px;font-size:20px"> 109.136.068 </div>
+                    <br />
+                    <div style="color:lightgreen;margin-top:-16px;font-size:20px">  ریال بستانکار </div>*@
+
+
+
+            </div>
+            <div class="card-arrow">
+                <div class="card-arrow-top-left"></div>
+                <div class="card-arrow-top-right"></div>
+                <div class="card-arrow-bottom-left"></div>
+                <div class="card-arrow-bottom-right"></div>
+            </div>
+        </div>
+
+        <br />
+
+
+        <div class="card" style="        backdrop-filter: blur(10px);
+        background: rgba(0,0,0,0.3);
+        margin-bottom: 5px;
+">
+            <div class="card-body position-relative" style="height:71px;overflow:auto;direction:ltr">
+
+
+                <div class="row-m-2">
+                    <div class=" col-xl-5">
+                        <div class="position-absolute cardTitle" style="right:25px">
+                            <span class="xz" style="border-radius:5px;border-right:2px solid #00a6fc ;background:linear-gradient(to right ,transparent,#294c68 75%);padding-right:5px;">
+                                شرح وظایف
+                            </span>
+
+                        </div>
+                    </div>
+                    @*<div class="col-xl-3"></div>*@
+                    <div class=" col-xl-5 zz">
+                        @*<button class="small-button "><a href="#" id="sharh"data-bs-target="#modalLg"><span style="   color: #0d1b38;">دریافت فایل شرح وظایف<i class="bi bi-download"></i> </span> </a>   </button>*@
+                        <a href="#" id="sharh" data-bs-toggle="modal" data-bs-target="#modalLg">
+
+                            <span class="ol" style="font-size:10px ; @*background-color: #04faf7;color: #0d1b38;border-radius: 6px;*@    padding: 5px;margin: 7px;"><button class="small-button xooo"> دریافت فایل شرح وظایف<i class="bi bi-download"></i> </button></span>
+                        </a>
+                        <style>
+                            @@media only screen and (max-width : 992px) {
+                                .zz {
+                                    width: 45%;
+                                }
+
+                                .xz {
+                                    margin: -5px !important;
+                                }
+
+                                .ol {
+                                    font-size: 8px !important;
+                                    margin: 0px !important;
+                                    padding: 1px !important;
+                                }
+
+                                .xooo {
+                                    width: 132% !important;
+                                }
+                            }
+
+                            @@media only screen and (max-width : 1093px) {
+                                .zz {
+                                    width: 35%;
+                                }
+
+                                .xz {
+                                    margin: -5px !important;
+                                }
+
+                                .ol {
+                                    font-size: 8px !important;
+                                    margin: 0px !important;
+                                    padding: 1px !important;
+                                }
+
+                                .xooo {
+                                    width: 132% !important;
+                                }
+                            }
+
+                            .small-button {
+                                padding: 6px 12px;
+                                font-size: 12px;
+                                border-radius: 4px;
+                                background-color: #04faf7;
+                                border: 1px solid #ccc;
+                                color: #0d1b38;
+                            }
+                        </style>
+                    </div>
+
+
+
+                    @*<div class="col-xl-3">
+                            <style>
+                                .button {
+                                    display: inline-block;
+                                    border: none;
+
+                                    /*background-color: #61c1f4;*/
+                                    /*background-image: linear-gradient(#56eofa, #055ad7);*/
+                                    background-image: linear-gradient(#56e0fa, #055ad7);
+                                    cursor: pointer;
+                                }
+                            </style>
+                            <button class="button" onclick="DownloadPDF()">
+
+                                <a herf="#" ;"><i class="bi bi-box-arrow-in-down"></i> دریافت قرار داد</a>
+                            </button>
+                        </div>*@
+                </div>
+
+
+
+
+            </div>
+            <div class="card-arrow">
+                <div class="card-arrow-top-left"></div>
+                <div class="card-arrow-top-right"></div>
+                <div class="card-arrow-bottom-left"></div>
+                <div class="card-arrow-bottom-right"></div>
+            </div>
+
+        </div>
+    </div>
+    <style>
+        @@media only screen and (max-width : 768px) {
+            .zxxxxx {
+                font-size: 13px !important;
+                padding-right: 1px !important;
+            }
+        }
+    </style>
+    <div class=" col-xl-6">
+        <div class="card" style="backdrop-filter: blur(10px);
+        background: rgba(0,0,0,0.3);
+        height: 100%
+
+   ">
+            <div class="card-body position-relative" style="height:180px;overflow:auto;direction:ltr">
+                <div class="row-m-2 ">
+                    <div class=" col-xl-6">
+                        <div class="position-absolute cardTitle" style="right:25px">
+                            <span class="zxxxxx" style="        border-radius: 5px;
+        border-right: 2px solid #00a6fc;
+        background: linear-gradient(to right,transparent,#294c68 100%);
+        padding-right: 5px;
+        font-size: 15px">
+                                قرارداد های امضا شده
+                            </span>
+
+                        </div>
+                    </div>
+                    <div class=" col-xl-3"></div>
+                    <div class=" col-xl-3 zz">
+                        <button class="small-button btn form-control buttonGeneral " id="qarardademzashode"> مشاهده همه </button>
+
+                    </div>
+
+
+
+                    @*<div class="col-xl-3">
+                            <style>
+                                .button {
+                                    display: inline-block;
+                                    border: none;
+
+                                    /*background-color: #61c1f4;*/
+                                    /*background-image: linear-gradient(#56eofa, #055ad7);*/
+                                    background-image: linear-gradient(#56e0fa, #055ad7);
+                                    cursor: pointer;
+                                }
+                            </style>
+                            <button class="button" onclick="DownloadPDF()">
+
+                                <a herf="#" ;"><i class="bi bi-box-arrow-in-down"></i> دریافت قرار داد</a>
+                            </button>
+                        </div>*@
+                </div>
+                <div class="row mt-4" dir="rtl">
+                    <div class="col-xl-12">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>شماره قرارداد</th>
+                                        <th>تاریخ شروع</th>
+                                        <th>تاریخ خاتمه</th>
+                                        <th>وضعیت</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-شماره قرارداد1").mlfval_Value</td>
+                                        <td>@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-تاریخ شروع قرارداد1").mlfval_Value</td>
+                                        <td>@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-تاریخ خاتمه قرارداد1").mlfval_Value</td>
+                                        @if (Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-وضعیت قرارداد1").mlfval_Value == "0")
+                                        {
+
+                                            @*<td><i class="bi bi-check" style="color:red"></i></td>*@
+                                            <td><i class="bi bi-record-btn" style="color:#EF233A;font-size:20px;"></i></td>
+                                        }
+                                        else
+                                        {
+                                            @*<td><i class="bi bi-check" style="color:green"></i></td>*@
+                                            <td><i class="bi bi-record-btn" style="color:#05C800;font-size:20px;"></i></td>
+
+                                        }
+                                    </tr>
+                                    <tr>
+                                        <td>@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-شماره قرارداد2").mlfval_Value</td>
+                                        <td>@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-تاریخ شروع قرارداد2").mlfval_Value</td>
+                                        <td>@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-تاریخ خاتمه قرارداد2").mlfval_Value</td>
+                                        @if (Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-وضعیت قرارداد2").mlfval_Value == "0")
+                                        {
+
+                                            <td><i class="bi bi-record-btn" style="color:#EF233A;;font-size:20px;"></i></td>
+                                        }
+                                        else
+                                        {
+                                            <td><i class="bi bi-record-btn" style="color:#05C800;font-size:20px;"></i></td>
+
+                                        }
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                    @*<div class="col-xl-4 d-flex justify-content-center">
+                        <img width="100" style="margin-top:30px;" src="~/Areas/Reporter/Content/MamoorinDashboard/contract.png" />
+                        <img style="width:80px;" src="~/Areas/Reporter/Content/download (3).svg" id="qaraddad" />
+                        </div>*@
+
+
+                </div>
+
+            </div>
+            <div class="card-arrow">
+                <div class="card-arrow-top-left"></div>
+                <div class="card-arrow-top-right"></div>
+                <div class="card-arrow-bottom-left"></div>
+                <div class="card-arrow-bottom-right"></div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+
+<div class="row m-2">
+    <div class="col-xl-8 coll ma">
+        <style>
+            canvas {
+                height: 221px !important;
+                top: 40px !important;
+            }
+
+            @@media only screen and (max-width : 768px) {
+                .coll {
+                    margin-bottom: 5px !important;
+                }
+            }
+        </style>
+
+
+        <div class="card" style="backdrop-filter: blur(10px); background: rgba(0,0,0,0.3)">
+            <div class="card-body " style="direction: ltr">
+
+                <div class="row m-2 " style="direction:rtl">
+                    <div class="col-xl-3">
+                        <span style="border-radius:5px;border-right:2px solid #00a6fc ;background:linear-gradient(to right ,transparent,#294c68 100%);padding-right:5px;">  خالص درآمد ماهیانه</span>
+
+                    </div>
+                    <div class="col-xl-3" style="font-size:11px;">قیمت ها به ریال است </div>
+
+                    <div class="col-xl-3">
+                        <div class="form-group ">
+                            <style>
+                                .iranian-month-label {
+                                    display: inline-block;
+                                    padding: 8px;
+                                    border-radius: 4px;
+                                }
+                            </style>
+                            <label for="iranian-month-select" style="font-size:11px;color:#04faf7">ازتاریخ</label>
+                            <select id="iranian-month-select" style="padding-right: 3px;width: 92px;">
+                                <option value="Bahman">بهمن 1401</option>
+                                <option value="Esfand">1401 اسفند</option>
+                                <option value="Farvardin">فروردین 1402 </option>
+                                <option value="Ordibehesht">اردیبهشت 1402</option>
+                                <option value="Khordad">خرداد 1402 </option>
+                                <option value="Tir">تیر 1402</option>
+                                <option value="Mordad">مرداد 1402 </option>
+                                <option value="Shahrivar">شهریور 1402</option>
+                                <option value="Mehr">مهر 1402</option>
+                                <option value="Aban">1402 آبان</option>
+                                <option value="Azar">آذر 1402</option>
+                                <option value="Dey">دی 1402</option>
+                                <option value="Bahman">بهمن 1402</option>
+                                <option value="Esfand">1402 اسفند</option>
+                            </select>
+
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3">
+                        <div class="form-group ">
+                            <style>
+                                select {
+                                    -webkit-appearance: none;
+                                    -moz-appearance: none;
+                                    appearance: none;
+                                    /*اضافه کردن آیکون فلش به عنوان background-image*/
+                                    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='16' style='color:red' fill='aqua' class='bi bi-caret-down-fill' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+                                    background-repeat: no-repeat;
+                                    background-position: left center;
+                                    background-color: inherit;
+                                    /*تنظیم اندازه آیکون فلش*/
+                                    padding-left: 4px;
+                                    color: white;
+                                    font-size: 12PX;
+                                }
+
+                                option {
+                                    color: inherit;
+                                }
+                            </style>
+
+                            <label for="iranian-month-select" style="font-size:11px;color:#04faf7">تا تاریخ</label>
+                            <select style="padding-right: 3px;width: 92px;">
+                                <option value="Bahman">بهمن 1401</option>
+                                <option value="Esfand">1401 اسفند</option>
+                                <option value="Farvardin">فروردین 1402 </option>
+                                <option value="Ordibehesht">اردیبهشت 1402</option>
+                                <option value="Khordad">خرداد 1402 </option>
+                                <option value="Tir">تیر 1402</option>
+                                <option value="Mordad">مرداد 1402 </option>
+                                <option value="Shahrivar">شهریور 1402</option>
+                                <option value="Mehr">مهر 1402</option>
+                                <option value="Aban">1402 آبان</option>
+                                <option value="Azar">آذر 1402</option>
+                                <option value="Dey">دی 1402</option>
+                                <option value="Bahman">بهمن 1402</option>
+                                <option value="Esfand">1402 اسفند</option>
+                            </select>
+
+                        </div>
+                    </div>
+
+                </div>
+                <div class="chartsty" id="chartdiv123" style="height: 250px;"></div>
+            </div>
+            <div class="card-arrow">
+                <div class="card-arrow-top-left"></div>
+                <div class="card-arrow-top-right"></div>
+                <div class="card-arrow-bottom-left"></div>
+                <div class="card-arrow-bottom-right"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4 ccc">
+        <style>
+            @@media only screen and (max-width: 768px) {
+                .cc {
+                    height: 218px !important;
+                }
+
+                .ccc {
+                    width: 100%;
+                }
+            }
+
+            @@media only screen and (max-width: 1265px) {
+                .xd {
+                    font-size: 9px;
+                }
+            }
+        </style>
+        <div class="card" style="backdrop-filter: blur(10px); background: rgba(0, 0, 0, 0.3); height: 100%">
+            <div class="card-body cc" style="height: 220px">
+                <div class="cardTitle">
+                    <span style="border-radius: 5px; border-right: 2px solid #00a6fc; background: linear-gradient(to right, transparent, #294c68 44%); padding-right: 5px">
+                        <i class="bi bi-people-fill" style="color: aqua;"></i> رتبه و میزان رشد
+                    </span>
+                </div>
+
+                <div class="row mt-2">
+                    <div class="col-xl-4 col-4">
+                        <div class="row">
+                            <div class="col-xl-12 col-12">
+                                میزان رشد
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-3 xd">
+                        ..........
+                    </div>
+                    <div class="col-xl-4 col-4">
+                        <div class="row">
+                            <div class="col-xl-12 col-12">
+                                <span style="font-size: 15px;">
+                                    @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-ارزیابی-میزان رشد").mlfval_Value%
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-1 col-1">
+                        <div class="row">
+                            <div class="col-xl-12 col-12">
+                                <i class="bi bi-caret-up-fill" style="color: #05c800"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <br />
+                <div class="row">
+                    <div class="col-xl-4 col-4">
+                        <div class="row">
+                            <div class="col-xl-12 col-12">
+                                رتبه
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-3 xd">
+                        ..........
+                    </div>
+                    <div class="col-xl-4 col-4">
+                        <div class="row">
+                            <div class="col-xl-12 col-12">
+                                <span style="font-size: 15px;">
+                                    @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-ارزیابی-رتبه").mlfval_Value
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-1 col-1">
+                        <div class="row">
+                            <div class="col-xl-12 col-12">
+                                <i class="bi bi-caret-down-fill" style="color: #ef233a"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <br />
+                <div class="row">
+                    <div class="col-xl-4 col-4">
+                        <div class="row">
+                            <div class="col-xl-12 col-12">
+                                تعداد کل نفرات
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-3 xd">
+                        ..........
+                    </div>
+                    <div class="col-xl-4 col-4">
+                        <div class="row">
+                            <div class="col-xl-12 col-12">
+                                <span style="font-size: 15px;">
+                                    @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-ارزیابی-جمع نفرات").mlfval_Value
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-1 col-1"></div>
+                </div>
+
+                <br />
+                <div class="chartStyle" style="height: 180px; direction: ltr" id="chartdivRank"></div>
+            </div>
+            <div class="card-arrow">
+                <div class="card-arrow-top-left"></div>
+                <div class="card-arrow-top-right"></div>
+                <div class="card-arrow-bottom-left"></div>
+                <div class="card-arrow-bottom-right"></div>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+<div class="row m-2">
+    @*<div class="col-xl-6">
+            <div class="card" style="backdrop-filter:blur(10px);background: rgba(0,0,0,0.3)">
+                <div class="card-body position-relative" style="height:180px;overflow:auto;direction:ltr">
+                    <div class="position-absolute cardTitle" style="right:25px">
+                        مانده تراز مالی
+                    </div>
+                    <div class="row mt-4" dir="rtl">
+                        <div class="col-xl-9">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>مانده مطالبات</th>
+                                            <th>مانده ذخایر</th>
+                                            <th>مانده اقساط</th>
+                                            <th>مانده پاداش و جرایم</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody style="text-align:center">
+                                        <tr>
+                                            <td class="numbers">@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-مانده مطالبات").mlfval_Value </td>
+                                            <td class="numbers">@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-مانده ذخایر").mlfval_Value </td>
+                                            <td class="numbers">@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-مانده اقساط").mlfval_Value  </td>
+                                            <td class="numbers">@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-مانده پاداش و جرایم").mlfval_Value  </td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                        <div class="col-xl-3 d-flex justify-content-center ">
+                            <img width="150" src="~/Areas/Reporter/Content/MamoorinDashboard/DebetAndCredit.png" />
+                            <img style="width:80px;margin-top:10px" src="~/Areas/Reporter/Content/download.svg" />
+                        </div>
+
+
+                    </div>
+
+                    <div style="color:lightgreen;margin-top:-40px;font-size:20px"> 109.136.068 </div>
+                        <br />
+                        <div style="color:lightgreen;margin-top:-16px;font-size:20px">  ریال بستانکار </div>
+                    @{ int x = Convert.ToInt32(Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-مانده مطالبات").mlfval_Value);
+                        int y = Convert.ToInt32(Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-مانده ذخایر").mlfval_Value);
+                        int z = Convert.ToInt32(Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-مانده اقساط").mlfval_Value);
+                        int l = Convert.ToInt32(Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-مانده پاداش و جرایم").mlfval_Value);}
+
+                    @if (Convert.ToInt32(x + y + z) > 0)
+                    {
+                        <div class="d-flex justify-content-end align-items-center" style="margin-bottom:-20px">
+
+                            ریال بستانکار
+                            <span class="mx-2 number" style="color:#90e2ee;font-size:20px">
+                                @Convert.ToInt32(x + y + z + l)
+
+
+                            </span>
+                        </div>
+
+                    }
+                    else
+                    {
+                        <div class="d-flex justify-content-end align-items-center" style="margin-bottom:-20px">
+                            ریال بدهکار
+                            <span class="mx-2 number" style="color:#90e2ee;font-size:20px">
+
+                                @Convert.ToInt32(Convert.ToInt32(x + y + z + l) * -1)
+                            </span>
+
+                        </div>
+                    }
+
+
+                </div>
+                <div class="card-arrow">
+                    <div class="card-arrow-top-left"></div>
+                    <div class="card-arrow-top-right"></div>
+                    <div class="card-arrow-bottom-left"></div>
+                    <div class="card-arrow-bottom-right"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6">
+            <div class="card" style="backdrop-filter:blur(10px);background: rgba(0,0,0,0.3)">
+                <div class="card-body position-relative" style="height:180px;overflow:auto;direction:ltr">
+
+                    <div id="qarardademzashode" class="position-absolute cardTitle" style="right:25px">
+                        قرارداد های امضا شده
+                    </div>
+
+                    <div class="row mt-4" dir="rtl">
+                        <div class="col-xl-8">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>شماره قرارداد</th>
+                                            <th>تاریخ شروع</th>
+                                            <th>تاریخ خاتمه</th>
+                                            <th>وضعیت</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-شماره قرارداد1").mlfval_Value</td>
+                                            <td>@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-تاریخ شروع قرارداد1").mlfval_Value</td>
+                                            <td>@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-تاریخ خاتمه قرارداد1").mlfval_Value</td>
+                                            @if (Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-وضعیت قرارداد1").mlfval_Value == "0")
+                                            {
+
+                                                <td><i class="bi bi-check" style="color:red"></i></td>
+                                            }
+                                            else
+                                            {
+                                                <td><i class="bi bi-check" style="color:green"></i></td>
+
+                                            }
+                                        </tr>
+                                        <tr>
+                                            <td>@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-شماره قرارداد2").mlfval_Value</td>
+                                            <td>@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-تاریخ شروع قرارداد2").mlfval_Value</td>
+                                            <td>@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-تاریخ خاتمه قرارداد2").mlfval_Value</td>
+                                            @if (Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-وضعیت قرارداد2").mlfval_Value == "0")
+                                            {
+
+                                                <td><i class="bi bi-check" style="color:red"></i></td>
+                                            }
+                                            else
+                                            {
+                                                <td><i class="bi bi-check" style="color:green"></i></td>
+
+                                            }
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                        <div class="col-xl-4 d-flex justify-content-center">
+                            <img width="100" style="margin-top:30px;" src="~/Areas/Reporter/Content/MamoorinDashboard/contract.png" />
+                            <img style="width:80px;" src="~/Areas/Reporter/Content/download (3).svg" id="qaraddad" />
+                        </div>
+
+
+                    </div>
+
+                </div>
+                <div class="card-arrow">
+                    <div class="card-arrow-top-left"></div>
+                    <div class="card-arrow-top-right"></div>
+                    <div class="card-arrow-bottom-left"></div>
+                    <div class="card-arrow-bottom-right"></div>
+                </div>
+            </div>
+
+        </div>*@
+</div>
+@*
+    <div class="row m-2">
+       <div class="col-xl-2">
+                    <div class="card" style="background-color:#123">
+                        <div class="card-body">
+                            <div style="text-align: right;
+                                    width: fit-content;
+                                    border-radius: 10px;
+                                    border: 1px solid white;
+                                    padding: 2px 8px;">
+                                مهارت های جانبی
+                            </div> <br />
+                            <br /> <br />
+                            <img width="100" style="margin-bottom:8px;" src="~/Areas/Reporter/Content/Dashbard2Images/multiTask.png" />
+
+                            <span style="border-radius: 50px;
+                border: 1px solid white;
+                padding: 10px;
+                font-weight: bolder;
+                font-size: 20px;">@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-مهارت های جانبی").mlfval_Value%</span>
+            </div>
+            <div class="card-arrow">
+                <div class="card-arrow-top-left"></div>
+                <div class="card-arrow-top-right"></div>
+                <div class="card-arrow-bottom-left"></div>
+                <div class="card-arrow-bottom-right"></div>
+            </div>
+            </div>
+
+            </div>
+
+
+    </div>*@
+
+@*<div class="row" dir="ltr" style="margin:10px">
+
+        <div class="col-xl-12">
+            <div class="card" style="background-color:#123">
+                <div class="card-body">
+                    <div style="text-align: right;
+                            width: fit-content;
+                            border-radius: 10px;
+                            border: 1px solid white;
+                            padding: 2px 8px;">
+                        خالص درآمد ماهیانه
+                    </div>
+
+                    <div class="col-xl-10" style="float:right">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>اردیبهشت 1402</th>
+                                        <th>فروردین 1402</th>
+                                        <th>اسفند 1401</th>
+                                        <th>بهمن 1401</th>
+                                        <th>دی 1401</th>
+                                        <th>آذر 1401</th>
+                                        <th>آبان 1401</th>
+                                        <th>مهر 1401</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-اردیبهشت1402").mlfval_Value</td>
+                                        <td>@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-فروردین1402").mlfval_Value</td>
+                                        <td>@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-اسفند1401").mlfval_Value</td>
+                                        <td>@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-بهمن1401").mlfval_Value</td>
+                                        <td>@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-دی1401").mlfval_Value</td>
+                                        <td>@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-آذر1401").mlfval_Value</td>
+                                        <td>@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-آبان1401").mlfval_Value</td>
+                                        <td>@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-مهر1401").mlfval_Value</td>
+                                    </tr>
+
+
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                    <img width="100" style="float:left" src="~/Areas/Reporter/Content/MamoorinDashboard/statement.png" />
+
+                </div>
+                <div class="card-arrow">
+                    <div class="card-arrow-top-left"></div>
+                    <div class="card-arrow-top-right"></div>
+                    <div class="card-arrow-bottom-left"></div>
+                    <div class="card-arrow-bottom-right"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>*@
+
+
+@*<div class="col-xl-2">
+        <div class="card" style="background-color:#123">
+            <div class="card-body">
+                <div style="text-align: right;
+                        width: fit-content;
+                        border-radius: 10px;
+                        border: 1px solid white;
+                        padding: 2px 8px;">
+                    رتبه و میزان رشد
+                </div>
+                <br />
+                <br />
+                <div class="row">
+                    <div class="col-xl-11">
+                        %  میزان رشد = @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-ارزیابی-میزان رشد").mlfval_Value
+                        <br />
+                        <br />
+                        رتبه = @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-ارزیابی-رتبه").mlfval_Value
+                        <br />
+
+                        درمیان @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-ارزیابی-جمع نفرات").mlfval_Value مامور
+                    </div>
+
+                </div>
+                <br />
+            </div>
+            <div class="card-arrow">
+                <div class="card-arrow-top-left"></div>
+                <div class="card-arrow-top-right"></div>
+                <div class="card-arrow-bottom-left"></div>
+                <div class="card-arrow-bottom-right"></div>
+            </div>
+        </div>
+
+    </div>*@
+<div class="row m-2">
+    <style>
+    </style>
+    <div class="col-xl-5 zzz ma">
+        <div class="card" style="backdrop-filter:blur(10px);background: rgba(0,0,0,0.3)">
+            <div class="card-body" style="height:147px; overflow:auto">
+                <div class="cardTitle">
+                    <span style="        border-radius: 5px;
+        border-right: 2px solid #00a6fc;
+        background: linear-gradient(to right,transparent,#294c68 100%);
+        padding-right: 5px
+">
+                        آموزش های مورد نیاز
+                    </span>
+
+                </div>
+                <div class="row mt-4" dir="rtl">
+                    <div class="col-12 col-xl-6">
+                        @if (Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-آموزش-تست کنتور").mlfval_Value == "0")
+                        {
+                            @*<svg class="w-6 h-6 NotAcceptedSvg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>*@
+                            @*<i class="bi bi-patch-exclamation" style="color:#FFF9D7;font-size:15px;"></i>*@
+                            <i class="bi bi-exclamation-circle-fill" style="color:#FFF9D7;font-size:14px;"></i>
+
+                            <label class="gooof" title="آشنایی با عملیات تست کنتور برق" style="font-size:11px;">آشنایی با عملیات...</label>
+                        }
+                        else
+                        {
+                            @*<svg class="w-6 h-6 AcceptedSvg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>*@
+                            <i class="bi bi-check-circle-fill" style="color:aqua;font-size:14px;"></i>
+                            <label class="gooof" title="آشنایی با عملیات تست کنتور برق" style="font-size:11px;">آشنایی با عملیات...</label>
+                        }
+                    </div>
+                    <div class="col-12 col-xl-6">
+                        @if (Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-آموزش-شناسایی غیر مجاز").mlfval_Value == "0")
+                        {
+                            @*<svg class="w-6 h-6 NotAcceptedSvg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>*@
+                            <i class="bi bi-exclamation-circle-fill" style="color:#FFF9D7;font-size:14px;"></i>
+                            <label title="روش های شناسایی انشعابات غیر مجاز" style="font-size:11px;">روش های شناسایی... </label>
+                        }
+                        else
+                        {
+                            @*<svg class="w-6 h-6 AcceptedSvg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>*@
+                            <i class="bi bi-check-circle-fill" style="color:aqua;font-size:14px;"></i>
+                            <label title="روش های شناسایی انشعابات غیر مجاز" style="font-size:11px;">روش های شناسایی... </label>
+                        }
+                    </div>
+                </div>
+
+                <div class="row " dir="rtl">
+                    <div class="col-12 col-xl-6">
+
+                        @if (Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-آموزش-برخورد با مشترکین").mlfval_Value == "0")
+                        {
+                            @*<svg class="w-6 h-6 NotAcceptedSvg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>*@
+                            <i class="bi bi-exclamation-circle-fill" style="color:#FFF9D7;font-size:14px;"></i>
+                            <label style="font-size:11px;">آداب برخورد با مشترکین</label>
+                        }
+                        else
+                        {
+                            @*<svg class="w-6 h-6 AcceptedSvg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>*@
+                            <i class="bi bi-check-circle-fill" style="color:aqua;font-size:14px;"></i>
+                            <label style="font-size:11px;">آداب برخورد با مشترکین</label>
+                        }
+                    </div>
+                </div>
+                @*<div class="col-xl-4 d-flex justify-content-center">
+                        <img width="100" src="~/Areas/Reporter/Content/MamoorinDashboard/StaffTraining.png" />
+                        <img style="width:80px;" src="~/Areas/Reporter/Content/download (2).svg" />
+                    </div>*@
+
+            </div>
+            <div class="card-arrow">
+                <div class="card-arrow-top-left"></div>
+                <div class="card-arrow-top-right"></div>
+                <div class="card-arrow-bottom-left"></div>
+                <div class="card-arrow-bottom-right"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-xl-7 vv">
+        <style>
+            @@media only screen and (max-width : 768px) {
+                .vv {
+                    margin-top: 4px !important;
+                }
+            }
+        </style>
+        <div class="card zooo" style="backdrop-filter:blur(10px);background: rgba(0,0,0,0.3);">
+            <style>
+                @@media only screen and (max-width : 768px) {
+                    .zooo {
+                        height: 220px;
+                    }
+                }
+            </style>
+            <div class="card-body" style="height:147px; overflow:auto">
+                <div class="cardTitle">
+
+                    @*<i class="bi bi-person-vcard-fill" style="color:aqua;font-size:15px;  letter-spacing: 5px;"></i>*@
+                    <span style="border-radius:5px;border-right:2px solid #00a6fc ;background:linear-gradient(to right ,transparent,#294c68 100%);padding-right:5px">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" color="aqua" fill="currentColor" class="bi bi-person-vcard-fill" viewBox="0 0 16 16">
+                            <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm9 1.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 0-1h-4a.5.5 0 0 0-.5.5ZM9 8a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 0-1h-4A.5.5 0 0 0 9 8Zm1 2.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 0-1h-3a.5.5 0 0 0-.5.5Zm-1 2C9 10.567 7.21 9 5 9c-2.086 0-3.8 1.398-3.984 3.181A1 1 0 0 0 2 13h6.96c.026-.163.04-.33.04-.5ZM7 6a2 2 0 1 0-4 0 2 2 0 0 0 4 0Z" />
+                        </svg>
+                        گواهی نامه های مورد نیاز
+                    </span>
+
+                </div>
+                <div class="row mt-4" dir="rtl">
+                    <div class="col-xl-9">
+                        <div class="row col-xl-12">
+                            <div class="col-xl-6">
+                                @if (Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-گواهینامه-فن ورز هوایی").mlfval_Value == "0")
+                                {
+
+                                    <i class="bi bi-exclamation-circle-fill" style="color:#FFF9D7;font-size:14px;"></i>
+
+                                    <label title="فن ورز (عملیات روی شبکه هوائی)" style="font-size:13px;">فن ورز(عملیات روی...</label>
+                                    <br />
+                                }
+                                else
+                                {
+                                    <i class="bi bi-check-circle-fill" style="color:aqua;font-size:14px;"></i>
+                                    <label title="فن ورز (عملیات روی شبکه هوائی)" style="font-size:13px;">فن ورز(عملیات روی...</label>
+                                    <br />
+                                }
+                                @if (Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-گواهینامه-فن ورز گرم").mlfval_Value == "0")
+                                {
+                                    <i class="bi bi-exclamation-circle-fill" style="color:#FFF9D7;font-size:14px;"></i>
+                                    <label title="   فن ورز (عملیات روی شبکه خط گرم)" style="font-size:13px;">
+                                        فن ورز(عملیات روی...
+                                    </label>
+                                    <br />
+
+                                }
+                                else
+                                {
+                                    <i class="bi bi-check-circle-fill" style="color:aqua;font-size:14px;"></i>
+                                    <label title="   فن ورز (عملیات روی شبکه خط گرم)" style="font-size:13px;">
+                                        فن ورز(عملیات روی...
+                                    </label>
+                                    <br />
+                                }
+                                @if (Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-گواهینامه-ایمنی در برق").mlfval_Value == "0")
+                                {
+                                    <i class="bi bi-exclamation-circle-fill" style="color:#FFF9D7;font-size:14px;"></i>
+                                    <label title=" رعایت ایمنی در شبکه های برق" style="font-size:12px;">
+                                        رعایت ایمنی در شبکه...
+
+                                    </label>
+                                    <br />
+                                }
+                                else
+                                {
+                                    <i class="bi bi-check-circle-fill" style="color:aqua;font-size:14px;"></i>
+                                    <label title=" رعایت ایمنی در شبکه های برق" style="font-size:12px;">
+                                        رعایت ایمنی در شبکه...
+
+                                    </label>
+                                    <br />
+                                }
+
+                            </div>
+                            <div class="col-xl-6">
+                                @if (Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-گواهینامه-مامور مشترکین").mlfval_Value == "0")
+                                {
+
+                                    @*<svg class="w-6 h-6 NotAcceptedSvg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>*@
+                                    <i class="bi bi-exclamation-circle-fill" style="color:#FFF9D7;font-size:14px;"></i>
+                                    <label title="   مامور فنی (خدمات مشترکین)" style="font-size:13px;">
+                                        مامور فنی (خدمات...
+                                    </label>
+                                    <br />
+                                }
+                                else
+                                {
+                                    <i class="bi bi-check-circle-fill" style="color:aqua;font-size:14px;"></i>
+                                    <label title="   مامور فنی (خدمات مشترکین)" style="font-size:13px;">
+                                        مامور فنی (خدمات...
+                                    </label>
+                                    <br />
+                                }
+                                @if (Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-گواهینامه-مامور قرائت").mlfval_Value == "0")
+                                {
+
+                                    <i class="bi bi-exclamation-circle-fill" style="color:#FFF9D7;font-size:14px;"></i>
+                                    <label title=" مامور فنی (قرائت کنتور برق )" style="font-size:13px;">
+                                        مامور فنی (قرائت...
+                                    </label>
+                                    <br />
+                                }
+                                else
+                                {
+                                    <i class="bi bi-check-circle-fill" style="color:aqua;font-size:14px;"></i>
+                                    <label title=" مامور فنی (قرائت کنتور برق )" style="font-size:13px;">
+                                        مامور فنی (قرائت...
+                                    </label>
+                                    <br />
+                                }
+                                @if (Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-گواهینامه-ایمنی فردی").mlfval_Value == "0")
+                                {
+
+                                    <i class="bi bi-exclamation-circle-fill" style="color:#FFF9D7;font-size:14px;"></i>
+                                    <label style="font-size:13px;">
+                                        ایمنی فردی 8 ساعته
+                                    </label>
+
+                                }
+                                else
+                                {
+
+                                    @*<i class="bi bi-patch-check" style="color:aqua;font-size:15px;"></i>*@
+                                    <i class="bi bi-check-circle-fill" style="color:aqua;font-size:14px;"></i>
+                                    <label style="font-size:13px;">
+                                        ایمنی فردی 8 ساعته
+                                    </label>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    @*<div class="col-xl-2 d-flex justify-content-center">
+                            <img width="100" style="margin-top:10px;" src="~/Areas/Reporter/Content/MamoorinDashboard/certificate.png" />
+                            <img style="width: 80px;" src="~/Areas/Reporter/Content/download (1).svg" />
+                        </div>*@
+                </div>
+            </div>
+            <div class="card-arrow">
+                <div class="card-arrow-top-left"></div>
+                <div class="card-arrow-top-right"></div>
+                <div class="card-arrow-bottom-left"></div>
+                <div class="card-arrow-bottom-right"></div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<input id="MonthSelected" class="d-none" />
+<input id="YearSelected" class="d-none" />
+
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Scripts/amcharts5/index.js"></script>
+<script src="~/Scripts/amcharts5/xy.js"></script>
+<script src="~/Scripts/amcharts5/radar.js"></script>
+<script src="~/Scripts/amcharts5/themes/Animated.js"></script>
+<script src="~/Scripts/amcharts5/themes/Dark.js"></script>
+<script src="~/Scripts/amcharts5/percent.js"></script>
+<script src="~/Scripts/sweetalert2.js"></script>
+<script src="~/Scripts/jqueryMouseWheel.js"></script>
+
+
+<script>
+    var monthYearSelect1 = document.getElementById('monthYearSelect1');
+    var monthYearSelect2 = document.getElementById('monthYearSelect2');
+    var buttonContainer = document.getElementById('buttonContainer');
+
+    // Function to generate options for the month and year select elements
+    function generateMonthYearOptions(selectElement) {
+        var persianMonths = [
+            'فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور',
+            'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'
+        ];
+
+        for (var year = 1401; year <= 1410; year++) {
+            for (var month = 0; month < persianMonths.length; month++) {
+                var option = document.createElement('option');
+                option.value = year + '-' + month;
+                option.textContent = persianMonths[month] + ' ' + year;
+                selectElement.appendChild(option);
+            }
+        }
+    }
+
+    // Generate options for the month and year select elements
+    generateMonthYearOptions(monthYearSelect1);
+    generateMonthYearOptions(monthYearSelect2);
+
+    // Event listener to handle the select change
+    monthYearSelect1.addEventListener('change', generateButtons);
+    monthYearSelect2.addEventListener('change', generateButtons);
+
+    // Function to generate buttons
+    function generateButtons() {
+        var selectedValue1 = monthYearSelect1.value;
+        var selectedValue2 = monthYearSelect2.value;
+        var selectedParts1 = selectedValue1.split('-');
+        var selectedParts2 = selectedValue2.split('-');
+        var year1 = parseInt(selectedParts1[0]);
+        var month1 = parseInt(selectedParts1[1]);
+        var year2 = parseInt(selectedParts2[0]);
+        var month2 = parseInt(selectedParts2[1]);
+        var persianMonths = [
+            'فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور',
+            'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'
+        ];
+
+        var distance = Math.abs((year2 - year1) * 12 + month2 - month1);
+        buttonContainer.innerHTML = '';
+
+        if (distance > 5) {
+            var errorText = document.createElement('p');
+            errorText.textContent = 'باز زمان انتخاب شما باید حداکثر 6 ماه باشد ';
+            buttonContainer.appendChild(errorText);
+        } else {
+            for (var i = 0; i <= distance; i++) {
+                var currentYear = year1 + Math.floor((month1 + i) / 12);
+                var currentMonth = (month1 + i) % 12;
+
+                var columnDiv = document.createElement('div');
+                columnDiv.classList.add('col-xl-2');
+
+                var button = document.createElement('button');
+                var anchor = document.createElement('a');
+                anchor.style.fontSize = '10px';
+                anchor.style.color = 'black';
+                anchor.style.textDecoration = 'none';
+                anchor.textContent = persianMonths[currentMonth] + ' ' + currentYear;
+                anchor.className = "download";
+                button.classList.add('small-button', 'cool');
+
+                button.appendChild(anchor);
+                columnDiv.appendChild(button);
+
+                buttonContainer.appendChild(columnDiv);
+
+                $(".download").on('click', function () {
+                    console.log("dfsdfdsf");
+                    var yearmonth = $(this).text();
+                    var yearmonthsplited = yearmonth.split(' ');
+                    var month = yearmonthsplited[0];
+                    var yr = yearmonthsplited[1];
+
+                    if (month == "آذر") {
+                         month = "09";
+
+                     }
+                    if (month== "دی") {
+                         month = "10";
+
+                      }
+                    if (month == "بهمن") {
+                         month = "11";
+
+                     }
+                    if (month == "اسفند") {
+                       month = "12";
+
+                     }
+                    if (month == "فروردین") {
+                       month = "01";
+
+                     }
+                    if (month== "اردیبهشت") {
+                        month = "02";
+
+                     }
+                    if (month == "خرداد") {
+                         month = "03";
+
+                     }
+                    if (month == "تیر") {
+                         month = "04";
+
+                     }
+                    if (month == "مرداد") {
+                        month = "05";
+
+                     }
+                    if (month == "شهریور") {
+                         month = "06";
+
+                     }
+                    if (month == "مهر") {
+                        month = "07";
+
+                     }
+                    if (month == "آبان") {
+                        month = "08";
+
+                    }
+                    var obj = new Object;
+                    obj = { year: yr, month: month, personelCode: -1, peyman: 19 };
+                    console.log(obj);
+        $.ajax({
+            url: '@Url.Action("DownloadFish", "Salary", new { area = "Salaries" })',
+            data: { year: yr, month: month, personelCode: -1, peyman: 19 },
+                type: "Post",
+                dataType: "html",
+                 success: function (resp) {
+
+
+
+
+                     if (resp == "0") {
+
+                        Toast.fire({
+                            icon: 'error',
+                            background: '#35434A',
+                            color: 'white',
+                            title: "فیشی برای این ماه وجود ندارد"
+                        }).then(() => {
+
+                        });
+                }
+                     else {
+                           var link = '@Url.Action("DownloadFish", "Salary", new { area = "Salaries", year = "7", month = "8", personelCode = "13", peyman = "15" })'
+
+
+                         link = link.replace("7", yr);
+                        link = link.replace("8", month);
+                        link = link.replace("13", -1);
+                        link = link.replace("15", 19);
+                        link = link.replace("amp;", "");
+                        link = link.replace("amp;", "");
+                        link = link.replace("amp;", "");
+                        link = link.replace("amp;", "");
+
+                        window.location = link;
+
+                     }
+                   },
+                   error: function (resp2) {
+
+                   }
+                    });
+                });
+            }
+        }
+    }
+</script>
+
+<script>
+    function toggleEnlarge() {
+        var cardContainer = document.getElementById("cardContainer");
+        cardContainer.classList.toggle("enlarged");
+    }
+</script>
+
+
+@*<script>
+        var monthYearSelect1 = document.getElementById('monthYearSelect1');
+        var monthYearSelect2 = document.getElementById('monthYearSelect2');
+        var buttonContainer = document.getElementById('buttonContainer');
+
+        // Function to generate options for the month and year select elements
+        function generateMonthYearOptions(selectElement) {
+            var persianMonths = [
+                'فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور',
+                'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'
+            ];
+
+            for (var year = 1398; year <= 1405; year++) {
+                for (var month = 0; month < persianMonths.length; month++) {
+                    var option = document.createElement('option');
+                    option.value = year + '-' + month;
+                    option.textContent = persianMonths[month] + ' ' + year;
+                    selectElement.appendChild(option);
+                }
+            }
+        }
+
+        // Generate options for the month and year select elements
+        generateMonthYearOptions(monthYearSelect1);
+        generateMonthYearOptions(monthYearSelect2);
+
+        // Event listener to handle the select change
+        monthYearSelect1.addEventListener('change', generateButtons);
+        monthYearSelect2.addEventListener('change', generateButtons);
+
+        // Function to generate buttons
+        function generateButtons() {
+            var selectedValue1 = monthYearSelect1.value;
+            var selectedValue2 = monthYearSelect2.value;
+            var selectedParts1 = selectedValue1.split('-');
+            var selectedParts2 = selectedValue2.split('-');
+            var year1 = parseInt(selectedParts1[0]);
+            var month1 = parseInt(selectedParts1[1]);
+            var year2 = parseInt(selectedParts2[0]);
+            var month2 = parseInt(selectedParts2[1]);
+            var persianMonths = [
+                'فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور',
+                'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'
+            ];
+
+            var distance = Math.abs((year2 - year1) * 12 + month2 - month1);
+            buttonContainer.innerHTML = '';
+
+            if (distance > 5) {
+                var errorText = document.createElement('p');
+                errorText.textContent = 'Error: The distance between the months is more than 6.';
+                buttonContainer.appendChild(errorText);
+            } else {
+                for (var i = 0; i <= distance; i++) {
+                    var currentYear = year1 + Math.floor((month1 + i) / 12);
+                    var currentMonth = (month1 + i) % 12;
+
+                    var button = document.createElement('button');
+                    var anchor = document.createElement('a');
+                    anchor.style.fontSize = '10px';
+                    anchor.textContent = persianMonths[currentMonth] + ' ' + currentYear;
+                    button.classList.add('small-button');
+                    button.appendChild(anchor);
+                    buttonContainer.appendChild(button);
+
+
+                }
+            }
+        }
+    </script>*@
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+    // Assuming the progress is a value between 0 and 100
+    $(".progress").each(function () {
+
+        var $bar = $(this).find(".bar2");
+        var $val = $(this).find("span");
+        var perc = parseInt($val.text(), 10);
+
+        $({
+            p: 0
+        }).animate({
+            p: perc
+        }, {
+            duration: 3000,
+            easing: "swing",
+            step: function (p) {
+                $bar.css({
+                    transform: "rotate(" + (45 + (p * 1.8)) + "deg)", // 100%=180° so: ° = % * 1.8
+                    // 45 is to add the needed rotation to have the green borders at the bottom
+                });
+                $val.text(p | 0);
+            }
+        });
+    });
+</script>
+
+
+<script>
+     $("#sharh").click(function () {
+        var str="";
+        $("#big_modal_body").load('@Url.Content("/Reporter/Dashboard/SharhVazayef")');
+    });
+</script>
+
+<script>
+
+    const Toast = Swal.mixin({
+        toast: true,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    });
+
+
+
+
+
+    $("#qaraddad").on('click', function () {
+         $.ajax({
+                url: '@Url.Action("DNqaradad", "Dashboard", new { area = "Reporter" })',
+            data: {  },
+                type: "Post",
+
+                success: function (resp) {
+
+                   },
+                   error: function (resp2) {
+
+                   }
+     });
+
+    })
+
+
+
+    $("#qarardademzashode").on('click', function () {
+
+         $.ajax({
+                url: '@Url.Action("ShowContractEmzaShode", "Contract", new { area = "Contracts" })',
+            data: {  },
+                type: "Post",
+
+                success: function (resp) {
+                    if (resp == "0") {
+                        Toast.fire({
+                            icon: 'error',
+                            background: '#35434A',
+                            color: 'white',
+                            title: "قرارداد امضا شده ای وجود ندارد"
+                        }).then(() => {
+
+                        });
+                    }
+                    else {
+                        window.location='@Url.Action("ShowContractEmzaShode", "Contract", new { area = "Contracts" })'
+                    }
+                   },
+                   error: function (resp2) {
+
+                   }
+     });
+    })
+</script>
+
+@* Charts *@
+@*<script>
+        am5.ready(function () {
+
+            // Create root element
+            // https://www.amcharts.com/docs/v5/getting-started/#Root_element
+            var root = am5.Root.new("chartdiv123");
+
+            // Set themes
+            // https://www.amcharts.com/docs/v5/concepts/themes/
+            root.setThemes([
+                am5themes_Animated.new(root)
+            ]);
+
+            // Create chart
+            // https://www.amcharts.com/docs/v5/charts/xy-chart/
+            var chart = root.container.children.push(am5xy.XYChart.new(root, {
+                panX: true,
+                panY: true,
+                wheelX: "panX",
+                wheelY: "zoomX",
+                pinchZoomX: true
+            }));
+
+            // Create axes
+            // https://www.amcharts.com/docs/v5/charts/xy-chart/axes/
+            var xRenderer = am5xy.AxisRendererX.new(root, {});
+            xRenderer.grid.template.set("forceHidden", true);
+            xRenderer.labels.template.setAll({ multiLocation: 0, location: 0 });
+
+            var xAxis = chart.xAxes.push(am5xy.CategoryAxis.new(root, {
+
+                renderer: xRenderer,
+                tooltip: am5.Tooltip.new(root, {}),
+                extraMin: 0.01,
+                extraMax: 0.01,
+                tooltipLocation: 0
+            }));
+
+
+            //var xRenderer = am5xy.AxisRendererX.new(root, { minGridDistance: 30 });
+            //xRenderer.labels.template.setAll({
+            //    rotation: -90,
+            //    centerY: am5.p50,
+            //    centerX: am5.p100,
+            //    paddingRight: 15
+            //});
+
+            //xRenderer.grid.template.setAll({
+            //    location: 1
+            //})
+
+            //var xAxis = chart.xAxes.push(am5xy.CategoryAxis.new(root, {
+            //    maxDeviation: 0.3,
+            //    categoryField: "Date",
+            //    renderer: xRenderer,
+            //    tooltip: am5.Tooltip.new(root, {})
+            //}));
+
+
+
+            //var yRenderer = am5xy.AxisRendererY.new(root, {});
+            //yRenderer.grid.template.set("forceHidden", true);
+
+            //var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
+            //    renderer: yRenderer
+            //}));
+
+
+
+
+
+            var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
+                maxDeviation: 0.3,
+                renderer: am5xy.AxisRendererY.new(root, {
+                    strokeOpacity: 0.1
+                })
+            }));
+
+
+
+            // Add cursor
+            // https://www.amcharts.com/docs/v5/charts/xy-chart/cursor/
+            var cursor = chart.set("cursor", am5xy.XYCursor.new(root, {
+                behavior: "none",
+                xAxis: xAxis
+            }));
+            cursor.lineY.set("visible", false);
+
+            // Add series
+            // https://www.amcharts.com/docs/v5/charts/xy-chart/series/
+            //var series = chart.series.push(am5xy.LineSeries.new(root, {
+            //    name: "Series",
+            //    xAxis: xAxis,
+            //    yAxis: yAxis,
+            //    valueYField: "value",
+            //    valueXField: "Date",
+            //    locationX: 0,
+            //    seriesTooltipTarget: "bullet",
+            //    tooltip: am5.Tooltip.new(root, {
+            //        labelText: "{valueY}"
+            //    })
+            //}));
+
+
+
+
+            var series = chart.series.push(am5xy.ColumnSeries.new(root, {
+                name: "Series 1",
+                xAxis: xAxis,
+                yAxis: yAxis,
+                valueYField: "value",
+                valueXField: "Date",
+                locationX: 0,
+                seriesTooltipTarget: "bullet",
+                categoryXField: "Date",
+
+                tooltip: am5.Tooltip.new(root, {
+                    labelText: "{valueY}"
+                })
+            }));
+
+
+
+
+
+
+            series.bullets.push(function () {
+                var circleTemplate = am5.Template.new({
+                    radius: 6,
+                    templateField: "bulletSettings",
+                    fill: series.get("fill"),
+                    strokeWidth: 2,
+                    stroke: root.interfaceColors.get("background")
+                })
+
+                var circle = am5.Circle.new(root, {}, circleTemplate);
+
+                return am5.Bullet.new(root, {
+                    sprite: circle,
+                    locationX: 0
+                });
+            });
+
+            function createGuide(value, text, dashArray) {
+                var guideDataItem = yAxis.makeDataItem({ value: value });
+                yAxis.createAxisRange(guideDataItem);
+                guideDataItem.get("grid").setAll({
+                    forceHidden: false,
+                    strokeOpacity: 0.2,
+                    strokeDasharray: dashArray
+                });
+
+                var label = guideDataItem.get("label");
+                label.setAll({
+                    text: text,
+                    isMeasured: false,
+                    centerY: am5.p100
+                });
+
+                label.adapters.add("x", function (x) {
+                    return chart.plotContainer.width();
+                })
+
+                chart.events.on("boundschanged", function () {
+                    label.set("x", label.get("x"))
+                })
+            }
+
+            var myTheme = am5.Theme.new(root);
+            myTheme.rule("Label").setAll({
+                fill: am5.color(0xFFFFFF),
+                //fontSize: "1.5em"
+            });
+
+            root.setThemes([
+                am5themes_Animated.new(root),
+                myTheme
+            ]);
+
+            //createGuide(98.8, "LCL", [2, 2]);
+            //createGuide(100.1, "CL");
+            //createGuide(101.2, "UCL", [2, 2]);
+
+
+
+            //series.columns.template.setAll({ cornerRadiusTL: 5, cornerRadiusTR: 5, strokeOpacity: 0 });
+            //series.columns.template.adapters.add("fill", function (fill, target) {
+            //    return chart.get("colors").getIndex(series.columns.indexOf(target));
+            //});
+
+            //series.columns.template.adapters.add("stroke", function (stroke, target) {
+            //    return chart.get("colors").getIndex(series.columns.indexOf(target));
+            //});
+
+
+
+
+            var data = [{
+                Date:"مهر",
+                value: @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-مهر1401").mlfval_Value
+            }, {
+                    Date: "آبان",
+                value: @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-آبان1401").mlfval_Value
+            }, {
+                    Date: "آذر",
+                value: @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-آذر1401").mlfval_Value
+            }, {
+                 Date: "دی",
+                value: @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-دی1401").mlfval_Value
+            }, {
+                 Date: "بهمن",
+                value: @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-بهمن1401").mlfval_Value
+            }, {
+                 Date: "اسفند",
+                value: @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-اسفند1401").mlfval_Value
+            }, {
+                 Date: "فروردین",
+                value: @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-فروردین1402").mlfval_Value
+            }, {
+                 Date: "اردیبهشت",
+                value: @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-اردیبهشت1402").mlfval_Value
+            } ];
+
+            series.data.setAll(data);
+
+            // Make stuff animate on load
+            // https://www.amcharts.com/docs/v5/concepts/animations/
+            series.appear(1000);
+            chart.appear(1000, 100);
+
+        }); // end am5.ready()
+    </script>*@
+
+
+@* انتخاب تاریخ فیش حقوقی *@
+
+
+<script>
+    // Months
+    $(function () {
+        var gate = $(window),
+            cog = $('#rotator'),
+            digit = cog.find('span'),
+            field = $('#MonthSelected'),
+            slot = digit.height(),
+            base = 1.5 * slot,
+            up, swipe;
+        let ChildsCount = cog.children().length - 1;
+
+        if (document.readyState == 'complete') interAction();
+        else gate.one('load', interAction);
+
+        function interAction() {
+
+            field.text(0);
+
+            cog.scrollTop(base).fadeTo(0, 1).on('mousewheel', function (delta) {
+
+
+                if (isBusy()) return false;
+
+                up = delta.originalEvent.deltaY > 0;
+                nextNumber();
+
+                return false;
+            });
+
+            digit.on('touchstart', function (e) {
+
+                var begin = e.originalEvent.touches[0].pageY;
+
+                digit.on('touchmove', function (e) {
+
+                    var yaw = e.originalEvent.touches[0].pageY - begin;
+                    up = yaw < 0;
+                    swipe = Math.abs(yaw) > 30;
+                });
+
+                gate.one('touchend', function () {
+
+                    digit.off('touchmove');
+
+                    if (swipe && !isBusy()) nextNumber();
+                });
+            })
+                .on('mousedown touchstart', function (e) {
+
+                    if (e.which && e.which != 1) return;
+
+                    var zest = this, item = $(this).index();
+
+                    $(this).one('mouseup touchend', function (e) {
+
+                        digit.off('mouseup');
+
+                        var quit = e.originalEvent.changedTouches;
+
+                        if (quit) var jab = document.elementFromPoint(quit[0].clientX, quit[0].clientY);
+                        if (swipe || item == 2 || quit && jab != zest || isBusy()) return;
+
+                        up = item == 1;
+                        nextNumber();
+                    });
+
+                    return false;
+                })
+                .mouseleave(function () {
+
+                    digit.off('mouseup');
+                });
+        }
+
+        function isBusy() {
+
+            return cog.is(':animated');
+        }
+
+        function nextNumber() {
+
+            var aim = base;
+            swipe = false;
+
+            up ? aim += slot : aim -= slot;
+
+            cog.animate({ scrollTop: aim }, 250, function () {
+
+                up ? digit.eq(0).appendTo(cog) : digit.eq(ChildsCount).prependTo(cog);
+
+                digit = cog.find('span');
+
+                cog.scrollTop(base);
+                field.text(digit.eq(2).text());
+            });
+        }
+    });
+    // Years
+    $(function () {
+        var gate = $(window),
+            cog = $('#rotator2'),
+            digit = cog.find('span'),
+            field = $('#YearSelected'),
+            slot = digit.height(),
+            base = 1.5 * slot,
+            up, swipe;
+        let ChildsCount = cog.children().length - 1;
+        if (document.readyState == 'complete') interAction();
+        else gate.one('load', interAction);
+
+        function interAction() {
+
+            field.text(0);
+
+            cog.scrollTop(base).fadeTo(0, 1).on('mousewheel', function (delta) {
+
+
+                if (isBusy()) return false;
+
+                up = delta.originalEvent.deltaY > 0;
+                nextNumber();
+
+                return false;
+            });
+
+            digit.on('touchstart', function (e) {
+
+                var begin = e.originalEvent.touches[0].pageY;
+
+                digit.on('touchmove', function (e) {
+
+                    var yaw = e.originalEvent.touches[0].pageY - begin;
+                    up = yaw < 0;
+                    swipe = Math.abs(yaw) > 30;
+                });
+
+                gate.one('touchend', function () {
+
+                    digit.off('touchmove');
+
+                    if (swipe && !isBusy()) nextNumber();
+                });
+            })
+                .on('mousedown touchstart', function (e) {
+
+                    if (e.which && e.which != 1) return;
+
+                    var zest = this, item = $(this).index();
+
+                    $(this).one('mouseup touchend', function (e) {
+
+                        digit.off('mouseup');
+
+                        var quit = e.originalEvent.changedTouches;
+
+                        if (quit) var jab = document.elementFromPoint(quit[0].clientX, quit[0].clientY);
+                        if (swipe || item == 2 || quit && jab != zest || isBusy()) return;
+
+                        up = item == 1;
+                        nextNumber();
+                    });
+
+                    return false;
+                })
+                .mouseleave(function () {
+
+                    digit.off('mouseup');
+                });
+        }
+
+        function isBusy() {
+
+            return cog.is(':animated');
+        }
+
+        function nextNumber() {
+
+            var aim = base;
+            swipe = false;
+
+            up ? aim += slot : aim -= slot;
+
+            cog.animate({ scrollTop: aim }, 250, function () {
+
+                up ? digit.eq(0).appendTo(cog) : digit.eq(ChildsCount).prependTo(cog);
+
+                digit = cog.find('span');
+
+                cog.scrollTop(base);
+                field.text(digit.eq(2).text());
+            });
+        }
+    });
+
+    @{
+        int percent = 100;
+        int valuefeali = Convert.ToInt32(Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-مهارت های جانبی").mlfval_Value);
+    }
+
+
+    $(".Coral button span").not(':first').css({ top: "@Convert.ToInt32(percent - valuefeali)%" });
+</script>
+@*<script src="https://cdn.amcharts.com/lib/5/core.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/charts.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/themes/animated.js"></script>*@
+
+<script>
+    am5.ready(function () {
+        // Create root element
+        var root = am5.Root.new("chartdiv123");
+
+        // Set themes
+        root.setThemes([
+            am5themes_Animated.new(root)
+        ]);
+
+        // Create chart
+        var chart = root.container.children.push(am5xy.XYChart.new(root, {
+            panX: true,
+            panY: true,
+            wheelX: "panX",
+            wheelY: "zoomX",
+            pinchZoomX: true
+        }));
+
+        // Add cursor
+        var cursor = chart.set("cursor", am5xy.XYCursor.new(root, {}));
+        cursor.lineY.set("visible", false);
+
+        // Create axes
+        var xRenderer = am5xy.AxisRendererX.new(root, { minGridDistance: 30 });
+        xRenderer.labels.template.setAll({
+            rotation: -90,
+            centerY: am5.p50,
+            centerX: am5.p100,
+            paddingRight: 15
+        });
+
+        xRenderer.grid.template.setAll({
+            location: 1
+        });
+
+        var xAxis = chart.xAxes.push(am5xy.CategoryAxis.new(root, {
+            maxDeviation: 0.3,
+            categoryField: "country",
+            renderer: xRenderer,
+            tooltip: am5.Tooltip.new(root, {})
+        }));
+
+        var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
+            maxDeviation: 0.3,
+            renderer: am5xy.AxisRendererY.new(root, {
+                strokeOpacity: 0.1
+            })
+        }));
+
+        // Create series
+         var series = chart.series.push(am5xy.LineSeries.new(root, {
+            name: "Series 1",
+            xAxis: xAxis,
+            yAxis: yAxis,
+            valueYField: "value",
+            sequencedInterpolation: true,
+            categoryXField: "country",
+            fill: am5.color(0xFFFF99), // Pale yellow fill color
+            fillOpacity: 0.8, // Adjust the opacity as desired
+            stroke: am5.color(0xFFFF00), // Yellow color for the curve line
+
+
+            tooltip: am5.Tooltip.new(root, {
+                labelText: "{valueY}"
+            })
+        }));
+
+        // Set series color
+
+
+        // Set data
+        var data = [
+            {
+                country: "مهر",
+                value: @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-مهر1401").mlfval_Value,
+                color: "#babf95"
+            },
+            {
+                country: "آبان",
+                value: @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-آبان1401").mlfval_Value
+            },
+            {
+                country: "آذر",
+                value: @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-آذر1401").mlfval_Value
+            },
+            {
+                country: "دی",
+                value: @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-دی1401").mlfval_Value
+            },
+            {
+                country: "بهمن",
+                value: @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-بهمن1401").mlfval_Value
+            },
+            {
+                country: "اسفند",
+                value: @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-اسفند1401").mlfval_Value
+            },
+            {
+                country: "فروردین",
+                value: @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-فروردین1402").mlfval_Value
+            },
+            {
+                country: "اردیبهشت",
+                value: @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-اردیبهشت1402").mlfval_Value
+            }
+        ];
+          var chartContainer = document.getElementById("chartdiv123");
+      chartContainer.addEventListener("mouseover", function () {
+        chartContainer.style.fontSize = "28px";
+      });
+
+      chartContainer.addEventListener("mouseout", function () {
+        chartContainer.style.fontSize = "13px"; // Change back to the original font size
+      });
+        //data = color: "#babf95";
+        xAxis.data.setAll(data);
+        series.data.setAll(data);
+
+        // Make stuff animate on load
+        series.appear(1000);
+        chart.appear(1000, 100);
+    });
+</script>
+@*<script>
+        am5.ready(function () {
+            // Create root element
+            var root = am5.Root.new("chartdiv123");
+
+            // Set themes
+            root.setThemes([
+                am5themes_Animated.new(root)
+            ]);
+
+            // Create chart
+            var chart = root.container.children.push(am5xy.XYChart.new(root, {
+                panX: true,
+                panY: true,
+                wheelX: "panX",
+                wheelY: "zoomX",
+                pinchZoomX: true
+            }));
+
+            // Add cursor
+            var cursor = chart.set("cursor", am5xy.XYCursor.new(root, {}));
+            cursor.lineY.set("visible", false);
+
+            // Create axes
+            var xRenderer = am5xy.AxisRendererX.new(root, { minGridDistance: 30 });
+            xRenderer.labels.template.setAll({
+                rotation: -90,
+                centerY: am5.p50,
+                centerX: am5.p100,
+                paddingRight: 15
+            });
+
+            xRenderer.grid.template.setAll({
+                location: 1
+            });
+
+            var xAxis = chart.xAxes.push(am5xy.CategoryAxis.new(root, {
+                maxDeviation: 0.3,
+                categoryField: "country",
+                renderer: xRenderer,
+                tooltip: am5.Tooltip.new(root, {})
+            }));
+
+            var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
+                maxDeviation: 0.3,
+                renderer: am5xy.AxisRendererY.new(root, {
+                    strokeOpacity: 0.1
+                })
+            }));
+
+            // Create line series
+            var lineSeries = chart.series.push(am5xy.LineSeries.new(root, {
+                name: "LineSeries",
+                xAxis: xAxis,
+                yAxis: yAxis,
+                valueYField: "value",
+                sequencedInterpolation: true,
+                categoryXField: "country",
+                stroke: am5.color(0xFFFF00), // Yellow color for the line
+                tooltip: am5.Tooltip.new(root, {
+                    labelText: "{valueY}",
+                    getFill: function () {
+                        return am5.color(0xFFFF00); // White color for the data labels
+                    }
+                })
+            }));
+
+            // Create column series for filling the area
+            var columnSeries = chart.series.push(am5xy.ColumnSeries.new(root, {
+                name: "ColumnSeries",
+                xAxis: xAxis,
+                yAxis: yAxis,
+                valueYField: "value",
+                categoryXField: "country",
+                fill: am5.color(0xFFFF00), // Pale yellow color for the fill
+                fillOpacity: 0.8, // Adjust the opacity as desired
+                strokeOpacity: 0, // Hide the stroke
+                tooltip: am5.Tooltip.new(root, {
+                    labelText: "{valueY}",
+                    getFill: function () {
+                        return am5.color(0xFFFF00); // White color for the data labels
+                    }
+                })
+            }));
+
+            // Set data
+            var data = [
+                {
+                    country: "مهر",
+                    value: @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-مهر1401").mlfval_Value
+                },
+                {
+                    country: "آبان",
+                    value: @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-آبان1401").mlfval_Value
+                },
+                {
+                    country: "آذر",
+                    value: @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-آذر1401").mlfval_Value
+                },
+                {
+                    country: "دی",
+                    value: @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-دی1401").mlfval_Value
+                },
+                {
+                    country: "بهمن",
+                    value: @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-بهمن1401").mlfval_Value
+                },
+                {
+                    country: "اسفند",
+                    value: @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-اسفند1401").mlfval_Value
+                },
+                {
+                    country: "فروردین",
+                    value: @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-فروردین1402").mlfval_Value
+                },
+                {
+                    country: "اردیبهشت",
+                    value: @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-اردیبهشت1402").mlfval_Value
+                }
+            ];
+
+            lineSeries.data.setAll(data);
+            columnSeries.data.setAll(data);
+
+            // Make stuff animate on load
+            lineSeries.appear(1000);
+            columnSeries.appear(1000);
+            chart.appear(1000, 100);
+        });
+    </script>*@
+
+
+
+
+
+
+
+
+
+
+
+
+@*<script>
+        am5.ready(function () {
+
+            // Create root element
+            // https://www.amcharts.com/docs/v5/getting-started/#Root_element
+            var root = am5.Root.new("chartdiv123");
+
+
+            // Set themes
+            // https://www.amcharts.com/docs/v5/concepts/themes/
+            root.setThemes([
+                am5themes_Animated.new(root)
+            ]);
+
+
+            // Create chart
+            // https://www.amcharts.com/docs/v5/charts/xy-chart/
+            var chart = root.container.children.push(am5xy.XYChart.new(root, {
+                panX: true,
+                panY: true,
+                wheelX: "panX",
+                wheelY: "zoomX",
+                pinchZoomX: true
+            }));
+
+            // Add cursor
+            // https://www.amcharts.com/docs/v5/charts/xy-chart/cursor/
+            var cursor = chart.set("cursor", am5xy.XYCursor.new(root, {}));
+            cursor.lineY.set("visible", false);
+
+
+            // Create axes
+            // https://www.amcharts.com/docs/v5/charts/xy-chart/axes/
+            var xRenderer = am5xy.AxisRendererX.new(root, { minGridDistance: 30 });
+            xRenderer.labels.template.setAll({
+                rotation: -90,
+                centerY: am5.p50,
+                centerX: am5.p100,
+                paddingRight: 15,
+
+            });
+
+            xRenderer.grid.template.setAll({
+                location: 1
+            })
+
+            var xAxis = chart.xAxes.push(am5xy.CategoryAxis.new(root, {
+                maxDeviation: 0.3,
+                categoryField: "country",
+                renderer: xRenderer,
+                tooltip: am5.Tooltip.new(root, {})
+            }));
+
+            var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
+                maxDeviation: 0.3,
+                renderer: am5xy.AxisRendererY.new(root, {
+                    strokeOpacity: 0.1
+                })
+            }));
+
+
+            // Create series
+            // https://www.amcharts.com/docs/v5/charts/xy-chart/series/
+            var series = chart.series.push(am5xy.ColumnSeries.new(root, {
+                name: "Series 1",
+                xAxis: xAxis,
+                yAxis: yAxis,
+                valueYField: "value",
+                sequencedInterpolation: true,
+                categoryXField: "country",
+                tooltip: am5.Tooltip.new(root, {
+                    labelText: "{valueY}"
+                })
+            }));
+            var myTheme = am5.Theme.new(root);
+            myTheme.rule("Label").setAll({
+                fill: am5.color(0xFFFFFF),
+                //fontSize: "1.5em"
+            });
+
+            root.setThemes([
+                am5themes_Animated.new(root),
+                myTheme
+            ]);
+            //series.columns.template.setAll({ cornerRadiusTL: 5, cornerRadiusTR: 5, strokeOpacity: 0 });
+            //series.columns.template.adapters.add("fill", function (fill, target) {
+            //    return chart.get("colors").getIndex(series.columns.indexOf(target));
+            //});
+
+            //series.columns.template.adapters.add("stroke", function (stroke, target) {
+            //    return chart.get("colors").getIndex(series.columns.indexOf(target));
+            //});
+
+
+            // Set data
+           var data = [{
+                country:"مهر",
+                value: @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-مهر1401").mlfval_Value
+            }, {
+                   country: "آبان",
+                value: @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-آبان1401").mlfval_Value
+            }, {
+                   country: "آذر",
+                value: @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-آذر1401").mlfval_Value
+            }, {
+                   country: "دی",
+                value: @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-دی1401").mlfval_Value
+            }, {
+                   country: "بهمن",
+                value: @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-بهمن1401").mlfval_Value
+            }, {
+                   country: "اسفند",
+                value: @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-اسفند1401").mlfval_Value
+            }, {
+                   country: "فروردین",
+                value: @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-فروردین1402").mlfval_Value
+            }, {
+                   country: "اردیبهشت",
+                value: @Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-خالص-اردیبهشت1402").mlfval_Value
+            } ];
+
+            xAxis.data.setAll(data);
+            series.data.setAll(data);
+
+
+            // Make stuff animate on load
+            // https://www.amcharts.com/docs/v5/concepts/animations/
+            series.appear(1000);
+            chart.appear(1000, 100);
+
+        }); // end am5.ready()
+    </script>*@
+<script>
+
+    $(function () {
+        $.each($(".numbers"), function (index, item) {
+
+            var amount = $(this).text().replace(/[\D\s\._\-]+/g, "-");
+
+            amount = amount ? parseInt(amount, 10) : 0;
+            $(this).text(function () {
+                return (amount === 0) ? "0 ریال" : amount.toLocaleString("fa-IR") + " " + " ریال";
+            });
+        });
+
+    });
+</script>
+
+
+<script>
+
+    $(function () {
+        $.each($(".number"), function (index, item) {
+
+            var amount = $(this).text().replace(/[\D\s\._\-]+/g, "");
+
+            amount = amount ? parseInt(amount, 10) : 0;
+            $(this).text(function () {
+                return (amount === 0) ? "" : amount.toLocaleString("en-US");
+            });
+        });
+
+    });
+</script>

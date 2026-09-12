@@ -1,0 +1,970 @@
+﻿@*@model IEnumerable<SaabWebProject.Models.DomainModels.Table1234>*@
+@model SaabWebProject.Models.ViewModels.Contracts.Function.FunctionModel
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "پیشخوان کارگزاری_وصول";
+
+}
+@using SaabWebProject.Models.DomainModels;
+@{
+    string unicc = Model.unicc;
+}
+@{
+    SaabEntities db = new SaabEntities();
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Dashbord1218</title>
+    <style>
+        @@media screen and (max-width: 768px) {
+            /* ستون‌های اصلی کامل عرض بگیرند */
+            .col-xl-3, .col-xl-6, .col-xl-12 {
+                width: 100% !important;
+                margin-bottom: 15px; /* فاصله بین بخش‌ها */
+            }
+
+            /* ارتفاع ردیف‌ها منعطف باشد ولی جهت آنها تغییر نکند */
+            .row {
+                height: auto !important;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            /* عناوین بخش‌ها کوچکتر شوند */
+            .part-title {
+                font-size: 0.9em;
+                padding: 3px 5px;
+            }
+
+            /* فرم‌ها و سلول‌ها همچنان مانند دسکتاپ */
+            div.form-control {
+                font-size: 0.9em;
+                padding: 5px;
+                height: fit-content !important;
+                border-radius: 6px;
+            }
+
+            /* مودال موبایل */
+            .modal-content2 {
+                width: 95% !important;
+                max-width: none !important;
+                max-height: 90vh !important;
+                padding: 15px !important;
+                overflow-y: auto !important;
+            }
+
+            .part-body-data {
+                font-size: 8px;
+            }
+            .part4 .part-body-data {
+                width: 100% !important; /* سلول‌ها عرض کامل بگیرن */
+                writing-mode: vertical-rl; /* متن عمودی از بالا به پایین */
+                text-orientation: mixed; /* جهت حروف مناسب */
+                white-space: nowrap; /* جلوگیری از شکستن متن */
+                overflow: hidden; /* مثل حالت فعلی */
+                height: auto;
+                text-align: center;
+                padding: 5px 0;
+            }
+/*
+            .part4 .part-body-data {
+                width: calc(100% / 9);
+                overflow: hidden;
+            }*/
+        }
+        div.form-control {
+            border-width: 2px;
+            border-color: rgb(0, 163, 250);
+            border-radius: 8px;
+            height: 100%;
+            background-color: rgb(8, 45, 89);
+        }
+
+        .row {
+            height: 300px;
+        }
+
+        .part-title {
+            background-color: #007bff;
+            text-align: center;
+            align-content: center;
+            align-items: baseline;
+            padding: 2px 5px 5px 5px;
+            border-radius: 5px;
+            margin-top: 3px;
+        }
+
+        .part-body {
+            display: flex;
+            flex-direction: column;
+            background-color: #007bff;
+            height: 84%;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+
+        .part-body-row {
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+            padding: 5px;
+            height: calc(100%/3);
+        }
+
+            .part-body-row:first-child {
+                height: 60%;
+            }
+
+        .headback {
+            padding: 10px;
+            margin-bottom: 20px;
+            background-color: #0069AB;
+            border-radius: 8px;
+            height:50px;
+        }
+
+
+        .part-body-data {
+            width: calc(100% / 4);
+            text-align: center;
+            padding: 2px;
+            align-content: center;
+            /*            border: 1px solid white;*/
+            background-color: rgb(8, 45, 89);
+            border-radius: 5px;
+        }
+
+        .part2 .part-body-data {
+            width: calc(100%/3);
+        }
+
+
+        /*@@media (max-width: 768px) {
+            .row {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .modal3 {
+                display: none;
+                position: absolute;*/ /* Change this from fixed */
+                /*z-index: 1000;*/ /* Adjust z-index as needed */
+                /*left: 0;
+                top: 0;
+                width: 58%;
+                height: 100%;
+                overflow: auto;
+                background-color: rgba(0, 0, 0, 0.4);
+            }
+
+            .modal-content2 {
+                background-color: black;
+                position: relative;*/ /* Add relative positioning */
+                /*margin: 15% auto;
+                padding: 20px;
+                border: 4px solid aqua;
+                border-radius: 30px;
+                width: 100%;
+                max-height: 100%;
+                overflow-y: auto;
+            }
+
+
+            .close {
+                color: #aaa;
+                float: right;
+                font-size: 28px;
+                font-weight: bold;
+            }
+
+                .close:hover,
+                .close:focus {
+                    color: black;
+                    text-decoration: none;
+                    cursor: pointer;
+                }
+
+            .col-xl-12, .col-xl-6, .col-xl-5, .col-xl-1 {
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+
+            #head {
+                height: 35px;
+            }
+
+                #head p {
+                    font-size: 14px;
+                }
+
+            .parts-container {
+                text-align: right;
+                padding: 2px;
+            }
+
+            .parts {
+                flex-direction: row;
+                align-items: flex-start;
+                font-size: 8px;
+                height: auto;
+            }
+
+                .parts p {
+                    margin-top: 2px;
+                }
+
+            .chart-container {
+                flex-direction: column;
+                height: auto !important;
+            }
+
+            .chart2 {
+                width: 102% !important;
+                height: auto !important;
+                margin-bottom: 30px;
+                padding: 10px;
+            }
+
+            .chart {
+                height: 100px !important;
+            }
+
+            #customLegend {
+                flex-direction: column !important;
+                gap: 5px !important;
+                font-size: 8px !important;
+            }
+
+            #customLegend2 {
+                flex-direction: column !important;
+                gap: 5px !important;
+                font-size: 8px !important;
+            }
+
+            .legend-color {
+                width: 10px !important;
+                height: 10px !important;
+            }
+
+            .chart-date {
+                flex-direction: row;
+                align-items: flex-start;
+                gap: 3px;
+                font-size: 10px;
+            }
+
+            #tr-table1 {
+                flex-direction: column;*/ /* ستون‌ها زیر هم */
+            /*}
+
+            .td-table1 {
+                width: 100% !important;
+                height: auto !important;
+                border-left: none !important;*/ /* چون عمودی شدن */
+                /*border-bottom: 2px solid var(--bs-border-color) !important;
+                margin-bottom: 5px;*/ /* فاصله بین ستون‌ها */
+            /*}
+
+                .td-table1:last-child {
+                    border-bottom: none !important;
+                }
+
+                .td-table1 label {
+                    height: auto;
+                    font-size: 12px;*/ /* کوچکتر برای موبایل */
+                    /*justify-content: flex-start;
+                    padding-left: 5px;
+                }
+
+                .td-table1 p.value-table1 {
+                    font-size: 14px;*/ /* اندازه مناسب برای موبایل */
+                    /*margin: 2px 0 5px 0;
+                }
+        }*/
+
+        .part4 .part-body-data {
+            width: calc(100% / 9);
+        }
+
+        .modal3 {
+            display: none;
+            position: fixed; /* حفظ مودال مرکزی */
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            /*        overflow: auto;*/
+            background-color: rgba(0, 0, 0, 0.6);
+            padding-top: 50px;
+        }
+
+        .modal-content2 {
+            background-color: #082D59;
+            margin: 5% auto; /* مرکزی شدن محتوا */
+            padding: 20px;
+            border: 2px solid #00CAFC;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 600px; /* حداکثر پهنا برای مودال */
+            height: auto;
+            max-height: 400px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        /* ترکیب دو کلاس close و close-icon */
+        .close-icon,
+        .close {
+            color: #00CAFC;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            /* تنظیمات absolute برای موقعیت‌دهی در گوشه بالا چپ */
+            position: absolute;
+            top: 10px;
+            left: 15px;
+            z-index: 1001;
+        }
+        .value-color {
+            background-color: #08203e;
+            color:aqua;
+        }
+            .close-icon:hover,
+            .close-icon:focus,
+            .close:hover,
+            .close:focus {
+                color: darkred;
+                text-decoration: none;
+                cursor: pointer;
+            }
+
+        .click2  value-color:hover {
+            cursor: pointer;
+            box-shadow: 0 0 10px white;
+        }
+
+        .click2  value-color:active {
+            cursor: grab;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="tab-content" id="pills-tabContent" style="padding:20px; background:#f7f7f7;">
+        <div class="row headback" style="">
+
+            <div class="col-xl-2">
+                <label style="margin-top:5px">نام شهرستان</label>
+            </div>
+
+            <div class="col-xl-2">
+                <select name="color" class="form-select" id="sharestan">
+                    <option value="" selected>@unicc</option>
+                    @foreach (var it in Model.dbergapilike.ToList())
+                    {
+                        <option value="@it.unic">@it.unic</option>
+                    }
+                </select>
+            </div>
+            <div class="col-xl-1"></div>
+
+            <div class="col-xl-1">
+                <button id="person-sabt" class="form-control buttonGeneral">
+                    <i class="bi bi-eye fa-fw me-1 VecGeneral"></i>
+                    <span class="bGeneral-text">مشاهده</span>
+                </button>
+            </div>
+            <div class="col-xl-2"></div>
+            <div class="col-xl-2">
+                <label>تاریخ بروزرسانی</label>
+            </div>
+            <div class="col-xl-2">
+                @{
+                    var findusr17 = db.dbergapishghan.FirstOrDefault(s => s.name == 1180 && s.vaziat == 1);
+                    string result17 = "";
+                    if (findusr17 != null)
+                    {
+                        result17 = Model.dbergharelimsertfk1_7
+                                                                      .Where(s => s.valuunic == @unicc && s.FK_db2 == findusr17.FK_link).OrderByDescending(t => t.ID)   // مرتب‌سازی روی خود جدول
+
+                                                                      .Select(t => t.valueFK_db2)
+                                                                      .FirstOrDefault();
+                    }
+                }
+                <p class="date-chart">@result17</p>
+
+            </div>
+
+
+
+
+        </div>
+        <div class="row" style="margin-bottom:20px;">
+            <div class="col-xl-3">
+                <div class="form-control">
+                    <div class="part-title">درصد وصول</div>
+                    <div class="part-body">
+                        <div class="part-body-row">
+                            <div class="part-body-data">عنوان</div>
+                            <div class="part-body-data"> وصول استان</div>
+                            <div class="part-body-data"> کسر خاص جاری</div>
+                            <div class="part-body-data"> کسر خاص کل</div>
+                        </div>
+                        <div class="part-body-row">
+                            <div class="part-body-data">واحد</div>
+                            <div class="part-body-data">درصد</div>
+                            <div class="part-body-data">درصد</div>
+                            <div class="part-body-data">درصد</div>
+                        </div>
+                        <div class="part-body-row">
+                            <div class="part-body-data">مرجع</div>
+                            <div class="part-body-data">محاسباتی</div>
+                            <div class="part-body-data">۱۲۱۸</div>
+                            <div class="part-body-data">۱۲۱۸</div>
+                        </div>
+                        <div class="part-body-row">
+                            <div class="part-body-data click2  value-color " data-id="1">
+                                @{
+                                    var findusr = db.dbergapishghan.FirstOrDefault(s => s.name == 1181 && s.vaziat == 0);
+                                    string result11 = "";
+                                    if (findusr != null)
+                                    {
+                                        result11 = Model.dbergharelimsertfk1_7
+                                                     .Where(s => s.valuunic == @unicc && s.FK_db2 == findusr.FK_link)
+                                                                   .OrderByDescending(t => t.ID)   // مرتب‌سازی روی خود جدول
+
+                                                     .Select(t => t.valueFK_db2)
+                                                     .FirstOrDefault();
+                                    }
+                                }
+مقدار
+                            </div>
+                            <div class="part-body-data click2  value-color" data-id="2">
+
+                                @{
+                                    findusr = db.dbergapishghan.FirstOrDefault(s => s.name == 1182 && s.vaziat == 1);
+                                    result11 = "";
+                                    if (findusr != null)
+                                    {
+                                        result11 = Model.dbergharelimsertfk1_7
+                                                     .Where(s => s.valuunic == @unicc && s.FK_db2 == findusr.FK_link)
+                                                                   .OrderByDescending(t => t.ID)   // مرتب‌سازی روی خود جدول
+
+                                                     .Select(t => t.valueFK_db2)
+                                                     .FirstOrDefault();
+                                    }
+                                }
+                                @result11
+
+                            </div>
+                            <div class="part-body-data click2  value-color" data-id="3">
+                                @{
+                                    findusr = db.dbergapishghan.FirstOrDefault(s => s.name == 1183 && s.vaziat == 1);
+                                    result11 = "";
+                                    if (findusr != null)
+                                    {
+                                        result11 = Model.dbergharelimsertfk1_7
+                                                     .Where(s => s.valuunic == @unicc && s.FK_db2 == findusr.FK_link)
+                                                                   .OrderByDescending(t => t.ID)   // مرتب‌سازی روی خود جدول
+
+                                                     .Select(t => t.valueFK_db2)
+                                                     .FirstOrDefault();
+                                    }
+                                }
+                                @result11
+                            </div>
+                            <div class="part-body-data click2  value-color" data-id="4">
+                                @{
+                                    findusr = db.dbergapishghan.FirstOrDefault(s => s.name == 1184 && s.vaziat == 1);
+                                    result11 = "";
+                                    if (findusr != null)
+                                    {
+                                        result11 = Model.dbergharelimsertfk1_7
+                                                     .Where(s => s.valuunic == @unicc && s.FK_db2 == findusr.FK_link)
+                                                                   .OrderByDescending(t => t.ID)   // مرتب‌سازی روی خود جدول
+
+                                                     .Select(t => t.valueFK_db2)
+                                                     .FirstOrDefault();
+                                    }
+                                }
+                                @result11
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3">
+                <div class="form-control">
+                    <div class="part-title">لیست های ارجاع</div>
+                    <div class="part-body">
+                        <div class="part-body-row part2">
+                            <div class="part-body-data">عنوان</div>
+                            <div class="part-body-data">مبلغ لیست ارجاع شده</div>
+                            <div class="part-body-data">درصد لیست ارجاع شده</div>
+                        </div>
+                        <div class="part-body-row part2">
+                            <div class="part-body-data">واحد</div>
+                            <div class="part-body-data">میلیون ریال</div>
+                            <div class="part-body-data">درصد</div>
+                        </div>
+                        <div class="part-body-row part2">
+                            <div class="part-body-data">مرجع</div>
+                            <div class="part-body-data">۱۲۷۵</div>
+                            <div class="part-body-data">لیست مشاور</div>
+                        </div>
+                        <div class="part-body-row part2">
+                            <div class="part-body-data click2  value-color">
+                                @{
+                                    findusr = db.dbergapishghan.FirstOrDefault(s => s.name == 1185 && s.vaziat == 1);
+                                    result11 = "";
+                                    if (findusr != null)
+                                    {
+                                        result11 = Model.dbergharelimsertfk1_7
+                                                     .Where(s => s.valuunic == @unicc && s.FK_db2 == findusr.FK_link)
+                                                                   .OrderByDescending(t => t.ID)   // مرتب‌سازی روی خود جدول
+
+                                                     .Select(t => t.valueFK_db2)
+                                                     .FirstOrDefault();
+                                    }
+                                }
+                                @*@result11*@
+                                مقدار
+                            </div>
+                            <div class="part-body-data click2  value-color ragham">
+                                @{
+                                    findusr = db.dbergapishghan.FirstOrDefault(s => s.name == 1186 && s.vaziat == 1);
+                                    result11 = "";
+                                    if (findusr != null)
+                                    {
+                                        result11 = Model.dbergharelimsertfk1_7
+                                                     .Where(s => s.valuunic == @unicc && s.FK_db2 == findusr.FK_link)
+                                                                   .OrderByDescending(t => t.ID)   // مرتب‌سازی روی خود جدول
+
+                                                     .Select(t => t.valueFK_db2)
+                                                     .FirstOrDefault();
+                                    }
+                                }
+                                @result11
+
+
+                            </div>
+                            <div class="part-body-data click2  value-color">
+
+                                @{
+                                    findusr = db.dbergapishghan.FirstOrDefault(s => s.name == 1187 && s.vaziat == 1);
+                                    result11 = "";
+                                    if (findusr != null)
+                                    {
+                                        result11 = Model.dbergharelimsertfk1_7
+                                                     .Where(s => s.valuunic == @unicc && s.FK_db2 == findusr.FK_link)
+                                                                   .OrderByDescending(t => t.ID)   // مرتب‌سازی روی خود جدول
+
+                                                     .Select(t => t.valueFK_db2)
+                                                     .FirstOrDefault();
+                                    }
+                                }
+                                @result11
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6">
+                <div class="form-control">
+                    <div class="part-title">مقایسه وصول شده و حد انتظار</div>
+                    <div class="part-body">
+                        <div class="part-body-row ">
+                            <div class="part-body-data">عنوان</div>
+                            <div class="part-body-data">حد انتظار تاکنون</div>
+                            <div class="part-body-data">وصول انجام شده تاکنون</div>
+                            <div class="part-body-data">درصد پیشرفت نسبت به انتظار</div>
+                        </div>
+                        <div class="part-body-row">
+                            <div class="part-body-data">واحد</div>
+                            <div class="part-body-data">میلیون ریال</div>
+                            <div class="part-body-data">میلیون ریال</div>
+                            <div class="part-body-data">درصد</div>
+                        </div>
+                        <div class="part-body-row">
+                            <div class="part-body-data">مرجع</div>
+                            <div class="part-body-data">حد انتظار</div>
+                            <div class="part-body-data">۱۲۷۱</div>
+                            <div class="part-body-data">محاسباتی</div>
+                        </div>
+                        <div class="part-body-row">
+                            <div class="part-body-data  click2  value-color">
+                                @{
+                                    findusr = db.dbergapishghan.FirstOrDefault(s => s.name == 1188 && s.vaziat == 1);
+                                    result11 = "";
+                                    if (findusr != null)
+                                    {
+                                        result11 = Model.dbergharelimsertfk1_7
+                                                     .Where(s => s.valuunic == @unicc && s.FK_db2 == findusr.FK_link)
+                                                                   .OrderByDescending(t => t.ID)   // مرتب‌سازی روی خود جدول
+
+                                                     .Select(t => t.valueFK_db2)
+                                                     .FirstOrDefault();
+                                    }
+                                }
+                                مقدار
+                            </div>
+                            <div class="part-body-data ragham click2  value-color">
+                                @{
+                                    findusr = db.dbergapishghan.FirstOrDefault(s => s.name == 1189 && s.vaziat == 1);
+                                    result11 = "";
+                                    if (findusr != null)
+                                    {
+                                        result11 = Model.dbergharelimsertfk1_7
+                                                     .Where(s => s.valuunic == @unicc && s.FK_db2 == findusr.FK_link)
+                                                                   .OrderByDescending(t => t.ID)   // مرتب‌سازی روی خود جدول
+
+                                                     .Select(t => t.valueFK_db2)
+                                                     .FirstOrDefault();
+                                    }
+                                }
+                                @result11
+                            </div>
+                            <div class="part-body-data ragham click2  value-color ">
+                                @{
+                                    findusr = db.dbergapishghan.FirstOrDefault(s => s.name == 1190 && s.vaziat == 1);
+                                    result11 = "";
+                                    if (findusr != null)
+                                    {
+                                        result11 = Model.dbergharelimsertfk1_7
+                                                     .Where(s => s.valuunic == @unicc && s.FK_db2 == findusr.FK_link)
+                                                                   .OrderByDescending(t => t.ID)   // مرتب‌سازی روی خود جدول
+
+                                                     .Select(t => t.valueFK_db2)
+                                                     .FirstOrDefault();
+                                    }
+                                }
+                                @result11
+                            </div>
+                            <div class="part-body-data click2  value-color">
+                                @{
+                                    findusr = db.dbergapishghan.FirstOrDefault(s => s.name == 1191 && s.vaziat == 1);
+                                    result11 = "";
+                                    if (findusr != null)
+                                    {
+                                        result11 = Model.dbergharelimsertfk1_7
+                                                     .Where(s => s.valuunic == @unicc && s.FK_db2 == findusr.FK_link)
+                                                                   .OrderByDescending(t => t.ID)   // مرتب‌سازی روی خود جدول
+
+                                                     .Select(t => t.valueFK_db2)
+                                                     .FirstOrDefault();
+                                    }
+                                }
+                                @result11
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="form-control">
+                    <div class="part-title">عملکرد مامورین</div>
+                    <div class="part-body">
+                        <div class="part-body-row part4">
+                            <div class="part-body-data">عنوان</div>
+                            <div class="part-body-data">وصول انجام شده (ارجاعی)</div>
+                            <div class="part-body-data">وصول انجام شده متوسط هر مامور</div>
+                            <div class="part-body-data">ارجاع به مامورین عملیاتی</div>
+                            <div class="part-body-data">ارجاع  به مامورین غیر عملیاتی</div>
+                            <div class="part-body-data">مامورین غیرفعال</div>
+                            <div class="part-body-data">مامورین کم کار</div>
+                            <div class="part-body-data">مامورین استاندارد کار </div>
+                            <div class="part-body-data">مامورین فعال</div>
+                        </div>
+                        <div class="part-body-row">
+                            <div class="part-body-data">واحد</div>
+                            <div class="part-body-data">درصد</div>
+                            <div class="part-body-data">میلیون ریال</div>
+                            <div class="part-body-data">درصد</div>
+                            <div class="part-body-data">درصد</div>
+                            <div class="part-body-data">درصد</div>
+                            <div class="part-body-data">درصد</div>
+                            <div class="part-body-data">درصد</div>
+                            <div class="part-body-data">درصد</div>
+                        </div>
+                        <div class="part-body-row">
+                            <div class="part-body-data">مرجع</div>
+                            <div class="part-body-data">۱۲۷۵</div>
+                            <div class="part-body-data">۱۲۷۵</div>
+                            <div class="part-body-data">۱۲۷۵</div>
+                            <div class="part-body-data">۱۲۷۵</div>
+                            <div class="part-body-data">۱۲۷۵</div>
+                            <div class="part-body-data">۱۲۷۵</div>
+                            <div class="part-body-data">۱۲۷۵</div>
+                            <div class="part-body-data">۱۲۷۵</div>
+
+                        </div>
+                        <div class="part-body-row">
+                            <div class="part-body-data click2  value-color">
+                                @{
+                                    findusr = db.dbergapishghan.FirstOrDefault(s => s.name == 1192 && s.vaziat == 1);
+                                    result11 = "";
+                                    if (findusr != null)
+                                    {
+                                        result11 = Model.dbergharelimsertfk1_7
+                                                     .Where(s => s.valuunic == @unicc && s.FK_db2 == findusr.FK_link)
+                                                                   .OrderByDescending(t => t.ID)   // مرتب‌سازی روی خود جدول
+
+                                                     .Select(t => t.valueFK_db2)
+                                                     .FirstOrDefault();
+                                    }
+                                }
+                                مقدار
+                            </div>
+                            <div class="part-body-data click2  value-color">
+                                @{
+                                    findusr = db.dbergapishghan.FirstOrDefault(s => s.name == 1193 && s.vaziat == 1);
+                                    result11 = "";
+                                    if (findusr != null)
+                                    {
+                                        result11 = Model.dbergharelimsertfk1_7
+                                                     .Where(s => s.valuunic == @unicc && s.FK_db2 == findusr.FK_link)
+                                                                   .OrderByDescending(t => t.ID)   // مرتب‌سازی روی خود جدول
+
+                                                     .Select(t => t.valueFK_db2)
+                                                     .FirstOrDefault();
+                                    }
+                                }
+                                @result11
+                            </div>
+                            <div class="part-body-data click2  value-color">
+                                @{
+                                    findusr = db.dbergapishghan.FirstOrDefault(s => s.name == 1194 && s.vaziat == 1);
+                                    result11 = "";
+                                    if (findusr != null)
+                                    {
+                                        result11 = Model.dbergharelimsertfk1_7
+                                                     .Where(s => s.valuunic == @unicc && s.FK_db2 == findusr.FK_link)
+                                                                   .OrderByDescending(t => t.ID)   // مرتب‌سازی روی خود جدول
+
+                                                     .Select(t => t.valueFK_db2)
+                                                     .FirstOrDefault();
+                                    }
+                                }
+                                @result11
+                            </div>
+                            <div class="part-body-data click2  value-color">
+                                @{
+                                    findusr = db.dbergapishghan.FirstOrDefault(s => s.name == 1195 && s.vaziat == 1);
+                                    result11 = "";
+                                    if (findusr != null)
+                                    {
+                                        result11 = Model.dbergharelimsertfk1_7
+                                                     .Where(s => s.valuunic == @unicc && s.FK_db2 == findusr.FK_link)
+                                                                   .OrderByDescending(t => t.ID)   // مرتب‌سازی روی خود جدول
+
+                                                     .Select(t => t.valueFK_db2)
+                                                     .FirstOrDefault();
+                                    }
+                                }
+                                @result11
+                            </div>
+                            <div class="part-body-data click2  value-color">
+                                @{
+                                    findusr = db.dbergapishghan.FirstOrDefault(s => s.name == 1196 && s.vaziat == 1);
+                                    result11 = "";
+                                    if (findusr != null)
+                                    {
+                                        result11 = Model.dbergharelimsertfk1_7
+                                                     .Where(s => s.valuunic == @unicc && s.FK_db2 == findusr.FK_link)
+                                                                   .OrderByDescending(t => t.ID)   // مرتب‌سازی روی خود جدول
+
+                                                     .Select(t => t.valueFK_db2)
+                                                     .FirstOrDefault();
+                                    }
+                                }
+                                @result11
+                            </div>
+                            <div class="part-body-data click2  value-color">
+                                @{
+                                    findusr = db.dbergapishghan.FirstOrDefault(s => s.name == 1197 && s.vaziat == 1);
+                                    result11 = "";
+                                    if (findusr != null)
+                                    {
+                                        result11 = Model.dbergharelimsertfk1_7
+                                                     .Where(s => s.valuunic == @unicc && s.FK_db2 == findusr.FK_link)
+                                                                   .OrderByDescending(t => t.ID)   // مرتب‌سازی روی خود جدول
+
+                                                     .Select(t => t.valueFK_db2)
+                                                     .FirstOrDefault();
+                                    }
+                                }
+                                @result11
+                            </div>
+                            <div class="part-body-data click2  value-color">
+                                @{
+                                    findusr = db.dbergapishghan.FirstOrDefault(s => s.name == 1198 && s.vaziat == 1);
+                                    result11 = "";
+                                    if (findusr != null)
+                                    {
+                                        result11 = Model.dbergharelimsertfk1_7
+                                                     .Where(s => s.valuunic == @unicc && s.FK_db2 == findusr.FK_link)
+                                                                   .OrderByDescending(t => t.ID)   // مرتب‌سازی روی خود جدول
+
+                                                     .Select(t => t.valueFK_db2)
+                                                     .FirstOrDefault();
+                                    }
+                                }
+                                @result11
+                            </div>
+                            <div class="part-body-data click2  value-color">
+                                @{
+                                    findusr = db.dbergapishghan.FirstOrDefault(s => s.name == 1199 && s.vaziat == 1);
+                                    result11 = "";
+                                    if (findusr != null)
+                                    {
+                                        result11 = Model.dbergharelimsertfk1_7
+                                                     .Where(s => s.valuunic == @unicc && s.FK_db2 == findusr.FK_link)
+                                                                   .OrderByDescending(t => t.ID)   // مرتب‌سازی روی خود جدول
+
+                                                     .Select(t => t.valueFK_db2)
+                                                     .FirstOrDefault();
+                                    }
+                                }
+                                @result11
+                            </div>
+                            <div class="part-body-data click2  value-color">
+                                @{
+                                    findusr = db.dbergapishghan.FirstOrDefault(s => s.name == 1200 && s.vaziat == 1);
+                                    result11 = "";
+                                    if (findusr != null)
+                                    {
+                                        result11 = Model.dbergharelimsertfk1_7
+                                                     .Where(s => s.valuunic == @unicc && s.FK_db2 == findusr.FK_link)
+                                                                   .OrderByDescending(t => t.ID)   // مرتب‌سازی روی خود جدول
+
+                                                     .Select(t => t.valueFK_db2)
+                                                     .FirstOrDefault();
+                                    }
+                                }
+                                @result11
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="mymodal3" class="modal3">
+        <div class="modal-content2">
+            <i class="close-icon fa fa-window-close"></i>
+            <div id="ss">
+            </div>
+        </div>
+    </div>
+    <script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+    <script src="~/Scripts/jquery-ui.js"></script>
+    <script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="~/Scripts/jquery-ui.js"></script>
+    <script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+    <script>
+
+        $(document).ready(function () {
+
+            // وقتی روی هر سلول یا دکمه click2  value-color کلیک شد، مودال باز بشه
+@*$(".click2  value-color").click(function () {
+    var $this = $(this);
+
+    // موقعیت المان کلیک‌شده
+    var offset = $this.offset();
+    var elementHeight = $this.outerHeight();
+
+    // نمایش مودال
+    $("#mymodal3")
+        .addClass("fade-in")
+        .css({
+            "display": "block",
+            "position": "absolute",   // لازم
+            "top": offset.top + elementHeight + 5 + "px", // ۵px فاصله پایین المان
+        });
+
+    // گرفتن data-id یا هر چیزی که نیاز داری
+    var idd = $this.data("id");
+    console.log("Clicked ID:", idd);
+
+    // لود محتوا
+    $("#ss").load('@Url.Content("/Setting/Orders/sabteghdam")?id=' + idd);
+});*@
+
+            // بستن مودال با آیکون
+            $(".close-icon").click(function () {
+                $("#mymodal3").fadeOut();
+            });
+
+            // بستن مودال وقتی روی بک‌گراند کلیک شد
+            $("#mymodal3").click(function (e) {
+                if (e.target === this) {
+                    $(this).fadeOut();
+                }
+            });
+
+        });
+        $(document).ready(function () {
+            $("#expandButton2").click(function () {
+                $("#mymodal3").addClass("fade-in"); // Add the fade-in class
+                $("#mymodal3").css("display", "block");
+            });
+
+            $(".close").click(function () {
+                $("#mymodal3").removeClass("fade-in"); // Remove the fade-in class
+                $("#mymodal3").css("display", "none");
+                location.reload();
+            });
+
+            $(window).click(function (event) {
+                if (event.target == $("#mymodal3")[0]) {
+                    $("#mymodal3").removeClass("fade-in"); // Remove the fade-in class
+                    $("#mymodal3").css("display", "none");
+                }
+            });
+        })
+    </script>
+</body>
+</html>
+<script>
+    document.querySelectorAll(".ragham").forEach(function (el) {
+        let str = el.innerText.replace(/[^0-9]/g, ""); // فقط رقم‌ها
+        if (str) {
+            el.innerText = str.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+    });
+</script>
+<script>
+ $("#person-sabt").click(function () {
+     var sharestan = $("#sharestan").val();
+
+     if (sharestan === "") {
+         alert("لطفاً یک شهرستان انتخاب کنید");
+         return;
+     }
+
+     // ریدایرکت به صفحه createps با پارامتر id
+     window.location.href = '@Url.Action("dasbord_1218_see", "Orders", new { area = "Setting" })' + "?id=" + sharestan;
+ }); $(document).ready(function () {
+     $("#sharestan").picker({ search: true });
+
+ });
+</script>

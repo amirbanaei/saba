@@ -1,0 +1,344 @@
+﻿@using SaabWebProject.Models.DomainModels;
+
+@{
+    SaabEntities db = new SaabEntities();
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>فرم ورود اطلاعات</title>
+    <style>
+
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive design */
+        @@media (max-width: 600px) {
+            .form-container {
+                padding: 16px;
+                margin: 10px;
+            }
+
+            .extra-row {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2 class="form-title">فرم تعریف فیلد</h2>
+
+        <form id="productForm">
+            <!-- فیلد جنس -->
+            <div class="row">
+                <div class="col-xl-5">
+
+                    <label class="form-label" for="jens">جنس</label>
+                    <select class="form-select" id="jens" name="jens">
+                        <option value="">نوع جنس را انتخاب کنید</option>
+                        <option value="تاریخ">تاریخ</option>
+                        <option value="ریال">ریال</option>
+                        <option value="عدد">عدد</option>
+                        <option value="تکست">تکست</option>
+                    </select>
+                </div>
+                <div class="form-group col-xl-4">
+                    <label class="form-label col-xl-1" for="onvan">عنوان</label>
+                    <input type="text" class="form-control" id="onvan" name="onvan" placeholder="عنوان را وارد کنید">
+                </div>
+
+                <!-- فیلدهای اضافی -->
+                <div id="extraFieldsContainer"></div>
+                <div class="col-xl-1">
+                    <a href="#" class=" btn form-control buttonGeneral" id="downloadFish">
+                        <i class="bi bi-download  fa-fw me-1 VecGeneral"></i>
+                        <span class="bGeneral-text"> دانلود فایل نمونه</span>
+                    </a>
+                </div>            <div class="col-xl-1">
+                    <a class="btn form-control buttonGeneral" id="upload10" style="font-size:10px;margin-bottom:10px;">
+                        <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                        <span class="bGeneral-text"> بارگزای اکسل</span>
+                    </a>
+                </div>
+
+                <input id="summery_file10" style="display:none" type="file" class="form-control" value="" />
+                <input id="summery_file11" style="display:none" type="file" class="form-control" value="" />
+                <input id="summery_file112" style="display:none" type="file" class="form-control" value="" />
+                <!-- دکمه‌های فرم -->
+                <div class="button-group col-xl-3">
+                    <button type="submit" class="btn-submit">ثبت</button>
+                    <button type="button" class="btn-add" id="addFieldsBtn">+</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+    <div class="row">
+        @*$("#myTable").load('@Url.Action("listdocum", "FinancialDocuments", new { area = "ManagementAccounting" })');*@
+
+        @Html.Action("unicdarsad_withoutlyout", "Orders", new { Area = "Setting" })
+    </div>
+
+    <!-- فیلد وزن -->
+    <!--<div class="form-group">
+        <label class="form-label" for="vazn">وزن</label>
+        <input type="number" class="form-control" id="vazn" name="vazn" placeholder="وزن را وارد کنید">
+    </div>-->
+    <!-- فیلد عنوان -->
+    </div><link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+    <script src="~/Scripts/sweetalert2.js"></script>
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+    <script src="~/Scripts/jquery-ui.js"></script>
+    <script src="~/Scripts/popper.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+    <script src="~/Scripts/sweetalert2.js"></script>
+
+    <script>
+
+                    $("#upload10").click(function () {
+
+
+
+
+
+      $("#summery_file10").click();
+
+        });
+       fd3 = new FormData();
+
+$("#summery_file10").change(function (e) {
+             $.each(e.target.files, function (index, file) {
+                 fd3.append("MyExcelStream", file);
+             });
+    //var jobId = document.getElementById("pestenka").value; // مقدار input
+
+/*    fd3.append("jobId", jobId);*/
+
+    sendAjax14('@Url.Action("ImportExcel_TarifFieldErja", "Orders", new { area = "Setting" })', fd3);
+});
+
+        function sendAjax14(url2, fd2) {
+
+            document.getElementById("loading-circle").style.display = "block";
+
+
+    $.ajax({
+        url: url2,
+        type: 'POST',
+        data: fd2,
+        processData: false,
+        contentType: false,
+        success: function (res) {
+            document.getElementById("loading-circle").style.display = "none";
+
+            $("#loading-message").css("display", "none");
+            fd = new FormData();
+            console.log(res);
+            console.log("jj");
+
+            if (res == "True") {
+                alert("با موفقیت ثبت شد ");
+            //    location.reload();
+            }
+                   @*$("#table_div").load('@Url.Content("../defFacilitiesEquipment/_ListEquipmentMoalefeValue")');*@
+
+
+
+        },
+        error: function (res) {
+            $("#loading-message").css("display", "none");
+            console.log(res);
+            console.log("jj");
+            Toast.fire({
+                icon: 'success',
+                background: '#35434A',
+                color: 'white',
+                title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+            }).then(() => {
+                $("#loading-message").css("display", "none");
+            });
+        }
+    });
+}
+        $(document).on("click", "#downloadFish", function () {
+
+
+
+            window.location.href =
+                "/Setting/Orders/ExportUnic";
+        });
+        // متغیرهای سراسری
+        let extraFieldsCount = 0;
+        const extraFieldsContainer = document.getElementById('extraFieldsContainer');
+        const addFieldsBtn = document.getElementById('addFieldsBtn');
+        const productForm = document.getElementById('productForm');
+
+        // تابع افزودن فیلدهای اضافی
+        function addExtraFields() {
+            extraFieldsCount++;
+            const fieldId = Date.now(); // ID منحصر به فرد
+
+            const extraFieldsDiv = document.createElement('div');
+            extraFieldsDiv.className = 'extra-fields fade-in';
+            extraFieldsDiv.id = `extra-${fieldId}`;
+
+            extraFieldsDiv.innerHTML = `
+                            <div class="row">
+                                <div class="form-group col-xl-3">
+                                    <label class="form-label" for="subtitle-${fieldId}">عنوان زیر مجموعه</label>
+                                    <input type="text" class="form-control" id="subtitle-${fieldId}" name="subtitle-${fieldId}" placeholder="عنوان زیر مجموعه را وارد کنید">
+
+
+                            </div>
+                             <div class="col-xl-2">
+            <button type="button" class="btn btn-danger btn-sm del-btn" data-target="extra-${fieldId}">حذف</button>
+        </div> </div>
+                        `;
+
+            extraFieldsContainer.appendChild(extraFieldsDiv);
+            console.log('فیلد جدید اضافه شد');
+        }
+        extraFieldsContainer.addEventListener('click', function (e) {
+            if (e.target.classList.contains('del-btn')) {
+                const targetId = e.target.getAttribute('data-target');
+                document.getElementById(targetId).remove();
+                console.log(`ردیف ${targetId} حذف شد`);
+            }
+        });
+            // تابع جمع‌آوری اطلاع
+        function collectFormData() {
+            const formData = {
+                جنس: document.getElementById('jens').value,
+                وزن: document.getElementById('vazn').value,
+                عنوان: document.getElementById('onvan').value,
+                extraFields: []
+            };
+
+            // جمع‌آوری فیلدهای اضافی
+            const extraFields = extraFieldsContainer.querySelectorAll('.extra-fields');
+            extraFields.forEach((fieldDiv) => {
+                const fieldId = fieldDiv.id.replace('extra-', '');
+                const subtitle = document.getElementById(`subtitle-${fieldId}`).value;
+                const priority = 0;
+
+                formData.extraFields.push({
+                    id: fieldId,
+                    subTitle: subtitle,
+                    priority: priority
+                });
+            });
+
+            return formData;
+        }
+
+        // Event listener برای دکمه افزودن
+        addFieldsBtn.addEventListener('click', addExtraFields);
+
+        // Event listener برای ثبت فرم
+        productForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const formData = collectFormData();
+            console.log('فرم ثبت شد:', formData);
+
+            // نمایش پیام موفقیت
+            alert('فرم با موفقیت ثبت شد!\nاطلاعات در کنسول مرورگر قابل مشاهده است.');
+        });
+
+        // اضافه کردن کلاس focus برای بهبود UX
+        document.querySelectorAll('.form-control, .form-select').forEach(element => {
+            element.addEventListener('focus', function () {
+                this.style.borderColor = '#030213';
+            //    this.style.backgroundColor = 'white';
+            });
+
+            element.addEventListener('blur', function () {
+                if (!this.value) {
+                    this.style.borderColor = '#ddd';
+                    this.style.backgroundColor = '#f9f9f9';
+                }
+            });
+        });
+        function collectFormData() {
+            const formData = {
+                Type: document.getElementById('jens').value,
+                Weight:0,
+                Title: document.getElementById('onvan').value,
+                ExtraFields: []
+            };
+
+            // Extra fields
+            const extraFields = extraFieldsContainer.querySelectorAll('.extra-fields');
+            extraFields.forEach((fieldDiv) => {
+                const fieldId = fieldDiv.id.replace('extra-', '');
+                const subtitle = document.getElementById(`subtitle-${fieldId}`).value;
+                const priority = 0;
+
+                formData.ExtraFields.push({
+                    SubTitle: subtitle,
+                    Priority: priority
+                });
+            });
+
+            return formData;
+        }
+
+        // Map "jens" values → numeric Type
+        const typeMapping = {
+            "تاریخ": 1,
+            "ریال": 2,
+            "عدد": 3,
+            "تکست": 4
+        };
+
+        // Submit
+        productForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const formData = collectFormData();
+
+            // Convert "جنس" string → int
+            formData.Type = typeMapping[formData.Type] || 0;
+
+            fetch('/Setting/Orders/SaveProduct', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                body: JSON.stringify(formData)
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                        productForm.reset();
+                        extraFieldsContainer.innerHTML = "";
+                    } else {
+                        alert("Error: " + data.message);
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert("Unexpected error occurred.");
+                });
+        });
+    </script>
+</body>
+</html>

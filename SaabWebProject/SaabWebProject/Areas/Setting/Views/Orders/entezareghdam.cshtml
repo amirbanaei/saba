@@ -1,0 +1,341 @@
+﻿@model SaabWebProject.Models.ViewModels.Contracts.Function.FunctionModel
+
+@*@using SaabWebProject.Models.Classes;*@
+@using SaabWebProject.Models.DomainModels;
+
+@{
+    SaabEntities db = new SaabEntities();
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = null;
+
+}
+<style>
+    .hidden {
+        display: none;
+    }
+
+    .section {
+        margin: 15px 0;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    label {
+        margin-left: 5px;
+    }
+
+    /* برای هر گزینه (چک/رادیو + متن) */
+    .checkbox-item {
+        display: inline-flex;
+        align-items: center;
+        margin-right: 15px;
+        margin-bottom: 5px;
+    }
+
+    .cheeckkk {
+        margin-bottom: 0px !important;
+        margin-left: 8px
+    }
+    /* در موبایل هر گزینه یک خط */
+    @@media (max-width: 600px) {
+        .checkbox-item {
+            display: flex;
+            width: 100%;
+        }
+    }
+
+    .report-item {
+        margin-bottom: 15px;
+    }
+
+        .report-item strong {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+    .report-options {
+        display: flex;
+        flex-wrap: wrap;
+    }
+</style>
+<style>
+    .modal-lg, .modal-xl {
+        margin-top: 8px !important;
+        max-width: 80% !important;
+    }
+
+    .modal-content {
+        /*width:121% !important;
+        padding: 0 !important;
+        margin:-2px;*/
+    }
+</style>
+<style>
+
+
+    .modal2 {
+        display: none;
+        position: absolute; /* Change this from fixed */
+        z-index: 1000; /* Adjust z-index as needed */
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: auto;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content2 {
+        background-color: black;
+        position: relative; /* Add relative positioning */
+        /*  margin: 15% auto;*/
+        padding: 20px;
+        border: 4px solid aqua;
+        border-radius: 30px;
+        width: 100%;
+        max-height: 100%;
+        overflow-y: auto;
+    }
+
+    .modal3 {
+        display: none;
+        position: absolute; /* Change this from fixed */
+        z-index: 1000; /* Adjust z-index as needed */
+        left: 0;
+        top: 0;
+        width: 65%;
+        height: auto;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    @@media (max-width: 768px) {
+        .modal3 {
+            left: -73px;
+            width: 103% !important;
+        }
+
+        .modal-content3 {
+            width: 100% !important;
+            /*padding: 0 !important;
+        margin:-2px;*/
+        }
+    }
+
+
+    .modal-content3 {
+        background-color: black;
+        position: relative; /* Add relative positioning */
+        /*  margin: 15% auto;*/
+        padding: 20px;
+        border: 4px solid aqua;
+        border-radius: 30px;
+        width: 100%;
+        max-height: 100%;
+        overflow-y: auto;
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+    .fade-in {
+        animation: fadeIn 1s ease-in-out; /* Adjust duration and timing function as needed */
+    }
+</style>
+@foreach (var it in db.dbergharelicratgrouprel11.Where(s => s.FK_usr == Model.usrID&&s.vaziat==0))
+{
+
+    var fild = db.dbergharelrelationseefild_10.Where(s => s.ID != 0).FirstOrDefault();
+    var fild1 = fild.fild1;
+    var fild2 = fild.file2;
+    var fild3 = fild.fild3;
+    var fild4 = fild.fild4;
+    var findvalue = db.dbergharelimsertfk1_7.Where(s => s.FK_db2 == fild1&&s.valuunic==it.unic).OrderByDescending(t=>t.ID).FirstOrDefault();
+    var findvalue1 = db.dbergharelimsertfk1_7.Where(s => s.FK_db2 == fild2 && s.valuunic == it.unic).OrderByDescending(t => t.ID).FirstOrDefault();
+    var findvalue2 = db.dbergharelimsertfk1_7.Where(s => s.FK_db2 == fild3 && s.valuunic == it.unic).OrderByDescending(t => t.ID).FirstOrDefault();
+    var findvalue4 = db.dbergharelimsertfk1_7.Where(s => s.FK_db2 == fild4 && s.valuunic == it.unic).OrderByDescending(t => t.ID).FirstOrDefault();
+    //var findvalue5 = db.dbergharelimsertfk1_7.Where(s => s.FK_db2 == fild1).FirstOrDefault();
+
+
+    <div class="row">
+        <div class="col-xl-3">
+            <span>@findvalue.valueFK_db2</span>
+        </div>
+
+
+        <div class="col-xl-3">
+            <span>
+                @findvalue1.valueFK_db2
+                ریال بدهکار
+
+
+
+
+            </span>
+            
+
+            @*<input id="taghsitBedehi3" class="form-control" type="text" value="@findvalue1.valueFK_db2" />*@
+        </div><div class="col-xl-3">
+            <span>@findvalue2.valueFK_db2</span>
+            @*<input id="taghsitBedehi4" class="form-control" type="text" value="@findvalue2.valueFK_db2" />*@
+        </div>
+              <div class="col-xl-1">
+                  <a href="#" onclick="DownloadExcel23(@it.ID)" class=" btn btn-outline-info form-control buttonGeneral" id="@it.ID" style="margin-bottom:5px;">
+                      <i class="bi bi-eye fa-fw me-1 VecGeneral"></i>
+                      <span class="bGeneral-text">مشاهده</span>
+                  </a>
+              </div>
+    </div>
+  
+    <hr />
+}
+
+<div id="myModal3" class="modal3" style="margin-left:25% !important;">
+    <div class="modal-content3">
+        <div class="row">
+            <i class="close fa fa-window-close"></i>
+        </div>
+
+        <div id="ss2">
+
+        </div>
+
+    </div>
+</div>
+<div id="test2">
+
+</div>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+@*<script>
+
+            function DownloadExcel23() {
+        //var month = $("#Month2").val();
+                //var shomarehheshterak = $("#shomarehheshterak").val();
+
+                //var ComputerPassword = $("#ComputerPassword").val();
+        document.getElementById("loading-circle").style.display = "block";
+
+            //    if (shomarehheshterak == 0 && ComputerPassword==0) {
+            //alert("لطفاً شماره اشتراک یا رمز رایانه  را وارد  کنید.");
+            //return;
+                } $("#loading-circle .loadingText1").text("لطفا منتظر نمایش اطلاعات بمانید ...");
+                $("#loading-circle").css("display", "flex");
+                $("#myModal3").addClass("fade-in").css("display", "block");
+                     $("#ss2").load(
+         '@Url.Content("/Setting/Orders/entezarmodal")',
+                         /*{ shomarehheshterak: shomarehheshterak, ComputerPassword: ComputerPassword },*/
+         function () {
+             // این قسمت بعد از کامل شدن لود اجرا می‌شود
+             document.getElementById("loading-message").style.display = "none";
+             $("#loading-circle").css("display", "none");
+             $("#typegozarwsh11").picker({ search: true });
+
+         }
+     );
+
+    }</script>*@
+<script>
+ function DownloadExcel23(id) {
+    document.getElementById("loading-circle").style.display = "block";
+
+    $("#loading-circle .loadingText1").text("لطفا منتظر نمایش اطلاعات بمانید ...");
+    $("#loading-circle").css("display", "flex");
+     $("#myModal3").addClass("fade-in").css("display", "block");
+     console.log(id);
+    $("#ss2").load(
+        '@Url.Content("/Setting/Orders/entezarmodal")?id=' + id,
+        function () {
+            document.getElementById("loading-message").style.display = "none";
+            $("#loading-circle").css("display", "none");
+            $("#typegozarwsh11").picker({ search: true });
+        }
+    );
+}
+
+
+    $(document).ready(function () {
+        $("#expandButton2").click(function () {
+            $("#myModal3").addClass("fade-in"); // Add the fade-in class
+            $("#myModal3").css("display", "block");
+        });
+
+        $(".close").click(function () {
+            $("#myModal3").removeClass("fade-in"); // Remove the fade-in class
+            $("#myModal3").css("display", "none");
+            location.reload();
+        });
+
+        $(window).click(function (event) {
+            if (event.target == $("#myModal3")[0]) {
+                $("#myModal3").removeClass("fade-in"); // Remove the fade-in class
+                $("#myModal3").css("display", "none");
+            }
+        });
+    });
+
+    //$(document).ready(function () {
+    //    $("#typegozarwsh").picker({ search: true });
+
+    //});
+    //document.getElementById("open").addEventListener("change", function () {
+    //    document.getElementById("openSection").classList.toggle("hidden", !this.checked);
+    //});
+
+    //document.getElementById("mobileCheck").addEventListener("change", function () {
+    //    document.getElementById("mobileInput").classList.toggle("hidden", !this.checked);
+    //});
+
+    ////document.getElementById("amountCheck").addEventListener("change", function () {
+    ////    document.getElementById("amountInput").classList.toggle("hidden", !this.checked);
+    ////});
+    //document.getElementById("amountCheck").addEventListener("change", function () {
+    //    document.getElementById("amountSelect").classList.toggle("hidden", !this.checked);
+    //    // وقتی چک‌باکس غیر فعال شد، ورودی مبلغ رو هم مخفی کنیم
+    //    if (!this.checked) {
+    //        document.getElementById("amountInput").classList.add("hidden");
+    //        document.getElementById("amountSelect").value = "";
+    //    }
+    //});
+
+    //document.getElementById("amountSelect").addEventListener("change", function () {
+    //    document.getElementById("amountInput").classList.toggle("hidden", this.value === "");
+    //});
+    //$("#btnGetLocation").on("click", function () {
+    //    $.getJSON("/Setting/Orders/GetLocation", function (data) {
+    //        if (data && data.lat && data.lon) {
+    //            initMap(data.lat, data.lon);
+    //        } else {
+    //            alert("موقعیت پیدا نشد");
+    //        }
+    //    });
+    //});
+
+    //function initMap(lat, lng) {
+    //    var map = new google.maps.Map(document.getElementById("map"), {
+    //        zoom: 14,
+    //        center: { lat: lat, lng: lng }
+    //    });
+    //    new google.maps.Marker({
+    //        position: { lat: lat, lng: lng },
+    //        map: map
+    //    });
+    //}
+</script>

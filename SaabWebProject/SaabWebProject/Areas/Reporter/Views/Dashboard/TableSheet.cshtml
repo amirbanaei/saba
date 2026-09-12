@@ -1,0 +1,470 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "جدول";
+
+}
+<link href="~/MyStyles/MyStyle.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<style>
+    .tab-content {
+        padding-right: 2px !important;
+        padding-left: 2px !important;
+    }
+
+    @@media print {
+        #luckysheet {
+            display: none;
+        }
+    }
+
+    .modal_table {
+        direction: rtl !important;
+    }
+
+    .hljs-container {
+        overflow: hidden
+    }
+
+    .tab-content {
+        position: relative;
+        margin: 0;
+        padding: 10px;
+        height: 89vh;
+        overflow: hidden
+    }
+
+    .topBox {
+        position: relative
+    }
+
+    #luckysheet {
+        padding: 2px;
+        position: absolute;
+        height: 541.781px !important;
+        width: 1195.36px !important;
+        left: 0px;
+        /*top: 0px;*/
+        direction: ltr;
+    }
+
+    .luckysheet-cols-menu {
+        direction: ltr;
+    }
+
+    .luckysheet-modal-dialog-slider {
+        height: 607px;
+        top: 67px;
+        right: 75px;
+        width: 310px;
+        padding: 2px;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .luckysheet {
+        height: 502.781px !important;
+        width: 1195.36px !important;
+    }
+
+    .luckysheet_info_detail {
+        display: none !important;
+    }
+
+    .luckysheet-functionbox-cell-input {
+        color: #000 !important
+    }
+
+    #luckysheet-modal-dialog-slider-imageCtrl {
+        color: #000;
+        top: 66px;
+        right: 76px;
+        width: 280px;
+        border: 2px solid #16525c;
+        border-radius: 15px;
+        backdrop-filter: blur(10px);
+    }
+
+    #luckysheet-rich-text-editor {
+        color: #000;
+    }
+
+    #luckysheet-modal-dialog-slider-imageCtrl .luckysheet-modal-dialog-slider-content .luckysheet-modal-dialog-slider-content {
+        background-color: #ffffff94 !important;
+    }
+    /**/
+    #luckysheet-modal-dialog-slider-protection {
+        color: #000;
+        top: 66px;
+        right: 76px;
+        width: 315px;
+        border: 2px solid #16525c;
+        border-radius: 15px;
+        backdrop-filter: blur(10px);
+        padding: 4px
+    }
+
+        #luckysheet-modal-dialog-slider-protection .luckysheet-modal-dialog-slider-content {
+            background: unset !important;
+        }
+
+    .luckysheet-modal-dialog-slider-content input {
+        margin-bottom: 0px !important;
+        margin-left: 6px;
+    }
+    /**/
+    #luckysheet-insertLink-dialog {
+        user-select: none;
+        border-radius: 15px;
+        backdrop-filter: blur(10px);
+        background: #ffffff29;
+        border: 2px solid #16525c;
+    }
+
+        #luckysheet-insertLink-dialog .box-item label {
+            width: 100px !important;
+        }
+
+    div#luckysheet-insertLink-dialog div {
+        background: #fffcfc00;
+    }
+    /*----------------------------------*/
+    input.luckysheet-mousedown-cancel {
+        border-radius: 5px !important;
+        border: 1px solid !important;
+    }
+
+    .border-item input {
+        border-radius: 5px !important;
+        border: 1px solid !important;
+    }
+    /*----------------------------------*/
+    #luckysheet-rightclick-menu {
+        top: 65px !important;
+    }
+
+    .luckysheet-modal-dialog, .luckysheet-cols-menu {
+        background: #ffffff94 !important;
+        backdrop-filter: blur(4px) !important;
+        border-radius: 8px !important;
+    }
+    /*----------------------------------*/
+    #luckysheet-hyperlink-overshow {
+        color: #000 !important;
+    }
+    /*----------------------------------*/
+    .modal-dialog.modal-lg {
+        max-width: 99% !important;
+    }
+
+    #big_modal_body table {
+        width: 100% !important;
+    }
+    /*----------------------------------*/
+    .luckysheet-cols-menuitem[itemvalue="vertical"]{
+        display: none;
+    }
+    .tableModal td{
+        overflow:hidden
+    }
+    /*----------------------------------*/
+</style>
+
+<div class="tab-content">
+    <div class="row topBox">
+        <div class="col-xl-2">
+            <label class="form-label">تعداد سطر</label>
+            <input class="form-control" id="rowT" />
+        </div>
+        <div class="col-xl-2">
+            <label class="form-label">تعداد ستون</label>
+            <input class="form-control" id="colT" />
+        </div>
+
+        <div class="col-xl-1">
+            <button id="buildT" type="button" class="form-control buttonsabt">
+                <i class="bi bi-table fa-fw me-1 VecGeneral"></i>
+                <span class="bSabt-text">تولید جدول</span>
+            </button>
+        </div>
+        <div class="col-xl-1">
+            @*<button onclick="ShowDialogFile1()" class="form-control buttonGeneral">
+                    <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                    <span class="bGeneral-text"> بارگذاری اطلاعات</span>
+                </button>
+                <input id="uploadExcel" type="file" style="display:none" />*@
+        </div>
+        <div class="col-xl-5"></div>
+        <div class="col-xl-1">
+            <button id="savebtn" class="form-control buttonGeneral" data-bs-toggle="modal" data-bs-target="#modalLg">
+                <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                <span class="bSabt-text">ثبت</span>
+            </button>
+        </div>
+    </div>
+    <div id="myTable">
+
+    </div>
+
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    //$(document).ready(function () {
+    //    let row = $("#rowT").val();
+    //    let col = $("#colT").val();
+    //    $("#myTable").load(`/Reporter/Dashboard/TableSheetShow?row=${row}&col=${col}`);
+    //});
+
+    function ShowDialogFile1() {
+        console.log("ldsaksda0");
+        $("input[id='uploadExcel']").val(null);
+        $("input[id='uploadExcel']").click();
+    }
+</script>
+<script>
+    $("#buildT").on("click", function () {
+        let row = $("#rowT").val();
+        let col = $("#colT").val();
+        $("#myTable").load(`/Reporter/Dashboard/TableSheetShow?row=${row}&col=${col}`);
+    });
+
+    //$("#savebtn").on("click", function () {
+    //    let data = luckysheet.getAllSheets()
+    //    console.log(data[0].data)
+    //});
+
+</script>
+<script>
+    $('#savebtn').on('click', function () {
+        // دریافت تمام شیت‌ها
+        let data = luckysheet.getAllSheets();
+        console.log(data);
+
+        // کار با شیت اول
+        var sheet = data[0];
+        var sheetData = sheet.data; // داده‌های سلول‌ها
+        var config = sheet.config || {};
+        var borderInfo = config.borderInfo || [];
+        var mergeInfo = config.merge || {};
+        var rowlen = config.rowlen || {}; // ارتفاع ردیف‌ها
+        var columnlen = config.columnlen || {}; // عرض ستون‌ها
+
+        if (!sheetData) {
+            alert("دیتایی موجود نیست.");
+            return;
+        }
+
+        // نقشه برای رد شدن از سلول‌های ادغام‌شده
+        const skipMap = {};
+
+        // محاسبه عرض ستون‌ها
+        let totalWidth = 0;
+        let colWidths = [];
+        const defaultColWidth = 73; // عرض پیش‌فرض در صورتی که columnlen مقدار نداشته باشه
+        const numCols = sheetData[0].length; // تعداد ستون‌ها
+
+        // استخراج عرض ستون‌ها از config.columnlen
+        for (let colIndex = 0; colIndex < numCols; colIndex++) {
+            let colWidth = columnlen[colIndex] ? parseInt(columnlen[colIndex]) : defaultColWidth;
+            colWidths.push(colWidth);
+            totalWidth += colWidth;
+        }
+
+        // لاگ کردن عرض‌ها برای دیباگ
+        console.log("Column Widths:", colWidths);
+        console.log("Total Width:", totalWidth);
+        console.log("Column Length Data:", columnlen);
+
+        // شروع تولید جدول HTML
+        var tableHTML = '<table class="tableModal" style="width:100%; border-collapse: collapse; direction: ltr;">';
+
+        // تولید بدنه جدول
+        sheetData.forEach(function (row, rowIndex) {
+            if (!row) return;
+            let rowHeight = rowlen[rowIndex] ? parseInt(rowlen[rowIndex]) : 30; // ارتفاع پیش‌فرض 30px
+            tableHTML += '<tr style="height:' + rowHeight + 'px;">';
+
+            row.forEach(function (cell, colIndex) {
+                const cellKey = `${rowIndex}_${colIndex}`;
+                if (skipMap[cellKey]) return;
+
+                let rowspan = 1;
+                let colspan = 1;
+                let styles = '';
+                let value = (cell && cell.v != null) ? cell.v : '';
+                let formula = (cell && cell.f) ? cell.f : ''; // فرمول
+                let rotationStyle = ''; // جدید: استایل چرخش
+
+                // دیباگ برای بررسی وجود bl
+                if (cell && cell.bl) {
+                    console.log(`Cell [${rowIndex}, ${colIndex}] is bold:`, cell.bl);
+                }
+
+                // پردازش ادغام‌ها
+                const mergeKey = Object.keys(mergeInfo).find(key => {
+                    const item = mergeInfo[key];
+                    return item.r === rowIndex && item.c === colIndex;
+                });
+
+                if (mergeKey) {
+                    const merge = mergeInfo[mergeKey];
+                    rowspan = merge.rs;
+                    colspan = merge.cs;
+
+                    for (let r = rowIndex; r < rowIndex + rowspan; r++) {
+                        for (let c = colIndex; c < colIndex + colspan; c++) {
+                            if (r === rowIndex && c === colIndex) continue;
+                            skipMap[`${r}_${c}`] = true;
+                        }
+                    }
+                }
+
+                // پردازش استایل‌های سلول
+                if (cell) {
+                    if (cell.bg) styles += `background-color:${cell.bg};`;
+                    if (cell.fc) styles += `color:${cell.fc};`;
+                    if (cell.fs) styles += `font-size:${cell.fs}px;`;
+                    // اعمال بولد با اولویت بالا
+                    if (cell.bl) styles += 'font-weight:bold !important;';
+                    if (cell.it) styles += 'font-style:italic;';
+                    if (cell.un) styles += 'text-decoration:underline;';
+                    // ترازبندی افقی
+                    if (cell.ht) {
+                        if (cell.ht === '0') styles += 'text-align:center;';
+                        else if (cell.ht === '1') styles += 'text-align:left;';
+                        else if (cell.ht === '2') styles += 'text-align:right;';
+  
+                    }
+                    // ترازبندی عمودی
+                    if (cell.vt) {
+                        if (cell.vt === '0') styles += 'vertical-align:middle;';
+                        else if (cell.vt === '1') styles += 'vertical-align:top;';
+                        else if (cell.vt === '2') styles += 'vertical-align:bottom;';
+                    }
+                    // قالب‌بندی عدد
+                    if (cell.ct && cell.ct.fa) {
+                        if (cell.ct.fa.includes('#,##0')) {
+                            if (typeof value === 'number') {
+                                value = value.toLocaleString('en-US');
+                            }
+                        } else if (cell.ct.fa.includes('0.00')) {
+                            if (typeof value === 'number') {
+                                value = value.toFixed(2);
+                            }
+                        }
+                    }
+                    var DegR=[0,-45,45,-180,-90,90]
+                    //================================================
+                    // جدید: پردازش چرخش
+                    if (cell.tr) {
+                        rotationStyle += `rotate: ${DegR[cell.tr]}deg;justify-self:left;`
+                        if (cell.ht === '0') {
+                            rotationStyle += `rotate: ${DegR[cell.tr]}deg;justify-self:center;`
+                        } else if (cell.ht === '1') {
+                            rotationStyle += `rotate: ${DegR[cell.tr]}deg;justify-self:left;`
+                        } else if (cell.ht === '2') {
+                            rotationStyle += `rotate: ${DegR[cell.tr]} deg; justify-self:right;`
+                        }
+                         
+                    }
+                    //================================================ 
+
+                }
+
+                // پردازش بردرها
+                let borderStyle = '';
+                borderInfo.forEach(function (border) {
+                    if (border.range && Array.isArray(border.range)) {
+                        border.range.forEach(function (rangeItem) {
+                            if (
+                                rowIndex >= rangeItem.row[0] &&
+                                rowIndex <= rangeItem.row[1] &&
+                                colIndex >= rangeItem.column[0] &&
+                                colIndex <= rangeItem.column[1]
+                            ) {
+                                const color = border.color || '#000';
+                                const width = 1;
+                                const solid = `${width}px solid ${color};`;
+
+                                switch (border.borderType) {
+                                    case 'border-all':
+                                        borderStyle += `border:${solid}`;
+                                        break;
+                                    case 'border-outside':
+                                        if (rowIndex === rangeItem.row[0]) borderStyle += `border-top:${solid}`;
+                                        if (rowIndex === rangeItem.row[1]) borderStyle += `border-bottom:${solid}`;
+                                        if (colIndex === rangeItem.column[0]) borderStyle += `border-left:${solid}`;
+                                        if (colIndex === rangeItem.column[1]) borderStyle += `border-right:${solid}`;
+                                        break;
+                                    case 'border-horizontal':
+                                        borderStyle += `border-top:${solid} border-bottom:${solid}`;
+                                        break;
+                                    case 'border-vertical':
+                                        borderStyle += `border-left:${solid} border-right:${solid}`;
+                                        break;
+                                    case 'border-left':
+                                        borderStyle += `border-left:${solid}`;
+                                        break;
+                                    case 'border-right':
+                                        borderStyle += `border-right:${solid}`;
+                                        break;
+                                    case 'border-top':
+                                        borderStyle += `border-top:${solid}`;
+                                        break;
+                                    case 'border-bottom':
+                                        borderStyle += `border-bottom:${solid}`;
+                                        break;
+                                    case 'border-none':
+                                        borderStyle += 'border:none;';
+                                        break;
+                                }
+                            }
+                        });
+                    }
+                });
+
+                // تنظیم عرض سلول (برای سلول‌های ادغام‌شده، عرض کل را محاسبه می‌کنیم)
+                let colWidth = 0;
+                if (colspan > 1) {
+                    // اگر سلول ادغام‌شده است، عرض کل ستون‌های ادغام‌شده را جمع می‌کنیم
+                    for (let i = colIndex; i < colIndex + colspan; i++) {
+                        colWidth += colWidths[i] || defaultColWidth;
+                    }
+                } else {
+                    colWidth = colWidths[colIndex] || defaultColWidth;
+                }
+                //colWidth = colWidth + 'px';
+
+                // تولید محتوای سلول با چرخش
+                let content = value;
+                if (rotationStyle) {
+                    content = `<div style="${rotationStyle}">${value}</div>`;
+                } else {
+                    content = `<div style="">${value}</div>`
+                }
+
+                // تولید تگ td
+                tableHTML += `<td style="width:${colWidth * 100 / totalWidth}%; padding:4px; ${styles}${borderStyle}"` +
+                    (cell && cell.f ? ` data-formula="${cell.f}"` : '') +
+                    (rowspan > 1 ? ` rowspan="${rowspan}"` : '') +
+                    (colspan > 1 ? ` colspan="${colspan}"` : '') +
+                    '>' + content + '</td>';
+            });
+            tableHTML += '</tr>';
+        });
+
+        tableHTML += '</table>';
+
+        // افزودن جدول به مودال
+        $('#big_modal_body').html(tableHTML);
+    });
+</script>
+
+

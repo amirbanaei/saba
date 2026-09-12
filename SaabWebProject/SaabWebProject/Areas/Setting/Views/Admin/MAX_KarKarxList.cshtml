@@ -1,0 +1,179 @@
+﻿
+
+@using SaabWebProject.Models.Classes;
+@{
+    Layout = null;
+}
+@model IEnumerable<SaabWebProject.Models.DomainModels.tbMaxkarkardMonth>
+
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+<div class="card">
+    <div class="table-content p-4">
+        <div class="tab-pane fade show active" id="allTab">
+            <div class="table-responsive tableH_Lock">
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr style="text-align:center">
+                            <th>
+                                @Html.DisplayName("#")
+                            </th>
+                            <th>
+                                @Html.DisplayName("کاربر حقوقی")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter10-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            <th>
+                                @Html.DisplayName("مقدار سقف اضافه کار ")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter11-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            <th>
+                                @Html.DisplayName(" مقدار باقی مانده ماه قبل اضافه کار ")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter12-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            <th>
+                                @Html.DisplayName("ماه ")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter13-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            <th>
+                                @Html.DisplayName("سال")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter14-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            <th>
+                                @Html.DisplayName("مقدار سقف ایاب و ذهاب ")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter15-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody style="text-align:center">
+
+                        @if (Model != null)
+                        {
+
+                            var i = 0;
+                            foreach (var item in Model)
+                            {
+                                if (item != null)
+                                {
+
+
+                                    i++;
+                                    <tr class="task-list-rowS"
+                                        data-filter10="@item.tbUsers.FullName"
+                                        data-filter11="@String.Format("{0:N0}", item.Value)"
+                                        data-filter12="@String.Format("{0:N0}", item.RemainValue)"
+                                        data-filter13="@item.Month"
+                                        data-filter14="@item.Year"
+                                        data-filter15="@String.Format("{0:N0}", item.valuemaxayab ?? 0)">
+
+                                        <td>@i</td>
+                                        <td>@item.tbUsers.FullName</td>
+                                        <td>@String.Format("{0:N0}", item.Value)</td>
+                                        <td>@String.Format("{0:N0}", item.RemainValue)</td>
+                                        <td>@item.Month</td>
+                                        <td>@item.Year</td>
+                                        <td>@String.Format("{0:N0}", item.valuemaxayab ?? 0)</td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    i++;
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                }
+                            }
+
+                            // Your foreach loop code here
+                        }
+
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+<script>
+
+    var
+        filtersS = {
+            filter10: null,
+            filter11: null,
+            filter12: null,
+            filter13: null,
+            filter14: null,
+            filter15: null,
+        };
+
+    function updateFiltersS() {
+        $('.task-list-rowS').hide().filter(function () {
+            var self = $(this),
+                result = true;
+
+            Object.keys(filtersS).forEach(function (filter) {
+                var filterData = self.data(filter);
+                if (filtersS[filter] && (filtersS[filter] != 'None') && (filtersS[filter] != 'همه')) {
+                    // تبدیل داده به رشته و بررسی مقدار
+                    result = result && (filterData && filterData.toString().indexOf(filtersS[filter]) !== -1);
+                }
+            });
+
+            return result;
+        }).show();
+    }
+
+    function changeFilterS(filterName) {
+        filtersS[filterName] = this.value;
+        updateFiltersS();
+    }
+
+    // Assigned User Dropdown Filter
+    $('#filter10-filter').on('input', function () {
+        changeFilterS.call(this, 'filter10');
+    });
+    $('#filter11-filter').on('input', function () {
+        changeFilterS.call(this, 'filter11');
+    });
+    $('#filter12-filter').on('input', function () {
+        changeFilterS.call(this, 'filter12');
+    });
+    $('#filter13-filter').on('input', function () {
+        changeFilterS.call(this, 'filter13');
+    });
+    $('#filter14-filter').on('input', function () {
+        changeFilterS.call(this, 'filter14');
+    });
+    $('#filter15-filter').on('input', function () {
+        changeFilterS.call(this, 'filter15');
+    });
+</script>
+
+

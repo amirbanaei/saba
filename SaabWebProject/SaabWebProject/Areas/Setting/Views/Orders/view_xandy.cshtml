@@ -1,0 +1,740 @@
+﻿@*@{
+            ViewBag.Title = "Go to Location";
+        }
+
+        <h2>Go to Google Maps</h2>
+
+        <form id="mapForm" onsubmit="goToMap(); return false;">
+            <label>Latitude:</label>
+            <input type="text" id="lat" placeholder="مثلاً 35.6892" required />
+            <br />
+            <label>Longitude:</label>
+            <input type="text" id="lng" placeholder="مثلاً 51.3890" required />
+            <br />
+            <button type="submit">Go to Location</button>
+        </form>
+
+        <script>
+        function goToMap() {
+            var lat = document.getElementById('lat').value;
+            var lng = document.getElementById('lng').value;
+
+            if(lat && lng){
+                var url = 'https://www.google.com/maps?q=' + encodeURIComponent(lat) + ',' + encodeURIComponent(lng);
+                window.location.href = url;
+            } else {
+                alert("لطفاً هر دو مختصات را وارد کنید!");
+            }
+        }
+        </script>
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Nearest GIS Points (Real Road Distance) - Fixed</title>
+
+        <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+        <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+        <style>
+            body {
+                margin: 0;
+                display: flex;
+                height: 100vh;
+                font-family: sans-serif;
+            }
+
+            #map {
+                flex: 1;
+            }
+
+            #panel {
+                width: 360px;
+                max-width: 40%;
+                background: #fff;
+                box-shadow: 0 0 8px rgba(0,0,0,0.2);
+                padding: 10px;
+                overflow: auto;
+            }
+
+            #status {
+                margin-bottom: 10px;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                font-size: 13px;
+            }
+
+                table th, table td {
+                    border: 1px solid #ddd;
+                    padding: 6px;
+                    text-align: left;
+                }
+
+            .small {
+                font-size: 12px;
+                color: #555;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="map"></div>
+        <div id="panel">
+            <div id="status">وضعیت: آماده‌سازی...</div>
+            <button id="startBtn">شروع محاسبه نزدیک‌ترین‌ها (OSRM)</button>
+            <div id="resultsArea"></div>
+        </div>
+
+        <script>
+            // نقاط همراه با ID
+            const points = [
+                { id: 1, coord: [25.291758665247, 60.644739160469] },
+                { id: 2, coord: [29.471318870585, 60.833265659744] },
+                { id: 3, coord: [26.653929924558, 61.691340853247] },
+                { id: 4, coord: [30.807520001728, 61.37862000121] },
+                { id: 5, coord: [28.916195924233, 61.320723151251] },
+                { id: 6, coord: [26.577004747149, 59.635116070763] },
+                { id: 7, coord: [26.200244034918, 60.629287118288] },
+                { id: 8, coord: [27.447302619348, 59.579367260692] },
+                { id: 9, coord: [28.261787634321, 61.487407249933] },
+                { id: 10, coord: [27.254310730197, 62.027496371141] },
+                { id: 11, coord: [25.743364943877, 59.761214560754] },
+                { id: 12, coord: [27.1261939999, 61.688211000383] },
+                { id: 13, coord: [27.23871184813, 62.048361504739] },
+                { id: 14, coord: [29.4914312262468, 60.7806446403265] }
+            ];
+
+            const map = L.map('map').setView([27.5, 60.5], 6);
+            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
+
+            // markers initial
+            const markers = {};
+            const bounds = [];
+            points.forEach(p => {
+                const m = L.marker(p.coord).addTo(map)
+                    .bindPopup(`ID: ${p.id}`);
+                markers[p.id] = m;
+                bounds.push(p.coord);
+            });
+            map.fitBounds(bounds, { padding: [40, 40] });
+
+            // ساده اما مقاوم: try/catch و بازگشت null در صورت خطا
+            async function getRouteDistance(p1, p2) {
+                const url =
+                    `https://router.project-osrm.org/route/v1/driving/` +
+                    `${p1[1]},${p1[0]};${p2[1]},${p2[0]}?overview=full&geometries=geojson`;
+
+                try {
+                    const res = await fetch(url);
+                    if (!res.ok) {
+                        console.warn('OSRM non-ok response:', res.status);
+                        return null;
+                    }
+                    const data = await res.json();
+                    if (!data.routes || data.routes.length === 0) return null;
+                    return {
+                        distance: data.routes[0].distance, // meters
+                        geometry: data.routes[0].geometry
+                    };
+                } catch (err) {
+                    console.warn('OSRM fetch error:', err);
+                    return null;
+                }
+            }
+
+            // asyncPool کوچک برای محدود کردن concurrency (maxConcurrent)
+            // from: common async pool pattern
+            async function asyncPool(iterable, workerFn, maxConcurrent = 4) {
+                const ret = [];
+                const executing = [];
+                for (const item of iterable) {
+                    const p = Promise.resolve().then(() => workerFn(item));
+                    ret.push(p);
+                    executing.push(p);
+                    const clean = () => {
+                        const idx = executing.indexOf(p);
+                        if (idx > -1) executing.splice(idx, 1);
+                    };
+                    p.then(clean).catch(clean);
+                    if (executing.length >= maxConcurrent) {
+                        await Promise.race(executing);
+                    }
+                }
+                return Promise.all(ret);
+            }
+
+            // محاسبه نزدیک‌ترین برای یک نقطه با محدودیت همزمانی برای درخواست‌ها
+            async function findNearestForPoint(p, others, progressCallback) {
+                // worker for a single target q
+                const tasks = others.map(q => {
+                    return async () => {
+                        const route = await getRouteDistance(p.coord, q.coord);
+                        if (progressCallback) progressCallback(p.id);
+                        return { q, route };
+                    };
+                });
+
+                // run with pool: max concurrent = 4
+                const results = await asyncPool(tasks, fn => fn(), 4);
+
+                // filter valid routes
+                const valid = results.filter(r => r.route && typeof r.route.distance === 'number');
+
+                if (valid.length === 0) return null;
+
+                // pick minimum
+                valid.sort((a, b) => a.route.distance - b.route.distance);
+                const best = valid[0];
+                return {
+                    from: p.id,
+                    to: best.q.id,
+                    distanceMeters: best.route.distance,
+                    geometry: best.route.geometry
+                };
+            }
+
+            // محاسبه برای همه با نمایش پیشرفت
+            async function calculateNearestForAll(onProgress) {
+                const results = [];
+                let completed = 0;
+                for (const p of points) {
+                    onProgress && onProgress({ type: 'start-point', id: p.id, completed });
+                    const others = points.filter(x => x.id !== p.id);
+                    const res = await findNearestForPoint(p, others, (pid) => {
+                        // optional per-request progress - can be noisy
+                    });
+                    completed++;
+                    onProgress && onProgress({ type: 'done-point', id: p.id, index: completed });
+                    if (res) results.push(res);
+                    else results.push({ from: p.id, to: null, distanceMeters: null, geometry: null });
+                }
+                return results;
+            }
+
+            // مدیریت UI و رسم نتایج
+            let drawnLayers = [];
+            function clearDrawn() {
+                drawnLayers.forEach(l => map.removeLayer(l));
+                drawnLayers = [];
+            }
+
+            //function renderResults(results) {
+            //    clearDrawn();
+            //    const area = document.getElementById('resultsArea');
+            //    area.innerHTML = '';
+
+            //    const tbl = document.createElement('table');
+            //    tbl.innerHTML = `<thead><tr><th>From</th><th>To</th><th>Distance (km)</th></tr></thead>`;
+            //    const tbody = document.createElement('tbody');
+
+            //    results.forEach(r => {
+            //        const tr = document.createElement('tr');
+            //        const distKm = r.distanceMeters != null ? (r.distanceMeters / 1000).toFixed(2) : '-';
+            //        tr.innerHTML = `<td>${r.from}</td><td>${r.to || '-'}</td><td>${distKm}</td>`;
+            //        tbody.appendChild(tr);
+
+            //        // popup update for marker
+            //        const m = markers[r.from];
+            //        if (m) {
+            //            const popupText = `ID: ${r.from}<br>نزدیک‌ترین: ${r.to || '-'}<br>فاصله واقعی: ${distKm}`;
+            //            m.bindPopup(popupText);
+            //        }
+
+            //        // draw line if geometry exists
+            //        if (r.geometry) {
+            //            const line = L.geoJSON(r.geometry, { color: 'red', weight: 3, opacity: 0.8 }).addTo(map);
+            //            drawnLayers.push(line);
+            //        }
+            //    });
+
+            //    tbl.appendChild(tbody);
+            //    area.appendChild(tbl);
+
+            //    console.log('Nearest results:', results);
+            //    document.getElementById('status').innerText = 'پایان: نتایج در جدول نمایش داده شد و مسیرها روی نقشه رسم شدند.';
+            //}
+
+            // UI handlers
+            const startBtn = document.getElementById('startBtn');
+            const statusEl = document.getElementById('status');
+
+            startBtn.addEventListener('click', async () => {
+                startBtn.disabled = true;
+                statusEl.innerText = 'در حال محاسبه... هر درخواست ممکن است چند ثانیه طول بکشد. لطفاً صبور باش (حداکثر concurrency=4).';
+                try {
+                    const results = await calculateNearestForAll(({ type, id, index, completed }) => {
+                        if (type === 'start-point') {
+                            statusEl.innerText = `در حال محاسبه نزدیک‌ترین برای نقطه ${id} ... (${completed} تکمیل شده)`;
+                        } else if (type === 'done-point') {
+                            statusEl.innerText = `پیشرفت: ${index} از ${points.length} تکمیل شد`;
+                        }
+                    });
+                    renderResults(results);
+                } catch (err) {
+                    console.error(err);
+                    statusEl.innerText = 'خطا هنگام محاسبه. کنسول را بررسی کنید.';
+                } finally {
+                    startBtn.disabled = false;
+                }
+            });
+
+            document.getElementById('status').innerText = 'آماده. برای شروع روی دکمه کلیک کن.';
+
+
+
+
+
+
+            function renderResults(results) {
+                clearDrawn();
+                const area = document.getElementById('resultsArea');
+                area.innerHTML = '';
+
+                const tbl = document.createElement('table');
+                tbl.innerHTML = `<thead><tr><th>From</th><th>To</th><th>Distance (km)</th></tr></thead>`;
+                const tbody = document.createElement('tbody');
+
+                results.forEach(r => {
+                    const tr = document.createElement('tr');
+                    const distKm = r.distanceMeters != null ? (r.distanceMeters / 1000).toFixed(2) : '-';
+                    tr.innerHTML = `<td>${r.from}</td><td>${r.to || '-'}</td><td>${distKm}</td>`;
+                    tbody.appendChild(tr);
+
+                    // popup update for marker
+                    const m = markers[r.from];
+                    if (m) {
+                        const popupText = `ID: ${r.from}<br>نزدیک‌ترین: ${r.to || '-'}<br>فاصله واقعی: ${distKm}`;
+                        m.bindPopup(popupText);
+                    }
+
+                    // draw line if geometry exists
+                    if (r.geometry) {
+                        const line = L.geoJSON(r.geometry, { color: 'red', weight: 3, opacity: 0.8 });
+                        line.addTo(map);
+                        drawnLayers.push(line);
+
+                        // اضافه کردن امکان کلیک روی ردیف برای نمایش مسیر
+                        tr.style.cursor = 'pointer';
+                        tr.addEventListener('click', () => {
+                            clearDrawn(); // پاک کردن مسیرهای قبلی
+                            line.addTo(map); // رسم مسیر انتخاب شده
+                            map.fitBounds(line.getBounds(), { padding: [40, 40] });
+                        });
+                    }
+                });
+
+                tbl.appendChild(tbody);
+                area.appendChild(tbl);
+
+                console.log('Nearest results:', results);
+                document.getElementById('status').innerText = 'پایان: نتایج در جدول نمایش داده شد و مسیرها روی نقشه رسم شدند.';
+            }
+
+        </script>
+
+    </body>
+    </html>*@
+<!--<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Nearest and Farthest GIS Points</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            font-family: sans-serif;
+        }
+
+        #map {
+            flex: 1;
+        }
+
+        #panel {
+            width: 400px;
+            max-width: 40%;
+            background: #fff;
+            padding: 10px;
+            overflow: auto;
+            box-shadow: 0 0 8px rgba(0,0,0,0.2);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+            table th, table td {
+                border: 1px solid #ddd;
+                padding: 6px;
+                text-align: left;
+                vertical-align: top;
+            }
+
+        tr:hover {
+            background: #f0f0f0;
+            cursor: pointer;
+        }
+
+        .small {
+            font-size: 12px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="map"></div>
+    <div id="panel">
+        <div id="status">وضعیت: آماده</div>
+        <button id="startBtn">شروع محاسبه نزدیک‌ترین و دورترین نقاط</button>
+        <div id="resultsArea"></div>
+    </div>
+
+    <script>
+        const map = L.map('map').setView([27.5, 60.5], 6);
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
+
+        let drawnLayers = [];
+        function clearDrawn() { drawnLayers.forEach(l => map.removeLayer(l)); drawnLayers = []; }
+
+        function renderResults(data) {
+            clearDrawn();
+            const area = document.getElementById('resultsArea');
+            area.innerHTML = '';
+
+            const tbl = document.createElement('table');
+            tbl.innerHTML = `<thead>
+            <tr>
+                <th>From</th>
+                <th>Nearest (ID / Distance / Address)</th>
+                <th>Farthest (ID / Distance / Address)</th>
+            </tr>
+        </thead>`;
+            const tbody = document.createElement('tbody');
+
+            data.forEach(r => {
+                const tr = document.createElement('tr');
+
+                const nearestText = r.NearestTo ? `${r.NearestTo} / ${(r.NearestDistance / 1000).toFixed(2)} km / ${r.NearestAddress}` : '-';
+                const farthestText = r.FarthestTo ? `${r.FarthestTo} / ${(r.FarthestDistance / 1000).toFixed(2)} km / ${r.FarthestAddress}` : '-';
+
+                tr.innerHTML = `<td>${r.From}</td><td>${nearestText}</td><td>${farthestText}</td>`;
+                tbody.appendChild(tr);
+
+                // رسم مسیر نزدیک‌ترین
+                if (r.NearestTo && r.NearestDistance) {
+                    const line = L.geoJSON(r.NearestGeometry || null, { color: 'green', weight: 3, opacity: 0.7 });
+                    if (line) { line.addTo(map); drawnLayers.push(line); }
+
+                    tr.addEventListener('click', () => {
+                        clearDrawn();
+                        if (line) { line.addTo(map); map.fitBounds(line.getBounds(), { padding: [40, 40] }); }
+                    });
+                }
+
+                // رسم مسیر دورترین
+                if (r.FarthestTo && r.FarthestDistance) {
+                    const lineFar = L.geoJSON(r.FarthestGeometry || null, { color: 'red', weight: 3, opacity: 0.7 });
+                    if (lineFar) drawnLayers.push(lineFar);
+
+                    tr.addEventListener('click', () => {
+                        clearDrawn();
+                        if (lineFar) { lineFar.addTo(map); map.fitBounds(lineFar.getBounds(), { padding: [40, 40] }); }
+                    });
+                }
+            });
+
+            tbl.appendChild(tbody);
+            area.appendChild(tbl);
+            document.getElementById('status').innerText = 'نتایج بارگذاری شد.';
+        }
+
+        // فراخوانی کنترلر MVC
+        async function fetchNearestPoints() {
+            document.getElementById('status').innerText = 'در حال دریافت نتایج...';
+            try {
+                const res = await fetch('/Setting/seegozaresh/NearestPoints');
+                const data = await res.json();
+                renderResults(data);
+            } catch (err) {
+                console.error(err);
+                document.getElementById('status').innerText = 'خطا در دریافت نتایج!';
+            }
+        }
+
+        document.getElementById('startBtn').addEventListener('click', fetchNearestPoints);
+    </script>
+
+</body>
+</html>-->
+<!--@{
+    ViewBag.Title = "دیسپچینگ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .dashboard-field {
+        background: #223145;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        font-weight: bold;
+        position: relative;
+        overflow: hidden;
+    }
+</style>
+
+@{
+    var dashboard = new
+    {
+        DashboardName = "دیسپچینگ ۲",
+        NumColumns = 18,
+        Fields = new[] {
+            new { FieldIndex = 1, ElementStyles = new { gridColumn="span 6", gridRow="span 1", height="80px" } },
+            new { FieldIndex = 2, ElementStyles = new { gridColumn="span 6", gridRow="span 6", height="530px" } },
+            new { FieldIndex = 3, ElementStyles = new { gridColumn="span 6", gridRow="span 1", height="80px" } },
+            new { FieldIndex = 4, ElementStyles = new { gridColumn="span 6", gridRow="span 1", height="80px" } },
+            new { FieldIndex = 5, ElementStyles = new { gridColumn="span 6", gridRow="span 1", height="80px" } },
+            new { FieldIndex = 6, ElementStyles = new { gridColumn="span 2", gridRow="span 1", height="80px" } },
+            new { FieldIndex = 7, ElementStyles = new { gridColumn="span 2", gridRow="span 1", height="80px" } },
+            new { FieldIndex = 8, ElementStyles = new { gridColumn="span 2", gridRow="span 1", height="80px" } },
+            new { FieldIndex = 9, ElementStyles = new { gridColumn="span 2", gridRow="span 1", height="80px" } },
+            new { FieldIndex = 10, ElementStyles = new { gridColumn="span 2", gridRow="span 1", height="80px" } },
+            new { FieldIndex = 11, ElementStyles = new { gridColumn="span 2", gridRow="span 1", height="80px" } },
+            new { FieldIndex = 12, ElementStyles = new { gridColumn="span 6", gridRow="span 1", height="80px" } },
+            new { FieldIndex = 13, ElementStyles = new { gridColumn="span 2", gridRow="span 1", height="80px" } },
+            new { FieldIndex = 14, ElementStyles = new { gridColumn="span 2", gridRow="span 1", height="80px" } },
+            new { FieldIndex = 15, ElementStyles = new { gridColumn="span 2", gridRow="span 1", height="80px" } },
+            new { FieldIndex = 16, ElementStyles = new { gridColumn="span 1", gridRow="span 1", height="80px" } },
+            new { FieldIndex = 17, ElementStyles = new { gridColumn="span 5", gridRow="span 1", height="80px" } },
+            new { FieldIndex = 18, ElementStyles = new { gridColumn="span 2", gridRow="span 1", height="80px" } },
+            new { FieldIndex = 19, ElementStyles = new { gridColumn="span 2", gridRow="span 1", height="80px" } },
+            new { FieldIndex = 20, ElementStyles = new { gridColumn="span 2", gridRow="span 1", height="80px" } },
+            new { FieldIndex = 21, ElementStyles = new { gridColumn="span 2", gridRow="span 1", height="80px" } },
+            new { FieldIndex = 22, ElementStyles = new { gridColumn="span 4", gridRow="span 2", height="170px" } },
+            new { FieldIndex = 23, ElementStyles = new { gridColumn="span 2", gridRow="span 2", height="170px" } },
+            new { FieldIndex = 24, ElementStyles = new { gridColumn="span 2", gridRow="span 2", height="170px" } },
+            new { FieldIndex = 25, ElementStyles = new { gridColumn="span 2", gridRow="span 2", height="170px" } },
+            new { FieldIndex = 26, ElementStyles = new { gridColumn="span 2", gridRow="span 1", height="80px" } },
+            new { FieldIndex = 27, ElementStyles = new { gridColumn="span 2", gridRow="span 1", height="80px" } },
+            new { FieldIndex = 28, ElementStyles = new { gridColumn="span 2", gridRow="span 1", height="80px" } },
+            new { FieldIndex = 29, ElementStyles = new { gridColumn="span 2", gridRow="span 1", height="80px" } }
+        }
+    };
+}
+
+<div class="tab-content" id="pills-tabContent">
+    <div class="dashboard" style="display:grid; grid-template-columns: repeat(@dashboard.NumColumns, 1fr); gap:10px; padding:15px;">
+        <div class="dashboard-field" id="field1" style="grid-column: span 6; grid-row: span 1; height: 80px;">
+
+        </div>
+        <div class="dashboard-field" id="field2" style="grid-column: span 6; grid-row: span 6; height: 530px;">
+
+            <div id="chart" style="width: 100%; height:100%;"></div>
+
+
+        </div>
+        <div class="dashboard-field" id="field3" style="grid-column: span 6; grid-row: span 1; height: 80px;">3</div>
+        <div class="dashboard-field" id="field4" style="grid-column: span 6; grid-row: span 1; height: 80px;">4</div>
+        <div class="dashboard-field" id="field5" style="grid-column: span 6; grid-row: span 1; height: 80px;">5</div>
+        <div class="dashboard-field" id="field6" style="grid-column: span 2; grid-row: span 1; height: 80px;">6</div>
+        <div class="dashboard-field" id="field7" style="grid-column: span 2; grid-row: span 1; height: 80px;">7</div>
+        <div class="dashboard-field" id="field8" style="grid-column: span 2; grid-row: span 1; height: 80px;">8</div>
+        <div class="dashboard-field" id="field9" style="grid-column: span 2; grid-row: span 1; height: 80px;">9</div>
+        <div class="dashboard-field" id="field10" style="grid-column: span 2; grid-row: span 1; height: 80px;">10</div>
+        <div class="dashboard-field" id="field11" style="grid-column: span 2; grid-row: span 1; height: 80px;">11</div>
+        <div class="dashboard-field" id="field12" style="grid-column: span 6; grid-row: span 1; height: 80px;">12</div>
+        <div class="dashboard-field" id="field13" style="grid-column: span 2; grid-row: span 1; height: 80px;">13</div>
+        <div class="dashboard-field" id="field14" style="grid-column: span 2; grid-row: span 1; height: 80px;">14</div>
+        <div class="dashboard-field" id="field15" style="grid-column: span 2; grid-row: span 1; height: 80px;">15</div>
+        <div class="dashboard-field" id="field16" style="grid-column: span 1; grid-row: span 1; height: 80px;">16</div>
+        <div class="dashboard-field" id="field17" style="grid-column: span 5; grid-row: span 1; height: 80px;">17</div>
+        <div class="dashboard-field" id="field18" style="grid-column: span 2; grid-row: span 1; height: 80px;">18</div>
+        <div class="dashboard-field" id="field19" style="grid-column: span 2; grid-row: span 1; height: 80px;">19</div>
+        <div class="dashboard-field" id="field20" style="grid-column: span 2; grid-row: span 1; height: 80px;">20</div>
+        <div class="dashboard-field" id="field21" style="grid-column: span 2; grid-row: span 1; height: 80px;">21</div>
+        <div class="dashboard-field" id="field22" style="grid-column: span 4; grid-row: span 2; height: 170px;">22</div>
+        <div class="dashboard-field" id="field23" style="grid-column: span 2; grid-row: span 2; height: 170px;">23</div>
+        <div class="dashboard-field" id="field24" style="grid-column: span 2; grid-row: span 2; height: 170px;">24</div>
+        <div class="dashboard-field" id="field25" style="grid-column: span 2; grid-row: span 2; height: 170px;">25</div>
+        <div class="dashboard-field" id="field26" style="grid-column: span 2; grid-row: span 1; height: 80px;">26</div>
+        <div class="dashboard-field" id="field27" style="grid-column: span 2; grid-row: span 1; height: 80px;">27</div>
+        <div class="dashboard-field" id="field28" style="grid-column: span 2; grid-row: span 1; height: 80px;">28</div>
+        <div class="dashboard-field" id="field29" style="grid-column: span 2; grid-row: span 1; height: 80px;">29</div>
+
+    </div>
+</div>
+<script src="~/Assets/plugins/apexcharts/dist/apexcharts.min.js"></script>
+
+<script>
+    // ---------------------- داده‌های نمودار ----------------------
+    var upper = [80, 90, 85, 95, 100, 105, 110]; // خط حد بالا
+    var lower = [40, 50, 45, 55, 60, 65, 70];   // خط حد پایین
+    var data = [60, 70, 65, 75, 80, 85, 90];     // خط وسط (دیتا اصلی)
+
+    // ---------------------- تنظیمات ApexCharts ----------------------
+    var options = {
+        chart: {
+            type: 'area',        // نوع نمودار (line, area, bar و غیره)
+            height: 400,         // ارتفاع نمودار
+            stacked: false,      // اگر true باشه، نمودارها روی هم جمع میشن
+            toolbar: { show: false } // نمایش/عدم نمایش نوار ابزار بالای نمودار
+        },
+        series: [
+            { name: 'حد بالا', data: upper, color: 'green' },         // تنظیم رنگ و دیتا خط بالا
+            { name: 'خط دیتا', data: data, color: 'blue' },   // خط وسط
+            { name: 'حد پایین', data: lower, color: 'green' }          // خط پایین
+        ],
+        stroke: { curve: 'smooth', width: 1 },  // حالت خمیدگی خطوط و ضخامت آنها
+        fill: { type: 'solid', opacity: 0.3 },  // پر شدن خطوط با رنگ (opacity برای شفافیت)
+        xaxis: {
+            categories: ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر'], // لیبل‌های محور X
+            labels: {
+                style: {
+                    colors: '#ffffff',              // رنگ لیبل‌های X
+                    fontFamily: 'Lato, sans-serif', // فونت لیبل‌ها
+                    fontSize: '14px'                // سایز فونت لیبل‌ها
+                }
+            },
+            axisBorder: { show: false },  // نمایش/عدم نمایش خط پایین محور X
+            axisTicks: { show: false }    // نمایش/عدم نمایش تیک‌های محور X
+        },
+        yaxis: {
+            labels: {
+                style: {
+                    colors: '#ffffff',              // رنگ لیبل‌های Y
+                    fontFamily: 'Lato, sans-serif', // فونت لیبل‌ها
+                    fontSize: '14px'                // سایز فونت لیبل‌ها
+                }
+            },
+            axisBorder: { show: false },  // خط کنار محور Y
+            axisTicks: { show: false }    // تیک‌های محور Y
+        },
+        tooltip: { enabled: false },  // نمایش/عدم نمایش پنجره اطلاعات هاور
+        legend: { show: false },      // نمایش/عدم نمایش legend (راهنمای رنگ خطوط)
+        markers: { size: 4 }          // سایز نقاط روی خطوط
+    };
+
+    // ---------------------- ساخت نمودار ----------------------
+    var chart = new ApexCharts(document.querySelector("#chart"), options);
+    chart.render();
+
+    // ---------------------- ناحیه بین حد بالا و پایین ----------------------
+    var svgNS = "http://www.w3.org/2000/svg";
+    chart.addEventListener('mounted', function () {
+        var svg = chart.w.globals.svg;
+
+        // ساخت مسیر برای رنگ دادن بین دو خط
+        var path = document.createElementNS(svgNS, 'path');
+        path.setAttribute('d', '');         // مسیر اولیه خالی
+        path.setAttribute('fill', 'red'); // رنگ پر شدن (می‌تونی تغییرش بدی)
+        path.setAttribute('opacity', '1'); // شفافیت رنگ (0 تا 1)
+        svg.appendChild(path);
+
+        // تابع برای بروزرسانی مسیر هنگام تغییر یا رندر
+        function updatePath() {
+            var upperPoints = chart.w.globals.seriesCords[0]; // مختصات خط بالا
+            var lowerPoints = chart.w.globals.seriesCords[2]; // مختصات خط پایین
+            if (!upperPoints || !lowerPoints) return;
+
+            // ساخت مسیر بین خطوط بالا و پایین
+            var d = 'M ' + upperPoints.map(p => `${p.x} ${p.y}`).join(' L ');
+            d += ' L ' + lowerPoints.slice().reverse().map(p => `${p.x} ${p.y}`).join(' L ') + ' Z';
+            path.setAttribute('d', d);
+        }
+
+        chart.addEventListener('updated', updatePath); // بروزرسانی مسیر هنگام آپدیت نمودار
+        updatePath(); // اجرای اولیه
+    });
+</script>-->
+
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دیسپچینگ</title>
+    <style>
+        body {
+            background: #000000;
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(18, 1fr); /* بر اساس NumColumns */
+            grid-auto-rows: 80px; /* ارتفاع پیش‌فرض ردیف‌ها */
+            gap: 10px;
+        }
+
+        .field {
+            background: #223145;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-weight: bold;
+            color: #fff;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>dispatching</h1>
+    <div class="dashboard">
+
+        <!-- ساخت فیلدها -->
+        <div class="field" style="grid-column: span 6; grid-row: span 1; height: 80px;">Field 1</div>
+        <div class="field" style="grid-column: span 6; grid-row: span 6; height: 530px;">Field 2</div>
+        <div class="field" style="grid-column: span 6; grid-row: span 1; height: 80px;">Field 3</div>
+        <div class="field" style="grid-column: span 6; grid-row: span 1; height: 80px;">Field 4</div>
+        <div class="field" style="grid-column: span 6; grid-row: span 1; height: 80px;">Field 5</div>
+        <div class="field" style="grid-column: span 2; grid-row: span 1; height: 80px;">Field 6</div>
+        <div class="field" style="grid-column: span 2; grid-row: span 1; height: 80px;">Field 7</div>
+        <div class="field" style="grid-column: span 2; grid-row: span 1; height: 80px;">Field 8</div>
+        <div class="field" style="grid-column: span 2; grid-row: span 1; height: 80px;">Field 9</div>
+        <div class="field" style="grid-column: span 2; grid-row: span 1; height: 80px;">Field 10</div>
+        <div class="field" style="grid-column: span 2; grid-row: span 1; height: 80px;">Field 11</div>
+        <div class="field" style="grid-column: span 6; grid-row: span 1; height: 80px;">Field 12</div>
+        <div class="field" style="grid-column: span 2; grid-row: span 1; height: 80px;">Field 13</div>
+        <div class="field" style="grid-column: span 2; grid-row: span 1; height: 80px;">Field 14</div>
+        <div class="field" style="grid-column: span 2; grid-row: span 1; height: 80px;">Field 15</div>
+        <div class="field" style="grid-column: span 1; grid-row: span 1; height: 80px;">Field 16</div>
+        <div class="field" style="grid-column: span 5; grid-row: span 1; height: 80px;">Field 17</div>
+        <div class="field" style="grid-column: span 2; grid-row: span 1; height: 80px;">Field 18</div>
+        <div class="field" style="grid-column: span 2; grid-row: span 1; height: 80px;">Field 19</div>
+        <div class="field" style="grid-column: span 2; grid-row: span 1; height: 80px;">Field 20</div>
+        <div class="field" style="grid-column: span 2; grid-row: span 1; height: 80px;">Field 21</div>
+        <div class="field" style="grid-column: span 4; grid-row: span 2; height: 170px;">Field 22</div>
+        <div class="field" style="grid-column: span 2; grid-row: span 2; height: 170px;">Field 23</div>
+        <div class="field" style="grid-column: span 2; grid-row: span 2; height: 170px;">Field 24</div>
+        <div class="field" style="grid-column: span 2; grid-row: span 2; height: 170px;">Field 25</div>
+        <div class="field" style="grid-column: span 2; grid-row: span 1; height: 80px;">Field 26</div>
+        <div class="field" style="grid-column: span 2; grid-row: span 1; height: 80px;">Field 27</div>
+        <div class="field" style="grid-column: span 2; grid-row: span 1; height: 80px;">Field 28</div>
+        <div class="field" style="grid-column: span 2; grid-row: span 1; height: 80px;">Field 29</div>
+
+    </div>
+
+</body>
+</html>
+
+
+
+
+

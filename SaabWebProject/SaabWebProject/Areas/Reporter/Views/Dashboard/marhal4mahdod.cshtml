@@ -1,0 +1,332 @@
+﻿
+
+
+
+@using SaabWebProject.Models.DomainModels
+@*@model SaabWebProject.Models.ViewModels.Dashboard.Marhale4ViewModel*@
+@model SaabWebProject.Models.ViewModels.Contracts.Function.Marhale4ViewModel
+
+@{
+    Layout = null;
+}
+
+<style>
+    .tableH_Lock {
+        max-height: 364px;
+    }
+
+    thead {
+        position: sticky;
+        top: 0;
+        text-align: center;
+        z-index: 2;
+    }
+
+    .inputFilter {
+        margin-bottom: 0 !important;
+        min-width: 100px;
+    }
+
+    .RadioFilter {
+        margin-bottom: 0 !important;
+    }
+
+    thead th {
+        vertical-align: middle;
+    }
+</style>
+
+<div class="card">
+    <div class="table-content p-4">
+        <div class="table-responsive tableH_Lock">
+
+            <table class="table table-hover text-nowrap">
+
+                <!-- HEADER -->
+                <thead>
+                    <tr>
+
+                        <th>
+                            نام و نام خانوادگی
+                            <div>
+                                <input type="text" id="filter08-filter" class="form-control inputFilter">
+                            </div>
+                        </th>
+
+                        <th>
+                            پیمان
+                            <div>
+                                <input type="text" id="filter09-filter" class="form-control inputFilter">
+                            </div>
+                        </th>
+
+                        <th>
+                            شهرستان
+                            <div>
+                                <input type="text" id="filter10-filter" class="form-control inputFilter">
+                            </div>
+                        </th>
+
+                        @foreach (var mh in Model.Marhale3)
+                        {
+                            <th>
+                                @mh.name
+                                <div class="form-check">
+                                    <input type="radio"
+                                           class="form-check-input RadioFilter"
+                                           id="selectAllMamur_@mh.ID"
+                                           onclick="selectAllRadios('mamur', @mh.ID)" />
+                                </div>
+                            </th>
+                        }
+
+                    </tr>
+                </thead>
+
+                <!-- BODY -->
+                <tbody>
+
+                    @{
+                        foreach (var user in Model.Users)
+                        {
+                            var city = Model.Cities.FirstOrDefault(c => c.ID == user.usr_City_Dutysystem)?.Name ?? "وصل نیست";
+
+                            var peyman =
+                                Model.UserPeymans
+                                    .FirstOrDefault(x => x.FK_User_ID == user.usr_ID)
+                                    ?.tbPeymanContracts?.pec_Title
+                                ?? "وصل نیست";
+
+                            <tr class="vasile task-list-row2"
+                                data-filter08="@user.FullName"
+                                data-filter09="@peyman"
+                                data-filter10="@city">
+
+                                <td>@user.FullName</td>
+                                <td>@peyman</td>
+                                <td>@city</td>
+
+                                @foreach (var mh in Model.Marhale3)
+                                {
+                                    var val = Model.Values.FirstOrDefault(v =>
+                                        v.FK_usr == user.usr_ID &&
+                                        v.FK_name == mh.ID
+                                    );
+
+                                    var isChecked = (val != null && val.Position == true);
+
+                                    <td>
+                                        <input type="radio"
+                                               class="form-check-input mamur form-control44334 RadioFilter"
+                                               name="checkRow_@user.usr_ID"
+                                               data-bind="@mh.ID"
+                                               data-keyboard="@user.usr_ID"
+                                               data-column="@mh.ID"
+                                               @(isChecked ? "checked" : "") />
+                                    </td>
+                                }
+
+                            </tr>
+                        }
+                    }
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+</div>
+
+<!-- Save Button -->
+<div class="row mt-3">
+    <div class="col-xl-11"></div>
+    <div class="col-xl-1">
+        <button id="btnSaveEsmahdod2" type="button" class="btn form-control buttonsabt">
+            <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+            <span class="bSabt-text">ثبت</span>
+        </button>
+    </div>
+</div>
+
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+
+@*<script>
+
+        var filters = {
+            filter08: null,
+            filter09: null,
+            filter10: null
+        };
+
+        function updateFilters4() {
+            $('.task-list-row2').hide().filter(function () {
+                var self = $(this), ok = true;
+
+                Object.keys(filters).forEach(f => {
+                    if (filters[f]) ok = ok && self.data(f).indexOf(filters[f]) !== -1;
+                });
+
+                return ok;
+            }).show();
+        }
+
+        $('#filter08-filter').on('input', function () { filters.filter08 = this.value; updateFilters4(); });
+        $('#filter09-filter').on('input', function () { filters.filter09 = this.value; updateFilters4(); });
+        $('#filter10-filter').on('input', function () { filters.filter10 = this.value; updateFilters4(); });
+
+        function selectAllRadios(type, colId) {
+            const rows = document.querySelectorAll("tr.vasile");
+            const radios = document.querySelectorAll(`.${type}[data-column="${colId}"]`);
+
+            let allChecked = true;
+
+            radios.forEach((r, i) => {
+                if (!r.checked && rows[i].style.display !== "none")
+                    allChecked = false;
+            });
+
+            radios.forEach((r, i) => {
+                if (rows[i].style.display !== "none")
+                    r.checked = !allChecked;
+            });
+
+            document.querySelector(`#selectAllMamur_${colId}`).checked = !allChecked;
+        }
+
+        $("#btnSaveEsmahdod2").click(function () {
+
+            var list = [];
+
+            $("input.mamur").each(function () {
+                list.push({
+                    FK_usr: $(this).data("keyboard"),
+                    FK_name: $(this).data("bind"),
+                    Position: $(this).is(":checked")
+                });
+            });
+
+            $.ajax({
+                url: '/Reporter/Dashboard/UpdateRecordmahdodat3',
+                type: 'POST',
+                data: JSON.stringify({ modelList: list }),   // ⭐ نکته مهم
+                contentType: 'application/json; charset=utf-8',
+                success: function (r) {
+
+                    if (r === "true") {
+                        alert("با موفقیت ثبت شد");
+                        location.reload();
+                    }
+
+                },
+                error: function (err) {
+                    console.log(err);
+                    alert("خطا در ثبت اطلاعات");
+                }
+            });
+
+        });
+
+
+    </script>*@
+
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+
+<script>
+
+    var filters = {
+        filter08: null,
+        filter09: null,
+        filter10: null
+    };
+
+    function updateFilters4() {
+        $('.task-list-row2').hide().filter(function () {
+            var self = $(this), ok = true;
+
+            Object.keys(filters).forEach(f => {
+                if (filters[f]) ok = ok && self.data(f).indexOf(filters[f]) !== -1;
+            });
+
+            return ok;
+        }).show();
+    }
+
+    $('#filter08-filter').on('input', function () { filters.filter08 = this.value; updateFilters4(); });
+    $('#filter09-filter').on('input', function () { filters.filter09 = this.value; updateFilters4(); });
+    $('#filter10-filter').on('input', function () { filters.filter10 = this.value; updateFilters4(); });
+
+    function selectAllRadios(type, colId) {
+        const rows = document.querySelectorAll("tr.vasile");
+        const radios = document.querySelectorAll(`.${type}[data-column="${colId}"]`);
+
+        let allChecked = true;
+
+        radios.forEach((r, i) => {
+            if (!r.checked && rows[i].style.display !== "none")
+                allChecked = false;
+        });
+
+        radios.forEach((r, i) => {
+            if (rows[i].style.display !== "none")
+                r.checked = !allChecked;
+        });
+
+        document.querySelector(`#selectAllMamur_${colId}`).checked = !allChecked;
+    }
+
+    $("#btnSaveEsmahdod2").click(function () {
+
+        var list = [];
+
+        $("input.mamur").each(function () {
+            list.push({
+                FK_usr: $(this).data("keyboard"),
+                FK_name: $(this).data("bind"),
+                Position: $(this).is(":checked")
+            });
+        });
+
+        $.ajax({
+            url: '/Reporter/Dashboard/UpdateRecordmahdodat3',
+            type: 'POST',
+            data: JSON.stringify({ modelList: list }),
+            contentType: 'application/json; charset=utf-8',
+
+            beforeSend: function () {
+
+                // نمایش لودینگ خطی سایت
+                document.getElementById("loading-circle").style.display = "block";
+
+                $("#btnSaveEsmahdod2").prop("disabled", true);
+            },
+
+            success: function (r) {
+
+                if (r === "true") {
+                    alert("با موفقیت ثبت شد");
+                    //location.reload();
+                }
+
+            },
+
+            error: function (err) {
+                console.log(err);
+                alert("خطا در ثبت اطلاعات");
+            },
+
+            complete: function () {
+
+                // مخفی کردن لودینگ
+                document.getElementById("loading-circle").style.display = "none";
+
+                $("#btnSaveEsmahdod2").prop("disabled", false);
+
+            }
+
+        });
+
+    });
+
+
+
+</script>

@@ -1,0 +1,396 @@
+﻿@{
+    Layout = null;
+    SaabEntities db = new SaabEntities();
+
+}
+@using SaabWebProject.Models.DomainModels;
+
+@model IEnumerable<SaabWebProject.Models.DomainModels.tbAdamAdam>
+
+<link @section Styles{
+<link href="~/Assets/plugins/BootstrapPersianDateTimePicker/src/jquery.md.bootstrap.datetimepicker.style.css" rel="stylesheet" />
+}
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+<div class="row" id="manageqarardad" style="margin-top:10px">
+    <span style="display:none">
+
+    </span>
+
+    <div class="col-xl-10"></div>
+    <div class="row">
+        <div class="col-xl-4">
+            <label class="form-label">کاربر را انتخاب کنید<span class="text-danger">*</span></label>
+            <div id="div_users"></div>
+        </div>
+        <div class="col-xl-8">
+            <label class="form-label">کاربران زیرمجموعه</label>
+            <span id="div_users1"></span>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-xl-9"></div>
+        <div class="col-xl-1">
+            <a href="#" class=" btn form-control buttonGeneral" id="dwn68">
+                <i class="bi bi-download  fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text">دانلود فایل نمونه</span>
+            </a>
+        </div>
+
+        <div class="col-xl-1">
+            <a href="#" onclick="ShowDialogFile68()" class=" btn btn-outline-info form-control buttonGeneral" style="margin-bottom:5px;">
+                <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text">بارگذاری فایل</span>
+            </a>
+        </div>
+        <div class="col-xl-1">
+            <button id="linksabt" type="button" class="btn form-control buttonGeneral">
+                <i class="fa fa-calculator fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text">ثبت</span>
+            </button>
+        </div>
+    </div>
+
+    
+    <input name="MyExcelStream78" type="file" style="display:none" />
+
+</div>
+<div class="card">
+
+    <div class="table-content p-4">
+        <div class="tab-pane fade show active" id="allTab">
+            <div class="table-responsive tableH_Lock">
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr>
+                            <th>فعالیت</th>
+
+                            <th>
+                                نام کاربر
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter01-filter" class="inputFilter form-control" placeholder="">
+
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            <th>
+                                تعداد کاربران
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter02-filter" class="inputFilter form-control" placeholder="">
+
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            <th>
+                                نام کابران زیر مجموعه
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int II = 0;
+                        }
+                        @foreach (var it in Model.GroupBy(s => s.Name))
+                        {
+                            var findysr = db.tbAdamAdam.Where(s => s.Name == it.Key).FirstOrDefault();
+                            var countusr = db.tbAdamAdam.Where(s => s.Name == it.Key && s.Value == 1).ToList();
+                            var dullname = db.tbUsers.Where(s => s.usr_ID == it.Key).FirstOrDefault();
+
+                            string cityvalue = "";
+
+                            II++;
+                            foreach (var ttt in db.tbAdamAdam.Where(s => s.Name == it.Key).ToList())
+                            {
+                                var findusr = db.tbUsers.Where(s => s.usr_ID == ttt.nam).FirstOrDefault();
+                                if (findysr != null)
+                                {
+                                    cityvalue += findusr.FullName;
+                                    cityvalue += ",";
+                                }
+
+                            }
+                            <tr class="task-list-row"
+                                data-filter01="@dullname.FullName"
+                                data-filter02=@countusr.Count()>
+                                <td>
+                                    <div class="ms-sm-4 mt-sm-0 mt-2 dropdown-toggle">
+                                        <a href="#" data-bs-toggle="dropdown" class="text-white text-opacity-75 text-decoration-none">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                        <div class="dropdown-menu">
+                                            @*<a data-bs-toggle="modal" data-bs-target="#modalLg1" class="dropdown-item edit" id="Edit_@item.ID">ویرایش</a>*@
+                                            <a data-bs-toggle="modal" data-bs-target="#modalLg1" class="dropdown-item Erja" id="Erja_@it.Key">ویرایش</a>
+                                            @*<a class="dropdown-item Delete" id="Delete_@item.ID">حذف</a>*@
+                                            @*<a data-bs-toggle="modal" data-bs-target="#modalLg" class="dropdown-item edit" id="Edit_@item.ID">ویرایش</a>*@
+
+
+                                        </div>
+
+
+                                    </div>
+                                </td>
+                                <td>@dullname.FullName</td>
+
+                                <td>@countusr.Count()</td>
+                                <td>
+                                    @if (cityvalue.Length > 40)
+                                    {
+                                        <span title="@cityvalue">@cityvalue.Substring(0, 40)...</span>
+                                    }
+                                    else
+                                    {
+                                        @cityvalue
+                                    }
+                                </td>
+
+                            </tr>
+
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+
+
+<script>
+                      $(".Erja").click(function () {
+var idd = $(this).attr("id").split("_")[1];
+console.log(idd);
+    $("#big_modal_body1").load('@Url.Content("/ManagementAccounting/FinancialDocuments/adambeadamEdit")?id='+idd);
+});
+
+              $("input[name='MyExcelStream78']").change(function () {
+  var file = this.files[0];
+  var ext = file.name.split('.')[1];
+  if (ext == "xlsx" || ext == "xls") {
+
+  var  obj = new FormData();
+
+  obj.append("MyExcelStream", file);
+
+  console.log(file);
+  $.ajax({
+  beforeSend:function (){
+  document.getElementById("loading-message").style.display = "block";
+  },
+  url: "@Url.Action("ImportExcel_AdamAdam", "Admin", new { area = "Setting" })",
+  type: "post",
+  contentType: false,
+  data: obj,
+  processData: false,
+  cache: false,
+  success: function (res) {
+  document.getElementById("loading-message").style.display = "none";
+  Swal.fire({
+  icon: 'success',
+  background: 'rgb(29,40,52)',
+  color: 'white',
+  confirmButtonText: 'باشه',
+  title: 'آپلود اکسل',
+  text: res,
+  });
+  location.reload();
+
+
+  },
+  error: function (res) {
+  console.log(res);
+  }
+  });
+  }
+  else {
+
+  Swal.fire({
+  icon: 'warning',
+  background: 'rgb(29,40,52)',
+  color: 'white',
+  confirmButtonText: 'باشه',
+  title: 'نوع فایل',
+  text: 'لطفا فایلی با پسوند اکسل وارد کنید',
+  });
+  return false;
+  }
+
+  });
+  /// Open Dialog File
+  function ShowDialogFile68() {
+  $("input[name='MyExcelStream78']").val(null);
+  $("input[name='MyExcelStream78']").click();
+  }
+            $("#dwn68").click(function () {
+    console.log("kfsdk;");
+
+
+
+
+
+
+
+
+
+
+
+
+    $.ajax({
+    beforeSend: function () {
+    document.getElementById("loading-message").style.display = "block";//مهندس دارین برعککس میزارین
+    //این درسته
+    //شبیه هم ننوشتین
+    //خوب ورودی هام فرق داتشنت الاان فهمیدم چیشد + اضافه گذاشته بود
+    },
+@*url: '@Url.Action("ExportMoalefeExcel", "Moalefe", new { area = "Salaries" })?year=' + $("#year_usr").val() + '&month=' + aa + '&FromDate=' + $("#datepickerFromEn_usr").val() + '&ToDate=' + $("#datepickerToEn_usr").val() + '&PeymanID=' + $("#baste_peyman2").val() + '&Basteh=' + Basteh,*@
+    type: 'GET',
+    dataType: 'html',
+
+
+    success: function (res) {
+    if (res === "False") {
+    // اجرای بلوک error در صورت مطابقت با "False"
+    alert("برای این ماه و این سال این بسته تایید نهایی شده است ");
+    window.location.reload();
+    console.log(res);
+    }
+    else {
+
+    document.getElementById("loading-message").style.display = "none";
+@*window.location = '@Url.Action("ExportMoalefeExcel", "Moalefe",new { area = "Salaries" })?year=' + $("#year_usr").val() + '&month=' + aa + '&FromDate=' + $("#datepickerFromEn_usr").val() + '&ToDate=' + $("#datepickerToEn_usr").val() + '&PeymanID=' + $("#baste_peyman2").val() + '&Basteh=' + Basteh;*@
+    window.location = '@Url.Action("ExportMoalefeExcelAdamAdam", "Admin", new { area = "Setting" })'
+
+    }
+    },
+    error: function (res) {
+    alart("fdslsfdk")
+    console.log(res);
+    }
+    });
+    });
+</script>
+<script>
+
+    var
+        filters = {
+            filter01: null,
+            filter02: null,
+        };
+
+    function updateFilters() {
+        $('.task-list-row').hide().filter(function () {
+            var self = $(this),
+                result = true;
+
+            Object.keys(filters).forEach(function (filter) {
+                var filterData = self.data(filter);
+                if (filters[filter] && (filters[filter] != 'None') && (filters[filter] != 'همه')) {
+                    // تبدیل داده به رشته و بررسی مقدار
+                    result = result && (filterData && filterData.toString().indexOf(filters[filter]) !== -1);
+                }
+            });
+
+            return result;
+        }).show();
+    }
+
+    function changeFilter(filterName) {
+        filters[filterName] = this.value;
+        updateFilters();
+    }
+
+    // Assigned User Dropdown Filter
+    $('#filter01-filter').on('input', function () {
+        changeFilter.call(this, 'filter01');
+    });
+    $('#filter02-filter').on('input', function () {
+        changeFilter.call(this, 'filter02');
+    });
+
+
+
+</script>
+<script>
+            $("#div_users1").load('@Url.Content("/../Users/Users/_PartialViewUsersListWithSearchAndMultiple")', function () {
+            $("#select_users1").attr("id", "users");
+            $('#users').attr("multiple", "multiple");
+            $('#users').picker({ search: true });
+            $('#users').on('sp-change', function () { });
+
+        });
+$("#select_position").removeAttr("multiple");
+$('#select_position').change(function () {
+     var x = $("#select_position").val();
+     $("#div_users1").load('@Url.Content("/../Users/Users/_PartialViewUsersListWithSearchAndMultiple")' , { positions: x }  , function () {
+        $("#select_users1").attr("id", "users");
+        $("#users").picker({ search: true });
+        $("#users").picker();
+        $('#users').picker({ search: true });
+
+      //$('#select_users1 option').attr("selected","selected");
+      //$('#select_users1').picker('refresh');
+    });
+});
+      $(function () {
+      $("#div_users").load('@Url.Content("/../Users/Users/_PartialViewUsersListWithSearch")', function () {
+          $("#select_users1").attr("id", "users1");
+          $("#showContract").on("click",function(){
+               var idd = $("#users1").val();
+          });
+      });
+      });
+    $("#linksabt").click(function () {
+    var PeymanArr = [];
+              $.each($("#users").val().toString().split(","), function (index, item) {
+        if (item !== "") {
+            if (item != 'Select') {
+                PeymanArr.push(item);
+                console.log(item);
+            }
+        }
+              });
+              console.log(PeymanArr);
+              var month = $("#users1").val();
+
+
+
+
+        $.ajax({
+            url: "@Url.Action("SabtZirmajmoeAdambeAdam", "FinancialDocuments", new { area = "ManagementAccounting" })",
+            type: "Post",
+            dataType: "html",
+            data: { Fkpym: PeymanArr, usr: month },
+            success: function (res) {
+                document.getElementById("loading-message").style.display = "none";
+                if (res = "True") {
+                    alert("با موفقیت ثبت شد ");
+                    location.reload();
+                }
+
+            },
+            error: function (res) {
+                console.log(res);
+
+                document.getElementById("loading-message").style.display = "none";
+                Toast.fire({
+                    icon: 'error',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "عملیات  با خطا مواجه شد"
+                });
+                return false;
+            }
+        });
+
+    });
+
+
+</script>
+

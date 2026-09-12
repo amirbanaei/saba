@@ -1,0 +1,153 @@
+﻿
+
+@using SaabWebProject.Models.Classes;
+@{
+    Layout = null;
+}
+@model IEnumerable<SaabWebProject.Models.DomainModels.tbCities>
+
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+
+<div class="card">
+    <div class="table-content p-4">
+        <div class="tab-pane fade show active" id="allTab">
+            <div class="table-responsive">
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr style="text-align:center">
+
+
+                            <th>
+                                @Html.DisplayName("#")
+                            </th>
+                            <th>
+                                @Html.DisplayName("شهر ")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter18-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            <th>
+                                @Html.DisplayName(" سقف اضافه کار")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter19-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            <th>
+                                @Html.DisplayName(" سقف  ایاب و ذهاب")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter20-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody style="text-align:center">
+
+                        @if (Model != null)
+                        {
+
+                            var i = 0;
+                            foreach (var item in Model)
+                            {
+                                if (item != null)
+                                {
+                                    i++;
+                                    <tr class="task-list-rowM"
+                                        data-filter18="@item.Name"
+                                        data-filter19="@String.Format("{0:N0}", item.Max_ezafeh)"
+                                        data-filter20="@item.Ayab_zohab.ToString().Replace(",","")">
+                                        <td>@i</td>
+                                        <td>@item.Name</td>
+                                        <td>@String.Format("{0:N0}", item.Max_ezafeh)</td>
+                                        <td>@String.Format("{0:N0}", item.Ayab_zohab)</td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    i++;
+                                    <tr>
+
+                                        <td>
+                                            @i
+                                        </td>
+
+
+                                        <td>
+                                            @item.Name
+                                        </td>
+
+                                        <td>
+                                            @item.Max_ezafeh
+                                        </td>
+                                        <td>
+                                            @String.Format("{0:N0}", item.Ayab_zohab)
+                                        </td>
+
+
+
+
+                                    </tr>
+                                }
+                            }
+
+                            // Your foreach loop code here
+                        }
+
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+
+<script>
+
+    var
+        filtersM = {
+            filter18: null,
+            filter19: null,
+            filter20: null,
+        };
+
+    function updateFiltersM() {
+        $('.task-list-rowM').hide().filter(function () {
+            var self = $(this),
+                result = true;
+
+            Object.keys(filtersM).forEach(function (filter) {
+                var filterData = self.data(filter);
+                if (filtersM[filter] && (filtersM[filter] != 'None') && (filtersM[filter] != 'همه')) {
+                    // تبدیل داده به رشته و بررسی مقدار
+                    result = result && (filterData && filterData.toString().indexOf(filtersM[filter]) !== -1);
+                }
+            });
+
+            return result;
+        }).show();
+    }
+
+    function changeFilterM(filterName) {
+        filtersM[filterName] = this.value;
+        updateFiltersM();
+    }
+
+    // Assigned User Dropdown Filter
+    $('#filter18-filter').on('input', function () {
+        changeFilterM.call(this, 'filter18');
+    });
+    $('#filter19-filter').on('input', function () {
+        changeFilterM.call(this, 'filter19');
+    });
+    $('#filter20-filter').on('input', function () {
+        changeFilterM.call(this, 'filter20');
+    });
+</script>

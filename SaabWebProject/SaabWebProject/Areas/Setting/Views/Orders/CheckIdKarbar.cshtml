@@ -1,0 +1,134 @@
+﻿@using SaabWebProject.Models.DomainModels;
+
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "دسترسی محدودیت";
+
+    SaabEntities db = new SaabEntities();
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>SabtNerkh</title>
+</head>
+<body>
+    <div class="tab-content" id="pills-tabContent" style="padding:20px; background:#f7f7f7;">
+        <div class="row">
+
+            <div class="col-xl-2">
+                <label class="form-label">کد پرسنلی</label>
+                <input id="IdKarbar" class="form-control" type="text" />
+            </div>
+            <div class="col-xl-2">
+                <label class="form-label">مقدار</label>
+                <input id="ValueKarbar" class="form-control" type="text" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xl-11"></div>
+            <div class="col-xl-1">
+                <a href="#" class=" btn form-control buttonGeneral" id="Send">
+                    <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                    <span class="bGeneral-text">ثبت</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+    <script src="~/Scripts/jquery-3.3.1.js"></script>
+    <script>
+        // تابع تبدیل اعداد فارسی به انگلیسی
+        function convertPersianNumbersToEnglish(str) {
+            return str.replace(/[۰-۹]/g, d => String.fromCharCode(d.charCodeAt(0) - 1728));
+        }
+
+        // فقط عدد صحیح
+        function onlyIntegerInput(event) {
+            let value = convertPersianNumbersToEnglish(event.target.value);
+            value = value.replace(/[^0-9]/g, '');
+            event.target.value = value;
+        }
+
+
+
+        document.getElementById('IdKarbar').addEventListener('input', onlyIntegerInput);
+        document.getElementById('ValueKarbar').addEventListener('input', onlyIntegerInput);
+    </script>
+
+
+    <script>
+    $(document).ready(function () {
+
+        $("#Send").click(function (e) {
+            e.preventDefault(); // جلوگیری از رفتار پیش‌فرض لینک
+
+            // گرفتن مقادیر از inputها
+            var IdKarbar = $("#IdKarbar").val().trim();
+            var ValueKarbar = $("#ValueKarbar").val().trim();
+
+            // بررسی اولیه برای خالی نبودن
+            if (IdKarbar === "" || ValueKarbar === "") {
+                alert("لطفاً هر دو مقدار را وارد کنید");
+                return;
+            }
+
+
+            var model = {
+                usr_Personal_ID: parseInt(IdKarbar),
+                value: parseInt(ValueKarbar)
+            };
+
+            $.ajax({
+                url: '@Url.Action("CheckIdKarbar1", "Orders")',
+                type: 'POST',
+                data: model,
+                success: function (response) {
+                    if (response.success) {
+                        alert("✅ عملیات با موفقیت انجام شد");
+                        $("#IdKarbar").val('');
+                        $("#ValueKarbar").val('');
+                    } else {
+                        alert("⚠️ " + response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                    alert("❌ خطا در ارسال درخواست به سرور");
+                }
+            });
+        });
+
+    });
+    </script>
+
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

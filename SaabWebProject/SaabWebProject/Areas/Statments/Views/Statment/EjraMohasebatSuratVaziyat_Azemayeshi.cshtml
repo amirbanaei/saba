@@ -1,0 +1,544 @@
+﻿@model IEnumerable<SaabWebProject.Models.DomainModels.tbFinalCheckSoorat>
+@{
+    ViewBag.Title = "اجرای محاسبات آزمایشی";
+    Layout = null;
+}
+<style>
+    .loader {
+        position: absolute;
+        top: calc(50% - 32px);
+        left: calc(50% - 32px);
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        perspective: 800px;
+    }
+
+    .inner {
+        position: absolute;
+        box-sizing: border-box;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+    }
+
+        .inner.one {
+            left: 0%;
+            top: 0%;
+            animation: rotate-one 1s linear infinite;
+            border-bottom: 3px solid #EFEFFA;
+        }
+
+        .inner.two {
+            right: 0%;
+            top: 0%;
+            animation: rotate-two 1s linear infinite;
+            border-right: 3px solid #EFEFFA;
+        }
+
+        .inner.three {
+            right: 0%;
+            bottom: 0%;
+            animation: rotate-three 1s linear infinite;
+            border-top: 3px solid #EFEFFA;
+        }
+
+    @@keyframes rotate-one {
+        0% {
+            transform: rotateX(35deg) rotateY(-45deg) rotateZ(0deg);
+        }
+
+        100% {
+            transform: rotateX(35deg) rotateY(-45deg) rotateZ(360deg);
+        }
+    }
+
+    @@keyframes rotate-two {
+        0% {
+            transform: rotateX(50deg) rotateY(10deg) rotateZ(0deg);
+        }
+
+        100% {
+            transform: rotateX(50deg) rotateY(10deg) rotateZ(360deg);
+        }
+    }
+
+    @@keyframes rotate-three {
+        0% {
+            transform: rotateX(35deg) rotateY(55deg) rotateZ(0deg);
+        }
+
+        100% {
+            transform: rotateX(35deg) rotateY(55deg) rotateZ(360deg);
+        }
+    }
+    /* Anim for loder*/
+    .loader-i {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        display: inline-block;
+        position: relative;
+        background: linear-gradient(0deg, #78ebf230 33%, #78ebf2 100%);
+        /* animation: rotation .4s linear infinite, rotationW 1s 1s ease both;*/
+    }
+        /*, rotationW 1s 1s ease both*/
+        .loader-i:after {
+            width: 23px;
+            height: 23px;
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            background: var(--bs-tab-content-bg);
+        }
+    /* keyFrames */
+    @@keyframes rotation {
+        0% {
+            transform: rotate(0deg)
+        }
+
+        100% {
+            transform: rotate(360deg)
+        }
+    }
+
+    @@keyframes rotationW {
+        0% {
+            opacity: 1;
+        }
+
+        100% {
+            opacity: 0;
+        }
+    }
+</style>
+<style>
+    /* Anim for text*/
+    .textAnim {
+        animation: outer-left 1s 1s ease both;
+    }
+
+    @@keyframes outer-left {
+        from {
+            transform: translateX(10%);
+        }
+
+        to {
+            transform: none;
+        }
+
+        0% {
+            opacity: 0;
+        }
+
+        100% {
+            opacity: 1;
+        }
+    }
+</style>
+<style>
+    /* Anim for cheked*/
+    svg {
+        width: 20px;
+        /*height: 30PX;*/
+        display: block;
+    }
+
+    .path {
+        stroke-dasharray: 1000;
+        stroke-dashoffset: 0;
+    }
+
+        .path.circle {
+            -webkit-animation: dash 1s ease-in-out;
+            animation: dash 1s ease-in-out;
+        }
+
+        .path.line {
+            stroke-dashoffset: 1000;
+            -webkit-animation: dash 1s .5s ease-in-out forwards;
+            animation: dash 1s .5s ease-in-out forwards;
+        }
+
+        .path.check {
+            stroke-dashoffset: -100;
+            -webkit-animation: dash-check 1s .5s ease-in-out forwards;
+            animation: dash-check 1s .5s ease-in-out forwards;
+        }
+
+
+    @@keyframes dash {
+        0% {
+            stroke-dashoffset: 1000;
+        }
+
+        100% {
+            stroke-dashoffset: 0;
+        }
+    }
+
+    @@-webkit-keyframes dash-check {
+        0% {
+            stroke-dashoffset: -100;
+        }
+
+        100% {
+            stroke-dashoffset: 900;
+        }
+    }
+
+    @@keyframes dash-check {
+        0% {
+            stroke-dashoffset: -100;
+        }
+
+        100% {
+            stroke-dashoffset: 900;
+        }
+    }
+</style>
+<style>
+    .buttonM {
+        animation: opacityB 1s .5s ease both;
+    }
+
+    @@keyframes opacityB {
+        0% {
+            opacity: 0;
+        }
+
+        100% {
+            opacity: 1;
+        }
+    }
+</style>
+
+
+@{
+    int ClassI = 0;
+    int Check = 0;
+}
+<div class="" style="margin-top:0px">
+    @if (Model.FirstOrDefault() == null)
+    {
+        <div class="row">
+            <div class="col-1 " style="width: 30px; margin-top: 3px;">
+                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+                    <circle class="path circle" fill="none" stroke="#D06079" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1" />
+                    <line class="path line" fill="none" stroke="#D06079" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="34.4" y1="37.9" x2="95.8" y2="92.3" />
+                    <line class="path line" fill="none" stroke="#D06079" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="95.8" y1="38" x2="34.4" y2="92.2" />
+                </svg>
+
+            </div>
+            <div class="col-10">
+                اطلاعاتی وجود ندارد
+            </div>
+        </div>
+    }
+    else
+    {
+        //foreach (var item in Model.Detail)
+        //{
+        //-----------------------------------------------------------------------------------------------------------
+        <h5 style="margin-bottom:30px">نتایج بررسی ملزومات دوره گذشته</h5>
+        //-----------------------------------------------------------------------------------------------------------
+        ClassI += 1;
+        <div ClassI_I="ClassI_@ClassI" class="row" id="ClassI_@ClassI" style="display:none;margin-bottom:10px">
+            @if (Model.FirstOrDefault().FinalSave == true)
+            {
+                Check += 1;
+                <div class="col-1" style="width:30px;">
+                    <div class='loader-i' style=" animation: rotation .4s linear infinite, rotationW 1s .5s ease both;"></div>
+                </div>
+                <div class="col-1 " style="width: 30px; margin-top: 3px;">
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+                        <circle class="path circle" fill="none" stroke="#73AF55" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1" />
+                        <polyline class="path check" fill="none" stroke="#73AF55" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 " />
+                    </svg>
+                </div>
+            }
+            else
+            {
+                <div class="col-1" style="width:30px;">
+                    <div class='loader-i' style=" animation: rotation .4s linear infinite, rotationW 1s .5s ease both;"></div>
+                </div>
+                <div class="col-1 " style="width: 30px; margin-top: 3px;">
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+                        <circle class="path circle" fill="none" stroke="#D06079" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1" />
+                        <line class="path line" fill="none" stroke="#D06079" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="34.4" y1="37.9" x2="95.8" y2="92.3" />
+                        <line class="path line" fill="none" stroke="#D06079" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="95.8" y1="38" x2="34.4" y2="92.2" />
+                    </svg>
+
+                </div>
+            }
+            <div class="col-4" style="animation: outer-left 1s .2s ease both;">
+                عملکرد برای دوره گذشته ثبت شده
+
+            </div>
+            <div class="col-xl-3"></div>
+        </div>
+        //-----------------------------------------------------------------------------------------------------------
+        ClassI += 1;
+        <div ClassI_I="ClassI_@ClassI" class="row" id="ClassI_@ClassI" style="display:none;margin-bottom:10px">
+            @if (Model.FirstOrDefault().FinalAccept == true)
+            {
+                Check += 1;
+                <div class="col-1" style="width:30px;">
+                    <div class='loader-i' style=" animation: rotation .4s linear infinite, rotationW 1s .5s ease both;"></div>
+                </div>
+                <div class="col-1 " style="width: 30px; margin-top: 3px;">
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+                        <circle class="path circle" fill="none" stroke="#73AF55" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1" />
+                        <polyline class="path check" fill="none" stroke="#73AF55" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 " />
+                    </svg>
+                </div>
+            }
+            else
+            {
+                <div class="col-1" style="width:30px;">
+                    <div class='loader-i' style=" animation: rotation .4s linear infinite, rotationW 1s .5s ease both;"></div>
+                </div>
+                <div class="col-1 " style="width: 30px; margin-top: 3px;">
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+                        <circle class="path circle" fill="none" stroke="#D06079" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1" />
+                        <line class="path line" fill="none" stroke="#D06079" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="34.4" y1="37.9" x2="95.8" y2="92.3" />
+                        <line class="path line" fill="none" stroke="#D06079" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="95.8" y1="38" x2="34.4" y2="92.2" />
+                    </svg>
+
+                </div>
+            }
+            <div class="col-4" style="animation: outer-left 1s .2s ease both;">
+                عملکرد برای دوره گذشته تایید شده
+
+            </div>
+            <div class="col-xl-3"></div>
+        </div>
+        //-----------------------------------------------------------------------------------------------------------
+        ClassI += 1;
+        <div ClassI_I="ClassI_@ClassI" class="row" id="ClassI_@ClassI" style="display:none;margin-bottom:10px">
+            @if (Model.FirstOrDefault().AcceptedSoorat == true)
+            {
+                Check += 1;
+                <div class="col-1" style="width:30px;">
+                    <div class='loader-i' style=" animation: rotation .4s linear infinite, rotationW 1s .5s ease both;"></div>
+                </div>
+                <div class="col-1 " style="width: 30px; margin-top: 3px;">
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+                        <circle class="path circle" fill="none" stroke="#73AF55" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1" />
+                        <polyline class="path check" fill="none" stroke="#73AF55" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 " />
+                    </svg>
+                </div>
+            }
+            else
+            {
+                <div class="col-1" style="width:30px;">
+                    <div class='loader-i' style=" animation: rotation .4s linear infinite, rotationW 1s .5s ease both;"></div>
+                </div>
+                <div class="col-1 " style="width: 30px; margin-top: 3px;">
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+                        <circle class="path circle" fill="none" stroke="#D06079" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1" />
+                        <line class="path line" fill="none" stroke="#D06079" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="34.4" y1="37.9" x2="95.8" y2="92.3" />
+                        <line class="path line" fill="none" stroke="#D06079" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="95.8" y1="38" x2="34.4" y2="92.2" />
+                    </svg>
+
+                </div>
+            }
+            <div class="col-4" style="animation: outer-left 1s .2s ease both;">
+                نتایج دوره گذشته، تثبیت شده
+            </div>
+            <div class="col-xl-3"></div>
+        </div>
+        //-----------------------------------------------------------------------------------------------------------
+        <hr />
+        <h5 style="margin-bottom:30px">نتایج بررسی ملزومات دوره جاری</h5>
+        //-----------------------------------------------------------------------------------------------------------
+        ClassI += 1;
+        <div ClassI_I="ClassI_@ClassI" class="row" id="ClassI_@ClassI" style="display:none;margin-bottom:10px">
+            @if (Model.LastOrDefault().FinalSave == true)
+            {
+                Check += 1;
+                <div class="col-1" style="width:30px;">
+                    <div class='loader-i' style=" animation: rotation .4s linear infinite, rotationW 1s .5s ease both;"></div>
+                </div>
+                <div class="col-1 " style="width: 30px; margin-top: 3px;">
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+                        <circle class="path circle" fill="none" stroke="#73AF55" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1" />
+                        <polyline class="path check" fill="none" stroke="#73AF55" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 " />
+                    </svg>
+                </div>
+            }
+            else
+            {
+                <div class="col-1" style="width:30px;">
+                    <div class='loader-i' style=" animation: rotation .4s linear infinite, rotationW 1s .5s ease both;"></div>
+                </div>
+                <div class="col-1 " style="width: 30px; margin-top: 3px;">
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+                        <circle class="path circle" fill="none" stroke="#D06079" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1" />
+                        <line class="path line" fill="none" stroke="#D06079" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="34.4" y1="37.9" x2="95.8" y2="92.3" />
+                        <line class="path line" fill="none" stroke="#D06079" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="95.8" y1="38" x2="34.4" y2="92.2" />
+                    </svg>
+
+                </div>
+            }
+            <div class="col-4" style="animation: outer-left 1s .2s ease both;">
+                عملکرد برای دوره جاری ثبت شده است
+
+            </div>
+            <div class="col-xl-3"></div>
+        </div>
+        //-----------------------------------------------------------------------------------------------------------
+        ClassI += 1;
+        <div ClassI_I="ClassI_@ClassI" class="row" id="ClassI_@ClassI" style="display:none;margin-bottom:10px">
+            @if (Model.LastOrDefault().FinalAccept == true)
+            {
+                Check += 1;
+                <div class="col-1" style="width:30px;">
+                    <div class='loader-i' style=" animation: rotation .4s linear infinite, rotationW 1s .5s ease both;"></div>
+                </div>
+                <div class="col-1 " style="width: 30px; margin-top: 3px;">
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+                        <circle class="path circle" fill="none" stroke="#73AF55" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1" />
+                        <polyline class="path check" fill="none" stroke="#73AF55" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 " />
+                    </svg>
+                </div>
+            }
+            else
+            {
+                <div class="col-1" style="width:30px;">
+                    <div class='loader-i' style=" animation: rotation .4s linear infinite, rotationW 1s .5s ease both;"></div>
+                </div>
+                <div class="col-1 " style="width: 30px; margin-top: 3px;">
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+                        <circle class="path circle" fill="none" stroke="#D06079" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1" />
+                        <line class="path line" fill="none" stroke="#D06079" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="34.4" y1="37.9" x2="95.8" y2="92.3" />
+                        <line class="path line" fill="none" stroke="#D06079" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="95.8" y1="38" x2="34.4" y2="92.2" />
+                    </svg>
+
+                </div>
+            }
+            <div class="col-4" style="animation: outer-left 1s .2s ease both;">
+                عملکرد ثبت شده برای دوره جاری،تاییدشده
+
+            </div>
+            <div class="col-xl-3"></div>
+        </div>
+        //-----------------------------------------------------------------------------------------------------------
+        @*}*@
+    }
+</div>
+@{
+    ClassI += 1;
+}
+<div ClassI_I="ClassI_@ClassI" class="row buttonM " id="ClassI_@ClassI" style="display: none;">
+    @if (Check == 5)
+    {
+        <div class="loader" style="display:none">
+            <div class="inner one"></div>
+            <div class="inner two"></div>
+            <div class="inner three"></div>
+        </div>
+        <div class="row">
+            <div class="col-xl-10"></div>
+            <div class="col-xl-2">
+                <button id="btnCalculateAZ" type="button" class="btn form-control buttonGeneral">
+                    <i class="fa fa-calculator fa-fw me-1 VecGeneral"></i>
+                    <span class="bGeneral-text">محاسبه</span>
+                </button>
+            </div>
+
+        </div>
+    }
+
+</div>
+
+<script>
+    var delay = 1000; // زمان تأخیر به میلی ثانیه
+    function showNextDiv(ClassNameI) {
+        // نمایش div با استفاده از شناسه
+        document.getElementById(ClassNameI).style.display = "flex";
+    }
+
+    var divs = document.querySelectorAll("[ClassI_I]");
+    var i = 0;
+    var id;
+    divs.forEach(div => {
+        console.log(divs[i].classList[1])
+        id = div.getAttribute("ClassI_I");
+        setTimeout(showNextDiv.bind(null, id), (i + 1) * delay);
+        i++
+    });
+</script>
+<script>
+
+    $("#btnCalculateAZ").click(function () {
+        $(".loader").css('display', 'block');
+
+            var PeymanArr = [];
+            $.each($("#select_peyman_").val().toString().split(","), function (index, item) {
+                if (item !== "") {
+                    if (item != 'Select') {
+                        PeymanArr.push(item);
+                    }
+                }
+            });
+
+            var Year = $("#YearAz").val();
+            var Month = $("#MonthAz ").val();
+            var Course = $("#CourseAz").val();
+            var Pyman_IDs = PeymanArr
+            console.log(Year)
+            console.log(Month)
+            console.log(Course)
+            console.log(Pyman_IDs)
+
+            if ($("#select_peyman_").val() == 0) {
+                alert("لطفا ردیف اعتباری را انتخاب کنید");
+            }
+            else if ($("#YearAZ").val() == 0) {
+                alert("لطفا شماره صورت وضعیت را انتخاب کنید");
+            }
+
+            else {
+
+                $.ajax({
+
+                    url: "@Url.Action("viewforsabtsonahaei", "Formula", new { area = "Salaries" })",
+                    type: "Post",
+                    dataType: "html",
+                    data: { year: Year, month: Month, number_sorat: Course, fkpy: Pyman_IDs },
+                    success: function (res) {
+                        document.getElementById("loading-message").style.display = "none";
+                        if (res == "True") {
+                            $(".loader").css('display', 'none');
+
+                            alert("با موفقیت ثبت شد")
+                            location.reload();
+
+                        }
+                        //$("#big_modal_body").html(res)
+                        //$("#modalLg").modal('show')
+
+                    },
+                    error: function (res) {
+                        $(".loader").css('display', 'none');
+
+                        console.log(res);
+
+                        document.getElementById("loading-message").style.display = "none";
+                        Toast.fire({
+                            icon: 'error',
+                            background: '#35434A',
+                            color: 'white',
+                            title: "عملیات  با خطا مواجه شد"
+                        });
+                        return false;
+                    }
+                });
+            }
+        });
+
+</script>

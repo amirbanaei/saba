@@ -1,0 +1,355 @@
+﻿
+@using SaabWebProject.Models.DomainModels;
+
+@{
+    SaabEntities db = new SaabEntities();
+
+    Layout = null;
+}
+<style>
+
+    .tableH_LockSS {
+        max-height: 487px;
+        /*height: 260px;*/
+    }
+
+    thead {
+        position: sticky;
+        top: 0;
+        text-align: center;
+        z-index: 2;
+    }
+
+    .inputFilter {
+        margin-bottom: 0px !important;
+    }
+    .RadioFilter {
+        margin-bottom: 0px !important;
+    }
+
+    thead th {
+        vertical-align: middle;
+    }
+    .inputSS44334{
+        margin-bottom:0px !important;
+    }
+</style>
+
+<div class="card">
+    <div class="table-content p-4">
+        <div class="tab-pane fade show active" id="allTab">
+            <div class="table-responsive tableH_LockSS">
+                <table class="table table-hover text-nowrap">
+                    <thead class="sticky-header">
+                        <tr>
+                            <th class="users headRi0">
+                                نام کارگزاری
+                                <input type="text" id="filter01-filter" class="inputFilter form-control" placeholder="">
+                            </th>
+                            <th class="users headRi1">
+                                شهرستان
+                                <input type="text" id="filter02-filter" class="inputFilter form-control" placeholder="">
+                            </th>
+                            @foreach (var item in db.tbmarahlsabtbastedit1.Where(p => p.naem != null).ToList())
+                            {
+                                <th class="TitelL" style="padding-bottom: 11px !important;">
+                                    @item.naem
+                                    <div class="form-check EmkRadio" style=" justify-self: center;"> 
+                                        <!-- رادیو باتن برای انتخاب همه چک‌باکس‌ها در ستون -->
+                                        <input class="form-check-input RadioFilter" type="checkbox"
+                                               name="selectAllOwner"
+                                               id="selectAllMamur_@item.ID"
+                                               onclick="selectAllRadios('@item.ID')" />
+                                    </div>
+                                </th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int II = 0;
+                            var marahls = db.tbmarahlsabtbastedit1.Where(p => p.naem != null).ToList(); // ستون‌های ثابت
+
+                            var list = db.tbmarahlsabtbastedit2.ToList();
+                            var cit = db.tbpeymancities.ToList();
+                        }
+                        @foreach (var contract in db.tbPeymanContracts.ToList())
+                        {
+                            var cities = cit.Where(p => p.FK_PYMN == contract.pec_ID).ToList();
+                            foreach (var city in cities)
+                            {
+                                var cityName = city.tbCities?.Name ?? "N/A";
+
+                                <tr class="task-list-row dateS_@II"
+                                    data-filter01="@contract.pec_Title"
+                                    data-filter02="@cityName">
+                                    <td class="headRi0">@contract.pec_Title</td>
+                                    <td class="headRi1">@cityName</td>
+                                    @foreach (var marahl in marahls)
+                                    {
+                                        var findvalu = list
+                                                         .FirstOrDefault(p => p.FK_City == city.FK_City
+                                                                              && p.FK_namebAST == marahl.ID
+                                                                              && p.FK_pymn == contract.pec_ID);
+                                        var hasValue = findvalu?.Has ?? false;
+
+                                        <td data-column="@marahl.ID">
+                                            <input class="form-check-input mamur inputSS44334 weewee"
+                                                   name="checkRow_@marahl.ID"
+                                                   type="checkbox"
+                                                   id="checkVasileV1-@marahl.ID-@city.FK_City-@contract.pec_ID"
+                                                   data-column="@marahl.ID"
+                                                   data-bind="@marahl.ID"
+                                                   data-keyboard="@marahl.ID"
+                                                   @(hasValue ? "checked" : "") />
+                                        </td>
+
+                                    }
+                                </tr>
+                                II++;
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+<div class="row mt-10px">
+    <div class="col-xl-11"></div>
+    <div class="col-xl-1">
+        <button id="savabtn" type="button" class="btn form-control buttonsabt">
+            <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+            <span class="bSabt-text">ثبت</span>
+        </button>
+    </div>
+</div>
+
+
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Scripts/popper.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    function selectAllRadios(columnId) {
+        // انتخاب همه چک‌باکس‌ها در ستون مشخص که قابل مشاهده هستند
+        var checkboxes = $("td[data-column='" + columnId + "'] input[type='checkbox']:visible");
+
+        // بررسی وضعیت چک‌باکس اصلی
+        var isChecked = document.getElementById("selectAllMamur_" + columnId).checked;
+
+        // اگر هیچ چک‌باکسی پیدا نشد، پیام را در کنسول چاپ کنید
+        if (checkboxes.length === 0) {
+            console.log("No visible checkboxes found for columnId: ", columnId);
+        } else {
+            // چک یا لغو انتخاب فقط چک‌باکس‌های قابل مشاهده
+            checkboxes.each(function () {
+                this.checked = isChecked;
+            });
+        }
+    }
+
+    // اطمینان از اینکه کد پس از بارگذاری کامل صفحه اجرا شود
+    document.addEventListener("DOMContentLoaded", function () {
+        // اینجا می‌توانید کدهایی را که نیاز به تعامل با صفحه دارند قرار دهید.
+        // به عنوان مثال، فراخوانی selectAllRadios برای اولین بار، در صورتی که نیاز باشد.
+    });
+
+
+    var
+        filters = {
+            filter01: null,
+            filter02: null,
+            filter03: null,
+            filter04: null,
+            //filter05: null,
+            //filter06: null,
+            //filter07: null,
+            filter08: null,
+            filter09: null,
+            filter10: null,
+        };
+
+    function updateFilters6() {
+        $('.task-list-row').hide().filter(function () {
+            var self = $(this),
+                result = true; // not guilty until proven guilty
+
+            Object.keys(filters).forEach(function (filter) {
+                if (filters[filter] && (filters[filter] != 'None') && (filters[filter] != 'همه')) {
+                    // تطبیق جزئی (contains) به جای تطبیق کامل
+                    result = result && self.data(filter).indexOf(filters[filter]) !== -1;
+                }
+            });
+
+            return result;
+        }).show();
+    }
+
+    function changeFilter6(filterName) {
+        filters[filterName] = this.value;
+        updateFilters6();
+    }
+
+    $('#filter01-filter').on('input', function () {
+        changeFilter6.call(this, 'filter01');
+    });
+    $('#filter02-filter').on('input', function () {
+        changeFilter6.call(this, 'filter02');
+    });
+    $('#filter03-filter').on('input', function () {
+        changeFilter6.call(this, 'filter03');
+    });
+    $('#filter04-filter').on('input', function () {
+        changeFilter.call(this, 'filter04');
+    });
+    //$('#filter05-filter').on('input', function () {
+    //    changeFilter.call(this, 'filter05');
+    //});
+    //$('#filter06-filter').on('input', function () {
+    //    changeFilter.call(this, 'filter06');
+    //});
+    //$('#filter07-filter').on('input', function () {
+    //    changeFilter.call(this, 'filter07');
+    //});
+    $('#filter08-filter').on('input', function () {
+        changeFilter.call(this, 'filter08');
+    });
+    $('#filter09-filter').on('input', function () {
+        changeFilter.call(this, 'filter09');
+    });
+    $('#filter10-filter').on('input', function () {
+        changeFilter.call(this, 'filter10');
+    });
+
+    function formatNumberWithCommas(number) {
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+    $("input.form-technololghhhh").on('input', function () {
+        var value = $(this).val();
+        value = removeCommas(value); // Remove existing commas
+        if ($.isNumeric(value)) {
+            $(this).val(formatNumberWithCommas(value)); // Format with commas
+        }
+    });
+    $("input.form-technololghhhh").each(function () {
+        var value = $(this).val();
+        if ($.isNumeric(value)) {
+            $(this).val(formatNumberWithCommas(value)); // اعمال فرمت
+        }
+    });
+    function removeCommas(number) {
+        return number.replace(/,/g, '');
+    }
+    $("#savabtn").click(function () {
+        // جمع‌آوری داده‌ها
+        var dataList = []; // ایجاد آرایه‌ای برای ذخیره داده‌ها
+
+        $("input.weewee").each(function () {
+            var inputId = $(this).attr("id");
+            var isChecked = $(this).is(":checked"); // بررسی چک‌خورده بودن
+
+            // تقسیم ID به اجزا با جداکننده صحیح
+            var parts = inputId.split('-');
+            if (parts.length >= 4) { // بررسی صحت ساختار ID
+                // اجزای ID
+                var FK_namebAST = parseInt(parts[1]); // مقدار مربوط به marahl.ID
+                var FK_city = parseInt(parts[2]);     // مقدار مربوط به city.id
+                var FK_pymn = parseInt(parts[3]);     // مقدار مربوط به contract.pec_ID
+
+                // افزودن به آرایه داده‌ها
+                dataList.push({
+                    FK_namebAST: FK_namebAST,
+                    FK_city: FK_city,
+                    FK_pymn: FK_pymn,
+                    Has: isChecked // اگر چک شده باشد true وگرنه false
+                });
+            } else {
+                console.warn("Invalid ID format for input:", inputId);
+            }
+        });
+
+        if (dataList.length > 0) {
+            updateDatabase55(dataList); // ارسال داده‌ها به سرور
+            console.log("Data to be sent:", dataList); // نمایش داده‌ها در کنسول برای بررسی
+        } else {
+            console.warn("No valid data collected!");
+        }
+    });
+
+    // تابع ارسال داده‌ها به سرور
+    function updateDatabase55(dataList) {
+        $.ajax({
+            url: '/Contracts/RegistrationAndConfirmationProcedures/UpdateRecordmahedit2', // آدرس اکشن کنترلر شما
+            method: 'POST',
+            data: JSON.stringify(dataList), // تبدیل داده‌ها به JSON
+            contentType: 'application/json',
+            success: function (response) {
+                console.log("Record updated successfully:", response);
+                if (response === "true") {
+                    alert("با موفقیت ثبت شد");
+                    location.reload();
+                } else {
+                    alert("خطا در ثبت اطلاعات: " + response);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Error updating record:", {
+                    status: status,
+                    error: error,
+                    responseText: xhr.responseText
+                });
+                alert("خطا در ارسال اطلاعات. لطفاً دوباره تلاش کنید.");
+            }
+        });
+    }
+
+
+</script>

@@ -1,0 +1,126 @@
+﻿@{
+    Layout = null;
+
+}
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+<div class="row" style="">
+    <div class="col-xl-2"></div>
+    <div class="col-xl-8">
+
+        @using (Html.BeginForm("_CreateCategory", "Categories", FormMethod.Post, new { id = "Addcategory" }))
+        {
+            <div class="row">
+                <div class="col-xl-9">
+                    <label class="form-label"> دسته</label>
+                    <input class="form-control" name="Category_Name" />
+                </div>
+                <div class="col-xl-3" >
+                    <button onclick="" class=" btn form-control buttonsabt" type="submit" id="Addcategory" style="">
+                        <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                        <span class="bSabt-text">ثبت</span>
+                    </button>
+                </div>
+            </div>
+
+
+        }
+    </div>
+    <div class="col-xl-2"></div>
+</div>
+
+
+
+
+<div class="row">
+
+    <div class="col-xl-12">
+        @Html.Action("GetAllCategories", "Categories")
+
+    </div>
+
+</div>
+
+@section Scripts{
+    <script src="/Scripts/sweetalert2.js" type="text/javascript"></script>
+
+    <script>
+    var Toast = Swal.mixin({
+        toast: true,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    });
+
+
+        $("#Addcategory").click (function () {
+
+            var success = "@TempData["Success"]";
+         console.log(success)
+
+
+        /*if (success !="")*/
+                if (success == "True") {
+                    document.getElementById("loading-message").style.display = "none";
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "اطلاعات با موفقیت ثبت شد"
+                    });
+                }
+                if (success == "False") {
+                    document.getElementById("loading-message").style.display = "none";
+                    Toast.fire({
+                        icon: 'error',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "اطلاعات ثبت نشد لطفا بعدا دوباره امتحان فرمائید"
+                    });
+                }
+                if (success == "NULL") {
+                    document.getElementById("loading-message").style.display = "none";
+                    Toast.fire({
+                        icon: 'warning',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "فیلد را پر کنید"
+                    });
+                }
+
+            })
+    </script>
+}
+
+@*$("#Addcategory").ajaxForm(function () {
+
+        alert("injam");
+
+            var success = "@TempData["Success"]";
+
+    if (success !="") {
+        if (success == "True") {
+
+            Toast.fire({
+                icon: 'success',
+                background: '#35434A',
+                color: 'white',
+                title: "اطلاعات با موفقیت ثبت شد"
+            });
+        }
+        else if (success == "False") {
+            Toast.fire({
+                icon: 'error',
+                background: '#35434A',
+                color: 'white',
+                title: "اطلاعات ثبت نشد لطفا بعدا دوباره امتحان فرمائید"
+            });
+        }
+    }*@
+
+
+
+

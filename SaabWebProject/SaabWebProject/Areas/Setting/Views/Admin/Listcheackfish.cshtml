@@ -1,0 +1,401 @@
+﻿@using SaabWebProject.Models.DomainModels;
+
+@using SaabWebProject.Models.Classes;
+@{
+    SaabEntities db = new SaabEntities();
+
+    Layout = null;
+}
+@model IEnumerable<SaabWebProject.Models.DomainModels.tbcheackfishforusers>
+
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+
+<div class="card">
+    <div class="table-content p-4">
+        <div class="tab-pane fade show active" id="allTab">
+            <div class="table-responsive">
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr style="text-align:center">
+
+
+                            <th>
+                                @Html.DisplayName("#")
+                            </th>
+                            <th>
+                                @Html.DisplayName("نام و نام خواندگی ")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter30-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            
+                            </th>
+
+
+                            <th>
+                                @Html.DisplayName("سال")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter20-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+
+
+                            <th>
+                                @Html.DisplayName("ماه")
+                                <div class="inputWithFilterIcon">
+            <input type="text" id="filter31-filter" class="inputFilter form-control" placeholder="">
+            <span><i class="fas fa-filter"></i></span>
+        </div>
+                            </th>
+
+                            <th>
+                                @Html.DisplayName("فیش فعال")
+                            </th>
+
+
+                        </tr>
+
+
+
+                    </thead>
+                    <tbody style="text-align:center">
+
+                        @if (Model != null)
+                        {
+
+                            var i = 0;
+                            foreach (var item in Model)
+                            {
+                                if (item != null)
+                                {
+                                    var find = db.tbUsers.Where(s => s.usr_ID == item.FK_User).FirstOrDefault();
+
+
+                                    i++;
+                                    <tr class="task-list-rowEM2" data-filter20="@item.Year"data-filter30="@find.FullName"data-filter31="@item.Month">
+
+                                        <td>
+                                            @i
+                                        </td>
+
+
+                                        <td>
+                                            @find.FullName
+                                        </td>
+
+                                        <td>
+                                            @item.Year
+                                        </td>
+
+                                        <td>
+                                            @item.Month
+                                        </td>
+                                        @if (item.HasFish == true)
+                                        {
+                                            <td>
+                                                <i class="fa fa-check" style="color: green;"></i>
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            <td>
+                                                <i class="fa fa-times" style="color: red;"></i>
+                                            </td>
+                                        }
+
+                                    </tr>
+                                }
+                                @*else
+                                    {
+                                        i++;
+                                        <tr>
+
+                                            <td>
+                                                @i
+                                            </td>
+
+
+                                            <td>
+                                                @item.Name
+                                            </td>
+
+                                            <td>
+                                                @item.Zaribmalyat
+                                            </td>
+
+
+
+
+
+                                        </tr>
+                                    }*@
+                            }
+
+                            // Your foreach loop code here
+                        }
+
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Scripts/popper.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script>
+        function edit(id, month, year) {
+        //obj.append("id", id);
+        //obj.append("month", month);
+        //obj.append("year", year);
+        $("#big_modal_body").load('@Url.Content("/Salaries/Formula/shogledit")?id=' + id);
+    }
+    $(document).ready(function () {
+        function calculateKhales(row) {
+            var rozmonth = parseInt(row.find('input[data-field="rozmonth"]').val()) || 0;
+            var friday = parseInt(row.find('input[data-field="friday"]').val()) || 0;
+            var notfriday = parseInt(row.find('input[data-field="notfriday"]').val()) || 0;
+            var ghas = parseInt(row.find('input[data-field="ghas"]').val()) || 0;
+
+            var khales = rozmonth - (friday + notfriday + ghas);
+            row.find('input[data-field="khales"]').val(khales >= 0 ? khales : 0);
+        }
+
+        // هر بار که مقدار یکی از فیلدها تغییر کند، khales را محاسبه کن
+        $(document).on('input', '.calc-field', function () {
+            var row = $(this).closest('tr');
+            calculateKhales(row);
+        });
+
+        // وقتی روی دکمه ثبت کلیک شود، داده‌ها را جمع‌آوری و ارسال کن
+        $("#savabtn123123").click(function () {
+            var rows = [];
+
+            $(".task-list-rowEM2").each(function (index) {
+                var row = $(this);
+                var rowData = {
+                    month: index + 1,
+                    rozmonth: parseInt(row.find('input[data-field="rozmonth"]').val()) || 0,
+                    friday: parseInt(row.find('input[data-field="friday"]').val()) || 0,
+                    notfriday: parseInt(row.find('input[data-field="notfriday"]').val()) || 0,
+                    ghas: parseInt(row.find('input[data-field="ghas"]').val()) || 0,
+                    khales: parseInt(row.find('input[data-field="khales"]').val()) || 0,
+                    year: parseInt($("#Year2").val()) || new Date().getFullYear()
+                };
+                rows.push(rowData);
+            });
+
+            $.ajax({
+                url: '@Url.Action("tbtatialtmoadelcreat", "Formula", new { area = "Salaries" })',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(rows),
+                success: function (response) {
+                    alert("ثبت با موفقیت انجام شد.");
+                },
+                error: function () {
+                    alert("خطایی در ثبت اطلاعات رخ داد.");
+                }
+            });
+        });
+    });
+</script>
+
+
+<script>
+    var
+        filtersEM2 = {
+            filter20: null,
+            filter30: null,
+            filter31: null,
+            filter32: null,
+            filter33: null,
+            filter34: null,
+            filter35: null,
+
+        };
+    function updateFiltersEM2() {
+        $('.task-list-rowEM2').hide().filter(function () {
+            var self = $(this),
+                result = true;
+
+            Object.keys(filtersEM2).forEach(function (filter) {
+                var filterData = self.data(filter);
+                if (filtersEM2[filter] && (filtersEM2[filter] != 'None') && (filtersEM2[filter] != 'همه')) {
+                    // تبدیل داده به رشته و بررسی مقدار
+                    result = result && (filterData && filterData.toString().indexOf(filtersEM2[filter]) !== -1);
+                }
+            });
+
+            return result;
+        }).show();
+    }
+
+    function changeFilterEM2(filterName) {
+        filtersEM2[filterName] = this.value;
+        updateFiltersEM2();
+    }
+
+    // Assigned User Dropdown Filter
+    $('#filter20-filter').on('input', function () {
+        changeFilterEM2.call(this, 'filter20');
+    });
+    $('#filter30-filter').on('input', function () {
+        changeFilterEM2.call(this, 'filter30');
+    });
+    $('#filter31-filter').on('input', function () {
+        changeFilterEM2.call(this, 'filter31');
+    });
+    $('#filter32-filter').on('input', function () {
+        changeFilterEM2.call(this, 'filter32');
+    });
+    $('#filter33-filter').on('input', function () {
+        changeFilterEM2.call(this, 'filter33');
+    });
+    $('#filter34-filter').on('input', function () {
+        changeFilterEM2.call(this, 'filter34');
+    });
+    $('#filter35-filter').on('input', function () {
+        changeFilterEM2.call(this, 'filter35');
+    });
+    //$('#filter30-filter').on('input', function () {
+    //    changeFilterEM2.call(this, 'filter30');
+    //});
+
+</script>
+<script>
+
+
+    function selectAllRadios11(columnId) {
+        // انتخاب همه چک‌باکس‌ها در ستون مشخص که قابل مشاهده هستند
+        var checkboxes = $("td[data-column='" + columnId + "'] input[type='checkbox']:visible");
+
+        // بررسی وضعیت چک‌باکس اصلی
+        var isChecked = document.getElementById("selectAllMamur_" + columnId).checked;
+
+        // اگر هیچ چک‌باکسی پیدا نشد، پیام را در کنسول چاپ کنید
+        if (checkboxes.length === 0) {
+            console.log("No visible checkboxes found for columnId: ", columnId);
+        } else {
+            // چک یا لغو انتخاب فقط چک‌باکس‌های قابل مشاهده
+            checkboxes.each(function () {
+                this.checked = isChecked;
+            });
+        }
+    }
+
+    // اطمینان از اینکه کد پس از بارگذاری کامل صفحه اجرا شود
+    document.addEventListener("DOMContentLoaded", function () {
+        // اینجا می‌توانید کدهایی را که نیاز به تعامل با صفحه دارند قرار دهید.
+        // به عنوان مثال، فراخوانی selectAllRadios11 برای اولین بار، در صورتی که نیاز باشد.
+    });
+
+
+
+    function formatNumberWithCommas(number) {
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+    $("input.form-technololghhhh").on('input', function () {
+        var value = $(this).val();
+        value = removeCommas(value); // Remove existing commas
+        if ($.isNumeric(value)) {
+            $(this).val(formatNumberWithCommas(value)); // Format with commas
+        }
+    });
+    $("input.form-technololghhhh").each(function () {
+        var value = $(this).val();
+        if ($.isNumeric(value)) {
+            $(this).val(formatNumberWithCommas(value)); // اعمال فرمت
+        }
+    });
+    function removeCommas(number) {
+        return number.replace(/,/g, '');
+    }
+    //$("#savabtn123123").click(function () {
+    //    var dataList = [];
+
+    //    $("input.weewee12").each(function () {
+    //        var inputId = $(this).attr("id");
+    //        var isChecked = $(this).is(":checked");
+
+    //        var parts = inputId.split('-');
+    //        var tabint = $(this).data("tabint"); // خواندن مقدار از data-attribute
+    //        var FK_dbsathdastressi31 = $(this).data("FK_dbsathdastressi31"); // خواندن مقدار از data-attribute
+
+    //        if (parts.length >= 4) {
+    //            var FK_dbsathdastressi3 = parseInt(parts[1]);         // zarzermagmetab
+    //            var FK_usr = parseInt(parts[2]);             // IDyusr
+    //            var FK_dbsathdastressi2 = parseInt(parts[3]);             // zarmagmetabint
+    //            //var fk_FK_dbsathdastressi4 = FK_namebAST;     // همان zarzermagmetab
+    //            var FK_dbsathdastressi1 = parseInt(tabint);             // tabint از data attribute
+    //            console.log(FK_dbsathdastressi3);
+    //            dataList.push({
+    //                FK_dbsathdastressi3: FK_dbsathdastressi3,
+    //                FK_usr: FK_usr,
+    //                FK_dbsathdastressi2: FK_dbsathdastressi2,
+    //                //fk_FK_dbsathdastressi4: fk_FK_dbsathdastressi4,
+    //                FK_dbsathdastressi1: FK_dbsathdastressi1,
+    //                vaziatt: isChecked
+    //            });
+    //        } else {
+    //            console.warn("Invalid ID format for input:", inputId);
+    //        }
+    //    });
+
+    //    if (dataList.length > 0) {
+    //        console.log("Data to be sent:", dataList);
+    //        updateDatabase5885(dataList);
+    //    } else {
+    //        console.warn("No valid data collected!");
+    //    }
+    //});
+
+
+    //// تابع ارسال داده‌ها به سرور
+    //function updateDatabase5885(dataList) {
+    //    $.ajax({
+    //        url: '/ManagementAccounting/FinancialDocuments/DASTRESSI', // آدرس اکشن کنترلر شما
+    //        method: 'POST',
+    //        data: JSON.stringify(dataList), // تبدیل داده‌ها به JSON
+    //        contentType: 'application/json',
+    //        success: function (response) {
+    //            console.log("Record updated successfully:", response);
+    //            if (response === "true") {
+    //                alert("با موفقیت ثبت شد");
+    //                location.reload();
+    //            } else {
+    //                alert("خطا در ثبت اطلاعات: " + response);
+    //            }
+    //        },
+    //        error: function (xhr, status, error) {
+    //            console.error("Error updating record:", {
+    //                status: status,
+    //                error: error,
+    //                responseText: xhr.responseText
+    //            });
+    //            alert("خطا در ارسال اطلاعات. لطفاً دوباره تلاش کنید.");
+    //        }
+    //    });
+    //}
+
+
+</script>

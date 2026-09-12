@@ -1,0 +1,92 @@
+﻿
+@{
+    Layout = null;
+}
+@using SaabWebProject.Models.DomainModels;
+
+@{
+    SaabEntities db = new SaabEntities();
+
+}
+@model IEnumerable<SaabWebProject.Models.DomainModels.tbsherkatpyam>
+<div class="card" style="width: 100%;">
+    <div class="table-content p-4">
+        <div class="table-responsive">
+            <table class="table table-hover" style="text-align:center;">
+                <thead>
+                    <tr>
+                        <th>ردیف</th>
+                        <th>عنوان فعالیت </th>
+                        <th>ثبت کننده</th>
+
+                        <th>تاریخ</th>
+                        <th>دیده شده</th>
+                        <th>پیوست</th>
+                        <th>پاسخ ها</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ var counter = 0;}
+                    @foreach (var item in Model)
+                    {
+                        counter++;
+                        <tr>
+                            <td>@counter</td>
+                            
+                            <td>@item.dbRelatinafrad.Title</td>
+                            <td>@db.tbUsers.Where(p=>p.usr_ID==item.FK_isr2).Select(s=>s.FullName).FirstOrDefault()</td>
+                            @*<td>@item.Persian_Date</td>*@
+                            @if (item.notseee != 1)
+                            {
+                                <td><i style="color:green" class="bi bi-eye-fill text-theme"></i></td>
+                            }
+                            else
+                            {
+                                <td><i style="color:red" class="bi bi-eye-slash-fill text-theme"></i></td>
+
+                            }
+                            @if (item.File_SystemName != null)
+                            {
+                                <td><a target="_blank" href="~/Areas/ManagementAccounting/Contents/RegistrationDucumentAttachmentsFile/@item.File_SystemName">دانلود</a></td>
+                            }
+                            else
+                            {
+                                <td>
+                                    ندارد
+                                </td>
+
+                            }
+                            @*<td>
+                                @if (item.HasNotSeen == 0)
+                                {
+                                    <a data-bs-toggle="modal" data-bs-target="#modalLg" class="dropdown-item show" id="@item.ID">نمایش</a>
+                                }
+                                else
+                                {
+                                    <a data-bs-toggle="modal" data-bs-target="#modalLg" class="dropdown-item show" style="box-shadow: 1px 1px 10px 3px #9b6b6b;" id="@item.ID">نمایش</a>
+
+                                }
+                            </td>*@
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+        </div>
+
+    </div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script>
+    $(".show").click(function () {
+        var id = $(this).attr("id");
+            $("#big_modal_body").load('@Url.Content("/Suggestion/SuggestionandCriticism/_Sabt_Pasokh")?suggestion_ID='+id);
+        $(this).css("box-shadow", "unset");
+    });
+</script>

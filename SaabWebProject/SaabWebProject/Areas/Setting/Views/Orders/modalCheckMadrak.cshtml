@@ -1,0 +1,877 @@
+﻿@using SaabWebProject.Models.Classes;
+@using SaabWebProject.Models.DomainModels;
+@using System.Globalization
+
+
+@{
+    Layout = null;
+}
+@{
+    SaabEntities db = new SaabEntities();
+
+}
+@model SaabWebProject.Models.DomainModels.madarek_sabtdoreh_4
+
+@{
+    var find = db.madarek_vaziatdoreh_5
+            .Where(s => s.FK_sabtdoreh == Model.ID)
+            .FirstOrDefault();
+}
+
+<script src="~/Assets/js/jalalidatepicker.min.js"></script>
+<link href="~/Assets/css/jalalidatepicker.min.css" rel="stylesheet" />
+<script src="~/Assets/js/jalaali.min.js"></script>
+<link href="~/MyStyles/jalalidatepicker.css" rel="stylesheet" />
+
+@if (find != null)
+{
+
+
+
+    <div class="table-content p-4">
+        <div class="row"></div>
+
+        @if (find.vaziat == 0)
+        {<div class="col-xl-3">
+                <input type="radio" id="vaziat0" name="vaziat" value="0" checked />
+                <label for="vaziat0">تایید</label>
+
+                <input type="radio" id="vaziat2" name="vaziat" value="1" />
+                <label for="vaziat2">رد</label>
+
+                <input type="radio" id="vaziat1" name="vaziat" value="2" />
+                <label for="vaziat1">اصلاح</label>
+            </div>
+        }
+        else if (find.vaziat == 1)
+        {<div class="col-xl-3">
+                <input type="radio" id="vaziat0" name="vaziat" value="0" />
+                <label for="vaziat0">تایید</label>
+
+                <input type="radio" id="vaziat2" name="vaziat" value="1" checked />
+                <label for="vaziat2">رد</label>
+
+                <input type="radio" id="vaziat1" name="vaziat" value="2" />
+                <label for="vaziat1">اصلاح</label>
+            </div>
+        }
+        else if (find.vaziat == 2)
+        {<div class="col-xl-3">
+                <input type="radio" id="vaziat0" name="vaziat" value="0" />
+                <label for="vaziat0">تایید</label>
+
+                <input type="radio" id="vaziat2" name="vaziat" value="1" />
+                <label for="vaziat2">رد</label>
+
+                <input type="radio" id="vaziat1" name="vaziat" value="2" checked />
+                <label for="vaziat1">اصلاح</label>
+            </div>
+        }
+        <hr />
+        @*<div class="row">*@
+        @if (find.vaziat == 0)
+        {
+
+            var pc = new PersianCalendar();
+            string persianDate = "";
+            if (find.tarikhsodor.HasValue)
+            {
+                var dt = find.tarikhsodor.Value; // استفاده از Value برای DateTime واقعی
+                persianDate = string.Format("{0}/{1:00}/{2:00}", pc.GetYear(dt), pc.GetMonth(dt), pc.GetDayOfMonth(dt));
+            }
+
+
+            <div id="input-accept" class="accept">
+                <div class="row">
+                    <div class="col-xl-3 ">
+                        <label class="form-label">مرجع صادر کننده</label>
+                        <input id="person-description2" class="form-control" type="text" value="@find.margaesaderkonande" />
+                    </div>
+                    <div class="col-xl-2">
+                        <label class="form-label"> تاریخ صدور</label>
+                        <input data-jdp jdp-btn-close data-jdp-miladi-input="miladi_date1" id="datepickerFrom_shw1" class="form-control pdate" name="datepickerFrom_shw1" value="@persianDate">
+                        <input id="miladi_date1" value="@find.tarikhsodor" type="hidden" />
+                    </div>
+                    @*<div class="col-xl-3 ">
+                            <label class="form-label">نحوه محاسبه</label>
+                            <select class="form-select">
+                                <option>انتخاب کنید</option>
+                                <option>روزانه</option>
+                                <option>ماهانه</option>
+                                <option>سالانه</option>
+                            </select>
+                        </div>*@
+                    <div class="col-xl-2 ">
+                        <label class="form-label">مدت اعتبار(روز)</label>
+                        <input id="person-description" class="form-control" type="text" value="@find.modatetebar" />
+                    </div>
+
+                    <div class="col-xl-2 ">
+                        <label class="form-label">نمره ارزیابی</label>
+                        <input id="person-description3" class="form-control" type="text" value="@find.nomrearzyabi" />
+                    </div>
+                    <div class="col-xl-3 ">
+                        <label class="form-label">شماره مدرک</label>
+                        <input id="person-description4" class="form-control" type="text" value="@find.shomaremadrak" />
+                    </div>
+                </div>
+
+            </div>
+            <div id="input-reject" class="reject" style="display:none;">
+
+                <div class="row">
+                    @{
+                        var listTexts = new List<string>
+                                                             {
+                 "عدم تطابق مشخصات مدرک با مشخصات کاربر",
+                 "عدم مشخضات مدرک بارگذاری شده با عنوان مدرک مورد نیاز",
+                 "اتمام زمان اعتبار مدرک"
+             };
+                        int counter = 1;
+                    }
+
+                    @foreach (var text in db.madarek_vaziatdoreh_6.Where(s => s.type == 1).ToList())
+                    {
+                        <div class="row">
+                            <div class="col-xl-6 reject" style="display:none;">
+                                <label for="tik@counter" class="me-2">@text.name</label>
+                                <input type="checkbox" class="form-check-input mamur inputSS44334 weewee-check" id="@text.ID" value="@counter">
+                            </div>
+                        </div>
+
+                        counter++;
+                    }
+
+
+                    <div class="col-xl-3">
+                        <label class="form-label">شرح</label>
+                        <input id="SHARHHH" class="form-control" type="text" />
+                    </div>
+
+                    @*</div>*@
+
+                    @*<div class="col-xl-2">
+                            <label for="tik" class="me-2">دلایل پیش فرض</label>
+                            <input type="checkbox" class="form-check-input mamur inputSS44334 weewee-check" id="tik" value="1">
+                        </div>*@
+
+                    @*<div class="col-xl-3" id="selectDiv" >
+                            <select class="form-select">
+                                <option>انتخاب کنید</option>
+                                <option>عدم تطابق مشخصات مدرک با مشخصات کاربر</option>
+                                <option>عدم مشخضات مدرک بارگذاری شده با عنوان مدرک مورد نیاز</option>
+                                <option>اتمام زمان اعتبار مدرک</option>
+                            </select>
+                        </div>*@
+
+                </div>
+            </div>
+
+            <div id="input-edit" class="edit" style="display:none;">
+
+                <div class="row">
+                    @{
+                        var listTexts2 = new List<string>
+                                     {
+             "تغییر فرمت فایل",
+             "فایل ناخوانا است",
+             "مجددا ارسال شود",
+             "مرجع صادر کننده مورد تایید نیست"
+         };
+                        int counter2 = 1;
+                    }
+
+                    @foreach (var text in db.madarek_vaziatdoreh_6.Where(s => s.type == 2).ToList())
+                    {
+                        <div class="row">
+                            <div class="col-xl-6 edit" style="display:none;">
+                                <label for="tik@counter" class="me-2">@text.name</label>
+                                <input type="checkbox" class="form-check-input mamur inputSS44334 weewee-check" id="@text.ID" value="@counter">
+                            </div>
+                        </div>
+
+                        counter2++;
+                    }
+
+
+                    <div class="col-xl-3">
+                        <label class="form-label">شرح</label>
+                        <input id="SHARHHH" class="form-control" type="text" />
+                    </div>
+
+                    @*</div>*@
+
+                    @*<div class="col-xl-2">
+                            <label for="tik" class="me-2">دلایل پیش فرض</label>
+                            <input type="checkbox" class="form-check-input mamur inputSS44334 weewee-check" id="tik" value="1">
+                        </div>*@
+
+                    @*<div class="col-xl-3" id="selectDiv" >
+                            <select class="form-select">
+                                <option>انتخاب کنید</option>
+                                <option>عدم تطابق مشخصات مدرک با مشخصات کاربر</option>
+                                <option>عدم مشخضات مدرک بارگذاری شده با عنوان مدرک مورد نیاز</option>
+                                <option>اتمام زمان اعتبار مدرک</option>
+                            </select>
+                        </div>*@
+
+                </div>
+            </div>
+        }
+        else if (find.vaziat == 1)
+        {
+            <div id="input-accept" class="accept" style="display:none;">
+                <div class="row">
+                    <div class="col-xl-3 ">
+                        <label class="form-label">مرجع صادر کننده</label>
+                        <input id="person-description2" class="form-control" type="text" />
+                    </div>
+                    <div class="col-xl-2">
+                        <label class="form-label"> تاریخ صدور</label>
+                        <input data-jdp jdp-btn-close data-jdp-miladi-input="miladi_date1" id="datepickerFrom_shw1" class="form-control pdate" name="datepickerFrom_shw1">
+                        <input id="miladi_date1" type="hidden" />
+                    </div>
+
+                    <div class="col-xl-2 ">
+                        <label class="form-label">مدت اعتبار (روز)</label>
+                        <input id="person-description" class="form-control" type="text" />
+                    </div>
+                    <div class="col-xl-2 ">
+                        <label class="form-label">نمره ارزیابی</label>
+                        <input id="person-description3" class="form-control" type="text" />
+                    </div>
+                    <div class="col-xl-3 ">
+                        <label class="form-label">شماره مدرک</label>
+                        <input id="person-description4" class="form-control" type="text" />
+                    </div>
+                </div>
+
+            </div>
+            <div id="input-reject" class="reject">
+
+                <div class="row">
+                    @{
+                        var listTexts = new List<string>
+                                                                          {
+                  "عدم تطابق مشخصات مدرک با مشخصات کاربر",
+                  "عدم مشخضات مدرک بارگذاری شده با عنوان مدرک مورد نیاز",
+                  "اتمام زمان اعتبار مدرک"
+              };
+                        int counter = 1;
+                    }
+
+                    @foreach (var text in db.madarek_vaziatdoreh_6.Where(s => s.type == 1).ToList())
+                    {
+                        var vaz = false;
+                        var value = db.madarek_vaziatdoreh_7.Where(s => s.FK_madarek_vaziatdoreh_5 == find.ID && s.FK_madarek_vaziatdoreh_6 == text.ID).FirstOrDefault();
+                        if (value != null)
+                        {
+                            <div class="row">
+                                <div class="col-xl-6 reject">
+                                    <label for="tik@counter" class="me-2">@text.name</label>
+                                    <input type="checkbox" class="form-check-input mamur inputSS44334 weewee-check" id="@text.ID" checked>
+                                </div>
+                            </div> }
+                        else
+                        {
+                            <div class="row">
+                                <div class="col-xl-6 reject">
+                                    <label for="tik@counter" class="me-2">@text.name</label>
+                                    <input type="checkbox" class="form-check-input mamur inputSS44334 weewee-check" id="@text.ID">
+                                </div>
+                            </div>
+                        }
+
+                        counter++;
+                    }
+
+
+                    <div class="col-xl-3">
+                        <label class="form-label">شرح</label>
+                        <input id="SHARHHH" class="form-control" type="text" value="@find.SharhRad" />
+                    </div>
+
+                    @*</div>*@
+
+                    @*<div class="col-xl-2">
+                            <label for="tik" class="me-2">دلایل پیش فرض</label>
+                            <input type="checkbox" class="form-check-input mamur inputSS44334 weewee-check" id="tik" value="1">
+                        </div>*@
+
+                    @*<div class="col-xl-3" id="selectDiv" >
+                            <select class="form-select">
+                                <option>انتخاب کنید</option>
+                                <option>عدم تطابق مشخصات مدرک با مشخصات کاربر</option>
+                                <option>عدم مشخضات مدرک بارگذاری شده با عنوان مدرک مورد نیاز</option>
+                                <option>اتمام زمان اعتبار مدرک</option>
+                            </select>
+                        </div>*@
+
+                </div>
+            </div>
+            <div id="input-edit" class="edit" style="display:none;">
+
+                <div class="row">
+                    @{
+                        var listTexts2 = new List<string>
+                                        {
+                "تغییر فرمت فایل",
+                "فایل ناخوانا است",
+                "مجددا ارسال شود",
+                "مرجع صادر کننده مورد تایید نیست"
+            };
+                        int counter2 = 1;
+                    }
+
+                    @foreach (var text in db.madarek_vaziatdoreh_6.Where(s => s.type == 2).ToList())
+                    {
+                        <div class="row">
+                            <div class="col-xl-6 edit" style="display:none;">
+                                <label for="tik@counter" class="me-2">@text.name</label>
+                                <input type="checkbox" class="form-check-input mamur inputSS44334 weewee-check" id="@text.ID" value="@counter2">
+                            </div>
+                        </div>
+
+                        counter2++;
+                    }
+
+
+                    <div class="col-xl-3">
+                        <label class="form-label">شرح</label>
+                        <input id="SHARHHH" class="form-control" type="text" />
+                    </div>
+
+                    @*</div>*@
+
+                    @*<div class="col-xl-2">
+                            <label for="tik" class="me-2">دلایل پیش فرض</label>
+                            <input type="checkbox" class="form-check-input mamur inputSS44334 weewee-check" id="tik" value="1">
+                        </div>*@
+
+                    @*<div class="col-xl-3" id="selectDiv" >
+                            <select class="form-select">
+                                <option>انتخاب کنید</option>
+                                <option>عدم تطابق مشخصات مدرک با مشخصات کاربر</option>
+                                <option>عدم مشخضات مدرک بارگذاری شده با عنوان مدرک مورد نیاز</option>
+                                <option>اتمام زمان اعتبار مدرک</option>
+                            </select>
+                        </div>*@
+
+                </div>
+            </div>
+        }
+        else if (find.vaziat == 2)
+        {
+            <div id="input-edit" class="edit">
+
+                <div class="row">
+                    @{
+                        var listTexts2 = new List<string>
+                                              {
+              "تغییر فرمت فایل",
+              "فایل ناخوانا است",
+              "مجددا ارسال شود",
+              "مرجع صادر کننده مورد تایید نیست"
+          };
+                        int counter2 = 1;
+                    }
+
+                    @foreach (var text in db.madarek_vaziatdoreh_6.Where(s => s.type == 2).ToList())
+                    {
+                        var vaz = false;
+                        var value = db.madarek_vaziatdoreh_7.Where(s => s.FK_madarek_vaziatdoreh_5 == find.ID && s.FK_madarek_vaziatdoreh_6 == text.ID).FirstOrDefault();
+                        if (value != null)
+                        {<div class="row">
+                                <div class="col-xl-6 edit">
+                                    <label for="tik@counter" class="me-2">@text.name</label>
+                                    <input type="checkbox" class="form-check-input mamur inputSS44334 weewee-check" id="@text.ID" checked>
+                                </div>
+                            </div>}
+                        else
+                        {
+                            <div class="row">
+                                <div class="col-xl-6 edit">
+                                    <label for="tik@counter" class="me-2">@text.name</label>
+                                    <input type="checkbox" class="form-check-input mamur inputSS44334 weewee-check" id="@text.ID" value="@counter2">
+                                </div>
+                            </div>
+                        }
+
+
+                        counter2++;
+                    }
+
+
+                    <div class="col-xl-3">
+                        <label class="form-label">شرح</label>
+                        <input id="SHARHHH" class="form-control" type="text" />
+                    </div>
+
+                    @*</div>*@
+
+                    @*<div class="col-xl-2">
+                            <label for="tik" class="me-2">دلایل پیش فرض</label>
+                            <input type="checkbox" class="form-check-input mamur inputSS44334 weewee-check" id="tik" value="1">
+                        </div>*@
+
+                    @*<div class="col-xl-3" id="selectDiv" >
+                            <select class="form-select">
+                                <option>انتخاب کنید</option>
+                                <option>عدم تطابق مشخصات مدرک با مشخصات کاربر</option>
+                                <option>عدم مشخضات مدرک بارگذاری شده با عنوان مدرک مورد نیاز</option>
+                                <option>اتمام زمان اعتبار مدرک</option>
+                            </select>
+                        </div>*@
+
+                </div>
+            </div>
+            <div id="input-accept" class="accept" style="display:none;">
+                <div class="row">
+                    <div class="col-xl-3 ">
+                        <label class="form-label">مرجع صادر کننده</label>
+                        <input id="person-description2" class="form-control" type="text" />
+                    </div>
+                    <div class="col-xl-2">
+                        <label class="form-label"> تاریخ صدور</label>
+                        <input data-jdp jdp-btn-close data-jdp-miladi-input="miladi_date1" id="datepickerFrom_shw1" class="form-control pdate" name="datepickerFrom_shw1">
+                        <input id="miladi_date1" type="hidden" />
+                    </div>
+
+                    <div class="col-xl-2 ">
+                        <label class="form-label">مدت اعتبار (روز)</label>
+                        <input id="person-description" class="form-control" type="text" />
+                    </div>
+
+                    <div class="col-xl-2 ">
+                        <label class="form-label">نمره ارزیابی</label>
+                        <input id="person-description3" class="form-control" type="text" />
+                    </div>
+                    <div class="col-xl-3 ">
+                        <label class="form-label">شماره مدرک</label>
+                        <input id="person-description4" class="form-control" type="text" />
+                    </div>
+                </div>
+
+            </div>
+            <div id="input-reject" class="reject" style="display:none;">
+
+                <div class="row">
+                    @{
+                        var listTexts = new List<string>
+                                                                  {
+                  "عدم تطابق مشخصات مدرک با مشخصات کاربر",
+                  "عدم مشخضات مدرک بارگذاری شده با عنوان مدرک مورد نیاز",
+                  "اتمام زمان اعتبار مدرک"
+              };
+                        int counter = 1;
+                    }
+
+                    @foreach (var text in db.madarek_vaziatdoreh_6.Where(s => s.type == 1).ToList())
+                    {
+                        <div class="row">
+                            <div class="col-xl-6 reject" style="display:none;">
+                                <label for="tik@counter" class="me-2">@text.name</label>
+                                <input type="checkbox" class="form-check-input mamur inputSS44334 weewee-check" id="@text.ID" value="@counter">
+                            </div>
+                        </div>
+
+                        counter++;
+                    }
+
+
+                    <div class="col-xl-3">
+                        <label class="form-label">شرح</label>
+                        <input id="SHARHHH" class="form-control" type="text" />
+                    </div>
+
+                    @*</div>*@
+
+                    @*<div class="col-xl-2">
+                            <label for="tik" class="me-2">دلایل پیش فرض</label>
+                            <input type="checkbox" class="form-check-input mamur inputSS44334 weewee-check" id="tik" value="1">
+                        </div>*@
+
+                    @*<div class="col-xl-3" id="selectDiv" >
+                            <select class="form-select">
+                                <option>انتخاب کنید</option>
+                                <option>عدم تطابق مشخصات مدرک با مشخصات کاربر</option>
+                                <option>عدم مشخضات مدرک بارگذاری شده با عنوان مدرک مورد نیاز</option>
+                                <option>اتمام زمان اعتبار مدرک</option>
+                            </select>
+                        </div>*@
+
+                </div>
+            </div>
+        }
+
+
+
+
+
+
+
+
+        <div class="col-xl-1 ">
+            <button id="person-sabt" class="form-control buttonGeneral" data-bs-toggle="modal" data-bs-target="#modalLg">
+                <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text">ثبت</span>
+            </button>
+        </div>
+
+
+
+
+
+        @*</div>*@
+
+
+    </div>
+
+
+}
+else
+{
+    <div class="table-content p-4">
+
+        <div class="row"></div>
+        <div class="col-xl-3">
+            <input type="radio" id="vaziat0" name="vaziat" value="0" />
+            <label for="vaziat0">تایید</label>
+
+            <input type="radio" id="vaziat2" name="vaziat" value="1" />
+            <label for="vaziat2">رد</label>
+
+            <input type="radio" id="vaziat1" name="vaziat" value="2" />
+            <label for="vaziat1">اصلاح</label>
+        </div>
+
+        <hr />
+        @*<div class="row">*@
+
+
+        <div id="input-accept" class="accept" style="display:none;">
+            <div class="row">
+                <div class="col-xl-3">
+                    <label class="form-label"> تاریخ صدور</label>
+                    <input data-jdp jdp-btn-close data-jdp-miladi-input="miladi_date1" id="datepickerFrom_shw1" class="form-control pdate" name="datepickerFrom_shw1">
+                    <input id="miladi_date1" type="hidden" />
+                </div>
+                <div class="col-xl-3 ">
+                    <label class="form-label">نحوه محاسبه</label>
+                    <select class="form-select">
+                        <option>انتخاب کنید</option>
+                        <option>روزانه</option>
+                        <option>ماهانه</option>
+                        <option>سالانه</option>
+                    </select>
+                </div>
+                <div class="col-xl-3 ">
+                    <label class="form-label">مقدار</label>
+                    <input id="person-description" class="form-control" type="text" />
+                </div>
+                <div class="col-xl-2 "></div>
+                <div class="col-xl-3 ">
+                    <label class="form-label">مرجع صادر کننده</label>
+                    <input id="person-description2" class="form-control" type="text" />
+                </div>
+                <div class="col-xl-3 ">
+                    <label class="form-label">نمره ارزیابی</label>
+                    <input id="person-description3" class="form-control" type="text" />
+                </div>
+                <div class="col-xl-3 ">
+                    <label class="form-label">شماره مدرک</label>
+                    <input id="person-description4" class="form-control" type="text" />
+                </div>
+            </div>
+
+        </div>
+
+
+        <div id="input-reject" class="reject" style="display:none;">
+
+            <div class="row">
+                @{
+                    var listTexts = new List<string>
+                                                                    {
+                    "عدم تطابق مشخصات مدرک با مشخصات کاربر",
+                    "عدم مشخضات مدرک بارگذاری شده با عنوان مدرک مورد نیاز",
+                    "اتمام زمان اعتبار مدرک"
+                };
+                    int counter = 1;
+                }
+
+                @foreach (var text in db.madarek_vaziatdoreh_6.Where(s => s.type == 1).ToList())
+                {
+                    <div class="row">
+                        <div class="col-xl-6 reject" style="display:none;">
+                            <label for="tik@counter" class="me-2">@text.name</label>
+                            <input type="checkbox" class="form-check-input mamur inputSS44334 weewee-check" id="@text.ID" value="@counter">
+                        </div>
+                    </div>
+
+                    counter++;
+                }
+
+
+                <div class="col-xl-3">
+                    <label class="form-label">شرح</label>
+                    <input id="SHARHHH" class="form-control" type="text" />
+                </div>
+
+                @*</div>*@
+
+                @*<div class="col-xl-2">
+                        <label for="tik" class="me-2">دلایل پیش فرض</label>
+                        <input type="checkbox" class="form-check-input mamur inputSS44334 weewee-check" id="tik" value="1">
+                    </div>*@
+
+                @*<div class="col-xl-3" id="selectDiv" >
+                        <select class="form-select">
+                            <option>انتخاب کنید</option>
+                            <option>عدم تطابق مشخصات مدرک با مشخصات کاربر</option>
+                            <option>عدم مشخضات مدرک بارگذاری شده با عنوان مدرک مورد نیاز</option>
+                            <option>اتمام زمان اعتبار مدرک</option>
+                        </select>
+                    </div>*@
+
+            </div>
+        </div>
+
+        <div id="input-edit" class="edit" style="display:none;">
+
+            <div class="row">
+                @{
+                    var listTexts2 = new List<string>
+                                        {
+                "تغییر فرمت فایل",
+                "فایل ناخوانا است",
+                "مجددا ارسال شود",
+                "مرجع صادر کننده مورد تایید نیست"
+            };
+                    int counter2 = 1;
+                }
+
+                @foreach (var text in db.madarek_vaziatdoreh_6.Where(s => s.type == 2).ToList())
+                {
+                    <div class="row">
+                        <div class="col-xl-6 edit" style="display:none;">
+                            <label for="tik@counter" class="me-2">@text.name</label>
+                            <input type="checkbox" class="form-check-input mamur inputSS44334 weewee-check" id="@text.ID" value="@counter">
+                        </div>
+                    </div>
+
+                    counter2++;
+                }
+
+
+                <div class="col-xl-3">
+                    <label class="form-label">شرح</label>
+                    <input id="SHARHHH" class="form-control" type="text" />
+                </div>
+
+                @*</div>*@
+
+                @*<div class="col-xl-2">
+                        <label for="tik" class="me-2">دلایل پیش فرض</label>
+                        <input type="checkbox" class="form-check-input mamur inputSS44334 weewee-check" id="tik" value="1">
+                    </div>*@
+
+                @*<div class="col-xl-3" id="selectDiv" >
+                        <select class="form-select">
+                            <option>انتخاب کنید</option>
+                            <option>عدم تطابق مشخصات مدرک با مشخصات کاربر</option>
+                            <option>عدم مشخضات مدرک بارگذاری شده با عنوان مدرک مورد نیاز</option>
+                            <option>اتمام زمان اعتبار مدرک</option>
+                        </select>
+                    </div>*@
+
+            </div>
+        </div>
+
+
+
+
+        <div class="col-xl-1 ">
+            <button id="person-sabt" class="form-control buttonGeneral" data-bs-toggle="modal" data-bs-target="#modalLg">
+                <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text">ثبت</span>
+            </button>
+        </div>
+
+
+
+
+
+        @*</div>*@
+
+
+    </div>
+
+
+}
+
+
+<script>
+    const radios = document.getElementsByName('vaziat');
+
+    radios.forEach(radio => {
+        radio.addEventListener('change', function () {
+            const allDivs = document.querySelectorAll('.accept, .reject, .edit'); // همه المان‌های قابل مدیریت
+
+            allDivs.forEach(div => {
+                // پیش‌فرض همه مخفی میشن
+                div.style.display = 'none';
+
+                // بررسی کلاس‌ها و مقدار وضعیت
+                if (this.value === '0' && div.classList.contains('accept')) {
+                    div.style.display = 'inline-block';
+                }
+                if (this.value === '1' && div.classList.contains('reject')) {
+                    div.style.display = 'inline-block';
+                }
+                if (this.value === '2' && div.classList.contains('edit')) {
+                    div.style.display = 'inline-block';
+                }
+            });
+        });
+    });
+
+</script>
+
+
+
+
+
+
+<!-- فرم اصلاح -->
+
+
+
+
+
+
+<script>
+    const checkbox = document.getElementById('tik');
+    const selectDiv = document.getElementById('selectDiv');
+
+    checkbox.addEventListener('change', function () {
+        if (this.checked) {
+            selectDiv.style.display = 'block';
+        } else {
+            selectDiv.style.display = 'none';
+        }
+    });
+</script>
+<script>
+    jalaliDatepicker.startWatch({
+        time: false,
+        days: ["شنبه", "1شنبه", "2شنبه", "3شنبه", "4شنبه", "5شنبه", "جمعه"],
+        persianDigits: true,
+        autoClose: true,
+        autocomplete: true,
+        showEmptyBtn: false,
+        showCloseBtn: true,
+        zIndex: 100000,
+    });
+
+    var inputs = document.querySelectorAll("[data-jdp-miladi-input]");
+    for (var i = 0; i < inputs.length; i++) {
+        inputs[i].addEventListener("jdp:change", function (e) {
+            var miladiInput = document.getElementById(this.getAttribute("data-jdp-miladi-input"));
+            var date = this.value.replace(' ', '').slice(0, 10).split('/');
+            date = jalaali.toGregorian(parseInt(date[0]), parseInt(date[1]), parseInt(date[2]));
+            if (!this.value) {
+                date = "";
+            } else if (this.value.replace(' ', '').length < 11) {
+                date = date.gy + '-' + date.gm + '-' + date.gd;
+            } else {
+                date = date.gy + '-' + date.gm + '-' + date.gd + ' ' + this.value.replace(' ', '').slice(10, 30);
+            }
+            miladiInput.value = date;
+        });
+    }
+
+</script>
+<script>
+    $("#person-sabt").on("click", function (e) {
+        e.preventDefault();
+
+        // ساخت آبجکت برای ذخیره اطلاعات فرم
+        let data = {};
+
+        // مقدار وضعیت (radio)
+        data.vaziat = $("input[name='vaziat']:checked").val();
+
+        // تاریخ صدور
+        let tarikhsodor = $("#miladi_date1").val();
+        let tarikhsodor2 = $("#datepickerFrom_shw1").val();
+        console.log(tarikhsodor2);
+
+        //if (tarikhsodor) {
+        //    data.tarikhsodor = tarikhsodor; // تاریخ میلادی
+        //}
+        data.tarikhsodor = tarikhsodor;
+        // نحوه محاسبه
+        //let typemodateetebar = $(".accept select").val();
+        //switch (typemodateetebar) {
+        //    case "روزانه": data.typemodateetebar = 1; break;
+        //    case "ماهانه": data.typemodateetebar = 2; break;
+        //    case "سالانه": data.typemodateetebar = 3; break;
+        //    default: data.typemodateetebar = 0;
+        //}
+        data.typemodateetebar = 1;
+        // مقدار اعتبار
+        data.modatetebar = $("#person-description").val();
+        data.FK_usr =@Model.FK_usr;
+        let checkboxIds = [];
+        $("input[type=checkbox]:checked:visible").each(function () {
+            checkboxIds.push($(this).attr("id"));
+        });
+
+        data.checkboxIds = checkboxIds;
+        // مرجع صادر کننده
+        data.margaesaderkonande = $("#person-description2").val();
+
+        // نمره ارزیابی
+        data.nomrearzyabi = $("#person-description3").val();
+
+        // شماره مدرک
+        data.shomaremadrak = $("#person-description4").val();
+
+
+        // دلایل (در صورت رد یا اصلاح)
+        if (data.vaziat == 1) { // رد
+            data.HalateRadShode = $("#tik").is(":checked") ? 1 : 0;
+            data.SharhRad = $("#selectDiv select").val();
+        } else if (data.vaziat == 2) { // اصلاح
+            data.SharhRad = $(".edit input").val();
+        }
+        data.SharhRad = $("#SHARHHH").val();
+        // اینا باید از کانتکست صفحه مقداردهی بشن (مثلا hidden field)
+        //data.FK_usr = $("#hidden_FK_usr").val();
+        data.FK_sabtdoreh = @Model.ID;
+
+        // ارسال به اکشن
+        $.ajax({
+            type: "POST",
+url: '@Url.Action("sabtmavaredemohem13", "Orders", new { area = "Setting" })',
+            data: JSON.stringify([data]), // چون اکشن List<DocumentItemViewModel> می‌گیره
+            contentType: "application/json; charset=utf-8",
+            success: function (res) {
+                if (res === "true") {
+                    alert("اطلاعات با موفقیت ثبت شد ✅");
+                    location.reload();
+
+                } else {
+                    alert(" اطلاعات با موفقیت ثبت شد لطفا چک بفرمایید ✅");
+                    location.reload();
+
+                }
+            },
+            error: function (xhr) {
+                alert("خطا در ثبت اطلاعات: " + xhr.responseText);
+                console.log()
+            }
+        });
+    });
+</script>

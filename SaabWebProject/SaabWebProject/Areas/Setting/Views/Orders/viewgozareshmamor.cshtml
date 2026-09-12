@@ -1,0 +1,378 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+<script src="~/Assets/js/jalalidatepicker.min.js"></script>
+<link href="~/Assets/css/jalalidatepicker.min.css" rel="stylesheet" />
+<script src="~/Assets/js/jalaali.min.js"></script>
+<link href="~/MyStyles/jalalidatepicker.css" rel="stylesheet" />
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>moshakhasat</title>
+</head>
+<body>
+    <div>
+        <ul class="nav nav-tabs nav-tabs-v2 ps-4 pe-4" id="pills-tab" style="margin-bottom:30px">
+            <li class="nav-item me-3">
+                <a class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" href="#page-1">
+                    <button class=" nav-btn">گزارش فیش</button>
+                </a>
+            </li>
+            <li class="nav-item me-3">
+                <a class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" href="#page-2">
+                    <button class=" nav-btn">گزارش قرارداد</button>
+                </a>
+            </li>
+            @*<li class="nav-item me-3">
+                    <a class="nav-link" id="pills-profile2-tab" data-bs-toggle="pill" href="#page-3">
+                        <button class=" nav-btn">سوم</button>
+                    </a>
+                </li>*@
+        </ul>
+    </div>
+    <div class="tab-content" id="pills-tabContent">
+        <div class="tab-pane fade show active" id="page-1">
+            <div class="card" style="padding:2vh;">
+                <div class="row">
+                    <div class="col-xl-2">
+                        <label class="form-label">ماه</label>
+                        <select class="form-select my_Select" id="Month">
+                            <option value="0">انتخاب مورد</option>
+                            <option value="1">فروردین</option>
+                            <option value="2">اردیبهشت</option>
+                            <option value="3">خرداد</option>
+                            <option value="4">تیر</option>
+                            <option value="5">مرداد</option>
+                            <option value="6">شهریور</option>
+                            <option value="7">مهر</option>
+                            <option value="8">آبان</option>
+                            <option value="9">آذر</option>
+                            <option value="10">دی</option>
+                            <option value="11">بهمن</option>
+                            <option value="12">اسفند</option>
+                        </select>
+                    </div>
+                    <div class="col-xl-2">
+                        <div class="col-xl-12">
+                            <label class="form-label">سال</label>
+                        </div>
+                        <div class="col-xl-12">
+                            <div class="col-xl-12">
+                                <select class="form-select" id="Year">
+                                    <option value="0">انتخاب کنید</option>
+
+                                    @{
+                                        System.Globalization.PersianCalendar cs2 = new System.Globalization.PersianCalendar();
+                                        int currentYear = cs2.GetYear(DateTime.Now);
+
+                                        for (var i = 4; i >= 0; i--)
+                                        {
+                                            var s = DateTime.Now.AddYears(-i);
+
+                                            <option value="@cs2.GetYear(s)">@cs2.GetYear(s)</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-2">
+                        <button class="btn form-control buttonGeneral" id="btnShowSR" data-bs-toggle="modal" data-bs-target="#modalLg">
+                            <i class="fa fa-eye fa-fw me-1 VecGeneral"></i>
+                            <span class="bGeneral-text">نمایش</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card-arrow">
+                    <div class="card-arrow-top-left"></div>
+                    <div class="card-arrow-top-right"></div>
+                    <div class="card-arrow-bottom-left"></div>
+                    <div class="card-arrow-bottom-right"></div>
+                </div>
+            </div>
+            <script src="~/Scripts/jquery-3.4.1.js"></script>
+            <script src="~/Scripts/jquery-ui.js"></script>
+
+            <script src="~/Scripts/popper.min.js"></script>
+            <script src="~/Scripts/jquery-3.3.1.js"></script>
+            <script src="~/Scripts/bootstrap.min.js"></script>
+            <script src="~/Scripts/sweetalert2.js"></script>
+            <script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+            <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+            <script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+            <script src="~/Scripts/sweetalert2.js"></script>
+            <script src="~/Scripts/popper.min.js"></script>
+            <script src="~/Scripts/bootstrap.min.js"></script>
+            <script>
+
+                function sendAjax26799(url2, fd2) {
+                    console.log($("#Month").val());
+                    fd2.append("Year", $("#Year").val());
+                    fd2.append("Month", $("#Month").val());
+                    document.getElementById("loading-circle").style.display = "block";
+
+                    $("#loading-circle .loadingText1").text("لطفا منتظر نمایش اطلاعات بمانید ...");
+                    $("#loading-circle").css("display", "flex");
+                    $.ajax({
+                        url: url2,
+                        type: 'POST',
+                        data: fd2,
+                        processData: false,
+                        contentType: false,
+                        success: function (resp1) {
+
+                            // دریافتی از بک‌اند را در المان با کلاس myTable نمایش دهید
+
+                            if (resp1 == "0") {
+
+                                $("#loading-message").css("display", "none");
+                                document.getElementById("loading-message").style.display = "none";
+                                $("#loading-circle").css("display", "none");
+                                alert("مجوز نمایش فیش صادر نشده است");
+                                location.reload();
+
+                            }
+                            else if (resp1 == "-1") {
+
+
+                                $("#loading-message").css("display", "none");
+                                document.getElementById("loading-message").style.display = "none";
+                                $("#loading-circle").css("display", "none");
+                                alert("فیشی برای این کاربر در این ماه محاسبه نشده است");
+                                location.reload();
+                            }
+                            else if (resp1 == "-2") {
+
+                                $("#loading-message").css("display", "none");
+                                document.getElementById("loading-message").style.display = "none";
+                                $("#loading-circle").css("display", "none");
+                                alert("در نمایش فیش خطایی رخ داده است");
+                                location.reload();
+                            }
+                            else {
+                                $("#loading-message").css("display", "none");
+                                fd = new FormData();
+                                document.getElementById("loading-message").style.display = "none";
+                                $("#loading-circle").css("display", "none");
+                                // $(".mytableSR").html(resp1);
+                                $("#big_modal_body").html(resp1)
+                                // $("#modalLg").modal('show')
+                            }
+
+                        },
+                        error: function (resp1) {
+                            console.log(resp1);
+                            console.log("Nokeye");
+                            $("#loading-message").css("display", "none");
+                            Toast.fire({
+                                icon: 'success',
+                                background: '#35434A',
+                                color: 'white',
+                                title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                            }).then(() => {
+                                $("#loading-message").css("display", "none");
+                            });
+                        }
+                    });
+                }
+
+            </script>
+            <script>
+    var fd = new FormData();
+        //----------------------------------------------------------------
+    $("#btnShowSR").click(function () {
+        console.log($("#Month").val());
+
+
+             if ($("#Month").val() == 0) {
+                alert("لطفا ماه را انتخاب کنید");
+            }
+            else if ($("#Year").val() == 0) {
+                alert("لطفا سال را انتخاب کنید");
+            }
+
+           else {
+                sendAjax26799('@Url.Action("ShowFishmamor", "Formula", new { area = "Salaries" })', fd);
+           };
+     });
+            </script>
+
+            <script>
+                jalaliDatepicker.startWatch({
+                    time: false,
+                    days: ["شنبه", "1شنبه", "2شنبه", "3شنبه", "4شنبه", "5شنبه", "جمعه"],
+                    persianDigits: true,
+                    autoClose: true,
+                    autocomplete: true,
+                    showEmptyBtn: false,
+                    showCloseBtn: true,
+                    zIndex: 100000,
+                });
+
+                var inputs = document.querySelectorAll("[data-jdp-miladi-input]");
+                for (var i = 0; i < inputs.length; i++) {
+                    inputs[i].addEventListener("jdp:change", function (e) {
+                        var miladiInput = document.getElementById(this.getAttribute("data-jdp-miladi-input"));
+                        var date = this.value.replace(' ', '').slice(0, 10).split('/');
+                        date = jalaali.toGregorian(parseInt(date[0]), parseInt(date[1]), parseInt(date[2]));
+                        if (!this.value) {
+                            date = "";
+                        } else if (this.value.replace(' ', '').length < 11) {
+                            date = date.gy + '-' + date.gm + '-' + date.gd;
+                        } else {
+                            date = date.gy + '-' + date.gm + '-' + date.gd + ' ' + this.value.replace(' ', '').slice(10, 30);
+                        }
+                        miladiInput.value = date;
+                    });
+                }
+
+            </script>
+        </div>
+        <!--<div class="tab-pane fade " id="page-2">
+
+            @Html.Action("Viewlistmamor", "UserContract", new { area = "Contracts" })-->
+            @*$("#myTable2").load('@Url.Content("/Contracts/UserContract/View2")');*@
+        <!--</div>
+        <div class="tab-pane fade" id="page-3">
+            @Html.Action("Linkcheek", "Orders", new { area = "Setting" })
+
+
+        </div>
+        <div class="tab-pane fade" id="page-3">
+
+        </div>-->
+    </div>
+</body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</html>
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+
+<script src="~/Scripts/popper.min.js"></script>
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Scripts/sweetalert2.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+
+<script>
+    @*$(document).ready(function () {
+
+        $("#person-sabt").click(function (e) {
+            e.preventDefault();
+
+            var model = {
+                FullName: $("#person-fullname").val(),
+                Description: $("#person-description").val(),
+                FromDateShamsi: $("#datepickerFrom_shw1").val(),
+                FromDateMiladi: $("#miladi_date1").val()
+            };
+
+            $.ajax({
+                url: '@Url.Action("Save", "Person", new { area = "Setting" })', // مسیر اکشن بک‌اند
+                type: 'POST',
+                data: JSON.stringify(model),
+                contentType: 'application/json; charset=utf-8',
+                success: function (res) {
+                    if (res.success) {
+                        alert(res.message);
+                        // اگر بخوای بعد از ثبت جدول یا بخشی از صفحه رفرش بشه:
+                        // $("#myTable2").load('@Url.Content("/Setting/Orders/arzyabi_timelist")');
+                    } else {
+                        alert(res.message || "خطا در ثبت اطلاعات");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                    alert("خطا در ارتباط با سرور");
+                }
+            });
+        });
+
+    });*@
+</script>
+@*<script>
+        $(document).ready(function () {
+            $("#person-sabt").click(function (e) {
+                e.preventDefault();
+
+                var model = {
+                    FullName: $("#person-fullname").val(),
+                    Description: $("#person-description").val(),
+                    FromDateMiladi: $("#miladi_date1").val() // فقط تاریخ میلادی به صورت رشته ISO  yyyy-MM-dd یا yyyy-MM-dd HH:mm:ss
+                };
+
+                $.ajax({
+                    url: '@Url.Action("sabtmoshakhasat", "Dashboard", new { area = "Reporter" })',
+                    type: 'POST',
+                    data: JSON.stringify(model),
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (res) {
+                        if (res.success) {
+                            alert(res.message);
+                        } else {
+                            alert(res.message || "خطا در ثبت اطلاعات");
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                        alert("خطا در ارتباط با سرور");
+                    }
+                });
+            });
+        });
+    </script>*@
+<script>
+    $(document).ready(function () {
+    $("#person-sabt").click(function (e) {
+        e.preventDefault();
+
+        var model = {
+            FullName: $("#person-fullname").val(),
+            Description: $("#person-description").val(),
+            FromDateMiladi: $("#miladi_date1").val() // باید فرمت yyyy-MM-dd باشه
+        };
+
+        console.log("مدل ارسالی به سرور:", model); // برای تست
+
+        $.ajax({
+            url: '@Url.Action("sabtmoshakhasat", "Orders", new { area = "Setting" })',
+            type: 'POST',
+            data: JSON.stringify(model),
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            success: function (res) {
+                if (res.success) {
+                    alert(res.message);
+                } else {
+                    alert(res.message || "خطا در ثبت اطلاعات");
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Error:", error);
+                console.error("Response:", xhr.responseText);
+                alert("خطا در ارتباط با سرور");
+            }
+        });
+    });
+});
+
+</script>
+

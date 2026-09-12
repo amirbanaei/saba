@@ -1,0 +1,56 @@
+﻿@using SaabWebProject.Models.DomainModels;
+
+@{
+    SaabEntities db = new SaabEntities();
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "پی دی اف گزارشات";
+
+}
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+
+<div style="margin-bottom:8px">
+    <input type="text" id="searchBox" placeholder="جستجوی مکان..." class="form-control" />
+</div>
+
+<div id="map" style="height:400px"></div>
+
+<input type="text" id="lat" name="Latitude" placeholder="Latitude (Y)" class="form-control mt-2" />
+<input type="text" id="lng" name="Longitude" placeholder="Longitude (X)" class="form-control mt-2" />
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+<script>
+    var map = L.map('map').setView([35.6997, 51.3370], 12); // تهران
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19
+    }).addTo(map);
+
+    // ===== Geocoder (جستجوی مکان) =====
+    var geocoder = L.Control.Geocoder.nominatim();
+
+    document.getElementById("searchBox").addEventListener("change", function () {
+        var query = this.value;
+
+        geocoder.geocode(query, function (results) {
+            if (results.length > 0) {
+                var r = results[0];
+                map.setView(r.center, 16); // رفتن به محل جستجو شده
+            }
+        });
+    });
+
+    // ===== گرفتن مختصات با کلیک روی نقشه =====
+    map.on('click', function (e) {
+
+        var lat = e.latlng.lat.toFixed(6);
+        var lng = e.latlng.lng.toFixed(6);
+
+        document.getElementById("lat").value = lat;
+        document.getElementById("lng").value = lng;
+
+        console.log("X:", lng, "Y:", lat);
+    });
+</script>

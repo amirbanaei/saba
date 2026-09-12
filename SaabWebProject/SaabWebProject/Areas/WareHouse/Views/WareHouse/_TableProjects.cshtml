@@ -1,0 +1,220 @@
+﻿@model List<SaabWebProject.Models.DomainModels.tbCommodityProject>
+<style>
+
+    .tableH_Lock {
+        max-height: 223px;
+        /*height: 260px;*/
+    }
+
+    thead {
+        position: sticky;
+        top: 0;
+        text-align: center;
+        z-index: 2;
+    }
+
+    .inputFilter {
+        margin-bottom: 0px !important;
+    }
+
+    thead th {
+        vertical-align: middle;
+    }
+</style>
+<div class="card " style="width: 100%; z-index: 1;margin-top:10px">
+    <div class="table-content p-4">
+        <div class="table-responsive tableH_Lock">
+            <table class="table table-hover" style="text-align:center;">
+                <thead>
+                    <tr>
+                        <th>عملیات</th>
+                        <th>
+                            کد پروژه
+                            <div class="inputWithFilterIcon">
+                                <input type="text" id="filter01-filter" class="inputFilter form-control" placeholder="">
+                                <span><i class="fas fa-filter"></i></span>
+                            </div>
+                        </th>
+                        <th>
+                            نام پروژه
+                            <div class="inputWithFilterIcon">
+                                <input type="text" id="filter02-filter" class="inputFilter form-control" placeholder="">
+                                <span><i class="fas fa-filter"></i></span>
+                            </div>
+                        </th>
+                        <th>
+                            پیمان
+                            <div class="inputWithFilterIcon">
+                                <input type="text" id="filter03-filter" class="inputFilter form-control" placeholder="">
+                                <span><i class="fas fa-filter"></i></span>
+                            </div>
+                        </th>
+                        <th>مبلغ کل</th>
+                        <th>دانلود فایل نمونه</th>
+                        <th>
+                            نام شهر
+                            <div class="inputWithFilterIcon">
+                                <input type="text" id="filter04-filter" class="inputFilter form-control" placeholder="">
+                                <span><i class="fas fa-filter"></i></span>
+                            </div>
+                        </th>
+                        <th>
+                            تاریخ
+                            <div class="inputWithFilterIcon">
+                                <input type="text" id="filter05-filter" class="inputFilter form-control" placeholder="">
+                                <span><i class="fas fa-filter"></i></span>
+                            </div>
+                        </th>
+                        <th>وضعیت</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (var pro in Model)
+                    {
+                        <tr class="task-list-row"
+                            data-filter01="@pro.ProjectCode"
+                            data-filter02="@pro.ProjectTitle"
+                            data-filter03="@pro.tbPeymanContracts.pec_Title"
+                            data-filter04="@Html.Action("_GetCities", "WareHouse", new { area = "WareHouse", id = pro.ProjectCode })"
+                            data-filter05="@pro.DateOfDefinitionCommodityProject">
+                            <td>
+                                <div class="ms-sm-4 mt-sm-0 mt-2 dropdown-toggle">
+                                    <a href="#" data-bs-toggle="dropdown" class="text-white text-opacity-75 text-decoration-none">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                    <div class="dropdown-menu">
+                                        <a style="cursor:pointer" onclick="EditProject(this)" id="@pro.ProjectCode" data-bs-toggle="modal" data-bs-target="#modalLg" class="dropdown-item EditUser">
+                                            ویرایش
+                                        </a>
+                                        @if (pro.P_Active == true)
+                                        {
+
+
+                                            <a onclick="DisableProject(this)" id="@pro.Id" style="cursor:pointer" class="dropdown-item">
+                                                غیرفعال
+                                            </a>
+
+
+                                        }
+                                        else
+                                        {
+
+                                            <a onclick="EnableProject(this)" id="@pro.Id" style="cursor:pointer" class="dropdown-item">
+                                                فعال
+                                            </a>
+
+                                        }
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td>@pro.ProjectCode</td>
+                            <td>
+                                @pro.ProjectTitle
+                            </td>
+
+                            <td>@pro.tbPeymanContracts.pec_Title</td>
+                            <td>@pro.Totalnumber</td>
+
+                            @if (pro.File_SystemName != null)
+                            {
+                                <td style="color:green">
+                                    <a target="_blank" href="~/Areas/WareHouse/Contents/WareHouseAttachmentsFile/@pro.File_SystemName">
+                                        دانلود
+                                    </a>
+                                </td>
+                            }
+                            else
+                            {
+                                <td style="color:red">ذخیره نشده</td>
+                            }
+
+                            <td>
+                                @Html.Action("_GetCities", "WareHouse", new { area = "WareHouse", id = pro.ProjectCode })
+                            </td>
+                            <td>@pro.DateOfDefinitionCommodityProject</td>
+                            <td>
+                                @if (pro.P_Active == true)
+                                {
+                                    <i class="far fa-lg fa-fw me-2 fa-check-square" style="color:green"></i>
+                                }
+                                else
+                                {
+                                    <i class="far fa-lg fa-fw me-2 fa-window-close" style="color:red"></i>
+                                }
+                            </td>
+                        </tr>
+
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+<script>
+
+    var
+        filters = {
+            filter01: null,
+            filter02: null,
+            filter03: null,
+            filter04: null,
+            filter05: null,
+        };
+
+    function updateFilters() {
+        $('.task-list-row').hide().filter(function () {
+            var self = $(this),
+                result = true;
+
+            Object.keys(filters).forEach(function (filter) {
+                var filterData = self.data(filter);
+                if (filters[filter] && (filters[filter] != 'None') && (filters[filter] != 'همه')) {
+                    // تبدیل داده به رشته و بررسی مقدار
+                    result = result && (filterData && filterData.toString().indexOf(filters[filter]) !== -1);
+                }
+            });
+
+            return result;
+        }).show();
+    }
+
+    function changeFilter(filterName) {
+        filters[filterName] = this.value;
+        updateFilters();
+    }
+
+    // Assigned User Dropdown Filter
+    $('#filter01-filter').on('input', function () {
+        changeFilter.call(this, 'filter01');
+    });
+    $('#filter02-filter').on('input', function () {
+        changeFilter.call(this, 'filter02');
+    });
+    $('#filter03-filter').on('input', function () {
+        changeFilter.call(this, 'filter03');
+    });
+    $('#filter04-filter').on('input', function () {
+        changeFilter.call(this, 'filter04');
+    });
+    $('#filter05-filter').on('input', function () {
+        changeFilter.call(this, 'filter05');
+    });
+
+
+
+</script>
+<script>
+
+    function EditProject(e) {
+        $("#big_modal_body").load('@Url.Content("/WareHouse/WareHouse/_ManageProjects")?id='+e.id);
+    }
+
+</script>

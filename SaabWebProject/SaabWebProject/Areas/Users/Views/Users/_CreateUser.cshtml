@@ -1,0 +1,761 @@
+﻿@{
+    Layout = null;
+}
+<style>
+
+    .modal-lg, .modal-xl {
+        margin-top: 8px;
+        max-width: 100%;
+    }
+
+    .kart {
+        display: flex;
+        align-items: flex-start;
+        flex-direction: row-reverse;
+    }
+
+    .bankKart {
+        margin: 0 3px;
+    }
+</style>
+<link href="~/Areas/Users/Styles/ShareStyle.css" rel="stylesheet" />
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+<div class="card p-4">
+    @using (Html.BeginForm("_CreateUser", "Users", FormMethod.Post, new { id = "FormCreateUser" }))
+    {
+        var res = Html.Action("_Cities_Select", "Users", new { area = "Users" });
+
+        <div class="row" style="z-index:20">
+
+            <div class="col-xl-2">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <label class="form-label">
+                            نام
+                            <span class="red-star">*</span>
+                        </label>
+
+                    </div>
+                    <div class="col-xl-12">
+                        <input class="form-control" type="text" name="usr_Name" onkeyup="ValidationInput(this)" />
+                        <div class="invalid-feedback">این فیلد مورد نیاز است !</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-2">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <label class="form-label">
+                            نام خانوادگی
+                            <span class="red-star">*</span>
+                        </label>
+
+                    </div>
+                    <div class="col-xl-12">
+                        <input class="form-control" type="text" name="usr_Family" onkeyup="ValidationInput(this)" />
+                        <div class="invalid-feedback">این فیلد مورد نیاز است !</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-2">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <label class="form-label">
+                            کدملی
+                            <span class="red-star">*</span>
+                        </label>
+
+                    </div>
+                    <div class="col-xl-12">
+                        <input class="form-control" type="number" name="usr_NationalCode" onkeyup="ValidationInput(this)" />
+                        <div class="invalid-feedback">این فیلد مورد نیاز است !</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-2">
+
+                <div class="row">
+                    <div class="col-xl-12">
+                        <label class="form-label">شماره شناسنامه</label>
+                    </div>
+                    <div class="col-xl-12">
+                        <input class="form-control" name="usr_SHCode" type="number" />
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-xl-4">
+
+                <div class="row">
+                    <div class="col-xl-12">
+                        <label class="form-label">تاریخ تولد</label>
+                    </div>
+                    <div class="row">
+
+                        <div class="col-xl-6">
+                            <select id="year" name="year" class="form-control">
+                                @{
+                                    System.Globalization.PersianCalendar c = new System.Globalization.PersianCalendar();
+
+                                    for (var i = 100; i >= 1; i--)
+                                    {
+                                        var s = DateTime.Now.AddYears(-i);
+                                        <option selected="selected" value="@c.GetYear(s)">@c.GetYear(s)</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="col-xl-3">
+                            <select id="month" name="month" class="form-control">
+                                @{
+                                    for (var i = 1; i <= 12; i++)
+                                    {
+                                        <option selected="selected" value="@i">@i</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="col-xl-3">
+                            <select id="day" name="day" class="form-control">
+                                @{
+                                    for (var i = 1; i <= 31; i++)
+                                    {
+                                        <option selected="selected" value="@i">@i</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+
+
+            <div class="col-xl-2">
+
+                <div class="row">
+                    <div class="col-xl-12">
+                        <label class="form-label">نام پدر</label>
+                    </div>
+                    <div class="col-xl-12">
+                        <input class="form-control" type="text" name="usr_FatherName" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-2">
+
+                <div class="row">
+                    <div class="col-xl-12">
+                        <label class="form-label">محل تولد</label>
+                    </div>
+                    <div class="col-xl-12" id="PlaceOfBrith_Div">
+
+                        @res
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-2">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <label class="form-label">محل صدور شناسنامه</label>
+                    </div>
+                    <div class="col-xl-12" id="PlaceOfIssue_Div">
+
+                        @res
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-2">
+
+                <div class="row">
+                    <div class="col-xl-12">
+                        <label class="form-label">جنسیت</label>
+                    </div>
+                    <div class="col-xl-12">
+                        <select id="gender" name="usr_Gender" class="form-select">
+                            <option value="1">زن</option>
+                            <option value="2">مرد</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-2">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <label class="form-label">وضعیت تاهل</label>
+                    </div>
+                    <div class="col-xl-12">
+                        <select id="marital" name="usr_MaritaIStatus" class="form-select">
+                            <option value="1">متاهل</option>
+                            <option value="2">مجرد</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-2">
+
+                <div class="row">
+                    <div class="col-xl-12">
+                        <label class="form-label"> وضعیت نظام وظیفه</label>
+                    </div>
+                    <div class="col-xl-12">
+                        <select class="form-control" name="usr_Dutysystem" id="Dutysystem">
+                            <option value="1">مشمول</option>
+                            <option value="2">پایان خدمت</option>
+                            <option value="3">معافیت دائم</option>
+                            <option value="4">معافیت موقت</option>
+                            <option value="5">غایب</option>
+                            <option value="6">خانم</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-2">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <label class="form-label">شماره موبایل</label>
+                    </div>
+                    <div class="col-xl-12">
+                        <input class="form-control" name="usr_PhoneNumber" type="number" />
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-xl-2">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <label class="form-label">شماره ثابت</label>
+                    </div>
+                    <div class="col-xl-12">
+                        <input class="form-control" name="usr_RegistrationNumber" type="number" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-2">
+                <label class="form-label">رشته تحصیلی</label>
+                <input class="form-control" id="usr_Degree" />
+            </div>
+
+            <div class="col-xl-2">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <label class="form-label">مقطع تحصیلی</label>
+                    </div>
+                    <div class="col-xl-12">
+                        <select class="form-control" name="usr_Grade" id="usr_Grade">
+                            <option value="1">بیسواد</option>
+                            <option value="2">سیکل</option>
+                            <option value="3">دیپلم</option>
+                            <option value="4">کاردانی</option>
+                            <option value="5">کارشناسی</option>
+                            <option value="6">کارشناسی ارشد</option>
+                            <option value="8">دکتری</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-2">
+                <label class="form-label"> دانشگاه محل اخذ مدرک</label>
+                <input class="form-control" id="" />
+            </div>
+            <div class="col-xl-2">
+                <label class="form-label">شهر محل اخذ مدرک</label>
+                <div class="col-xl-12" id="">
+                    @res
+                </div>
+            </div>
+            <div class="col-xl-2">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <label class="form-label">تعداد حق اولاد مشمول بیمه</label>
+                    </div>
+                    <div class="col-xl-12">
+                        <input class="form-control" type="number" min="1" max="10" name="usr_Child_Allowance" />
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-xl-2">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <label class="form-label">تعداد کل اولاد</label>
+                    </div>
+                    <div class="col-xl-12">
+                        <input class="form-control" type="number" name="usr_All_Child_Allowance" />
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-xl-2">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <label class="form-label">شهر محل خدمت</label>
+                    </div>
+                    <div class="col-xl-12" id="usr_City_Dutysystem">
+                        @res
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <label class="form-label">پیمان ها</label>
+                    </div>
+                    <div class="col-xl-12">
+                        @Html.Action("_GetAllListPeymans_Select", "Peyman", new { area = "Contracts" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4">
+
+                <div class="row">
+                    <div class="col-xl-12">
+                        <label class="form-label">تاریخ لینک پیمان</label>
+                    </div>
+                    <div class="row"> 
+
+                        <div class="col-xl-6">
+                            <select id="year_pymn" name="year_pymn" class="form-select">
+                                @{
+                                    //System.Globalization.PersianCalendar c = new System.Globalization.PersianCalendar();
+
+                                    for (var i = 100; i >= 0; i--)
+                                    {
+                                        var s = DateTime.Now.AddYears(-i);
+                                        <option selected="selected" value="@c.GetYear(s)">@c.GetYear(s)</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="col-xl-3">
+                            <select id="month_pymn" name="month_pymn" class="form-select">
+                                @{
+                                    for (var i = 1; i <= 12; i++)
+                                    {
+                                        <option selected="selected" value="@i">@i</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="col-xl-3">
+                            <select id="day_pymn" name="day_pymn" class="form-select">
+                                @{
+                                    for (var i = 1; i <= 31; i++)
+                                    {
+                                        <option selected="selected" value="@i">@i</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-xl-4">
+
+                <div class="row">
+                    <div class="col-xl-12">
+                        <label class="form-label">
+                            سمت اصلی
+                            <span class="red-star">*</span>
+                        </label>
+
+                    </div>
+                    <div class="col-xl-12">
+                        @Html.Action("_GetAllBusinessSide_Select", "BusinessSide", new { area = "Users" })
+                        <div class="invalid-feedback">این فیلد مورد نیاز است !</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-2">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <label class="form-label">
+                            شغل
+                            <span class="red-star">*</span>
+
+
+                        </label>
+                    </div>
+                    <div class="col-xl-12">
+                        @Html.Action("listjob", "BusinessSide", new { area = "Users" })
+                        <div class="invalid-feedback" style="margin:11px">این فیلد مورد نیاز است !</div>
+
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-2">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <label class="form-label">
+                            شغل فرعی
+                            <span class="red-star">*</span>
+
+                        </label>
+
+                    </div>
+                    <div class="col-xl-12">
+                        @Html.Action("listjobdetal", "BusinessSide", new { area = "Users" })
+                        <div class="invalid-feedback" style="margin:11px">این فیلد مورد نیاز است !</div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-2">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <label class="form-label">
+                            شماره پرسنلی
+                            <span class="red-star">*</span>
+                        </label>
+
+                    </div>
+                    <div class="col-xl-12">
+                        <input class="form-control" type="number" name="usr_Personal_ID" onkeyup="ValidationInput(this)" />
+                        <div class="invalid-feedback">این فیلد مورد نیاز است !</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-2">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <label class="form-label">پسورد</label>
+                    </div>
+                    <div class="col-xl-12">
+                        <input class="form-control" type="number" name="password" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-2">
+                <label class="form-label">کد پستی</label>
+                <input class="form-control" name="usr_PostalCode" type="number" />
+            </div>
+            <div class="col-xl-10">
+                <label class="form-label">آدرس</label>
+                <textarea class="form-control" name="usr_Address" style="height: 35px;"></textarea>
+            </div>
+            <div id="bankInfo"></div>
+            <div class="col-xl-12" style="margin-bottom:10px">
+                <div class="row">
+                    <div class="col-xl-11">ورود اطلاعات بانکی</div>
+                    <div class="col-xl-1">
+                        <a href="#" class="btn form-control buttonGeneralPlus" onclick="AddNewHesab()" title="افزودن شماره حساب">
+                            <i class="fa fa-plus fa-fw me-1 VecGeneral"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="col-xl-12" style="margin-bottom:10px">
+                <div class="row">
+                    <div class="col-xl-11">
+
+                    </div>
+                    <div class="col-xl-1">
+                        <a href="#" class="btn form-control buttonGeneralPlus" onclick="AddNewMoalefe()" title="اضافه کردن مولفه کاربری جدید">
+                            <i class="fa fa-plus fa-fw me-1 VecGeneral"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class='col-xl-12' id="ShowHeader" style="display:none">
+
+            </div>
+            <div class="moalefeList">
+
+            </div>
+        </div>
+        <hr />
+    }
+    <div class="row">
+        <div class="col-xl-11">
+
+        </div>
+        <div class="col-xl-1 ">
+            <button class="btn btn-outline-success form-control buttonsabt " type="button" id="SaveCreate">
+                <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                <span class="bSabt-text">ثبت</span>
+            </button>
+        </div>
+    </div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script>
+    let nodesLength = 0;
+    function AddNewHesab(e) {
+        var a = 1;
+        nodesLength++;
+        a++;
+
+
+        $("#bankInfo").append(`
+          <div class="row bankItem" id="bank_${nodesLength}">
+                <div class="col-xl-2">
+                    <label class="form-label" >نام بانک</label>
+                    <input class="form-control"  id="ba_${nodesLength}"   ></div>
+                <div class="col-xl-3">
+                    <label class="form-label" >شماره کارت</label>
+                    <div class="kart">
+                        <input class="form-control bankKart" id="ka1_${nodesLength}" maxlength="4" oninput="moveToNext(this, 'ka2_${nodesLength}')" inputmode="numeric"/>
+                        <input class="form-control bankKart" id="ka2_${nodesLength}" maxlength="4" oninput="moveToNext(this, 'ka3_${nodesLength}')" inputmode="numeric"/>
+                        <input class="form-control bankKart" id="ka3_${nodesLength}" maxlength="4" oninput="moveToNext(this, 'ka4_${nodesLength}')" inputmode="numeric"/>
+                        <input class="form-control bankKart" id="ka4_${nodesLength}" maxlength="4" oninput="moveToNext(this, 'ka8_${nodesLength}')" inputmode="numeric" />
+                    </div>
+                </div>
+                <div class="col-xl-3">
+                    <label class="form-label" >شماره حساب</label>
+                    <input class="form-control "  id="he_${nodesLength}" type="number" inputmode="numeric" pattern="[0-9]*" placeholder=""></div>
+                <div class="col-xl-3">
+                    <label class="form-label" >شماره شبا</label>
+                    <input class="form-control shaba"  id="sh_${nodesLength}"  inputmode="numeric" pattern="[0-9]*" placeholder="بدون IR وارد شود">
+                </div>
+                <div class="col-xl-1">
+                    <a href="#" class="btn form-control buttonGeneralMins" onclick="clearInputs(this)" id="RemoveBank_${nodesLength}">
+                          <i class="fa fa-multiply fa-fw me-1 VecGeneral"></i>
+                    </a>
+                </div>
+           </div>
+
+
+        `);
+        const inputs = document.querySelectorAll('.bankKart')
+
+        inputs.forEach(input => {
+            input.addEventListener('input', () => {
+                input.value = input.value.replace(/\D/g, '');
+            });
+        })
+
+
+        //const inputs = document.querySelectorAll('.kartt')  // همه عناصر با کلاس kartt
+
+        //inputs.forEach(input => {
+        //    input.addEventListener('input', () => {
+        //        let rawValue = input.value.replace(/\D/g, '').slice(0, 16)
+        //        input.value = rawValue.match(/.{1,4}/g)?.join('-') || ''
+        //    });
+        //})
+        const inputSh = document.querySelectorAll('.shaba')
+
+        inputSh.forEach(input => {
+            input.addEventListener('input', () => {
+                let rawValue = input.value.replace(/\D/g, '').slice(0, 26)
+                let formattedValue = ''
+                if (rawValue.length > 0) formattedValue += rawValue.substring(0, 2)
+                if (rawValue.length > 2) formattedValue += '-' + rawValue.substring(2, 6)
+                if (rawValue.length > 6) formattedValue += '-' + rawValue.substring(6, 10)
+                if (rawValue.length > 10) formattedValue += '-' + rawValue.substring(10, 14)
+                if (rawValue.length > 14) formattedValue += '-' + rawValue.substring(14, 18)
+                if (rawValue.length > 18) formattedValue += '-' + rawValue.substring(18, 22)
+                if (rawValue.length > 22) formattedValue += '-' + rawValue.substring(22, 24)
+
+                input.value = formattedValue
+            })
+        })
+    }
+    function clearInputs(input) {
+        var RemoveId = input.id;
+        var Id = RemoveId.split('_')[1];
+        $("#bank_" + Id).remove();
+    }
+    function moveToNext(currentInput, nextInputId) {
+        if (currentInput.value.length >= currentInput.maxLength) {
+            if (nextInputId) {
+                document.getElementById(nextInputId).focus();
+            }
+        }
+    }
+
+</script>
+
+<script>
+         $("#div_users1").load('@Url.Content("/../Users/Users/_PartialViewUsersListWithSearchAndMultiple")', function () {
+            $("#select_users1").attr("id", "users");
+            $("#users").picker({ search: true });
+            $("#users").picker();
+            $('#users').picker({ search: true });
+        });
+</script>
+<script>
+    /// Add New Level Moalefe
+    var Counter_level = 0;
+    function AddNewMoalefe() {
+        Counter_level++;
+        console.log(Counter_level);
+
+        $.ajax({
+            url: "@Url.Action("AddNewLevelForCreateUser", "Users")",
+            type: "Get",
+            data: { Counter: Counter_level},
+            dataType: "html",
+            success: function (result) {
+                $("#ShowHeader").css("display", "flex");
+                var moalefeList = $(".moalefeList");
+                console.log(result);
+                moalefeList.append(result);
+                $('.select_moalefeKarbari').last().picker({ search: true });
+            }
+
+        });
+
+
+    }
+    /// Remove One Level Moalefe
+    function RemoveLevel(input) {
+        Counter_level--;
+        console.info($(".moalefeItem"));
+        var RemoveId = input.id;
+        var Id = RemoveId.split('_')[1];
+
+        $("#Level_" + Id).remove();
+        if ($(".moalefeItem").length == 0) {
+            $("#ShowHeader").css("display", "none");
+
+        }
+    }
+
+
+    $('#gender').picker();
+    $('#marital').picker();
+    $('.PlaceOf').picker({ search: true });
+    $("#select_position").picker({ search: true });
+    $('#usr_Degree').picker({ search: true });
+    $('#usr_Grade').picker({ search: true });
+    $('#usr_typeshoghl').picker({ search: true });
+
+    $("#type").picker();
+    $("#Dutysystem").picker();
+    $("#year").picker({ search: true });
+    $("#month").picker();
+    $("#day").picker();
+    $("#select_peyman").picker({ search: true });
+    $(function () {
+
+        $(".PlaceOf")[0].attributes.getNamedItem("id").value = "usr_PlaceOfBrith";
+        $(".PlaceOf")[1].attributes.getNamedItem("id").value = "usr_PlaceOfIssue";
+
+        $(".PlaceOf")[0].attributes.getNamedItem("name").value = "usr_PlaceOfBrith";
+        $(".PlaceOf")[1].attributes.getNamedItem("name").value = "usr_PlaceOfIssue";
+
+        $(".PlaceOf")[2].attributes.getNamedItem("name").value = "usr_City_Dutysystem";
+
+        var el = $("#select_position");
+        var s = el[0].attributes.getNamedItem("name").value = "PositionID";
+
+    });
+
+    ///Validation Input Required
+    function ValidationInput(inp) {
+        var input = $(inp);
+        if (input.val() != "") {
+            input.removeClass("is-invalid");
+        }
+        else {
+            input.addClass("is-invalid");
+        }
+    }
+
+
+                    $("#SaveCreate").click(function () {
+                        console.log($('#gender2').val());
+        var MoalefeList = $(".moalefeItem");
+                        console.log($('#year_pymn').val());
+
+        for (var i = 0; i < MoalefeList.length; i++) {
+            var item = $(".moalefeItem")[i];
+
+            try {
+                var slc = item.children[0].children[0].children[0].children[0];
+                //var val = $(slc).val();
+                //if (val == -1) {
+                //    Toast.fire({
+                //        icon: 'warning',
+                //        background: '#35434A',
+                //        color: 'white',
+                //        title: "لطفا  مولفه را انتخاب کنید"
+                //    });
+                //    return false;
+                //}
+                var s = slc.nodeValue;
+            }
+            catch {
+                Toast.fire({
+                    icon: 'warning',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "لطفا  مولفه را انتخاب کنید"
+                });
+                return false;
+            }
+            var inputValue = item.children[1].children[0].children[0].children[0];
+            if (inputValue.value.length == 0) {
+                Toast.fire({
+                    icon: 'warning',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "لطفا  مقدار مولفه " + (i + 1)+" را وارد کنید"
+                });
+                return false;
+            }
+
+        }
+
+        var Name = $("input[name='usr_Name']");
+        var Family = $("input[name='usr_Family']");
+        var NationalCode = $("input[name='usr_NationalCode']");
+        var Personal_ID = $("input[name='usr_Personal_ID']");
+        var Position = $("#select_position");
+                        var Position2 = $("#FK_job");
+                        var listjob = $("#usr_job");
+
+        if (Name.val() == "") {
+            Name.addClass("is-invalid");
+        } else
+            if (Family.val() == "") {
+                Family.addClass("is-invalid");
+            } else
+                if (NationalCode.val().length != 10) {
+                    NationalCode.next().text("کد ملی باید شامل 10 رقم باشد");
+                    NationalCode.addClass("is-invalid");
+                } else
+                    if (Personal_ID.val() == "") {
+                        Personal_ID.addClass("is-invalid");
+                    } else
+                        if (Position.val() == "" || Position.val() == "0" || Position.val() == null) {
+                            Position.addClass("is-invalid");
+                        }
+                        if (Position2.val() == "" || Position2.val() == "0" || Position2.val() == null) {
+                            Position2.addClass("is-invalid");
+                        }
+
+                        if (listjob.val() == "" || listjob.val() == "0" || listjob.val() == null) {
+                            listjob.addClass("is-invalid");
+                            console.log(listjob);
+                        }
+
+                        else {
+                            document.getElementById("loading-message").style.display = "block";
+                            Position2.removeClass("is-invalid");
+                            listjob.removeClass("is-invalid");
+
+
+                            $("#FormCreateUser").submit();
+                        }
+
+    });
+</script>

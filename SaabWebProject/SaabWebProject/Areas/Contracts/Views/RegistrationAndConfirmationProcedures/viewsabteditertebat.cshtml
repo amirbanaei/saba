@@ -1,0 +1,107 @@
+﻿@using SaabWebProject.Models.DomainModels;
+
+@{ SaabEntities db = new SaabEntities();
+
+    ViewBag.Title = "ارتباط مولفه ";
+    Layout = null;
+}
+@model SaabWebProject.Models.DomainModels.tbmarahlsabtbastedit6
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+<div class="row">
+    <div class="col-xl-5">
+        <label class="form-label">مولفه </label>
+        <select class="form-select" id="pyman2">
+
+            @if (Model.FK_moalfeh2 == null)
+            {
+                <option value="0">انتخاب کنید</option>
+
+            }
+            else
+            {
+                <option value="@Model.FK_moalfeh2" selected>@db.tbContractMoalefeDastmozdi.Where(p => p.md_ID == Model.FK_moalfeh2).Select(s => s.md_Title).FirstOrDefault()</option>
+
+
+            }
+            @foreach (var uy in db.tbContractMoalefeDastmozdi.Where(p => p.md_IsActive == true && p.md_Type == 10).ToList())
+            {
+                <option value="@uy.md_ID">@uy.md_Title</option>
+            }
+
+
+
+        </select>
+    </div>
+    <div class="col-xl-1">
+
+        <button class="btn form-control buttonGeneral" id="@Model.ID" onclick="DownloadExcel23(this.id)">
+            <i class="fa fa-eye fa-fw me-1 VecGeneral"></i>
+            <span class="bGeneral-text">نمایش</span>
+        </button>
+    </div>
+</div>
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+
+
+
+<script>
+    $(document).ready(function () {
+        $("#pyman2").picker({ search: true });
+
+    });
+    function DownloadExcel23(id) {
+        var obj3 = new FormData();
+
+        obj3.append("id", id);
+        obj3.append("FK_moalfeh2", $('#pyman2').val());
+
+                $.ajax({
+    beforeSend:function (){
+      document.getElementById("loading-message").style.display = "block";
+    },
+       url: "@Url.Action("createsabtertebat", "RegistrationAndConfirmationProcedures", new { area= "Contracts" })",
+       type: "post",
+       contentType: false,
+                    data: obj3,
+       processData: false,
+       cache: false,
+        success: function (res) {
+            $(".loader").css('display', 'none');
+
+            document.getElementById("loading-message").style.display = "none";
+            //UploadedFile(res);
+
+            if (res == "True") {
+
+                alert("با موفقیت ثبت شد ");
+                location.reload();
+            }
+            else {
+                alert(res);
+
+            }
+
+            // نمایش مدال SweetAlert2
+
+            // نمایش مدال شما
+           // if (res.lenght() > 300) {
+
+           // } else {
+           //     alert(res);
+           // }
+
+
+
+
+       },
+        error: function (res) {
+            $(".loader").css('display', 'none');
+
+           console.log(res);
+       }
+   });
+
+        }
+
+</script>

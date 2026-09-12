@@ -1,0 +1,45 @@
+﻿
+@{
+    ViewBag.Title = "بازیابی رمز عبور";
+    Layout = "~/Areas/Users/Views/Shared/_LayoutAccount.cshtml";
+}
+@section Style{
+    @*<link type="text/css" href="~/Areas/Users/Styles/ShareStyle.css" rel="stylesheet" />*@
+}
+<link href="~/MyStyles/MyStyle.css" rel="stylesheet" />
+<div class="login">
+
+    <div class="login-content">
+        <div class="alert alert-danger alert-dismissable fade show p-3" id="alert" style="display:none;">
+            <p id="alert_message"></p>
+
+        </div>
+        <form method="POST" name="login_form">
+            <h1 style="padding-bottom:50px;" class="text-center">بازیابی رمز عبور</h1>
+
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-12">
+                    <label class="form-label">شماره همراه <span class="text-danger">*</span></label>
+                    <input id="PhoneNumber" name="phonenumber" type="number" class="form-control form-control-lg bg-white bg-opacity-5" required value="" />
+                    <div class="valid-feedback">این درسته !</div>
+                    <div class="invalid-feedback">شماره موبایل باید 11 رقم باشد</div>
+                </div>
+            </div>
+            <button id="SendCode"  type="button" class="btn btn-outline-default form-control   btn-lg d-block w-100 fw-500 mb-3">ارسال کد</button>
+            <a href="#" onclick="history.back()" style="text-decoration:none;">برگشت</a>
+        </form>
+    </div>
+
+</div>
+@section Script{
+    <script src="~/Areas/Users/Scripts/ShareScript.js" type="text/javascript"></script>
+    <script src="~/Areas/Users/Scripts/Login/FirstLogin.js"></script>
+    <script>
+        $("#SendCode").click(function (){
+            SendCode("@Url.Action("SendCode","Login")","@Url.Action("FirstLogin_PhoneNumber", "Login")");
+        });
+
+    </script>
+    
+    
+}

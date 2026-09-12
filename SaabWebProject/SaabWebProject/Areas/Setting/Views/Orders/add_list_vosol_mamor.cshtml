@@ -1,0 +1,149 @@
+﻿@using SaabWebProject.Models.DomainModels;
+
+@{
+
+    ViewBag.Title = "ارجاع وصول توسط امور";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    SaabEntities db = new SaabEntities();
+
+}
+@if (ViewBag.PerPersonAmount != null)
+{
+    <div style="margin-bottom:15px; background-color:black">
+        با عنایت به راه اندازی سیستم ارجاع متمرکز و با توجه به مصوبه ستاد درخصوص تعیین بخشی از ظرفیت وصول هفتگی مامورین توسط امورات محترم (درصورت صلاحدید امور)، لطفا درصورت نیاز لیست اشتراکهای مورد نظر این هفته مامور را در فایل زیر بارگزاری نمایید. لازم بذکر است سقف قابل ارجاع توسط امور برای هر مامور مشخص شده است و درصورتیکه مبلغ بیشتر از این مقدار باشد بارگزاری فایل امکانپذیر نخواهد بود. خاطرنشان می سازد مابقی ظرفیت هفتگی هر مامور توسط سیستم ارجاع بصورت مکانیزه تعیین خواهد شد و درصورت عدم ارجاع توسط امور کل ظرفیت مامور بصورت مکانیزه ارجاع خواهد شد. همچنین دقت شود برای تکمیل اکسل فقط از مقادیر (اسامی مامورین) درج شده در شیت راهنما استفاده شود (کپی شود)، در غیراینصورت بارگزاری با خطا مواجه خواهد شد.
+
+    </div>
+}
+@if (ViewBag.PerPersonAmount != null)
+{ 
+    <div class="alert alert-warning" style="margin-bottom:15px;">
+        سقف مبلغ  قابل ارجاع امور برای هر یک مامور در این هفته مبلغ
+        <strong>@string.Format("{0:N0}", ViewBag.PerPersonAmount)</strong> ریال
+    </div>
+}
+
+<div class="row">
+
+    @*<div class="col-xl-1">
+            <a href="@Url.Action("ExportAddMoalefezarfiat","Orders",new {area="Setting" })" class="btn form-control buttonGeneral">
+                <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text">دانلود فایل نمونه</span>
+            </a>
+        </div>*@
+    <div class="col-xl-2">
+        <div class="form-group mb-3">
+            <label class="form-label"> مولفه انتخابی جهت ثبت اطلاعات  </label>
+            <select class="form-select my_Select" id="vaz">
+                <option value="0">انتخاب کنید..</option>
+                <option value="1">پرونده</option>
+                <option value="2">شناسه قبض </option>
+
+
+            </select>
+        </div>
+    </div>
+    @*<div class="col-xl-1">
+            <a href="@Url.Action("ExportAddMoalevosol", "Orders", new { area = "Setting" })"
+               class="btn form-control buttonGeneral"
+               onclick="this.href+= '?vaz=' + document.getElementById('vaz').value">
+                <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text"> فایل کارکردها </span>
+            </a>
+        </div>*@
+    <div class="col-xl-1">
+        <a href="javascript:void(0)" id="btnDownload" class="btn form-control buttonGeneral">
+            <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+            <span class="bGeneral-text"> دانلود فایل نمونه </span>
+        </a>
+    </div>
+
+    <div class="col-xl-1">
+        <a class="btn form-control buttonGeneral" id="upload10" style="font-size:10px;margin-bottom:10px;">
+            <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+            <span class="bGeneral-text"> بارگزای اکسل</span>
+        </a>
+    </div>
+</div>
+
+<div id="ListUsers">
+    @Html.Action("view_erja6_fard_list", "Orders", new { area = "Setting" })
+</div>
+<input id="summery_file10" style="display:none" type="file" class="form-control" value="" />
+<input id="summery_file11" style="display:none" type="file" class="form-control" value="" />
+<input id="summery_file112" style="display:none" type="file" class="form-control" value="" />
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Scripts/popper.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script>
+
+
+</script>
+<script>
+    $("#upload10").click(function () {
+        $("#summery_file10").click();
+    });
+
+    $("#summery_file10").change(function (e) {
+        var file = e.target.files[0];
+        if (!file) return;
+
+        var vaz = $("#vaz").val();
+        if (vaz == "0") {
+            alert("لطفا نوع را انتخاب کنید.");
+            return;
+        }
+
+        var fd3 = new FormData();
+        fd3.append("MyExcelStream", file);
+        fd3.append("vaz", vaz);
+
+        sendAjax14('@Url.Action("Import_excel_reghtankar", "Orders", new { area = "Setting" })', fd3);
+    });
+
+    function sendAjax14(url2, fd2) {
+        document.getElementById("loading-circle").style.display = "block";
+
+        $.ajax({
+            url: url2,
+            type: 'POST',
+            data: fd2,
+            processData: false,
+            contentType: false,
+            success: function (res) {
+                document.getElementById("loading-circle").style.display = "none";
+                $("#loading-message").css("display", "none");
+
+                if (res == "True") {
+                    alert("با موفقیت ثبت شد");
+                } else {
+                    alert(res);
+                }
+            },
+            error: function (res) {
+                document.getElementById("loading-circle").style.display = "none";
+                $("#loading-message").css("display", "none");
+                alert("با خطا مواجه شده است، لطفا بعدا تلاش فرمایید");
+            }
+        });
+    }
+    $("#btnDownload").click(function (e) {
+    e.preventDefault(); // جلوگیری از رفتار پیش‌فرض لینک
+
+    var vaz = $("#vaz").val();
+    if (vaz == "0") {
+        alert("لطفا نوع سرستون را انتخاب کنید.");
+        return;
+    }
+
+    // آدرس پایه را از سمت سرور می‌گیریم
+    var baseUrl = '@Url.Action("ExportAddMoalevosol", "Orders", new { area = "Setting" })';
+
+    // آدرس نهایی را با پارامتر جدید می‌سازیم
+    var finalUrl = baseUrl + "?vaz=" + vaz;
+
+    // هدایت کاربر به لینک دانلود
+    window.location.href = finalUrl;
+});
+
+</script>

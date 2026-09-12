@@ -1,0 +1,1180 @@
+﻿
+@model SaabWebProject.Models.ViewModels.Contracts.Function.FunctionModel
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+@using SaabWebProject.Models.DomainModels;
+
+@{
+    ViewBag.Title = "مودال اولویت";
+    SaabEntities db = new SaabEntities();
+    Layout = null;
+}
+@*===============================================مودال دوم تا سایر===========================================*@
+
+
+<style>
+    .form-select {
+        margin-bottom: 0px !important;
+    }
+
+    .dynamic-row div {
+        position: relative;
+    }
+
+        .dynamic-row div .form-label {
+            position: absolute;
+            top: 0px;
+            right: 5px;
+        }
+
+    .second-row div {
+        position: relative;
+    }
+
+        .second-row div .form-label {
+            position: absolute;
+            top: 0px;
+            right: 5px;
+        }
+
+    .removeRow {
+        background-image: linear-gradient(#cd4646, #631010);
+        border: none;
+    }
+</style>
+
+<ul class="nav nav-tabs nav-tabs-v2 ps-4 pe-4" id="pills-tab" style="margin-bottom:30px">
+    <li class="nav-item me-3">
+        <a href="#page1" class="nav-link active" data-bs-toggle="tab">
+            <button class=" nav-btn">محاسباتی</button>
+        </a>
+    </li>
+    <li class="nav-item me-3">
+        <a href="#page2" class="nav-link " data-bs-toggle="tab">
+            <button class=" nav-btn">شروط منطقی</button>
+        </a>
+    </li>
+    <li class="nav-item me-3">
+        <a href="#page3" class="nav-link " data-bs-toggle="tab">
+            <button class=" nav-btn">مقادیر اولویت‌بندی</button>
+        </a>
+    </li>
+    @*<li class="nav-item me-3">
+            <a href="#page4" class="nav-link " data-bs-toggle="tab">
+                <button class=" nav-btn">وضعیت نهایی دوم</button>
+            </a>
+        </li>
+        <li class="nav-item me-3">
+            <a href="#page5" class="nav-link " data-bs-toggle="tab">
+                <button class=" nav-btn">تب جدید</button>
+            </a>
+        </li>*@
+</ul>
+<div class="tab-content" id="pills-tabContent">
+    <!-- تب اول: محاسباتی -->
+
+    <div class="tab-pane fade show active" id="page1">
+        <div id="calcTabWrapper">
+
+            <div class="row mb-2">
+                <div class="col-xl-12 text-end">
+                    <button id="addRowBtn" type="button" class="btn btn-success btn-sm">
+                        <i class="bi bi-plus-circle"></i> افزودن ردیف محاسباتی
+                    </button>
+                </div>
+            </div>
+
+            <div id="rowsContainer"></div>
+
+            <div id="finalSummaryContainer" style="display:none;" class="mt-3 border-top pt-3"></div>
+
+            <div class="row mt-3">
+                <div class="col-xl-12 text-end">
+                    <button id="finalSummaryBtn" type="button" class="btn btn-info btn-sm">جمع بندی نهایی</button>
+                </div>
+            </div>
+
+            <!-- بخش شرط‌های IF (چندگانه) -->
+            <div class="if-section mt-4">
+                <div class="row mb-3">
+                    <div class="col-xl-4">
+                        <label class="form-label fw-bold">آیا مایل به استفاده از شرط هستید؟</label>
+                        <select id="useIfCondition" class="form-select border-primary">
+                            <option value="0">خیر - بدون شرط</option>
+                            <option value="1">بله - اعمال شرط (IF)</option>
+                        </select>
+                    </div>
+                    <div class="col-xl-8 text-end pt-4">
+                        <button id="addIfRowBtn" type="button" class="btn btn-outline-primary btn-sm" style="display:none">
+                            <i class="bi bi-plus-lg"></i> افزودن شرط جدید
+                        </button>
+                    </div>
+                </div>
+
+                <div id="ifRowsContainer" style="display:none">
+                    <!-- ردیف‌های شرط اینجا اضافه می‌شوند -->
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-xl-12">
+                    <button id="sabt-tab12" type="button" class="btn btn-primary w-100 py-2">ثبت نهایی محاسبات و تمامی شرط‌ها</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--<div class="tab-pane fade show active" id="page1">
+        <div class="row mb-2">
+            <div class="col-xl-10"></div>
+            <div class="col-xl-1" style="margin-right: 35px;">
+                <button id="addRowBtn" type="button" class="btn form-control buttonsabt">
+                    <i class="bi bi-plus-circle fa-fw me-1 VecGeneral"></i>
+                    <span class="bSabt-text">افزودن</span>
+                </button>
+            </div>
+        </div>
+
+        <div style="  " id="rowsContainer"></div>
+        <hr />
+        <div style=" " id="finalSummaryContainer"></div>
+        <div class="row mb-2">
+            <div class="col-xl-10"></div>
+            <div class="col-xl-1" style="margin-right: 35px;">
+                <button id="finalSummaryBtn" type="button" class="btn form-control buttonsabt">
+                    <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                    <span class="bSabt-text">جمع بندی نهایی</span>
+                </button>
+            </div>
+        </div>
+
+
+
+
+
+        <div class="row mb-2">
+            <div class="col-xl-10"></div>
+            <div class="col-xl-1" style="margin-right: 35px;">
+                <button id="sabt-tab1" type="button" class="btn form-control buttonsabt">
+                    <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                    <span class="bSabt-text">ثبت</span>
+                </button>
+            </div>
+        </div>-->
+    <!-- Template row (hidden) -->
+    <!--</div>-->
+    <div class="tab-pane fade show" id="page2">
+
+        <div class="row" style="margin-top:10px;">
+            <div class="col-xl-2">
+                <label class="form-label">عنوان فیلد</label>
+                <select id="onvan1-tab2" class="form-select select_peyman1">
+                    <option hidden value="Select"></option>
+                    @foreach (var item in db.dbergharel_4_4.ToList())
+                    {
+                        <option value="@item.ID">@item.name</option>
+                    }
+                </select>
+            </div>
+
+            <div class="col-xl-2">
+                <label class="form-label">نام ستون</label>
+
+                <select id="karbar1-tab2" class="form-select peyman-search">
+                    <option value="0"></option>
+                    @foreach (var item in db.dbergharel4_5.ToList())
+                    {
+                        <option value="@item.FK_dbergharel2">@item.dbergha2.name ✅</option>
+                    }
+                </select>
+            </div>
+
+            <div class="col-xl-2">
+                <label class="form-label">وضعیت</label>
+                <select id="vazeat-tab2" class="form-select select_peyman">
+                    <option hidden></option>
+                    <option value="1">باشد</option>
+                    <option value="2">نباشد</option>
+
+                </select>
+            </div>
+            <div class="col-xl-2">
+                <label class="form-label">عنوان فیلد</label>
+                <select id="onvan2-tab2" class="form-select select_peyman1">
+                    <option hidden value="Select"></option>
+                    @foreach (var item in db.dbergharel_4_4.ToList())
+                    {
+                        <option value="@item.ID">@item.name</option>
+                    }
+                </select>
+            </div>
+
+            <div class="col-xl-2">
+                <label class="form-label">نام ستون</label>
+
+                <select id="karbar2-tab2" class="form-select peyman-search">
+                    <option value="0"></option>
+                    @foreach (var item in db.dbergharel4_5.ToList())
+                    {
+                        <option value="@item.FK_dbergharel2">@item.dbergha2.name ✅</option>
+                    }
+                </select>
+            </div>
+
+
+        </div>
+        <div class="row mb-2">
+            <div class="col-xl-10"></div>
+            <div class="col-xl-1" style="margin-right: 35px;">
+                <button id="sabt-tab2" type="button" class="btn form-control buttonsabt">
+                    <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                    <span class="bSabt-text">ثبت</span>
+                </button>
+            </div>
+        </div>
+
+        <script>
+            $(document).ready(function () {
+                $("#page2 .peyman-search").picker({
+                    search: true
+                });
+            });
+        </script>
+
+
+    </div>
+    <div class="tab-pane fade show" id="page3">
+
+        <div class="row" style="margin-top:10px;">
+            <div class="col-xl-2">
+                <label class="form-label">عنوان فیلد</label>
+                <select id="onvan1-tab3" class="form-select select_peyman1">
+                    <option hidden value="Select"></option>
+                    @foreach (var item in db.dbergharel_4_4.ToList())
+                    {
+                        <option value="@item.ID">@item.name</option>
+                    }
+                </select>
+            </div>
+
+            <div class="col-xl-2">
+                <label class="form-label">نام ستون</label>
+
+                <select id="karbar1-tab3" class="form-select peyman-search">
+                    <option value="0"></option>
+                    @foreach (var item in db.dbergharel4_5.ToList())
+                    {
+                        <option value="@item.FK_dbergharel2">@item.dbergha2.name ✅</option>
+                    }
+                </select>
+            </div>
+            <div class="col-xl-2">
+                <div class="form-group mb-3" style="margin-bottom: 0px !important;">
+                    <label class="form-label">مقدار</label>
+                    <input class="form-control" id="mablagh-tab3" />
+                </div>
+            </div>
+            <div class="col-xl-2">
+                <label class="form-label">علامت</label>
+                <select id="vazeat-tab3" class="form-select select_peyman">
+                    <option hidden></option>
+                    <option value="1"><=</option>
+                    <option value="2"><</option>
+                    <option value="3">=</option>
+                    <option value="4">></option>
+                    <option value="5">=></option>
+
+                </select>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-xl-8"></div>
+            <div class="col-xl-1">
+                <a href="@Url.Action("EXCEL_timearzyab_mostakrin14","Formula",new {area="Salaries" })" class="btn form-control buttonGeneral">
+                    <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                    <span class="bGeneral-text">دانلود فایل نمونه</span>
+                </a>
+            </div>
+            <div class="col-xl-1">
+                <a class="btn form-control buttonGeneral" id="upload10" style="font-size:10px;margin-bottom:10px;">
+                    <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                    <span class="bGeneral-text"> بارگزای اکسل</span>
+                </a>
+            </div>
+
+            <input id="summery_file10" style="display:none" type="file" class="form-control" value="" />
+            <input id="summery_file11" style="display:none" type="file" class="form-control" value="" />
+            <input id="summery_file112" style="display:none" type="file" class="form-control" value="" />
+
+            <div class="col-xl-1" style="margin-right: 35px;">
+                <button id="sabt-tab3" type="button" class="btn form-control buttonsabt">
+                    <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                    <span class="bSabt-text">ثبت</span>
+                </button>
+            </div>
+        </div>
+
+
+
+        <script>
+                        $("#upload10").click(function () {
+
+
+
+
+
+      $("#summery_file10").click();
+
+        });
+       fd3 = new FormData();
+
+$("#summery_file10").change(function (e) {
+             $.each(e.target.files, function (index, file) {
+                 fd3.append("MyExcelStream", file);
+             });
+
+    sendAjax14('@Url.Action("Import_excel_vaziat3delete", "Orders", new { area = "Setting" })', fd3);
+});
+
+        function sendAjax14(url2, fd2) {
+
+            document.getElementById("loading-circle").style.display = "block";
+
+
+    $.ajax({
+        url: url2,
+        type: 'POST',
+        data: fd2,
+        processData: false,
+        contentType: false,
+        success: function (res) {
+            document.getElementById("loading-circle").style.display = "none";
+
+            $("#loading-message").css("display", "none");
+            fd = new FormData();
+            console.log(res);
+            console.log("jj");
+
+            if (res == "True") {
+                alert("با موفقیت ثبت شد ");
+            //    location.reload();
+            }
+                   @*$("#table_div").load('@Url.Content("../defFacilitiesEquipment/_ListEquipmentMoalefeValue")');*@
+
+
+
+        },
+        error: function (res) {
+            $("#loading-message").css("display", "none");
+            console.log(res);
+            console.log("jj");
+            Toast.fire({
+                icon: 'success',
+                background: '#35434A',
+                color: 'white',
+                title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+            }).then(() => {
+                $("#loading-message").css("display", "none");
+            });
+        }
+    });
+}
+            $(document).ready(function () {
+                $("#page3 .peyman-search").picker({
+                    search: true
+                });
+            });
+        </script>
+
+    </div>
+    <div class="tab-pane fade show" id="page4">
+
+        <div class="row" style="margin-top:10px;">
+            <div class="col-xl-2">
+                <label class="form-label">عنوان فیلد</label>
+                <select id="onvan1-tab4" class="form-select select_peyman1">
+                    <option hidden value="Select"></option>
+                    @foreach (var item in db.dbergharel_4_4.ToList())
+                    {
+                        <option value="@item.ID">@item.name</option>
+                    }
+                </select>
+            </div>
+
+            <div class="col-xl-2">
+                <label class="form-label">نام ستون</label>
+
+                <select id="karbar1-tab4" class="form-select peyman-search">
+                    <option value="0"></option>
+                    @foreach (var item in db.dbergharel4_5.ToList())
+                    {
+                        <option value="@item.FK_dbergharel2">@item.dbergha2.name ✅</option>
+                    }
+                </select>
+            </div>
+            <div class="col-xl-2">
+                <label class="form-label">عنوان فیلد</label>
+                <select id="onvan2-tab4" class="form-select select_peyman1">
+                    <option hidden value="Select"></option>
+                    @foreach (var item in db.dbergharel_4_4.ToList())
+                    {
+                        <option value="@item.ID">@item.name</option>
+                    }
+                </select>
+            </div>
+
+            <div class="col-xl-2">
+                <label class="form-label">نام ستون</label>
+
+                <select id="karbar2-tab4" class="form-select peyman-search">
+                    <option value="0"></option>
+                    @foreach (var item in db.dbergharel4_5.ToList())
+                    {
+                        <option value="@item.FK_dbergharel2">@item.dbergha2.name ✅</option>
+                    }
+                </select>
+            </div>
+            <div class="col-xl-2">
+                <div class="form-group mb-3" style="margin-bottom: 0px !important;">
+                    <label class="form-label">عدد را وارد نمایید</label>
+                    <input class="form-control" id="mablagh-tab3" />
+                </div>
+            </div>
+            <div class="col-xl-2">
+                <label class="form-label">علامت</label>
+                <select id="vazeat-tab4" class="form-select select_peyman">
+                    <option hidden></option>
+                    <option value="1">=</option>
+                    <option value="2">!=</option>
+
+
+                </select>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-xl-10"></div>
+            <div class="col-xl-1" style="margin-right: 35px;">
+                <button id="sabt-tab3" type="button" class="btn form-control buttonsabt">
+                    <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                    <span class="bSabt-text">ثبت</span>
+                </button>
+            </div>
+        </div>
+
+
+
+        <script>
+            $(document).ready(function () {
+                $("#page3 .peyman-search").picker({
+                    search: true
+                });
+            });
+        </script>
+
+    </div>
+
+    <div class="tab-pane fade show" id="page5">
+        <div id="container5">
+            <div class="row" id="row-1" style="margin-top:10px;margin-bottom:20px;">
+                <div class="col-xl-3">
+                    <label class="form-label">عنوان فیلد</label>
+                    <select id="onvan-tab5-1" class="form-select select_peyman1">
+                        <option hidden value="Select"></option>
+                        @foreach (var item in db.dbergharel_4_4.ToList())
+                        {
+                            <option value="@item.ID">@item.name</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="col-xl-3">
+                    <label class="form-label">نام ستون </label>
+                    <select id="karbar-tab5-1" class="form-select peyman-search">
+                        <option value="0"></option>
+                        @foreach (var item in db.dbergharel4_5.ToList())
+                        {
+                            <option value="@item.FK_dbergharel2">@item.dbergha2.name ✅</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="col-xl-2">
+                    <label class="form-label">علامت</label>
+                    <select id="vazeat-tab4-1" class="form-select select_peyman">
+                        <option hidden></option>
+                        <option value="1">=</option>
+                        <option value="2">!=</option>
+                    </select>
+                </div>
+                <div class="col-xl-2">
+                    <label class="form-label">مقدار</label>
+                    <input class="form-control" id="meghdar5-1" />
+                </div>
+                <div class="col-xl-1">
+                    <label class="form-label">عدد</label>
+                    <input class="form-control" id="Olaveat5-1" />
+                </div>
+                <div class="col-xl-1">
+                    <button type="button" class="btn form-control buttonsabt addFirstRow">
+                        <i class="bi bi-plus-circle fa-fw me-1 VecGeneral"></i>
+                        <span class="bSabt-text">افزودن</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+</div>
+
+
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+
+
+<script>
+    $(document).ready(function () {
+
+        /* =========================================================
+           0) HELPERS
+        ========================================================= */
+
+        function initPicker($scope) {
+            $scope.find(".peyman-search").each(function () {
+                if (!$(this).data("picker-initialized")) {
+                    $(this).picker({ search: true });
+                    $(this).data("picker-initialized", true);
+                }
+            });
+        }
+
+        initPicker($(document));
+
+        function formatNumberValue(value) {
+            value = (value || "").replace(/[^0-9]/g, "");
+            return value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        function formatNumberInput(input) {
+            input.value = formatNumberValue(input.value);
+        }
+
+        /* =========================================================
+           1) TAB 3 : وضعیت نهایی
+        ========================================================= */
+
+        $("#sabt-tab3").on("click", function () {
+            let data = {
+                UserId: parseInt("@Model.usrID"),
+                FK_gozaresh1: $("#onvan1-tab3").val(),
+                FK_name: $("#karbar1-tab3").val(),
+                Mablagh: ($("#mablagh-tab3").val() || "").replace(/,/g, ""),
+                Alamat: $("#vazeat-tab3").val()
+            };
+
+            if (!data.FK_gozaresh1 || !data.FK_name || !data.Mablagh || !data.Alamat) {
+                alert("لطفا همه فیلدها را تکمیل کنید");
+                return;
+            }
+
+            $.ajax({
+                url: "/Setting/Orders/SaveOlaviatTab3",
+                type: "POST",
+                data: JSON.stringify(data),
+                contentType: "application/json",
+                success: function (res) {
+                    if (res.success) {
+                        alert("ثبت شرط مبلغ با موفقیت انجام شد");
+                    } else {
+                        alert(res.message || "خطا در ثبت اطلاعات");
+                    }
+                },
+                error: function () {
+                    alert("خطا در ثبت اطلاعات");
+                }
+            });
+        });
+
+        /* =========================================================
+           2) TAB 2 : باشد / نباشد
+        ========================================================= */
+
+        $("#sabt-tab2").on("click", function () {
+            let data = {
+                UserId: parseInt("@Model.usrID"),
+                FK_gozaresh1: $("#onvan1-tab2").val(),
+                FK_name: $("#karbar1-tab2").val(),
+                Vazeat: $("#vazeat-tab2").val(),
+                FK_gozaresh2: $("#onvan2-tab2").val(),
+                FK_name2: $("#karbar2-tab2").val()
+            };
+
+            if (!data.FK_gozaresh1 || !data.FK_name || !data.Vazeat) {
+                alert("لطفا همه فیلدهای ضروری را پر کنید");
+                return;
+            }
+
+            $.ajax({
+                url: "/Setting/Orders/SaveOlaviatTab2",
+                type: "POST",
+                data: JSON.stringify(data),
+                contentType: "application/json",
+                success: function (res) {
+                    if (res.success) {
+                        alert("ثبت با موفقیت انجام شد");
+                    } else {
+                        alert(res.message || "خطا در ثبت اطلاعات");
+                    }
+                },
+                error: function () {
+                    alert("خطا در ثبت اطلاعات");
+                }
+            });
+        });
+
+        /* =========================================================
+           3) TAB 5 : ردیف‌های دارای مقدار و عدد
+        ========================================================= */
+
+        function reIndexTab5Rows() {
+            $("#container5 .dynamic-row-tab5").each(function (i) {
+                let idx = i + 1;
+
+                $(this).find(".lbl-onvan").text("عنوان فیلد " + idx);
+                $(this).find(".lbl-user").text("نام ستون " + idx);
+                $(this).find(".lbl-op").text("علامت " + idx);
+                $(this).find(".lbl-val").text("مقدار " + idx);
+                $(this).find(".lbl-num").text("عدد " + idx);
+
+                $(this).find(".sel-onvan").attr("id", "select_peyman_" + idx);
+                $(this).find(".sel-user").attr("id", "select_users_" + idx);
+                $(this).find(".sel-op").attr("id", "SelectPeyman_" + idx);
+                $(this).find(".inp-val").attr("id", "meghdar_" + idx);
+                $(this).find(".inp-num").attr("id", "Olaveat_" + idx);
+            });
+        }
+
+        function addTab5Row() {
+            let index = $("#container5 .dynamic-row-tab5").length + 1;
+
+            let newRow = `
+            <div class="row dynamic-row-tab5 mb-2">
+                <div class="col-xl-3">
+                    <label class="form-label lbl-onvan">عنوان فیلد ${index}</label>
+                    <select class="form-select select_peyman1 sel-onvan" name="select_peyman[]">
+                        <option hidden value="Select">انتخاب مورد</option>
+                        @foreach (var item in db.dbergharel_4_4.ToList())
+                        {
+                            <option value="@item.ID">@item.name</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="col-xl-3">
+                    <label class="form-label lbl-user">نام ستون ${index}</label>
+                    <select class="form-select peyman-search sel-user" name="select_users[]">
+                        <option value="0">انتخاب کنید</option>
+                        @foreach (var item in db.dbergharel4_5.ToList())
+                        {
+                            <option value="@item.FK_dbergharel2">@item.dbergha2.name ✅</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="col-xl-2">
+                    <label class="form-label lbl-op">علامت ${index}</label>
+                    <select class="form-select select_peyman sel-op" name="SelectPeyman[]">
+                        <option hidden></option>
+                        <option value="1">-</option>
+                        <option value="2">+</option>
+                        <option value="3">*</option>
+                        <option value="4">/</option>
+                        <option value="5">=</option>
+                        <option value="7">></option>
+                        <option value="9"><</option>
+                        <option value="8">>=</option>
+                        <option value="10"><=</option>
+                        <option value="6">B</option>
+                    </select>
+                </div>
+
+                <div class="col-xl-2">
+                    <label class="form-label lbl-val">مقدار ${index}</label>
+                    <input class="form-control inp-val" />
+                </div>
+
+                <div class="col-xl-1">
+                    <label class="form-label lbl-num">عدد ${index}</label>
+                    <input class="form-control inp-num" />
+                </div>
+
+                <div class="col-xl-1 pt-4">
+                    <button type="button" class="btn btn-danger form-control removeRowTab5">
+                        <i class="bi bi-x-circle fa-fw me-1 VecGeneral"></i>
+                        <span class="bSabt-text">حذف</span>
+                    </button>
+                </div>
+            </div>`;
+
+            $("#container5").append(newRow);
+            initPicker($("#container5"));
+            reIndexTab5Rows();
+        }
+
+        $(document).on("click", ".addFirstRow", function () {
+            addTab5Row();
+        });
+
+        $(document).on("click", ".removeRowTab5", function () {
+            $(this).closest(".dynamic-row-tab5").remove();
+            reIndexTab5Rows();
+        });
+
+        /* =========================================================
+           4) TAB 1 : محاسباتی + IF + جمع بندی نهایی
+        ========================================================= */
+
+        function addCalcRow() {
+            let index = $("#rowsContainer .dynamic-row").length + 1;
+
+            let rowHtml = `
+            <div class="row dynamic-row mb-2 border-bottom pb-2">
+                <div class="col-xl-4">
+                    <label class="form-label lbl-onvan">عنوان فیلد ${index}</label>
+                    <select class="form-select select_peyman1 sel-gozaresh">
+                        <option hidden value="Select">انتخاب مورد</option>
+                        @foreach (var item in db.dbergharel_4_4.ToList())
+                        {
+                            <option value="@item.ID">@item.name</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="col-xl-4">
+                    <label class="form-label lbl-user">نام ستون ${index}</label>
+                    <select class="form-select peyman-search sel-name">
+                        <option value="0">انتخاب کنید</option>
+                        @foreach (var item in db.dbergharel4_5.ToList())
+                        {
+                            <option value="@item.FK_dbergharel2">@item.dbergha2.name ✅</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="col-xl-2">
+                    <label class="form-label lbl-op">علامت ${index}</label>
+                    <select class="form-select sel-alamat">
+                        <option hidden></option>
+                        <option value="1">-</option>
+                        <option value="2">+</option>
+                        <option value="3">*</option>
+                        <option value="4">/</option>
+                        <option value="5">=</option>
+                        <option value="7">></option>
+                        <option value="9"><</option>
+                        <option value="8">>=</option>
+                        <option value="10"><=</option>
+                        <option value="6">B</option>
+                    </select>
+                </div>
+
+                <div class="col-xl-2 pt-4">
+                    <button type="button" class="btn btn-danger btn-sm removeCalcRow w-100">
+                        حذف
+                    </button>
+                </div>
+            </div>`;
+
+            $("#rowsContainer").append(rowHtml);
+            initPicker($("#rowsContainer"));
+            reIndexCalcRows();
+        }
+
+        function reIndexCalcRows() {
+            $("#rowsContainer .dynamic-row").each(function (i) {
+                let idx = i + 1;
+                $(this).find(".lbl-onvan").text("عنوان فیلد " + idx);
+                $(this).find(".lbl-user").text("نام ستون " + idx);
+                $(this).find(".lbl-op").text("علامت " + idx);
+            });
+        }
+
+        function addIfRow() {
+            let ifIndex = $("#ifRowsContainer .if-row").length + 1;
+
+            let ifHtml = `
+            <div class="if-row mb-2 border-bottom pb-2">
+                <div class="row">
+                    <div class="col-xl-2">
+                        <label class="small">منطق ${ifIndex}</label>
+                        <select class="form-select sel-if-logic">
+                            <option value="AND">AND</option>
+                            <option value="OR">OR</option>
+                            <option value="AND NOT">AND NOT</option>
+                            <option value="OR NOT">OR NOT</option>
+                        </select>
+                    </div>
+                    <div class="col-xl-3">
+                        <label class="small">فیلد شرط ${ifIndex}</label>
+                        <select class="form-select sel-if-gozaresh">
+                            <option value="">انتخاب...</option>
+                            @foreach (var item in db.dbergharel_4_4.ToList())
+                            {
+                                <option value="@item.ID">@item.name</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-xl-3">
+                        <label class="small">نام ستون ${ifIndex}</label>
+                        <select class="form-select peyman-search sel-if-name">
+                            <option value="">انتخاب...</option>
+                            @foreach (var item in db.dbergharel4_5.ToList())
+                            {
+                                <option value="@item.FK_dbergharel2">@item.dbergha2.name ✅</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-xl-2">
+                        <label class="small">علامت ${ifIndex}</label>
+                        <select class="form-select sel-if-alamat">
+                            <option value="1">=</option>
+                            <option value="2">!=</option>
+                            <option value="3">></option>
+                            <option value="4"><</option>
+                            <option value="5">>=</option>
+                            <option value="6"><=</option>
+                        </select>
+                    </div>
+                    <div class="col-xl-1">
+                        <label class="small">مقدار ${ifIndex}</label>
+                        <input type="text" class="form-control sel-if-val" />
+                    </div>
+                    <div class="col-xl-1 pt-4">
+                        <button type="button" class="btn btn-danger btn-sm removeIfRow">
+                            حذف
+                        </button>
+                    </div>
+                </div>
+            </div>`;
+
+            $("#ifRowsContainer").append(ifHtml);
+            initPicker($("#ifRowsContainer"));
+            reIndexIfRows();
+        }
+
+        function reIndexIfRows() {
+            $("#ifRowsContainer .if-row").each(function (i) {
+                let idx = i + 1;
+                $(this).find(".small").eq(0).text("منطق " + idx);
+                $(this).find(".small").eq(1).text("فیلد شرط " + idx);
+                $(this).find(".small").eq(2).text("نام ستون " + idx);
+                $(this).find(".small").eq(3).text("علامت " + idx);
+                $(this).find(".small").eq(4).text("مقدار " + idx);
+            });
+        }
+
+        $("#useIfCondition").on("change", function () {
+            if ($(this).val() === "1") {
+                $("#ifRowsContainer, #addIfRowBtn").slideDown();
+                if ($("#ifRowsContainer .if-row").length === 0) {
+                    addIfRow();
+                }
+            } else {
+                $("#ifRowsContainer, #addIfRowBtn").slideUp();
+            }
+        });
+
+        $("#addRowBtn").on("click", function () {
+            let hasRestrictedOperator = false;
+
+            $("#rowsContainer .dynamic-row").each(function () {
+                let val = $(this).find(".sel-alamat").val();
+                if (["5", "6", "7", "8", "9", "10"].includes(val)) {
+                    hasRestrictedOperator = true;
+                    return false;
+                }
+            });
+
+            if (hasRestrictedOperator) {
+                alert("شما در این حالت نمی‌توانید ردیف جدیدی اضافه کنید!");
+                return;
+            }
+
+            addCalcRow();
+        });
+
+        $("#addIfRowBtn").on("click", function () {
+            addIfRow();
+        });
+
+        $(document).on("click", ".removeCalcRow", function () {
+            $(this).closest(".dynamic-row").remove();
+            reIndexCalcRows();
+        });
+
+        $(document).on("click", ".removeIfRow", function () {
+            $(this).closest(".if-row").remove();
+            reIndexIfRows();
+        });
+
+        $(document).on("change", "#rowsContainer .sel-alamat", function () {
+            let $changedRow = $(this).closest(".dynamic-row");
+            let val = $(this).val();
+
+            if (["5", "6", "7", "8", "9", "10"].includes(val)) {
+                $changedRow.nextAll(".dynamic-row").remove();
+                reIndexCalcRows();
+                alert("شما در این حالت نمی‌توانید ردیف جدیدی اضافه کنید!");
+            }
+        });
+
+        $("#finalSummaryBtn").on("click", function () {
+            let rows = $("#rowsContainer .dynamic-row");
+
+            if (rows.length === 0) {
+                $("#finalSummaryContainer").hide().empty();
+                alert("هیچ ردیفی برای جمع بندی وجود ندارد!");
+                return;
+            }
+
+            let hasB = false;
+            rows.each(function () {
+                if ($(this).find(".sel-alamat").val() === "6") {
+                    hasB = true;
+                    return false;
+                }
+            });
+
+            $("#finalSummaryContainer").empty();
+
+            let summaryRow = '<div class="row mb-2">';
+            if (hasB) {
+                summaryRow += `
+                    <div class="col-xl-3">
+                        <label class="form-label">از این</label>
+                        <input id="field1" type="text" class="form-control" placeholder="مقدار اول">
+                    </div>
+                    <div class="col-xl-3">
+                        <label class="form-label">تا این</label>
+                        <input id="field2" type="text" class="form-control" placeholder="مقدار دوم">
+                    </div>
+                `;
+            } else {
+                summaryRow += `
+                    <div class="col-xl-3">
+                        <label class="form-label">مساوی</label>
+                        <input id="field3" type="text" class="form-control" placeholder="مقدار">
+                    </div>
+                `;
+            }
+            summaryRow += '</div>';
+
+            $("#finalSummaryContainer").append(summaryRow).slideDown(400);
+        });
+
+        $("#sabt-tab1").on("click", function () {
+            let rowsData = [];
+
+            $("#rowsContainer .dynamic-row").each(function () {
+                let row = {
+                    FK_gozaresh1: $(this).find(".sel-gozaresh").val(),
+                    FK_name: $(this).find(".sel-name").val(),
+                    alamat: $(this).find(".sel-alamat").val()
+                };
+
+                if (row.FK_gozaresh1 && row.FK_gozaresh1 !== "Select") {
+                    rowsData.push(row);
+                }
+            });
+
+            let finalData = {
+                UserId: parseInt("@Model.usrID"),
+                Rows: rowsData,
+                Val1: $("#field1").val() || "",
+                Val2: $("#field2").val() || "",
+                Val3: $("#field3").val() || ""
+            };
+
+            $.ajax({
+                url: "/Setting/Orders/SaveOlaviat1218Calc",
+                type: "POST",
+                data: JSON.stringify(finalData),
+                contentType: "application/json",
+                success: function () {
+                    alert("ثبت با موفقیت انجام شد");
+                },
+                error: function () {
+                    alert("خطا در ثبت اطلاعات");
+                }
+            });
+        });
+
+        $("#sabt-tab12").on("click", function () {
+            let rows = [];
+
+            $("#rowsContainer .dynamic-row").each(function () {
+                let gozaresh = $(this).find(".sel-gozaresh").val();
+                let name = $(this).find(".sel-name").val();
+                let alamat = $(this).find(".sel-alamat").val();
+
+                if (gozaresh && gozaresh !== "Select") {
+                    rows.push({
+                        FK_gozaresh1: parseInt(gozaresh),
+                        FK_name: parseInt(name || 0),
+                        alamat: parseInt(alamat || 0)
+                    });
+                }
+            });
+
+            console.log("Rows count found: ", rows.length);
+            console.log("Rows data: ", rows);
+
+            if (rows.length === 0) {
+                alert("هیچ ردیف محاسباتی معتبری یافت نشد. لطفا ردیف‌ها را پر کنید.");
+                return;
+            }
+
+            let conditions = [];
+            if ($("#useIfCondition").val() === "1") {
+                $("#ifRowsContainer .if-row").each(function () {
+                    let gozareshIf = $(this).find(".sel-if-gozaresh").val();
+                    let nameIf = $(this).find(".sel-if-name").val();
+                    let alamatIf = $(this).find(".sel-if-alamat").val();
+                    let valueIf = $(this).find(".sel-if-val").val();
+
+                    if (gozareshIf) {
+                        conditions.push({
+                            logic: $(this).find(".sel-if-logic").val(),
+                            FK_gozaresh_if: parseInt(gozareshIf),
+                            FK_name_if: parseInt(nameIf || 0),
+                            alamat_if: parseInt(alamatIf || 0),
+                            shart_value: valueIf || ""
+                        });
+                    }
+                });
+            }
+
+            let data = {
+                UserId: parseInt("@Model.usrID"),
+                Rows: rows,
+                IfConditions: conditions,
+                IsIf: parseInt($("#useIfCondition").val() || 0),
+                Val1: $("#field1").val() || "",
+                Val2: $("#field2").val() || "",
+                Val3: $("#field3").val() || ""
+            };
+
+            $.ajax({
+                url: "/Setting/Orders/SaveOlaviat1218Calc2",
+                type: "POST",
+                data: JSON.stringify(data),
+                contentType: "application/json",
+                success: function (res) {
+                    if (res.success) {
+                        alert("تمامی اطلاعات با موفقیت ثبت شد");
+                    } else {
+                        alert("خطا از سرور: " + (res.message || ""));
+                    }
+                },
+                error: function (err) {
+                    alert("خطا در ارتباط با سرور");
+                    console.error(err);
+                }
+            });
+        });
+
+        if ($("#rowsContainer .dynamic-row").length === 0) {
+            addCalcRow();
+        }
+
+        if ($("#useIfCondition").val() === "1") {
+            $("#ifRowsContainer, #addIfRowBtn").show();
+            if ($("#ifRowsContainer .if-row").length === 0) {
+                addIfRow();
+            }
+        } else {
+            $("#ifRowsContainer, #addIfRowBtn").hide();
+        }
+
+        /* =========================================================
+           5) LOAD DYNAMIC PEYMAN / USER
+        ========================================================= */
+
+        window.initPeymanSelect = function ($row) {
+            $row.find(".peymans").load('@Url.Content("/../Setting/Orders/_GetAllListPeyman_gozaresh")', function () {
+                let $select = $row.find("select.select_peyman");
+                let $userInput = $row.find(".userinput");
+                let $userDiv = $row.find(".UserOFPeyman");
+
+                $select.off("change").on("change", function () {
+                    let id = $(this).val();
+                    $userInput.hide();
+                    $userDiv.load('@Url.Content("/../Setting/Orders/_GetusersBaseOnarzyabiunics")?PeymanID=' + id);
+                });
+            });
+        };
+
+        /* =========================================================
+           6) FORMAT NUMBER FIELDS
+        ========================================================= */
+
+        $(document).on("input", "#Mablagh1", function () {
+            formatNumberInput(this);
+        });
+
+        $(document).on("input", "#Mablagh2", function () {
+            formatNumberInput(this);
+        });
+
+        $(document).on("input", "#mablagh-tab3", function () {
+            formatNumberInput(this);
+        });
+
+        /* =========================================================
+           7) MODAL SUBMIT
+        ========================================================= */
+
+        $("#btnSubmitModal2").on("click", function () {
+            var FK_olaviat = @Model.usrID;
+            var input1 = $("#input1-SayerShoroot").val();
+            var input2 = $("#input2-SayerShoroot").val();
+            var FK_db2 = $("#select_peyman").val();
+            var FK_db4_4 = $("#select_peyman22").val();
+            var mablagh1_1 = ($("#Mablagh1").val() || "").replace(/,/g, '');
+            var vaziat1 = $("#Alamat1").val();
+            var mablagh1_2 = ($("#Mablagh2").val() || "").replace(/,/g, '');
+            var vaziat2 = $("#Alamat2").val();
+
+            $.ajax({
+                url: '/Setting/Orders/SaveOlaviat1218Link',
+                type: 'POST',
+                data: {
+                    FK_olaviat: FK_olaviat,
+                    input1: input1,
+                    input2: input2,
+                    FK_db2: FK_db2,
+                    mablagh1_1: mablagh1_1,
+                    vaziat1: vaziat1,
+                    mablagh1_2: mablagh1_2,
+                    vaziat2: vaziat2,
+                    FK_db4_4: FK_db4_4
+                },
+                success: function () {
+                    alert("ثبت با موفقیت انجام شد");
+                    $("#mymodal3").fadeOut();
+                    location.reload();
+                },
+                error: function () {
+                    alert("خطا در ثبت اطلاعات");
+                }
+            });
+        });
+
+    });
+</script>

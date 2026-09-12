@@ -1,0 +1,203 @@
+﻿@model List<SaabWebProject.Models.DomainModels.tbSuggestion_Admin>
+@using SaabWebProject.Models.DomainModels;
+
+@{ SaabEntities db = new SaabEntities();
+
+    ViewBag.Title = "";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+<style>
+
+    .tableH_Lock {
+        max-height: 300px;
+        /*height: 260px;*/
+    }
+
+    thead {
+        position: sticky;
+        top: 0;
+        text-align: center;
+        z-index: 2;
+    }
+
+    .inputFilter {
+        margin-bottom: 0px !important;
+    }
+
+    thead th {
+        vertical-align: middle;
+    }
+</style>
+<div class="card" style="width: 100%;">
+    <div class="table-content p-4">
+        <div class="table-responsive tableH_Lock">
+            <table class="table table-hover" style="text-align:center;">
+                <thead>
+                    <tr>
+                        <th>ردیف</th>
+                        @*<th>
+                            دربافت کننده
+                            <div class="inputWithFilterIcon">
+                                <input type="text" id="filter04-filter" class="inputFilter form-control" placeholder="">
+                                <span><i class="fas fa-filter"></i></span>
+                            </div>
+                        </th>*@
+                        <th>
+                            شرح
+                            <div class="inputWithFilterIcon">
+                                <input type="text" id="filter02-filter" class="inputFilter form-control" placeholder="">
+                                <span><i class="fas fa-filter"></i></span>
+                            </div>
+                        </th>
+                        <th>
+                            @Html.DisplayName("تاریخ ثبت ")
+                            <div class="inputWithFilterIcon">
+                                <input type="text" id="filter01-filter" class="inputFilter form-control" placeholder="">
+                                <span><i class="fas fa-filter"></i></span>
+                            </div>
+                        </th>
+
+
+                        <th>پیوست</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ var counter = 0;
+                        string noe = "";
+                        var i = 0;
+                    }
+                    @foreach (var item in Model)
+                    {
+                        counter++;
+                        i++;
+                        <tr class="task-list-row dateS_@i"
+                            data-filter01=""
+                            data-filter02="@item.Title" data-filter04="@item.tbUsers.FullName">
+                            <td>@counter</td>
+
+                            @*<td>@item.tbUsers.FullName</td>*@
+                            <td>@item.Title</td>
+
+
+                            <td cont-date="dateS_@i" hidden>
+
+                                @((item.timesabt != null) ? item.timesabt.Value.ToString("MM / dd / yyyy") : null)
+
+                            </td>
+                            <td id="dateS_@i"></td>
+                            @if (item.FileName != null)
+                            {
+                                <td><a target="_blank" href="~/Areas/Suggestion/Contents/@item.FileSystemName">دانلود</a></td>
+                            }
+                            else
+                            {
+                                <td>
+                                    ندارد
+                                </td>
+
+                            }
+
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+        </div>
+
+    </div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script>
+    // Convert Gregorian date to jaali in the table
+    var tds = document.querySelectorAll("[cont-date]");
+    var valueD, id, target;
+    var options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    cont = 1
+    tds.forEach(td => {
+        valueD = new Date(td.textContent).toLocaleDateString('fa-IR-u-nu-latn', options).replace(',', '').replace(" ", "");
+        valueD = valueD.slice(0, 10) + " " + td.textContent.slice(10, 30)
+        id = td.getAttribute("cont-date");
+        target = document.getElementById(id);
+        target.textContent = valueD;
+        let row = document.querySelector('.task-list-row.dateS_' + cont);
+        row.setAttribute('data-filter01', valueD);
+        cont += 1
+    });
+
+</script>
+<script>
+    // Convert Gregorian date to jaali in the table
+    var tds = document.querySelectorAll("[cont-date]");
+    var valueD, id, target;
+    var options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    tds.forEach(td => {
+        valueD = new Date(td.textContent).toLocaleDateString('fa-IR-u-nu-latn', options).replace(',', '').replace(" ", "");
+        valueD = valueD.slice(0, 10) + " " + td.textContent.slice(10, 30)
+        id = td.getAttribute("cont-date");
+        target = document.getElementById(id);
+        target.textContent = valueD;
+    });
+</script>
+<script>
+
+    var
+        filters = {
+            filter01: null,
+            filter02: null,
+            filter03: null,
+            filter04: null,
+        };
+
+    function updateFilters() {
+        $('.task-list-row').hide().filter(function () {
+            var self = $(this),
+                result = true;
+
+            Object.keys(filters).forEach(function (filter) {
+                var filterData = self.data(filter);
+                if (filters[filter] && (filters[filter] != 'None') && (filters[filter] != 'همه')) {
+                    // تبدیل داده به رشته و بررسی مقدار
+                    result = result && (filterData && filterData.toString().indexOf(filters[filter]) !== -1);
+                }
+            });
+
+            return result;
+        }).show();
+    }
+
+    function changeFilter(filterName) {
+        filters[filterName] = this.value;
+        updateFilters();
+    }
+
+    // Assigned User Dropdown Filter
+    $('#filter01-filter').on('input', function () {
+        changeFilter.call(this, 'filter01');
+    });
+    $('#filter02-filter').on('input', function () {
+        changeFilter.call(this, 'filter02');
+    });
+    $('#filter03-filter').on('input', function () {
+        changeFilter.call(this, 'filter03');
+    });
+    $('#filter04-filter').on('input', function () {
+        changeFilter.call(this, 'filter04');
+    });
+
+</script>
+<script>
+    $(".show").click(function () {
+        var id = $(this).attr("id");
+            $("#big_modal_body").load('@Url.Content("/Suggestion/SuggestionandCriticism/_Sabt_Pasokh")?suggestion_ID='+id);
+        $(this).css("box-shadow", "unset");
+    });
+</script>

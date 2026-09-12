@@ -1,0 +1,459 @@
+﻿@model SaabWebProject.Models.ViewModels.Contracts.Function.FunctionModel
+
+
+
+@{
+    ViewBag.Title = "GetDataFromExcel_Moalefe";
+    Layout = null;
+}
+<style>
+
+    .loader {
+        position: absolute;
+        top: calc(50% - 32px);
+        left: calc(50% - 32px);
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        perspective: 800px;
+    }
+
+    .inner {
+        position: absolute;
+        box-sizing: border-box;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+    }
+
+        .inner.one {
+            left: 0%;
+            top: 0%;
+            animation: rotate-one 1s linear infinite;
+            border-bottom: 3px solid #EFEFFA;
+        }
+
+        .inner.two {
+            right: 0%;
+            top: 0%;
+            animation: rotate-two 1s linear infinite;
+            border-right: 3px solid #EFEFFA;
+        }
+
+        .inner.three {
+            right: 0%;
+            bottom: 0%;
+            animation: rotate-three 1s linear infinite;
+            border-top: 3px solid #EFEFFA;
+        }
+
+    @@keyframes rotate-one {
+        0% {
+            transform: rotateX(35deg) rotateY(-45deg) rotateZ(0deg);
+        }
+
+        100% {
+            transform: rotateX(35deg) rotateY(-45deg) rotateZ(360deg);
+        }
+    }
+
+    @@keyframes rotate-two {
+        0% {
+            transform: rotateX(50deg) rotateY(10deg) rotateZ(0deg);
+        }
+
+        100% {
+            transform: rotateX(50deg) rotateY(10deg) rotateZ(360deg);
+        }
+    }
+
+    @@keyframes rotate-three {
+        0% {
+            transform: rotateX(35deg) rotateY(55deg) rotateZ(0deg);
+        }
+
+        100% {
+            transform: rotateX(35deg) rotateY(55deg) rotateZ(360deg);
+        }
+    }
+    .view {
+        overflow: auto;
+        white-space: nowrap; /* متن در یک خط افقی نمایش داده می‌شود */
+    }
+
+    table {
+        min-width: 100%; /* عرض جدول حداقل برابر با عرض محتوای آن است */
+    }
+
+    .hed {
+        position: sticky;
+        top: 0;
+        text-align: center;
+        z-index: 3;
+    }
+
+    .users {
+        position: sticky;
+        right: 0;
+        text-align: center;
+        z-index: 3;
+       
+    }
+    .headRi {
+        background-color: var(--bs-table-th-bg) !important;
+        border-radius: 0 13px 13px 0 !important;
+    }
+</style>
+
+<div>
+    <div>اطلاعات</div>
+
+    <div class="row">
+        <label class="col-xl-2 mt-3">نام پیمان:</label>
+        <div class="col-xl-4 mt-3 ">
+            <input class=" form-control "  id="py" value="@Model.SabtHeader.PeymanName" />
+        </div>
+        <label class="col-xl-2 mt-3">نام بسته :</label>
+        <div class="col-xl-4 mt-3">
+            <input class=" form-control "  id="baste" value="@Model.SabtHeader.BastehName" />
+        </div>
+    </div>
+    <div class="row">
+        <label class="col-xl-2 mt-3">سال</label>
+        <div class="col-xl-4 mt-3">
+            <input class=" form-control " id="year"  value="@Model.SabtHeader.MoalfeVal_Year" />
+        </div>
+        <label class="col-xl-2 mt-3">ماه :</label>
+        <div class="col-xl-4 mt-3 ">
+            <input class=" form-control  " id="month"  value="@Model.SabtHeader.MoalfeVal_Month" />
+        </div>
+    </div>
+    <div class="row">
+        <label class="col-xl-2" style="display:none;">از تاریخ </label>
+        <input class="col-xl-4  " style="display:none;" id="FromDate" value="@Model.SabtHeader.FromDate" />
+
+        <label class="col-xl-2" style="display:none;">تا تاریخ  :</label>
+        <input class="col-xl-4 " style="display:none;" id="ToDate" value="@Model.SabtHeader.ToDate" />
+    </div>
+</div>
+<div class="view">
+
+
+    <div class="view" style="height:400px">
+        <table class="table table-hover text-nowrap">
+            <thead>
+                <tr class="how">
+                    @{
+                        var uniqueTitles = new List<string>();
+                        var uniqueTitles2 = new List<string>();
+
+                    }
+                    <th class="hed" scope="col">نام کاربری</th>
+                    @foreach (var item2 in Model.UsersMoalefe.ToList())
+                    {
+                        foreach (var item3 in item2.listMoalefe.ToList())
+                        {
+                            var title = item3.MoalefeTitle;
+                            if (!uniqueTitles.Contains(title))
+                            {
+                                uniqueTitles.Add(title);
+                                <th class="a hed" scope="col" data-title="@title">@title</th>
+                            }
+                        }
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item2 in Model.UsersMoalefe.ToList())
+                {
+                    uniqueTitles2.Clear(); // پاک کردن لیست در هر حلقه جدید
+
+                    <tr class="hoverable">
+                        <th data-personalcode="@item2.PersonalCode" class="users headRi  " scope="row">@item2.FullName</th>
+                        @foreach (var item3 in item2.listMoalefe.ToList())
+                        {
+                            var title = item3.MoalefeTitle;
+
+                            if (!uniqueTitles2.Contains(title))
+                            {
+                                uniqueTitles2.Add(title);
+
+                                <td>
+                                    <input class="moalefe-value form-control " data-personalcode="@item2.PersonalCode" data-title="@item3.MoalefeTitle" value="@item3.MoalefeValue" title="@item2.FullName - @item3.MoalefeTitle" />
+                                </td>
+}
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="loader" style="display:none">
+        <div class="inner one"></div>
+        <div class="inner two"></div>
+        <div class="inner three"></div>
+    </div>
+    <div class="form-group mb-3">
+        <button id="btnCreate12" class="btn form-control buttonsabt">
+            <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+            <span class="bSabt-text">ثبت</span>
+        </button>
+    </div>
+
+</div>
+
+
+@*
+    <script>
+        $("#btnCreate2").click(function () {
+            var data = [];
+
+
+            $('.users').each(function (i, obj) {
+                var userObj = {};
+                var personalcode = $(this).attr("id");
+
+                userObj.MoalfeVal_Month = $('#month').val();
+                userObj.MoalfeVal_Year = $('#year').val();
+                userObj.BateName = $('#baste').val();
+                userObj.pymn = $('#py').val();
+                userObj.MoalfeVal_FKUser = $("#" + personalcode).val();
+
+                $("." + personalcode + "_title").each(function (i, element) {
+                    var title = $(element).attr("id");
+                    var value = $("#" + title).val();
+
+                    userObj.MoalfeVal_FKMoalafeDastmozdi = title;
+                    userObj.MoalfeVal_Value = value;
+
+                    data.push(userObj);
+                    console.log(userObj);
+                });
+            });
+
+
+            sendAjax('@Url.Action("send", "MoalefeC", new { area = "Salaries" })', data);
+        });
+
+
+        function sendAjax(url, data) {
+            console.log(url);
+            $.ajax({
+                beforeSend: function () {
+                    document.getElementById("loading-message").style.display = "block";
+                },
+                url: url,
+                data: { Filters: data },
+                type: "POST",
+                dataType: "json",
+                traditional: true, // این را اضافه کردم تا آرایه‌ها به صورت درست به بک‌اند ارسال شوند
+                success: function (resp) {
+                    console.log(resp);
+                    document.getElementById("loading-message").style display = "none";
+                    if (resp === true) {
+                        alert("با موفقیت ثبت شد");
+                    } else {
+                        alert("در ثبت دچار خطا شده ایم! لطفا بعداً تلاش نمائید");
+                    }
+                },
+                error: function (resp) {
+                    document.getElementById("loading-message").style.display = "none";
+                    alert("در ثبت دچار مشکل شده است");
+                    console.log(resp);
+                }
+            });
+        }
+    </script>*@
+<!-- Add the script section at the end of your HTML body -->
+
+
+<script>
+
+ 
+
+    $("#btnCreate12").click(function () {
+        $(".loader").css('display', 'block');
+
+    var Filters = [];
+
+    // تعریف یک لیست برای UsersMoalefe
+    var UsersMoalefe = [];
+
+    $('.users').each(function (i, obj) {
+        var personalcode = $(this).data("personalcode");
+
+        var userObj = {};
+        userObj.SabtHeader = {};
+        userObj.SabtHeader.MoalfeVal_Month = $('#month').val();
+        userObj.SabtHeader.MoalfeVal_Year = $('#year').val();
+        userObj.SabtHeader.BastehName = $('#baste').val();
+        userObj.SabtHeader.PeymanName = $('#py').val();
+        userObj.SabtHeader.FromDate = $('#FromDate').val();
+        userObj.SabtHeader.ToDate = $('#ToDate').val();
+
+        userObj.MoalefeUserInfo = {};
+        userObj.MoalefeUserInfo.PersonalCode = personalcode;
+        userObj.MoalefeUserInfo.FullName = $(this).text();
+        userObj.MoalefeUserInfo.listMoalefe = [];
+
+        $(".a").each(function (i, element) {
+    var title = $(element).data("title");
+    var value = $(".moalefe-value[data-personalcode='" + personalcode + "'][data-title='" + title + "']").val();
+    console.log(title);
+
+            var moalefeInfo = {};
+            moalefeInfo.MoalefeTitle = title;
+            moalefeInfo.MoalefeValue = value;
+
+            // اضافه کردن هر moalefeInfo به لیست معلفه‌ها در MoalefeUserInfo
+            userObj.MoalefeUserInfo.listMoalefe.push(moalefeInfo);
+
+            // تنظیم معلومات موجود در userObj.MoalefeUserInfo به userObj.UsersMoalefe
+
+        });
+        userObj.UsersMoalefe = [];
+        userObj.UsersMoalefe.push(userObj.MoalefeUserInfo);
+
+
+        // اضافه کردن userObj به لیست UsersMoalefe
+        UsersMoalefe.push(userObj);
+        console.log(userObj)
+    });
+
+    // تنظیم UsersMoalefe به Filters
+    Filters = UsersMoalefe;
+    console.log(Filters);
+    console.log(fd);
+    sendAjax('@Url.Action("send", "Moalefe", new { area = "Salaries" })', Filters,);
+});
+
+
+
+function sendAjax(url, data) {
+    console.log(url);
+
+    $.ajax({
+        beforeSend: function () {
+        //    document.getElementById("loading-message").style.display = "block";
+        },
+        url: url,
+        data: { Filters: data },
+        type: "POST",
+        dataType: "html",
+        success: function (resp) {
+            console.log(resp);
+            document.getElementById("loading-message").style.display = "none";
+            if (resp == "true") {
+                $(".loader").css('display', 'none');
+
+                alert("با موفقیت ثبت شد");
+                console.log("After alert, before reload");
+                location.reload();
+                console.log("After reload");
+            } else {
+                alert("در ثبت دچار خطا شده ایم ! لطفا بعدا تلاش نمائید");
+            }
+        },
+        error: function (resp) {
+            $(".loader").css('display', 'none');
+
+            document.getElementById("loading-message").style.display = "none";
+            alert("دچار مشکل شده است ");
+            console.log(resp);
+        }
+    });
+}
+
+
+
+
+
+
+</script>
+
+
+
+
+
+<script>
+$("#btnCreate1").click(function () {
+    var Filters = {
+        Filters: [] // تعریف لیستی برای اطلاعات فیلترها
+    };
+
+    // جمع‌آوری اطلاعات از فیلدهای ورودی
+    Filters.Month = $('#month').val();
+    Filters.Year = $('#year').val();
+    Filters.Basteh = $('#baste').val();
+    Filters.Peyman = $('#py').val();
+    Filters.FromDate = $('#FromDate').val();
+    Filters.ToDate = $('#ToDate').val();
+
+    // تعریف یک لیست برای UsersMoalefe
+    Filters.UsersMoalefe = [];
+
+    $('.users').each(function (i, obj) {
+        var personalcode = $(this).data("personalcode");
+        var userMoalefe = {
+            PersonalCode: personalcode,
+            FullName: $(this).text(),
+            listMoalefe: []
+        };
+
+        $(".moalefe-title[data-personalcode='" + personalcode + "']").each(function (i, element) {
+            var title = $(element).data("title");
+            var value = $(".moalefe-value[data-personalcode='" + personalcode + "'][data-title='" + title + "']").val();
+
+            var moalefeInfo = {
+                MoalefeTitle: title,
+                MoalefeValue: value
+            };
+
+            // اضافه کردن هر moalefeInfo به لیست معلفه‌ها در userMoalefe
+            userMoalefe.listMoalefe.push(moalefeInfo);
+        });
+
+        // اضافه کردن userMoalefe به لیست UsersMoalefe
+        Filters.UsersMoalefe.push(userMoalefe);
+    });
+
+    // ارسال درخواست AJAX به سرور
+    sendAjax('@Url.Action("send", "Moalefe", new { area = "Salaries" })', Filters);
+});
+
+function sendAjax(url, data) {
+    console.log(url);
+
+    $.ajax({
+        beforeSend: function () {
+            document.getElementById("loading-message").style.display = "block";
+        },
+        url: url,
+        data: { Filters: data },
+        type: "POST",
+        dataType: "html",
+        success: function (resp) {
+            console.log(resp);
+            document.getElementById("loading-message").style.display = "none";
+            if (resp == "true") {
+                alert("با موفقیت ثبت شد");
+                console.log("After alert, before reload");
+                location.reload();
+                console.log("After reload");
+            } else {
+                alert("در ثبت دچار خطا شده ایم! لطفاً بعداً تلاش نمائید");
+            }
+        },
+        error: function (resp) {
+            document.getElementById("loading-message").style.display = "none";
+            alert("درخواه مشکلی پیش آمده است.");
+            console.log(resp);
+        }
+    });
+}
+
+
+
+
+
+</script>

@@ -1,0 +1,207 @@
+﻿
+@{
+    ViewBag.TitleLargModal = " پیمان ها جدید";
+    Layout = null;
+}
+<link href="~/MyStyles/MyStyle.css" rel="stylesheet" />
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div id="formControls" class="">
+
+        <div class="card">
+            <div class="card-body pb-2">
+                <form>
+                    <div class="row">
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> پیمان </label>
+                                <div id="div_peyman3"></div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> عنوان </label>
+                                <div id="div_title3">
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> کاربران ثبت </label>
+                                <span id="div_users1"></span>
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> کاربران تایید </label>
+                                <span id="div_users2"></span>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-11">
+
+                        </div>
+                        <div class="col-xl-1" >
+                            <div class="form-group mb-3">
+                                <button id="btnCreate" type="button" class="btn form-control buttonsabt">
+                                    <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                                    <span class="bSabt-text">ثبت</span>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+
+                </form>
+            </div>
+
+            <div class="card-arrow">
+                <div class="card-arrow-top-left"></div>
+                <div class="card-arrow-top-right"></div>
+                <div class="card-arrow-bottom-left"></div>
+                <div class="card-arrow-bottom-right"></div>
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+
+             $("#div_peyman3").load('@Url.Content("/../Contracts/Peyman/_GetAllListPeymans_SingleSelect")',function(){
+                 $("#select_peyman1").attr("id", "select_peyman3");
+                 $("#select_peyman3").picker({ search: true });
+                 var $elem2 = $('#select_peyman3');
+                 $elem2.picker();
+                 $elem2.on('sp-change', function () {
+                     console.log("hellow");
+                     $("#div_title3").load('@Url.Content("/../Contracts/RegistrationDocument/GetAllTitlesForThisPeyman")', { PeymanID: $("#select_peyman3").val() }, function () {
+
+
+                     });
+                     $("#div_users1").load('@Url.Content("/../Contracts/RegistrationDocument/GetauthForThisPeyman")', { PeymanID: $("#select_peyman3").val() } ,function () {
+                    $("#select_users1").attr("id", "users");
+                    $("#users").picker({ search: true });
+                    $("#users").picker();
+                    $('#users').picker({ search: true });
+                    });
+                   $("#div_users2").load('@Url.Content("/../Contracts/RegistrationDocument/GetauthForThisPeyman")', { PeymanID: $("#select_peyman3").val() }, function () {
+                        $("#select_users1").attr("id", "users2");
+                        $("#users2").picker({ search: true });
+                        $("#users2").picker();
+                        $('#users2').picker({ search: true });
+                   });
+
+                 });
+             });
+</script>
+
+<script>
+    $("#btnCreate").click(function () {
+        if ($("#select_peyman3").val() == 0) {
+            alert("پیمان را انتخاب نمایید");
+        }  else {
+            var things = [];
+            for (let i = 0; i < $("#select_Titles").val().length; i++){
+                for (let j = 0; j < $("#users").val().length; j++) {
+                    var obj =new Object();
+                    obj.FK_DefinitionOfDocTitle = $("#select_Titles").val()[i];
+                    obj.FK_User = $("#users").val()[j];
+                    obj.IsSabt = true;
+                    obj.IsTaeed = false;
+                    things.push(obj);
+                }
+                 for (let j = 0; j < $("#users2").val().length; j++) {
+                    var obj =new Object();
+                    obj.FK_DefinitionOfDocTitle = $("#select_Titles").val()[i];
+                    obj.FK_User = $("#users2").val()[j];
+                    obj.IsSabt = false;
+                    obj.IsTaeed = true;
+                    things.push(obj);
+                }
+           }
+
+            things = JSON.stringify({ 'things': things });
+           sendAjax('@Url.Action("LicenseRegistrationAndApproval_Save", "RegistrationDocument",new { area = "Contracts" })',things);
+        }
+    });
+</script>
+
+<script>
+    var Toast = Swal.mixin({
+        toast: true,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    });
+</script>
+
+<script>
+    function sendAjax(url, things) {
+        $("#loading-message").css("display", "block");
+        $.ajax({
+            contentType: 'application/json; charset=utf-8',
+            // dataType: 'json',
+            type: 'POST',
+            url: url,
+            data: things,
+            success: function (resp1) {
+                console.log(resp1);
+                $("#loading-message").css("display", "none");
+
+                if (resp1 == "True") {
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "اطلاعات با موفقیت ذخیره شد"
+                    }).then(() => {
+                        location.reload();
+                    });
+                } else {
+                    $("#loading-message").css("display", "none");
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                    }).then(() => {
+                        $("#loading-message").css("display", "none");
+                    });
+
+
+                }
+
+            },
+            error: function (resp1) {
+                console.log(resp1);
+
+                $("#loading-message").css("display", "none");
+                Toast.fire({
+                    icon: 'success',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                }).then(() => {
+                    $("#loading-message").css("display", "none");
+                });
+            }
+        });
+
+
+    }
+
+
+</script>
+

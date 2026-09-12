@@ -1,0 +1,1591 @@
+﻿
+
+@using SaabWebProject.Models.DomainModels;
+
+@{
+    ViewBag.Title = "تعریف اسناد";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    SaabEntities db = new SaabEntities();
+
+}
+
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+
+<script src="~/Assets/js/jalalidatepicker.min.js"></script>
+<link href="~/Assets/css/jalalidatepicker.min.css" rel="stylesheet" />
+<script src="~/Assets/js/jalaali.min.js"></script>
+<link href="~/MyStyles/jalalidatepicker.css" rel="stylesheet" />
+
+<link href="~/MyStyles/MyStyle.css" rel="stylesheet" />
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+
+<link href="~/MyStyles/MyStyle.css" rel="stylesheet" />
+
+<style>
+    .modal-lg, .modal-xl {
+        margin-top: 8px !important;
+        max-width: 80% !important;
+    }
+
+    #dateDisplay {
+        float: left;
+    }
+
+    h5 {
+        margin-bottom: 0;
+    }
+</style>
+<div class="tab-content">
+
+
+    <div class="row p-2">
+        <div class="col-xl-8">
+            <h5>تعریف اسناد</h5>
+        </div>
+        <div class="col-xl-4">
+            <h5 id="dateDisplay"></h5>
+        </div>
+    </div>
+    <hr />
+    <div class="row" style="margin-top:8px">
+
+
+        <div class="col-xl-3">
+            <label class="form-label"> فروشنده </label>
+            <select class="form-select " id="naemshr">
+                <option>انتخاب کنید</option>
+                @Html.Action("viewfortariasnalviewname", "FinancialDocuments", new { area = "ManagementAccounting" })
+            </select>
+        </div>
+
+
+        @*<div class="col-xl-3">
+                <label class="form-label"> نام مکان </label>
+                <select class="form-select ewds " id="naemshr32">
+                    <option>انتخاب کنید</option>
+                    @Html.Action("viewfortariasnalviewname", "FinancialDocuments", new { area = "ManagementAccounting" })
+                </select>
+            </div>*@
+        <div class="col-xl-2">
+            <label class="form-label">  شماره فاکتور</label>
+            <input class="form-control" id="shomar" />
+        </div>
+        @*<div class="col-xl-2">
+                <label class="form-label">  کد سامانه مودیان </label>
+                <input class="form-control" id="endfalse" />
+            </div>*@
+
+        <div class="col-xl-2">
+            <label class="form-label"> تاریخ فاکتور </label>
+            <div class="col-xl-12">
+                @*------------------------------------------------[1402/10/14]-|KH|-*@
+                <input data-jdp jdp-btn-close data-jdp-miladi-input="datepickerFromEn_Eq12" id="datepickerFrom_Eq12" class="form-control">
+                <input id="datepickerFromEn_Eq12" type="hidden" />
+                @*-------------------------------------------------------------|KH|-*@
+            </div>
+        </div>
+        <div class="col-xl-3">
+            <label class="form-label"> شرح</label>
+            <input class="form-control" id="sharhasli" />
+        </div>
+
+
+
+
+
+        @*<div class="col-xl-2">
+                <label class="form-label"> درجه اهمیت </label>
+                <select class="form-select my_Select" id="import">
+                    <option value="0">انتخاب کنید..</option>
+                    <option value="1">مهم </option>
+                    <option value="2">عادی </option>
+                    <option value="3">بسیار مهم </option>
+
+                </select>
+            </div>
+            <div class="col-xl-6">
+                <label class="form-label">  شرح  </label>
+                <textarea class="form-control" id="Title2"></textarea>
+            </div>*@
+
+
+    </div>
+    <hr />
+    <div class="row">
+        <div id="SectionInstallmentInputs"></div>
+    </div>
+    <div class="row" style="margin-top:8px">
+        @*<div class="col-xl-3">
+                <a href="#" class="btn btn-outline-info form-control" id="Show_Etebar">
+                    <i class="fa fa-eye"></i>
+                    مشاهده اعتبار ردیف ها
+                </a>
+            </div>
+            <div class="col-xl-2">
+                <a href="#" class="btn btn-outline-info form-control">
+                    <i class="bi bi-download"></i>
+                    دانلود فایل نمونه
+                </a>
+
+            </div>
+            <div class="col-xl-2">
+                <a href="#" class="btn btn-outline-info form-control">
+                    <i class="bi bi-upload"></i>
+                    بارگذاری اطلاعات
+                </a>
+
+            </div
+                >*@
+
+        <div class="col-xl-1">
+            <div class="form-group mb-3">
+                <button id="btnPlusInput" onclick="plusInputInstallmentManually(this)" class="btn form-control buttonGeneralPlus">
+                    <i class="fa fa-plus fa-fw me-1  VecGeneral"></i>
+                </button>
+            </div>
+        </div>
+        <div class="col-xl-1">
+            <div class="form-group mb-3">
+                <button id="btnPlusInput" onclick="plusInputInstallmentManually1(this)" class="btn form-control buttonGeneralPlus">
+                    تخفیف
+                </button>
+            </div>
+        </div>
+        <div class="col-xl-1">
+            <div class="form-group mb-3">
+                <button id="btnPlusInput" onclick="plusInputInstallmentManually2(this)" class="btn form-control buttonGeneralPlus">
+                    ارزش افزوده
+                </button>
+            </div>
+        </div>
+        <div class="col-xl-8"></div>
+
+    </div>
+    <hr />
+    <div class="row">
+        <div class="row">
+            <div class="col-xl-6">
+            </div>
+            <div class="col-xl-1">
+                <label class="form-label">مبلغ اولیه </label>
+                <input class="form-control" id="sumkol1" disabled />
+            </div>
+            <div class="col-xl-1">
+                <label class="form-label">تخفیف </label>
+                <input class="form-control" id="sumkol2" disabled />
+            </div>
+            <div class="col-xl-1">
+                <label class="form-label">مبلغ با تخفیف </label>
+                <input class="form-control" id="sumkol3" disabled />
+            </div>
+            <div class="col-xl-1">
+                <label class="form-label">ارزش افزوده </label>
+                <input class="form-control" id="sumkol4" disabled />
+            </div>
+            <div class="col-xl-2">
+                <label class="form-label">مبلغ نهایی </label>
+                <input class="form-control" id="sumkol" disabled />
+            </div>
+        </div>
+        <hr />
+
+        <div class="row">
+            <div class="col-xl-2">
+                <label class="form-label">  شماره سند مالی </label>
+                <input class="form-control" id="sanad" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xl-3">
+                <label class="form-label"> نام کاربر حقیقی </label>
+                <select class="form-select " id="namefard">
+                    <option>انتخاب کنید</option>
+                    @foreach (var it in db.tbUsers.ToList())
+                    {
+                        <option id="@it.usr_ID">@it.FullName</option>
+
+                    }
+                </select>
+            </div>
+            <div class="col-xl-2">
+                <label class="form-label">  مبلغ پرداخت </label>
+                <input class="form-control" id="endfalse" />
+            </div>
+            <div class="col-xl-2">
+                <label class="form-label"> تاریخ پرداخت </label>
+                <div class="col-xl-12">
+                    @*------------------------------------------------[1402/10/14]-|KH|-*@
+                    <input data-jdp jdp-btn-close data-jdp-miladi-input="datepickerFromEn_Eq123" id="datepickerFrom_Eq123" class="form-control">
+                    <input id="datepickerFromEn_Eq123" type="hidden" />
+                    @*-------------------------------------------------------------|KH|-*@
+                </div>
+            </div>
+            <div class="col-xl-2">
+                <label class="form-label">  شماره پیگیری </label>
+                <input class="form-control" id="endfalse" />
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-xl-10"></div>
+        <div class="col-xl-1">
+            <button class="btn form-control buttonGeneral uploadSummery2">
+                <i class="bi bi-upload fa-fw me-1 VecGeneral" style="width:11px"></i>
+                <span class="bGeneral-text">بارگذاری پیوست</span>
+            </button>
+            <input id="summery_file2" style="display: none;" type="file" class="form-control" value="" />
+        </div>
+
+
+        <div class="col-xl-1">
+            <button class="btn form-control buttonsabt" id="btnCreate3">
+                <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                <span class="bSabt-text">ثبت</span>
+            </button>
+        </div>
+    </div>
+
+</div>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/js/jquery3.6.0.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        // Ensure picker is the correct method, otherwise refer to the plugin's documentation
+        console.log($.fn.picker);
+        $("#naemshr").picker({
+            search: true
+        });
+    });
+    $(document).ready(function () {
+        // Ensure picker is the correct method, otherwise refer to the plugin's documentation
+        console.log($.fn.picker);
+        $("#namefard").picker({
+            search: true
+        });
+    });
+    $(document).ready(function () {
+        // اطمینان از اینکه پلاگین به درستی بارگذاری شده است
+        console.log($.fn.picker);
+
+        // اعمال پلاگین به تمام المنت‌های از قبل موجود
+        $(".ewds").picker({
+            search: true
+        });
+    });
+  
+</script>
+
+<script>
+    var options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+    var dateString = new Date().toLocaleDateString('fa-IR-u-nu-latn', options);
+    document.getElementById('dateDisplay').textContent = "تاریخ امروز : " + dateString;
+</script>
+<script>
+    jalaliDatepicker.startWatch({
+        time: false,
+        days: ["شنبه", "1شنبه", "2شنبه", "3شنبه", "4شنبه", "5شنبه", "جمعه"],
+        persianDigits: true,
+        autoClose: true,
+        //autocomplete: true,
+        showCloseBtn: true,
+        showEmptyBtn: false,
+        showCloseBtn: true,
+        zIndex: 100000,
+    });
+    function reinitializeDatepickers() {
+        var inputs = document.querySelectorAll("[data-jdp-miladi-input]");
+        console.log(inputs.length);
+
+        for (var i = 0; i < inputs.length; i++) {
+            inputs[i].addEventListener("jdp:change", function (e) {
+                var miladiInput = document.getElementById(this.getAttribute("data-jdp-miladi-input"));
+                var date = this.value.replace(' ', '').slice(0, 10).split('/');
+                date = jalaali.toGregorian(parseInt(date[0]), parseInt(date[1]), parseInt(date[2]));
+
+                if (!this.value) {
+                    date = "";
+                } else if (this.value.replace(' ', '').length < 11) {
+                    date = date.gy + '-' + date.gm + '-' + date.gd;
+                } else {
+                    date = date.gy + '-' + date.gm + '-' + date.gd + ' ' + this.value.replace(' ', '').slice(10, 30);
+                }
+                miladiInput.value = date;
+            });
+        }
+    }
+
+    //-----------------------------------------------------------------
+    var inputs = document.querySelectorAll("[data-jdp-miladi-input]");
+    for (var i = 0; i < inputs.length; i++) {
+        console.log(inputs.length);
+
+        inputs[i].addEventListener("jdp:change", function (e) {
+            var miladiInput = document.getElementById(this.getAttribute("data-jdp-miladi-input"));
+            var date = this.value.replace(' ', '').slice(0, 10).split('/');
+            date = jalaali.toGregorian(parseInt(date[0]), parseInt(date[1]), parseInt(date[2]),)
+            // If it was empty
+            if (!this.value) {
+                date = "";
+            }
+            // If it was only history
+            else if (this.value.replace(' ', '').length < 11) {
+                date = date.gy + '-' + date.gm + '-' + date.gd
+            }
+            // If it was the date and time
+            else {
+                date = date.gy + '-' + date.gm + '-' + date.gd + ' ' + this.value.replace(' ', '').slice(10, 30)
+            }
+            miladiInput.value = date
+        });
+    }
+</script>
+<script>
+    var fd = new FormData();
+
+    $(".uploadSummery2").click(function () {
+        $("#summery_file2").click();
+    });
+
+    $("#summery_file2").change(function (e) {
+        $.each(e.target.files, function (index, file) {
+            fd.append("files", file);
+        });
+    });
+</script>
+<script>
+</script>
+<script>
+
+    jalaliDatepicker.startWatch({
+        time: true,
+        persianDigits: true,
+        autoClose: true,
+        autocomplete: true,
+        showCloseBtn: true,
+        showEmptyBtn: false,
+        showCloseBtn: true,
+        zIndex: 100000,
+    });
+
+    var nodesLength = 0; // Declare outside the function to maintain its value
+    //$(document).ready(function () {
+    //    // اطمینان از اینکه پلاگین به درستی بارگذاری شده است
+    //    console.log($.fn.picker);
+
+    //    // اعمال پلاگین به تمام المنت‌های از قبل موجود
+    //    $(".installmentAmountInputManually").picker({
+    //        search: true
+    //    });
+    //});
+
+    var tyu = 0;
+    var tyyu = 0;
+function plusInputInstallmentManually(e) {
+    var a = 1;
+    nodesLength++;
+    a++;
+    tyyu += tyu;
+    //$('#sumkol').val(formatNumber(tyyu.toFixed(2)));
+
+    // اضافه کردن ورودی جدید به DOM
+    $("#SectionInstallmentInputs").append(`
+        <div id="row_${nodesLength}" class="row">
+            <div class="col-xl-3">
+                <label class="form-label"> عنوان کالا </label>
+                <select class="form-select installmentAmountInputManually" id="creditline_${nodesLength}"onchange="updateIntervalField(${nodesLength})">
+                    <option>انتخاب کنید</option>
+                    @Html.Action("viewfortariasnalvasil", "FinancialDocuments", new { area = "ManagementAccounting" })
+                </select>
+            </div>
+          
+            <div class="col-xl-1">
+                <label class="form-label"> مقدار </label>
+                <input class="form-control installmentAmountInputManually3" id="bestankar_${nodesLength}" oninput="formatAndCalculate(${nodesLength})" />
+            </div>
+                        <div class="col-xl-1">
+    <label class="form-label"> واحد  </label>
+    <input class="form-control installmentAmountInputManually3" id="bedehkar34_${nodesLength}" oninput="formatAndCalculate(${nodesLength})" disabled/>
+</div>
+            <div class="col-xl-1">
+                <label class="form-label"> مبلغ واحد  </label>
+                <input class="form-control installmentAmountInputManually3" id="bedehkar3_${nodesLength}" oninput="formatAndCalculate(${nodesLength})" />
+            </div>
+
+            <div class="col-xl-1">
+                <label class="form-label">مبلغ اولیه </label>
+                <input class="form-control installmentAmountInputManually2" id="bedehkar_${nodesLength}" disabled />
+            </div>
+                  <div class="col-xl-1">
+          <label class="form-label"> مبلغ تخفیف  </label>
+          <input class="form-control installmentAmountInputManually3" id="bedehkar30_${nodesLength}" oninput="formatAndCalculate(${nodesLength})" />
+      </div>
+                  <div class="col-xl-1">
+    <label class="form-label"> مبلغ با تخفیف  </label>
+    <input class="form-control installmentAmountInputManually3" id="bedehkar31_${nodesLength}" oninput="formatAndCalculate(${nodesLength})" disabled/>
+</div>
+
+                  <div class="col-xl-1">
+    <label class="form-label"> مبلغ ارزش افزوده  </label>
+    <input class="form-control installmentAmountInputManually3" id="bedehkar32_${nodesLength}" oninput="formatAndCalculate(${nodesLength})" />
+</div>
+
+                  <div class="col-xl-1">
+    <label class="form-label">مبلغ نهایی </label>
+    <input class="form-control installmentAmountInputManually3" id="bedehkar33_${nodesLength}" oninput="formatAndCalculate(${nodesLength})" disabled/>
+</div>
+
+
+
+            <div class="col-xl-1">
+                <button type="button" class="close btn form-control buttonGeneralMins" aria-label="Close" onclick="removeRow('row_${nodesLength}')">
+                    <i class="fa fa-multiply fa-fw VecGeneral"></i>
+                </button>
+            </div>
+
+            <hr class="mt-0">
+        </div>
+    `);
+    src = "~/Assets/plugins/select-picker/dist/picker.min.js"
+    // فراخوانی پلاگین picker روی المنت جدید پس از اضافه شدن به DOM
+    $('#creditline_' + nodesLength).picker({
+        search: true
+    });
+
+    reinitializeDatepickers(); // اگر لازم است برای عناصر جدید
+
+    console.log($.fn.picker); // برای بررسی درستی بارگذاری پلاگین
+    }
+
+
+    function updateIntervalField(nodesLength) {
+        const selectElement = document.getElementById(`creditline_${nodesLength}`);
+        const selectedOption = selectElement.options[selectElement.selectedIndex];
+        const intervalValue = selectedOption.getAttribute("data-interval");
+
+        // Update the input field in col-xl-1 with the intervalValue
+        document.getElementById(`bedehkar34_${nodesLength}`).value = intervalValue;
+    }
+
+
+
+    function plusInputInstallmentManually1(e) {
+    var a = 1;
+    nodesLength++;
+    a++;
+    tyyu += tyu;
+    //$('#sumkol').val(formatNumber(tyyu.toFixed(2)));
+
+    // اضافه کردن ورودی جدید به DOM
+    $("#SectionInstallmentInputs").append(`
+        <div id="row_${nodesLength}" class="row">
+            <div class="col-xl-3">
+                    <span> تخفیف</span>
+
+            </div>
+             <div class="col-xl-1">
+     <label class="form-label"> واحد  </label>
+     <input class="form-control installmentAmountInputManually3" id="bedehkar345454_${nodesLength}" oninput="formatAndCalculate(${nodesLength})"disabled />
+ </div>
+            <div class="col-xl-1">
+                <label class="form-label"> مقدار </label>
+                <input class="form-control installmentAmountInputManually3" id="bestankar3432_${nodesLength}" oninput="formatAndCalculate(${nodesLength})"disabled />
+            </div>
+
+            <div class="col-xl-1">
+                <label class="form-label"> مبلغ واحد  </label>
+                <input class="form-control installmentAmountInputManually3" id="bedehkar33423_${nodesLength}" oninput="formatAndCalculate(${nodesLength})"disabled />
+            </div>
+
+            <div class="col-xl-1">
+                <label class="form-label">مبلغ اولیه </label>
+                <input class="form-control installmentAmountInputManually2" id="bedehkar34254_${nodesLength}" disabled />
+            </div>
+                  <div class="col-xl-1">
+          <label class="form-label"> مبلغ تخفیف  </label>
+          <input class="form-control installmentAmountInputManually3000" id="bedehkar3045556_${nodesLength}" oninput="calculateTotal456(${nodesLength})" />
+      </div>
+                  <div class="col-xl-1">
+    <label class="form-label"> مبلغ با تخفیف  </label>
+    <input class="form-control installmentAmountInputManually3" id="bedehkar31435656_${nodesLength}" oninput="formatAndCalculate(${nodesLength})" disabled/>
+</div>
+
+                  <div class="col-xl-1">
+    <label class="form-label"> مبلغ ارزش افزوده  </label>
+    <input class="form-control installmentAmountInputManually3" id="bedehkar323565_${nodesLength}" oninput="formatNumberInput(${nodesLength})"disabled />
+</div>
+
+                  <div class="col-xl-1">
+    <label class="form-label">مبلغ نهایی </label>
+    <input class="form-control installmentAmountInputManually3" id="bedehkar335656_${nodesLength}" oninput="formatAndCalculate(${nodesLength})"disabled />
+</div>
+
+
+
+            <div class="col-xl-1">
+                <button type="button" class="close btn form-control buttonGeneralMins" aria-label="Close" onclick="removeRow('row_${nodesLength}')">
+                    <i class="fa fa-multiply fa-fw VecGeneral"></i>
+                </button>
+            </div>
+
+            <hr class="mt-0">
+        </div>
+    `);
+    src = "~/Assets/plugins/select-picker/dist/picker.min.js"
+    // فراخوانی پلاگین picker روی المنت جدید پس از اضافه شدن به DOM
+    $('#creditline_' + nodesLength).picker({
+        search: true
+    });
+
+    reinitializeDatepickers(); // اگر لازم است برای عناصر جدید
+
+    console.log($.fn.picker); // برای بررسی درستی بارگذاری پلاگین
+    }
+
+    function plusInputInstallmentManually2(e) {
+    var a = 1;
+    nodesLength++;
+    a++;
+    tyyu += tyu;
+    //$('#sumkol').val(formatNumber(tyyu.toFixed(2)));
+
+    // اضافه کردن ورودی جدید به DOM
+    $("#SectionInstallmentInputs").append(`
+        <div id="row_${nodesLength}" class="row">
+            <div class="col-xl-3">
+                    <span> ارزش افزوده</span>
+
+            </div>
+             <div class="col-xl-1">
+     <label class="form-label"> واحد  </label>
+     <input class="form-control installmentAmountInputManually3" id="bedehkar34545784_${nodesLength}" oninput="formatAndCalculate(${nodesLength})"disabled />
+ </div>
+            <div class="col-xl-1">
+                <label class="form-label"> مقدار </label>
+                <input class="form-control installmentAmountInputManually3" id="bestankar93786432_${nodesLength}" disabled oninput="formatAndCalculate(${nodesLength})" />
+            </div>
+
+            <div class="col-xl-1">
+                <label class="form-label"> مبلغ واحد  </label>
+                <input class="form-control installmentAmountInputManually3" id="bedehkar73347823_${nodesLength}" disabled oninput="formatAndCalculate(${nodesLength})" />
+            </div>
+
+            <div class="col-xl-1">
+                <label class="form-label">مبلغ اولیه </label>
+                <input class="form-control installmentAmountInputManually2" id="bedehkar37478254_${nodesLength}" disabled />
+            </div>
+                  <div class="col-xl-1">
+          <label class="form-label"> مبلغ تخفیف  </label>
+          <input class="form-control installmentAmountInputManually3" id="bedehkar3047875556_${nodesLength}" disabled oninput="formatAndCalculate(${nodesLength})" />
+      </div>
+                  <div class="col-xl-1">
+    <label class="form-label"> مبلغ با تخفیف  </label>
+    <input class="form-control installmentAmountInputManually3" id="bedehkar31473578656_${nodesLength}" disabled oninput="formatAndCalculate(${nodesLength})" />
+</div>
+
+                  <div class="col-xl-1">
+    <label class="form-label"> مبلغ ارزش افزوده  </label>
+    <input class="form-control installmentAmountInputManually302" id="bedehkar323577865_${nodesLength}"  oninput="calculateTotal456(${nodesLength})" />
+</div>
+
+                  <div class="col-xl-1">
+    <label class="form-label">مبلغ نهایی </label>
+    <input class="form-control installmentAmountInputManually3" id="bedehkar33786785656_${nodesLength}" disabled oninput="formatAndCalculate(${nodesLength})" />
+</div>
+
+
+
+            <div class="col-xl-1">
+                <button type="button" class="close btn form-control buttonGeneralMins" aria-label="Close" onclick="removeRow('row_${nodesLength}')">
+                    <i class="fa fa-multiply fa-fw VecGeneral"></i>
+                </button>
+            </div>
+
+            <hr class="mt-0">
+        </div>
+    `);
+    src = "~/Assets/plugins/select-picker/dist/picker.min.js"
+    // فراخوانی پلاگین picker روی المنت جدید پس از اضافه شدن به DOM
+    $('#creditline_' + nodesLength).picker({
+        search: true
+    });
+
+    reinitializeDatepickers(); // اگر لازم است برای عناصر جدید
+
+    console.log($.fn.picker); // برای بررسی درستی بارگذاری پلاگین
+    }
+
+
+
+
+
+
+
+
+
+    var sumpol = 0; // Declare outside the function to maintain its value
+
+// ترکیب فرمت‌کردن و محاسبه همزمان
+function formatAndCalculate(rowId) {
+    formatNumberInput($('#bestankar_' + rowId));
+    formatNumberInput($('#bedehkar3_' + rowId));
+    formatNumberInput($('#bedehkar_' + rowId));
+    formatNumberInput($('#bedehkar30_' + rowId));
+    formatNumberInput($('#bedehkar31_' + rowId));
+    formatNumberInput($('#bedehkar32_' + rowId));
+    calculateTotal(rowId);
+}
+// محاسبه و به‌روزرسانی رقم کل با فرمت سه رقم سه رقم
+function calculateTotal(rowId) {
+    var amount = parseFloat($('#bestankar_' + rowId).val().replace(/,/g, '')) || 0;
+    var rate = parseFloat($('#bedehkar3_' + rowId).val().replace(/,/g, '')) || 0;
+    var total = amount * rate;
+
+    $('#bedehkar_' + rowId).val(formatNumber(total.toFixed(0)));
+
+
+
+    var amount2 = parseFloat($('#bedehkar_' + rowId).val().replace(/,/g, '')) || 0;
+    var rate2 = parseFloat($('#bedehkar30_' + rowId).val().replace(/,/g, '')) || 0;
+    var total2 = amount2 - rate2;
+
+    $('#bedehkar31_' + rowId).val(formatNumber(total2.toFixed(0)));
+
+    var amount3 = parseFloat($('#bedehkar31_' + rowId).val().replace(/,/g, '')) || 0;
+    var rate3 = parseFloat($('#bedehkar32_' + rowId).val().replace(/,/g, '')) || 0;
+    var total3 = amount3 + rate3;
+    var aval = 0;
+    var taghfif = 0;
+    var bytaghfif = 0;
+    var arzesh = 0;
+    tyu = total;
+    sumpol += total;
+    var tr = 0;
+    $('#bedehkar33_' + rowId).val(formatNumber(total3.toFixed(0)));
+    $('.installmentAmountInputManually').each(function (i, obj) {
+        console.log("djkjsdkl");
+        let count = 0;
+
+        if ($(this).attr("id").split("_").length == 2) {
+            var obj = new Object();
+
+            count++;
+            console.log($(this).attr("id"));
+
+            //console.log($("#select_peyman1").val());
+            //console.log($("#miladi_date2").val());
+            var parts = $(this).attr("id").split("_"); // Corrected line                    var inputString = $(this).val();
+
+            //var parts = id.split("_");
+
+          
+            //obj.Creditorcredit = $("#bestankar").val();
+            //obj.Debtorcredit = $("#bedehkar").val();
+
+            var Year_id4 = "bedehkar33_" + parts[1];
+            tr += parseFloat($('#' + Year_id4).val().replace(/,/g, '')) || 0;
+            var Year_id45 = "bedehkar_" + parts[1];
+            aval += parseFloat($('#' + Year_id45).val().replace(/,/g, '')) || 0;
+
+            var Year_id456 = "bedehkar30_" + parts[1];
+            taghfif += parseFloat($('#' + Year_id456).val().replace(/,/g, '')) || 0;
+
+            var Year_id457 = "bedehkar31_" + parts[1];
+            bytaghfif += parseFloat($('#' + Year_id457).val().replace(/,/g, '')) || 0;
+
+            var Year_id458 = "bedehkar32_" + parts[1];
+            arzesh += parseFloat($('#' + Year_id458).val().replace(/,/g, '')) || 0;
+
+
+            console.log(tr);
+
+            console.log(parseFloat($('#' + Year_id4).val().replace(/,/g, '')) || 0);
+
+
+        }
+    });
+
+
+    $('.installmentAmountInputManually3000').each(function (i, obj) {
+        console.log("djkjsdkl");
+        let count = 0;
+
+        if ($(this).attr("id").split("_").length == 2) {
+            var obj = new Object();
+
+            count++;
+            console.log($(this).attr("id"));
+
+            //console.log($("#select_peyman1").val());
+            //console.log($("#miladi_date2").val());
+            var parts = $(this).attr("id").split("_"); // Corrected line                    var inputString = $(this).val();
+
+            //var parts = id.split("_");
+
+
+            //obj.Creditorcredit = $("#bestankar").val();
+            //obj.Debtorcredit = $("#bedehkar").val();
+            var Year_id456 = "bedehkar3045556_" + parts[1];
+            taghfif += parseFloat($('#' + Year_id456).val().replace(/,/g, '')) || 0;
+
+            var Year_id457 = "bedehkar31_" + parts[1];
+            bytaghfif += parseFloat($('#' + Year_id456).val().replace(/,/g, '')) || 0;
+            tr -= parseFloat($('#' + Year_id456).val().replace(/,/g, '')) || 0;
+          
+
+        
+
+         
+
+
+            console.log(tr);
+
+
+
+        }
+    });
+    $('.installmentAmountInputManually302').each(function (i, obj) {
+        console.log("djkjsdkl");
+        let count = 0;
+
+        if ($(this).attr("id").split("_").length == 2) {
+            var obj = new Object();
+
+            count++;
+            console.log($(this).attr("id"));
+
+            //console.log($("#select_peyman1").val());
+            //console.log($("#miladi_date2").val());
+            var parts = $(this).attr("id").split("_"); // Corrected line                    var inputString = $(this).val();
+
+            //var parts = id.split("_");
+
+
+            //obj.Creditorcredit = $("#bestankar").val();
+            //obj.Debtorcredit = $("#bedehkar").val();
+            var Year_id456 = "bedehkar323577865_" + parts[1];
+            arzesh += parseFloat($('#' + Year_id456).val().replace(/,/g, '')) || 0;
+
+            tr += parseFloat($('#' + Year_id456).val().replace(/,/g, '')) || 0;
+
+
+
+
+
+
+
+            console.log(tr);
+
+
+
+        }
+    });
+
+    $('#sumkol1').val(formatNumber(aval.toFixed(0)));
+    $('#sumkol2').val(formatNumber(taghfif.toFixed(0)));
+    $('#sumkol3').val(formatNumber(bytaghfif.toFixed(0)));
+    $('#sumkol4').val(formatNumber(arzesh.toFixed(0)));
+
+    $('#sumkol').val(formatNumber(tr.toFixed(0)));
+
+
+
+}
+    function calculateTotal456(rowId) {
+        
+        var aval = 0;
+        var taghfif = 0;
+        var bytaghfif = 0;
+        var arzesh = 0;
+     
+        var tr = 0;
+        $('.installmentAmountInputManually').each(function (i, obj) {
+            console.log("djkjsdkl");
+            let count = 0;
+
+            if ($(this).attr("id").split("_").length == 2) {
+                var obj = new Object();
+
+                count++;
+                console.log($(this).attr("id"));
+
+                //console.log($("#select_peyman1").val());
+                //console.log($("#miladi_date2").val());
+                var parts = $(this).attr("id").split("_"); // Corrected line                    var inputString = $(this).val();
+
+                //var parts = id.split("_");
+
+
+                //obj.Creditorcredit = $("#bestankar").val();
+                //obj.Debtorcredit = $("#bedehkar").val();
+
+                var Year_id4 = "bedehkar33_" + parts[1];
+                tr += parseFloat($('#' + Year_id4).val().replace(/,/g, '')) || 0;
+                var Year_id45 = "bedehkar_" + parts[1];
+                aval += parseFloat($('#' + Year_id45).val().replace(/,/g, '')) || 0;
+
+                var Year_id456 = "bedehkar30_" + parts[1];
+                taghfif += parseFloat($('#' + Year_id456).val().replace(/,/g, '')) || 0;
+
+                var Year_id457 = "bedehkar31_" + parts[1];
+                bytaghfif += parseFloat($('#' + Year_id457).val().replace(/,/g, '')) || 0;
+
+                var Year_id458 = "bedehkar32_" + parts[1];
+                arzesh += parseFloat($('#' + Year_id458).val().replace(/,/g, '')) || 0;
+
+
+                console.log(tr);
+
+                console.log(parseFloat($('#' + Year_id4).val().replace(/,/g, '')) || 0);
+
+
+            }
+        });
+
+
+        $('.installmentAmountInputManually3000').each(function (i, obj) {
+            console.log("djkjsdkl");
+            let count = 0;
+
+            if ($(this).attr("id").split("_").length == 2) {
+                var obj = new Object();
+
+                count++;
+                console.log($(this).attr("id"));
+
+                //console.log($("#select_peyman1").val());
+                //console.log($("#miladi_date2").val());
+                var parts = $(this).attr("id").split("_"); // Corrected line                    var inputString = $(this).val();
+
+                //var parts = id.split("_");
+
+
+                //obj.Creditorcredit = $("#bestankar").val();
+                //obj.Debtorcredit = $("#bedehkar").val();
+                var Year_id456 = "bedehkar3045556_" + parts[1];
+                taghfif += parseFloat($('#' + Year_id456).val().replace(/,/g, '')) || 0;
+
+                bytaghfif += parseFloat($('#' + Year_id456).val().replace(/,/g, '')) || 0;
+                tr -= parseFloat($('#' + Year_id456).val().replace(/,/g, '')) || 0;
+
+
+
+
+
+
+
+                console.log(tr);
+
+
+
+            }
+        });
+        $('.installmentAmountInputManually302').each(function (i, obj) {
+            console.log("djkjsdkl");
+            let count = 0;
+
+            if ($(this).attr("id").split("_").length == 2) {
+                var obj = new Object();
+
+                count++;
+                console.log($(this).attr("id"));
+
+                //console.log($("#select_peyman1").val());
+                //console.log($("#miladi_date2").val());
+                var parts = $(this).attr("id").split("_"); // Corrected line                    var inputString = $(this).val();
+
+                //var parts = id.split("_");
+
+
+                //obj.Creditorcredit = $("#bestankar").val();
+                //obj.Debtorcredit = $("#bedehkar").val();
+                var Year_id456 = "bedehkar323577865_" + parts[1];
+                arzesh += parseFloat($('#' + Year_id456).val().replace(/,/g, '')) || 0;
+
+                tr += parseFloat($('#' + Year_id456).val().replace(/,/g, '')) || 0;
+
+
+
+
+
+
+
+                console.log(tr);
+
+
+
+            }
+        });
+
+        $('#sumkol1').val(formatNumber(aval.toFixed(0)));
+        $('#sumkol2').val(formatNumber(taghfif.toFixed(0)));
+        $('#sumkol3').val(formatNumber(bytaghfif.toFixed(0)));
+        $('#sumkol4').val(formatNumber(arzesh.toFixed(0)));
+
+        $('#sumkol').val(formatNumber(tr.toFixed(0)));
+
+
+
+    }
+    function formatAndCalculate2(rowId) {
+        formatNumberInput($('#bedehkar_' + rowId));
+        formatNumberInput($('#bedehkar30_' + rowId));
+        calculateTotal2(rowId);
+    }
+    function calculateTotal2(rowId) {
+        var amount = parseFloat($('#bedehkar_' + rowId).val().replace(/,/g, '')) || 0;
+        var rate = parseFloat($('#bedehkar30_' + rowId).val().replace(/,/g, '')) || 0;
+        var total = amount - rate;
+        tyu = total;
+        sumpol += total;
+        $('#bedehkar31_' + rowId).val(formatNumber(total.toFixed(2)));
+
+    }
+
+
+    function formatAndCalculate23(rowId) {
+        formatNumberInput($('#bedehkar31_' + rowId));
+        formatNumberInput($('#bedehkar32_' + rowId));
+        calculateTotal23(rowId);
+    }
+    function calculateTotal23(rowId) {
+        var amount = parseFloat($('#bedehkar31_' + rowId).val().replace(/,/g, '')) || 0;
+        var rate = parseFloat($('#bedehkar32_' + rowId).val().replace(/,/g, '')) || 0;
+        var total = amount +rate;
+        tyu = total;
+        sumpol += total;
+        $('#bedehkar33_' + rowId).val(formatNumber(total.toFixed(2)));
+
+    }
+
+// فرمت کردن ورودی‌ها هنگام تایپ
+function formatNumberInput(input) {
+    var value = input.val().replace(/,/g, '');
+    if (!isNaN(value) && value !== '') {
+        input.val(formatNumber(value));
+    }
+}
+
+// تابع برای فرمت کردن عدد به‌صورت سه رقم سه رقم
+function formatNumber(value) {
+    // جدا کردن بخش صحیح و اعشاری
+    var parts = value.toString().split(".");
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return parts.join(".");
+}
+
+
+
+
+
+    $(".deleteBtn[data-row-id='" + nodesLength + "']").on("click", function () {
+        var rowId = $(this).data("row-id");
+        nodesLength--;
+        // Remove the entire row with the corresponding ID
+        $("#row_" + rowId).remove();
+        $('.installmentAmountInputManually').each(function (i, obj) {
+            console.log("djkjsdkl");
+            let count = 0;
+
+            if ($(this).attr("id").split("_").length == 2) {
+                var obj = new Object();
+
+                count++;
+                console.log($(this).attr("id"));
+
+                //console.log($("#select_peyman1").val());
+                //console.log($("#miladi_date2").val());
+                var parts = $(this).attr("id").split("_"); // Corrected line                    var inputString = $(this).val();
+
+                //var parts = id.split("_");
+
+
+                //obj.Creditorcredit = $("#bestankar").val();
+                //obj.Debtorcredit = $("#bedehkar").val();
+
+                var Year_id4 = "bedehkar33_" + parts[1];
+                tr += parseFloat($('#' + Year_id4).val().replace(/,/g, '')) || 0;
+                var Year_id45 = "bedehkar_" + parts[1];
+                aval += parseFloat($('#' + Year_id45).val().replace(/,/g, '')) || 0;
+
+                var Year_id456 = "bedehkar30_" + parts[1];
+                taghfif += parseFloat($('#' + Year_id456).val().replace(/,/g, '')) || 0;
+
+                var Year_id457 = "bedehkar31_" + parts[1];
+                bytaghfif += parseFloat($('#' + Year_id457).val().replace(/,/g, '')) || 0;
+
+                var Year_id458 = "bedehkar32_" + parts[1];
+                arzesh += parseFloat($('#' + Year_id458).val().replace(/,/g, '')) || 0;
+
+
+                console.log(tr);
+
+                console.log(parseFloat($('#' + Year_id4).val().replace(/,/g, '')) || 0);
+
+
+            }
+        });
+        $('#sumkol1').val(formatNumber(aval.toFixed(0)));
+        $('#sumkol2').val(formatNumber(taghfif.toFixed(0)));
+        $('#sumkol3').val(formatNumber(bytaghfif.toFixed(0)));
+        $('#sumkol4').val(formatNumber(arzesh.toFixed(0)));
+
+        $('#sumkol').val(formatNumber(tr.toFixed(0)));
+    });
+    function removeRow(rowId) {
+        // Find the row element with the given ID
+        var row = document.getElementById(rowId);
+
+        // Check if the row exists
+        if (row) {
+            // Remove the row
+            row.remove();
+            nodesLength--;
+        } else {
+            console.error("Row with ID " + rowId + " does not exist.");
+        }
+        var tr = 0;
+        var aval = 0;
+        var taghfif = 0;
+        var bytaghfif = 0;
+        var arzesh = 0;
+        $('.installmentAmountInputManually').each(function (i, obj) {
+            console.log("djkjsdkl");
+            let count = 0;
+
+            if ($(this).attr("id").split("_").length == 2) {
+                var obj = new Object();
+
+                count++;
+                console.log($(this).attr("id"));
+
+                //console.log($("#select_peyman1").val());
+                //console.log($("#miladi_date2").val());
+                var parts = $(this).attr("id").split("_"); // Corrected line                    var inputString = $(this).val();
+
+                //var parts = id.split("_");
+
+
+                //obj.Creditorcredit = $("#bestankar").val();
+                //obj.Debtorcredit = $("#bedehkar").val();
+
+                var Year_id4 = "bedehkar33_" + parts[1];
+                tr += parseFloat($('#' + Year_id4).val().replace(/,/g, '')) || 0;
+                var Year_id45 = "bedehkar_" + parts[1];
+                aval += parseFloat($('#' + Year_id45).val().replace(/,/g, '')) || 0;
+
+                var Year_id456 = "bedehkar30_" + parts[1];
+                taghfif += parseFloat($('#' + Year_id456).val().replace(/,/g, '')) || 0;
+
+                var Year_id457 = "bedehkar31_" + parts[1];
+                bytaghfif += parseFloat($('#' + Year_id457).val().replace(/,/g, '')) || 0;
+
+                var Year_id458 = "bedehkar32_" + parts[1];
+                arzesh += parseFloat($('#' + Year_id458).val().replace(/,/g, '')) || 0;
+
+
+                console.log(tr);
+
+                console.log(parseFloat($('#' + Year_id4).val().replace(/,/g, '')) || 0);
+
+
+            }
+        });
+        $('.installmentAmountInputManually3000').each(function (i, obj) {
+            console.log("djkjsdkl");
+            let count = 0;
+
+            if ($(this).attr("id").split("_").length == 2) {
+                var obj = new Object();
+
+                count++;
+                console.log($(this).attr("id"));
+
+                //console.log($("#select_peyman1").val());
+                //console.log($("#miladi_date2").val());
+                var parts = $(this).attr("id").split("_"); // Corrected line                    var inputString = $(this).val();
+
+                //var parts = id.split("_");
+
+
+                //obj.Creditorcredit = $("#bestankar").val();
+                //obj.Debtorcredit = $("#bedehkar").val();
+                var Year_id456 = "bedehkar3045556_" + parts[1];
+                taghfif += parseFloat($('#' + Year_id456).val().replace(/,/g, '')) || 0;
+
+                var Year_id457 = "bedehkar31_" + parts[1];
+                bytaghfif += parseFloat($('#' + Year_id456).val().replace(/,/g, '')) || 0;
+                tr -= parseFloat($('#' + Year_id456).val().replace(/,/g, '')) || 0;
+
+
+
+
+
+
+
+                console.log(tr);
+
+
+
+            }
+        });
+        $('.installmentAmountInputManually302').each(function (i, obj) {
+            console.log("djkjsdkl");
+            let count = 0;
+
+            if ($(this).attr("id").split("_").length == 2) {
+                var obj = new Object();
+
+                count++;
+                console.log($(this).attr("id"));
+
+                //console.log($("#select_peyman1").val());
+                //console.log($("#miladi_date2").val());
+                var parts = $(this).attr("id").split("_"); // Corrected line                    var inputString = $(this).val();
+
+                //var parts = id.split("_");
+
+
+                //obj.Creditorcredit = $("#bestankar").val();
+                //obj.Debtorcredit = $("#bedehkar").val();
+                var Year_id456 = "bedehkar323577865_" + parts[1];
+                arzesh += parseFloat($('#' + Year_id456).val().replace(/,/g, '')) || 0;
+
+                tr += parseFloat($('#' + Year_id456).val().replace(/,/g, '')) || 0;
+
+
+
+
+
+
+
+                console.log(tr);
+
+
+
+            }
+        });
+
+        $('#sumkol1').val(formatNumber(aval.toFixed(0)));
+        $('#sumkol2').val(formatNumber(taghfif.toFixed(0)));
+        $('#sumkol3').val(formatNumber(bytaghfif.toFixed(0)));
+        $('#sumkol4').val(formatNumber(arzesh.toFixed(0)));
+
+        $('#sumkol').val(formatNumber(tr.toFixed(0)));
+    }
+    $(document).on('click', '.buttonGeneralMins222', function () {
+    var rowId = $(this).closest('.row').attr('id');
+    var nodesLength = rowId.split('_')[1]; // Extract nodesLength from the row ID
+    var val = $('#bestankar_' + nodesLength).val();
+     var val2 = $('#datepickerFromEn_Eq12323_' + nodesLength).val();
+     var val3 = $('#creditline_' + nodesLength).val();
+     var val4 = $('#bestankar_' + nodesLength).val();
+        var val5 = $('#bedehkar3_' + nodesLength).val();
+
+    // Prepare FormData
+    var fd2 = new FormData();
+     fd2.append("DataDocument", val2);
+     fd2.append("creditline", val3);
+     fd2.append("EndTime2", val4);
+        fd2.append("title", val5);
+
+    // Add more data to fd2 as needed
+     console.log($("#datepickerFromEn_Eq12").val());
+     console.log(val4);
+     console.log(val3);
+
+    $.ajax({
+        url: '@Url.Action("Testpardas", "FinancialDocuments", new { area = "ManagementAccounting" })',
+        type: 'POST',
+        data: fd2,
+        processData: false,
+        contentType: false,
+        success: function (resp1) {
+        console.log("okeye");
+        console.log(resp1);
+        $("#loading-message").css("display", "none");
+
+        if (resp1 === "3") {
+        // Set the "بدهکار" input value to 1
+        $('#bedehkar_' + nodesLength).val('تعطیل ');
+        }
+        else if (resp1 === "4") {
+        // Set the "بدهکار" input value to 1
+        $('#bedehkar_' + nodesLength).val('مرخصس ');
+        }
+        else if (resp1 === "4") {
+        // Set the "بدهکار" input value to 1
+        $('#bedehkar_' + nodesLength).val('مرخصس ');
+        }
+        else if (resp1 === "0") {
+        $('#bedehkar_' + nodesLength).val('بلی');
+        }
+
+
+        else if (resp1 === "True") {
+        alert("با موفقیت ثبت شد");
+        location.reload();
+        } else {
+        $('#bedehkar_' + nodesLength).val(resp1);
+
+        }
+        },
+        error: function (resp1) {
+        console.log(resp1);
+        console.log("Nokeye");
+        $("#loading-message").css("display", "none");
+        Toast.fire({
+        icon: 'error',
+        background: '#35434A',
+        color: 'white',
+        title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+        });
+        }
+        });
+        });
+
+
+
+
+
+        let fii = 0;
+
+        $('#submitAllBtn').click(async function () {
+        // درخواست AJAX برای دریافت مقدار fii
+        try {
+        const fiiResponse = await $.ajax({
+        url: '@Url.Action("GetMaxTarif", "FinancialDocuments", new { area = "ManagementAccounting" })',
+        type: 'GET',
+        dataType: 'json'
+        });
+        fii = fiiResponse.fii;
+        } catch (err) {
+        console.error("Error fetching max tarif (fii):", err);
+        alert("خطا در دریافت مقدار 'fii'.");
+        return;
+        }
+
+        // Loop through each installment amount input manually
+        for (let element of $('.installmentAmountInputManually')) {
+        let rowId = $(element).attr('id').split('_')[1]; // Extract nodesLength from the id
+
+        // Collecting values for each row
+        var val1 = $('#bestankar_' + rowId).val(); // Time
+        var val2 = $('#datepickerFromEn_Eq12323_' + rowId).val(); // Date
+        var val3 = $('#creditline_' + rowId).val(); // User
+        var val4 = $('#bedehkar_' + rowId).val(); // Can or Not
+        var val5 = $('#bedehkar3_' + rowId).val(); // Title
+        var IsVisible = $('#checkbox_' + rowId).is(":checked"); // Correct ID for checkbox
+
+        console.log(val2);
+        console.log(val3);
+        console.log(val4);
+        console.log(val5);
+        console.log(val1);
+        console.log(IsVisible); // To check the value of IsVisible
+
+        if (val1 && val2 && val3 && val5) {
+        // Create an object with the gathered data
+        var rowData = {
+        "DataDocument": val2,
+        "creditline": val3,
+        "EndTime2": val1,
+        "title": val5,
+        "tar": fii // استفاده از fii که از سرور دریافت شد
+        };
+
+        var fd2 = new FormData();
+        fd2.append("DataDocument", val2);
+        fd2.append("creditline", val3);
+        fd2.append("EndTime2", val1);
+        fd2.append("title", val5);
+        fd2.append("tar", fii);
+        fd2.append("IsVisible", IsVisible);
+
+        // ارسال اطلاعات با AJAX
+        try {
+        const resp = await $.ajax({
+        url: '@Url.Action("Testpardas", "FinancialDocuments", new { area = "ManagementAccounting" })',
+        type: 'POST',
+        data: fd2,
+        processData: false,
+        contentType: false,
+        });
+
+        console.log("Row " + rowId + " submitted successfully");
+        console.log(resp);
+
+        // Assuming the server sends back 'resp1' in the response
+        var resp1 = resp.resp1 || resp; // Use resp1 if it exists, otherwise use the whole response
+        console.log($("#endfalse33").val());
+        console.log(val2);
+
+        if (val2 > $("#endfalse33").val()) {
+        console.log(val2);
+        $('#endfalse33').val(val2);
+        }
+        if (resp1 === "3") {
+
+        $('#bedehkar_' + rowId).val('تعطیل ');
+        }
+        else if (resp1 === "4") {
+
+        $('#bedehkar_' + rowId).val('مرخصی ');
+        }
+        else if (resp1 === "0") {
+
+        $('#bedehkar_' + rowId).val('بلی');
+        }
+        else if (resp1 === "True") {
+
+        alert("با موفقیت ثبت شد");
+        location.reload();
+        } else {
+        $('#bedehkar_' + rowId).val(resp1);
+        }
+        } catch (err) {
+        console.error("Error in row submission for row " + rowId);
+        console.log(err);
+        $('#bedehkar_' + rowId).val('خطا در ارسال');
+        }
+        } else {
+        alert("لطفاً تمام فیلدها را برای ردیف " + rowId + " پر کنید.");
+        }
+        }
+        });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        $("#sabt").click(function () {
+        var Filters  = [];
+
+
+        console.log("djkjsdkl");
+
+
+        $('.installmentAmountInputManually').each(function (i, obj) {
+        console.log("djkjsdkl");
+        let count = 0;
+
+        if ($(this).attr("id").split("_").length == 2) {
+        var obj = new Object();
+
+        count++;
+        console.log($(this).attr("id"));
+
+        //console.log($("#select_peyman1").val());
+        //console.log($("#miladi_date2").val());
+        console.log(count);
+        var parts = $(this).attr("id").split("_"); // Corrected line                    var inputString = $(this).val();
+
+        //var parts = id.split("_");
+
+        obj.User_ID = $(this).val();
+        obj.Peyman_ID = null;
+        //obj.Creditorcredit = $("#bestankar").val();
+        //obj.Debtorcredit = $("#bedehkar").val();
+        var Year_id2 = "datepickerFromEn_usr_" + parts[1];
+
+        var Year_id3 = "creditline2_" + parts[1];
+        var Year_id4 = "bedehkar3_" + parts[1];
+        var Year_id7 = "number1_" + parts[1];
+        obj.numberpayvas = $("#" + Year_id7).val();
+        /*        obj.Creditlamdicatros_ID = $("#" + Year_id3).val()*/;
+        obj.DataDocument = $("#" + Year_id2).val();
+        //obj.Endtime = $("#miladi_date2").val();
+        var id = $(this).attr("id");
+
+        //var inputString = $(this).val();
+
+        //console.log(parts);
+        //console.log("kjkjkjkljkljk555555555555j");
+        //var resultString = inputString.replace(/,/g, '');
+        console.log($(this).val());
+        var Year_id = "bestankar_" + parts[1];
+
+        var Monthid = "bedehkar_" + parts[1];
+        console.log(Year_id);
+        console.log($("#" + Monthid).val());
+        var inputString = $("#" + Monthid).val();
+        //var resultString = inputString.replace(/,/g, '');
+        var inputString2 = $("#" + Year_id).val();
+        //var resultString2 = inputString2.replace(/,/g, '');
+        obj.Debtore = inputString;
+        obj.Creditor = inputString2;
+        obj.Title = $("#" + Year_id4).val();
+
+        console.log(obj.Creditorcredit);
+
+        Filters.push(obj);
+
+
+        }
+        });
+
+
+
+
+
+
+        sendAjax('@Url.Action("creat", "FinancialDocuments", new { area = "ManagementAccounting" })', Filters);
+
+
+
+        ;
+
+        });
+
+
+        $("#btnCreate3").click(function () {
+        tyyu += tyu;
+        $('#sumkol').val(formatNumber(tyyu.toFixed(2)));
+        console.log($("#datepickerFromEn_Eq12").val());
+        Swal.fire({
+        title: ' حمع کل سند مالی شما برابر  ' + formatNumber(tyyu.toFixed(2)) +'مطمین هستید؟',
+        icon: 'question',
+        showCancelButton: true,
+        background: 'rgb(29,40,52)',
+        color: 'white',
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'بله ',
+        cancelButtonText: 'خیر'
+        }).then((result) => {
+
+        if (result.isConfirmed == true) {
+        $(".loader").css('display', 'block');
+        sendAjax3000900('@Url.Action("creatforamaasnadsherkat", "FinancialDocuments", new { area = "ManagementAccounting" })', fd);
+
+        }
+
+        });
+        });
+
+        function sendAjax3000900(url2, fd2) {
+        fd2.append("sharhasli", $("#sharhasli").val());
+        fd2.append("endfalse", $("#naemshr").val());
+        fd2.append("DataDocument", $("#datepickerFromEn_Eq12").val());
+        fd2.append("summm", formatNumber(tyyu.toFixed(2)));
+
+        console.log($("#endfalse33").val());
+
+        $.ajax({
+        url: url2,
+        type: 'POST',
+        data: fd2,
+        processData: false,
+        contentType: false,
+        success: function (resp1) {
+        console.log("okeye");
+        console.log(resp1);
+        $("#loading-message").css("display", "none");
+        fd = new FormData();
+        var Filters = [];
+
+        console.log("djkjsdkl");
+
+        $('.installmentAmountInputManually').each(function (i, obj) {
+        console.log("djkjsdkl");
+        let count = 0;
+
+        if ($(this).attr("id").split("_").length == 2) {
+        var obj = new Object();
+        count++;
+        console.log($(this).attr("id"));
+
+        var parts = $(this).attr("id").split("_");
+        obj.FK_nameshr = $(this).val();
+
+        var Year_id4 = "bedehkar3_" + parts[1];
+        //var val2 = $('#datepickerFromEn_Eq12323_' + parts[1]).val();
+        var Monthid = "bedehkar_" + parts[1];
+        var inputString = $("#" + Monthid).val().replace(/,/g, '') || 0;;
+        var inputString2 = $("#bestankar_" + parts[1]).val().replace(/,/g, '') || 0;;
+
+        obj.count = inputString2;
+        obj.vahd = $("#" + Year_id4).val().replace(/,/g, '') || 0;;
+        //obj.Title = ;
+        obj.FK_asliasnad = resp1;
+        obj.megdar = inputString;  // بدون
+
+        Filters.push(obj);
+        }
+        });
+
+        sendAjax12('@Url.Action("creatfktitlfkasnad", "FinancialDocuments", new { area = "ManagementAccounting" })', Filters);
+        },
+        error: function (resp1) {
+        console.log(resp1);
+        console.log("Nokeye");
+        $("#loading-message").css("display", "none");
+        Toast.fire({
+        icon: 'success',
+        background: '#35434A',
+        color: 'white',
+        title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+        }).then(() => {
+        $("#loading-message").css("display", "none");
+        });
+        }
+        });
+        }
+
+        function sendAjax12(url, data) {
+        console.log(url);
+
+        $.ajax({
+        beforeSend: function () {
+        document.getElementById("loading-message").style.display = "block";
+        },
+        url: url,
+        data: { Filters: data },
+        type: "POST",
+        dataType: "html",
+        success: function (resp) {
+        console.log(resp);
+        document.getElementById("loading-message").style.display = "none";
+        if (resp == "True") {
+        alert("با موفقیت ثبت شد");
+        location.reload();
+        }
+
+        else {
+        alert("مبلغ های های بستانکارهای شما بیش از حد مجاز در قرار داد است ")
+        }
+        },
+        error: function (resp) {
+        document.getElementById("loading-message").style.display = "none";
+        alert("دچار مشکل شده است ");
+        console.log(resp);
+        }
+        });
+        }
+
+</script>
+

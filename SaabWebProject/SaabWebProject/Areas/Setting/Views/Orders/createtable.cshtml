@@ -1,0 +1,104 @@
+﻿@using SaabWebProject.Models.DomainModels;
+
+@{
+    SaabEntities db = new SaabEntities();
+}
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var letters = Enumerable.Range('A', 26).Select(x => ((char)x).ToString()).ToList();
+}
+
+<div class="form-container">
+    <h2>تعریف نام گزارش ورودی</h2>
+
+    <form id="unicForm2">
+        <div class="row">
+            <div class="col-md-3">
+                <label>نام گزارش</label>
+                <input type="text" id="namegozareshtablecreate" class="form-control" />
+            </div>
+            @*<div class="col-md-3">
+                    <label>انتخاب فیلد یونیک </label>
+                    <select class="form-select fk_dbergha2" id="fk_dbergha2">
+                        @foreach (var item in db.dbergha2)
+                        {
+                            <option value="@item.ID">@item.name</option>
+                        }
+                    </select>
+                </div>*@
+            @*<div class="col-md-2">
+                    <label>Start</label>
+                    <input type="number" id="start" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label>Unic</label>
+                    <input type="text" id="unic" class="form-control" />
+                </div>*@
+        </div>
+
+        <hr />
+        <div id="subContainer"></div>
+
+        <button type="button" id="addSubBtn" class="btn btn-success mt-2">+</button>
+        <button type="submit" class="btn btn-primary mt-2">ثبت</button>
+    </form>
+    <div class="row">
+        @*$("#myTable").load('@Url.Action("listdocum", "FinancialDocuments", new { area = "ManagementAccounting" })');*@
+
+        @Html.Action("createtable_list", "Orders", new { Area = "Setting" })
+    </div>
+</div>
+<script>
+    document.getElementById("unicForm2").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const formData = {
+    //NameGozaresh: document.getElementById("namegozaresh").value,
+        namegozareshtable: document.getElementById("namegozareshtablecreate").value,
+    //fk_dbergha2: document.getElementById("fk_dbergha2").value,
+    @*Unic: document.getElementById("unic").value,*@
+
+    };
+
+    @*document.querySelectorAll(".sub-item").forEach(el => {
+        const fk_dbergha2 = el.querySelector(".fk_dbergha2").value;
+        const shomareh = el.querySelector(".shomareh").value;
+
+        // ترکیب سه selector
+        let letters = [];
+        const l1 = el.querySelector(".letter1").value;
+        const l2 = el.querySelector(".letter2").value;
+        const l3 = el.querySelector(".letter3").value;
+        if (l1) letters.push(l1);
+        if (l2) letters.push(l2);
+        if (l3) letters.push(l3);
+
+        const onvan = letters.join("");
+
+        formData.Details.push({
+        FK_dbergha2: fk_dbergha2,
+        Shomareh: shomareh,
+        Onvan: onvan
+        });
+        });*@
+
+        fetch('/Setting/Orders/SaveReportmodetablecreate', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json;charset=utf-8' },
+    body: JSON.stringify(formData)
+    })
+    .then(res => res.json())
+    .then(data => {
+    if (data.success) {
+    alert("اطلاعات ذخیره شد");
+    location.reload();
+    } else {
+    alert("Error: " + data.message);
+    }
+    })
+    .catch(err => {
+    console.error(err);
+    alert("Unexpected error occurred.");
+    });
+    });
+</script>

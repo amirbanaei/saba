@@ -1,0 +1,396 @@
+﻿
+@{
+    ViewBag.Title = "ویرایش";
+    Layout = null;
+}
+@model SaabWebProject.Models.DomainModels.tbDetermining_creditline
+
+<script src="~/Assets/js/jalalidatepicker.min.js"></script>
+<link href="~/Assets/css/jalalidatepicker.min.css" rel="stylesheet" />
+<script src="~/Assets/js/jalaali.min.js"></script>
+<link href="~/MyStyles/jalalidatepicker.css" rel="stylesheet" />
+
+<style>
+    .modal-lg, .modal-xl {
+        margin-top: 8px !important;
+        max-width: 80% !important;
+    }
+</style>
+
+<div class="row">
+    <div class="col-xl-2">
+        <div class="form-group mb-3">
+            <label class="form-label"> پیمان  </label>
+
+            <select class="form-select" id="select_peyman1">
+                <option value="@Model.Pyman_ID">@Model.tbPeymanContracts.pec_Title</option>
+
+            </select>
+
+        </div>
+    </div>
+    <div class="col-xl-2">
+        <div class="form-group mb-3">
+            <label class="form-label"> ردیف اعتباری  </label>
+            <select class="form-select" id="creditline">
+                <option value="@Model.FK_creditline">@Model.tbCreditIndicators.Title</option>
+                @Html.Action("_ListAllCreditIndicatior", "CreditLine", new { area = "Budget" })
+            </select>
+        </div>
+    </div>
+    <div class="col-xl-2">
+        <label class="form-label"> اعتبار بستانکار (ریال)  </label>
+        <input class="form-control bestankar-input" id="bestankar" value="@Model.Creditorcredit" oninput="formatCurrency(this)" />
+    </div>
+
+    <div class="col-xl-2">
+        <label class="form-label"> اعتبار بدهکار (ریال)  </label>
+        <input class="form-control bedehkar-input" id="bedehkar" value="@Model.Debtorcredit" oninput="formatCurrency(this)" />
+    </div>
+
+
+
+
+    <div class="col-xl-2">
+        <label class="form-label">تاریخ ایجاد اعتبار</label>
+        @*<input class="form-control" id="datepickerFrom_Eq" />
+            <input class="form-control" type="hidden" id="datepickerFromEn_Eq" value="@Model.Starttime" />*@
+
+
+        @*------------------------------------------------[1402/09/07]-|KH|-*@
+        <input data-jdp jdp-btn-close data-jdp-miladi-input="datepickerFromEn_Eq" id="datepickerFrom_Eq" class="form-control pdate" name="datepickerFrom_shw1">
+        <input id="datepickerFromEn_Eq" value="@Model.Starttime.ToString("MM/dd/yyyy hh:mm:ss tt")" type="hidden" />
+        @*-------------------------------------------------------------|KH|-*@
+    </div>
+    <div class="col-xl-2">
+        <label class="form-label">تاریخ اتمام اعتبار</label>
+        @*<input class="form-control" id="datepickerTo_Eq" />
+            <input class="form-control" type="hidden" id="datepickerToEn_Eq" value="@Model.Endtime" />*@
+
+
+        @*------------------------------------------------[1402/09/07]-|KH|-*@
+        <input data-jdp jdp-btn-close data-jdp-miladi-input="datepickerToEn_Eq" id="datepickerTo_Eq" class="form-control pdate" name="datepickerToEn_shw1">
+        <input id="datepickerToEn_Eq" value="@Model.Endtime.ToString("MM/dd/yyyy hh:mm:ss tt")" type="hidden" />
+        @*-------------------------------------------------------------|KH|-*@
+    </div>
+</div>
+<input style="display:none" value="@Model.Determining_creditline_ID" id="idd" />
+
+<div class="row">
+    @*<div class="col-xl-3">
+            <a href="#" class="btn btn-outline-info form-control" id="Show_Etebar">
+                <i class="fa fa-eye"></i>
+                مشاهده اعتبار ردیف ها
+            </a>
+        </div>
+        <div class="col-xl-2">
+            <a href="#" class="btn btn-outline-info form-control">
+                <i class="bi bi-download"></i>
+                دانلود فایل نمونه
+            </a>
+
+        </div>
+        <div class="col-xl-2">
+            <a href="#" class="btn btn-outline-info form-control">
+                <i class="bi bi-upload"></i>
+                بارگذاری اطلاعات
+            </a>
+
+        </div>*@
+    <div class="col-xl-11"></div>
+    <div class="col-xl-1">
+        <button class="btn form-control buttonsabt" id="btnCreate12">
+            <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+            <span class="bSabt-text">ثبت</span>
+        </button>
+    </div>
+</div>
+<div style="overflow-x: scroll;display: none" id="ShowImage">
+    <img src="~/Areas/Budget/ReportFiles/Tarif_Sabadha .jpg" style="width:1300px;height:400px" />
+</div>
+
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+@*<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>*@
+<script src="~/Scripts/popper.min.js"></script>
+
+@*------------------------------------------------[1402/09/07]-|KH|-*@
+<script type="text/javascript">
+    jalaliDatepicker.startWatch({
+        time: true,
+        days: ["شنبه", "1شنبه", "2شنبه", "3شنبه", "4شنبه", "5شنبه", "جمعه"],
+        persianDigits: true,
+        autoClose: true,
+        autocomplete: true,
+        // showCloseBtn:true,
+        showEmptyBtn: false,
+        showCloseBtn: true,
+        zIndex: 100000,
+    });
+    var valueD
+    var date
+
+    // convert miladi to jalali
+    date = document.getElementById("datepickerFromEn_Eq").value.replace(" ", "")
+    valueD = new Date(date.slice(0, 10)).toLocaleDateString('fa-IR-u-nu-latn', { year: 'numeric', month: '2-digit', day: '2-digit' })
+    valueD = valueD + " " + date.slice(10, 30)
+    document.getElementById("datepickerFrom_Eq").value = valueD
+
+    date = document.getElementById("datepickerToEn_Eq").value.replace(" ", "")
+    valueD = new Date(date.slice(0, 10)).toLocaleDateString('fa-IR-u-nu-latn', { year: 'numeric', month: '2-digit', day: '2-digit' })
+    valueD = valueD + " " + date.slice(10, 30)
+    document.getElementById("datepickerTo_Eq").value = valueD
+
+
+    var inputs = document.querySelectorAll("[data-jdp-miladi-input]");
+    for (var i = 0; i < inputs.length; i++) {
+        inputs[i].addEventListener("jdp:change", function (e) {
+            var miladiInput = document.getElementById(this.getAttribute("data-jdp-miladi-input"));
+            var date = this.value.replace(' ', '').slice(0, 10).split('/');
+            date = jalaali.toGregorian(parseInt(date[0]), parseInt(date[1]), parseInt(date[2]),)
+            // If it was empty
+            if (!this.value) {
+                date = "";
+            }
+            // If it was only history
+            else if (this.value.replace(' ', '').length < 11) {
+                date = date.gy + '-' + date.gm + '-' + date.gd
+            }
+            // If it was the date and time
+            else {
+                date = date.gy + '-' + date.gm + '-' + date.gd + ' ' + this.value.replace(' ', '').slice(10, 30)
+            }
+            miladiInput.value = date
+        });
+    }
+</script>
+@*-------------------------------------------------------------|KH|-*@
+
+<script>
+    function formatCurrency(input) {
+        // حذف همه کاراکترهای غیر از اعداد و "." (جداکننده اعشاری)
+        let value = input.value.replace(/[^\d.]/g, '');
+
+        // تبدیل مقدار به عدد اعشاری
+        let number = parseFloat(value);
+
+        // اگر عدد معتبر باشد، آن را به صورت سه رقمی جداکنده کنید
+        if (!isNaN(number)) {
+            let formattedValue = number.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+            // قرار دادن مقدار فرمت شده در ورودی
+            input.value = formattedValue;
+        }
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+        var bestankarInput = $(".bestankar-input");
+
+        bestankarInput.each(function () {
+            var value = $(this).val();
+            var formattedValue = formatNumber(value); // تابع formatNumber باید تعریف شود
+            $(this).val(formattedValue);
+        });
+    });
+
+    // تابع جدا کردن سه رقم سه رقم
+    function formatNumber(number) {
+        return number.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+    }
+
+</script>
+<script>
+    $(document).ready(function () {
+        var bestankarInput = $(".bedehkar-input");
+
+        bestankarInput.each(function () {
+            var value = $(this).val();
+            var formattedValue = formatNumber(value); // تابع formatNumber باید تعریف شود
+            $(this).val(formattedValue);
+        });
+    });
+
+    // تابع جدا کردن سه رقم سه رقم
+    function formatNumber(number) {
+        return number.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+    }
+
+</script>
+
+
+<script>
+        $("#btnCreate12").click(function () {
+                     var Filters  = [];
+            if ($("#bestankar").val() == 0) {
+                alert("لطفا عنوان را انتخاب نمائید");
+            }
+            if (($("#creditline").val() == 0))
+                 {
+                alert("لطفا عنوان را وارد  نمائید");
+            }
+               if (($("#select_peyman1").val() == null))
+                 {
+                alert("لطفا پیمان را انتخاب نمائید");
+               }
+
+              if (($("#datepickerFrom_Eq").val() == 0))
+                 {
+                alert("لطفا تاریخ  را انتخاب نمائید");
+            }
+              else {
+
+                  var obj = new Object();
+                  obj.Pyman_ID = $("#select_peyman1").val();
+
+                  obj.FK_creditline = $("#creditline").val();
+                  var creditorCreditValue = $("#bestankar").val();
+                  var resultString2 = creditorCreditValue.replace(/,/g, '');
+                  var debtorCreditValue = $("#bedehkar").val();
+                  var resultString = debtorCreditValue.replace(/,/g, '');
+
+                  obj.Creditorcredit = resultString2;
+                  obj.Debtorcredit = resultString;
+                  obj.Starttime = $("#datepickerFromEn_Eq").val();
+                  obj.Endtime = $("#datepickerToEn_Eq").val();
+                  obj.Determining_creditline_ID = $("#idd").val();
+
+
+                  Filters.push(obj);
+                   console.log(Filters);
+                  sendAjax('@Url.Action("tbDetermining_creditline_Edit2", "CreditLine",new { area = "Budget" })', Filters);
+                  //location.reload();
+
+                }
+              ;
+
+        });
+        function sendAjax(url, data) {
+                console.log(url);
+
+                $.ajax({
+                    beforeSend: function () {
+                        document.getElementById("loading-message").style.display = "block";
+                    },
+                    url: url,
+                    data: { Filters: data },
+                    type: "POST",
+                    dataType: "html",
+                    success: function (resp) {
+                        console.log(resp);
+                        document.getElementById("loading-message").style.display = "none";
+                        if (resp == "True") {
+                            alert("با موفقیت ثبت شد");
+                        } else {
+                            alert("مبلغ های های بستانکارهای شما بیش از حد مجاز در قرار داد است");
+                        }
+                    },
+                    error: function (resp) {
+                        document.getElementById("loading-message").style.display = "none";
+                        alert("دچار مشکل شده است ");
+                        console.log(resp);
+                    }
+                });
+            }
+</script>
+@*<script>
+         var fd = new FormData();
+        function sendAjax2(url2, fd2) {
+
+
+            fd2.append("Peyman_ID", $("#select_peyman1").val());
+
+            fd2.append("FK_creditline", $("#creditline").val());
+            fd2.append("Creditorcredit", $("#bestankar").val());
+            fd2.append("Debtorcredit", $("#bedehkar").val());
+            fd2.append("Starttime", $("#datepickerFrom_Eq").val());
+
+
+            fd2.append("Endtime", $("#datepickerTo_Eq").val());
+             fd2.append("Determining_creditline_ID", $("#idd").val());
+
+         console.log($("#idd").val());
+                      console.log($("#creditline").val());
+                      console.log($("#bestankar").val());
+                        console.log($("#select_peyman1").val());
+            console.log(fd2);
+
+            $.ajax({
+                url: url2,
+                type: 'POST',
+                data: fd2,
+                processData: false,
+                contentType: false,
+                success: function (resp1) {
+                    console.log("okeye");
+                    console.log(resp1);
+                    $("#loading-message").css("display", "none");
+                    fd = new FormData();
+                    if (resp1 == "True") {
+                        alert("با موفقیت ثبت شد");
+                        location.reload();
+                    }
+                    else {
+                        $("#loading-message").css("display", "none");
+                        Toast.fire({
+                            icon: 'success',
+                            background: '#35434A',
+                            color: 'white',
+                            title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                        }).then(() => {
+                            $("#loading-message").css("display", "none");
+                        });
+
+
+                    }
+
+                },
+                error: function (resp1) {
+                    console.log(resp1);
+                    console.log("Nokeye");
+                    $("#loading-message").css("display", "none");
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                    }).then(() => {
+                        $("#loading-message").css("display", "none");
+                    });
+                }
+            });
+        }
+    </script>
+
+    <script>
+            $("#btnCreate12").click(function () {
+            console.log("ds");
+
+                if ($("#select_peyman").val() == 0) {
+                    alert("لطفا عنوان را انتخاب نمائید");
+                }
+                if (($("#ProjectCodeE").val() == 0))
+                     {
+                    alert("لطفا عنوان را وارد  نمائید");
+                }
+                   if (($("#cities").val() == null))
+                     {
+                    alert("لطفا پیمان را انتخاب نمائید");
+                   }
+
+                  if (($("#datepickerFromEn_EqEdit").val() == 0))
+                     {
+                    alert("لطفا تاریخ  را انتخاب نمائید");
+                }
+                  else {
+
+                                         sendAjax2('@Url.Action("installments_Edit", "CreditLine",new { area = "Budget" })', fd);
+
+
+                    }
+                  ;
+
+        });
+    </script>*@

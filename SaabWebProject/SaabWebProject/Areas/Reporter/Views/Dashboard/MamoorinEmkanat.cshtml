@@ -1,0 +1,360 @@
+﻿
+@{
+    ViewBag.Title = "";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .table-container {
+        overflow: auto;
+        border: 1px solid #616871a6;
+        /* white-space: nowrap; */
+        /*height: 485px;*/
+        border-radius: 4px;
+    }
+
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-bottom: 1px !important
+    }
+
+        table th, table td {
+            vertical-align: middle;
+            /*width: 100px ;*/
+        }
+
+    th, td {
+        padding: 3px 6px !important;
+    }
+
+    .WTH {
+        width: 5.263%;
+        padding: 0 !important;
+    }
+
+    .WTV {
+        padding: 0 !important;
+        width: 10px !important;
+    }
+
+    select.form-select, input.form-control {
+        margin-bottom: 0 !important;
+    }
+
+    .btn {
+        margin-bottom: 10px !important;
+    }
+
+    .TitelL {
+        border-radius: 10px;
+        background-color: #146792 !important;
+    }
+
+    .TitelC {
+        border-radius: 0 10px 10px 0;
+        background-color: #146792 !important;
+    }
+
+    .Titel3 {
+        border-radius: 10px 0 0 10px;
+        background-color: #146792 !important;
+    }
+
+    .Titel1 {
+        border-radius: 10px;
+        background-color: #1469a18f !important;
+    }
+
+    .Titel2 {
+        border-radius: 0 10px 10px 0;
+        background-color: #1469a18f !important;
+    }
+
+    .Titel4 {
+        border-radius: 10px;
+        background-color: #1469a18f !important;
+    }
+
+    .Titel5 {
+        border-radius: 10px;
+        background-color: #00eaff7d !important;
+    }
+
+    tbody, td, tfoot, th, thead, tr {
+        border-color: var(--bs-tab-content-bg) !important;
+        border-style: solid !important;
+        border-width: 1px !important;
+        text-align: center
+    }
+
+
+    .table1 td {
+        border-radius: 10px !important;
+        background-color: #1469a18f !important;
+    }
+
+    tbody tr:nth-child(even) td:not(.Titel1,.Titel2,.Titel6) {
+        background-color: #4a8fbc63 !important;
+    }
+
+    tbody tr:nth-child(even) td:last-child, tbody tr:nth-child(even) td:nth-child(11) {
+        border-radius: 10px 0 0 10px;
+        background-color: #4a8fbc63 !important;
+    }
+
+    tbody tr:nth-child(even) td:first-child, tbody tr:nth-child(even) td:nth-child(12) {
+        border-radius: 0 10px 10px 0;
+        background-color: #4a8fbc63 !important;
+    }
+
+    tbody tr:nth-child(odd) td:not(.Titel1,.Titel2,.Titel6) {
+        background-color: #00eaff4f !important;
+    }
+
+    tbody tr:nth-child(odd) td:last-child, tbody tr:nth-child(odd) td:nth-child(11) {
+        border-radius: 10px 0 0 10px;
+        background-color: #00eaff4f !important;
+    }
+
+    tbody tr:nth-child(odd) td:first-child, tbody tr:nth-child(odd) td:nth-child(12) {
+        border-radius: 0 10px 10px 0;
+        background-color: #00eaff4f !important;
+    }
+</style>
+<style>
+    .modal-dialog {
+        max-width: 90% !important;
+        margin-top: 8px;
+    }
+
+    hr {
+        margin-top: 0 !important;
+    }
+
+    table {
+        text-align: center;
+        width: 100%;
+        font-size: 12px;
+    }
+
+    th div input {
+        margin-bottom: 0 !important;
+    }
+
+    td .form-check {
+        display: flex;
+        justify-content: center;
+    }
+
+    .headTo {
+        position: sticky;
+        top: 0;
+        text-align: center;
+        z-index: 2;
+        border-radius: 15px;
+    }
+
+    input[class="form-control"], input, textarea, textarea[class="form-control"], .inputDiv, inputDiv[class="form-control"], selectinputDiv[class="form-select"] {
+        margin-bottom: 6px !important;
+    }
+</style>
+<div class="tab-content">
+    <div class="row">
+        <div class="col-xl-4">
+            <h4>آخرين وضعيت امكانات مامورين</h4>
+        </div>
+        <div class="col-xl-4" style="text-align:center">
+
+        </div>
+        <div class="col-xl-4" style="text-align:left">
+            <h4 id="dateDisplay1"></h4>
+        </div>
+    </div>
+
+    <hr />
+    <div class="row mb-15px" style="text-align:center">
+        <div class="col-md-4">
+            جمع كل مامورين : --
+        </div>
+        <div class="col-md-4">
+            قابليت انجام كار (شغل اصلي) : --
+        </div>
+        <div class="col-md-4">
+            قابليت انجام كار (شغل مكمل ) : --
+        </div>
+    </div>
+    <div class="table-container">
+        <div style="margin-bottom: 5px; height: 389px; overflow: auto;">
+            <table class="table table-bordered" id="myTable">
+                <thead class="headTo">
+                    <tr>
+                        <th class="TitelL" rowspan="2" colspan="1">رديف</th>
+                        <th class="TitelL" rowspan="2" colspan="2">نام و نام خانوادگي</th>
+                        <th class="TitelL" rowspan="2" colspan="2">
+                            شهرستان محل خدمت
+                            <select  id="assigned-user-filter" class="form-select ">
+                                <option>همه</option>
+                                <option>مشهد</option>
+                                <option>خواف</option>
+                                <option>تربت</option>
+                            </select>
+
+                        </th>
+                        <th class="TitelL" rowspan="1" colspan="2">وسيله نقليه</th>
+                        <th class="TitelL" rowspan="2" colspan="1">لباس كار</th>
+                        <th class="TitelL" rowspan="2" colspan="1">كفش كار</th>
+                        <th class="TitelL" rowspan="1" colspan="2">ابزار ايمني و كار</th>
+                        <th class="TitelL" rowspan="1" colspan="2">قابليت انجام كار</th>
+                    </tr>
+                    <tr>
+                        <th class="TitelL" rowspan="1" colspan="1">مالك</th>
+                        <th class="TitelL" rowspan="1" colspan="1">
+                            قابليت
+                            استفاده
+                        </th>
+                        <th class="TitelL" rowspan="1" colspan="1">
+                            شغل
+                            اصلي
+                        </th>
+                        <th class="TitelL" rowspan="1" colspan="1">
+                            شغل
+                            مكمل
+                        </th>
+                        <th class="TitelL" rowspan="1" colspan="1">شغل اصلي</th>
+                        <th class="TitelL" rowspan="1" colspan="1">شغل مكمل</th>
+                    </tr>
+                    <tr>
+                        <th class="WTH"></th>
+                        <th class="WTH"></th>
+                        <th class="WTH"></th>
+                        <th class="WTH"></th>
+                        <th class="WTH"></th>
+                        <th class="WTH"></th>
+                        <th class="WTH"></th>
+                        <th class="WTH"></th>
+                        <th class="WTH"></th>
+                        <th class="WTH"></th>
+                        <th class="WTH"></th>
+                        <th class="WTH"></th>
+                        <th class="WTH"></th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="task-list-row" data-user="تربت">
+                        <td colspan="1" rowspan="1">0</td>
+                        <td colspan="2" rowspan="1">
+                            <a class="D1" id="" data-bs-toggle="modal" data-bs-target="#modalLg1" style="">---</a>
+                        </td>
+                        <td colspan="2" rowspan="1">تربت</td>
+                        <td colspan="1" rowspan="1">-</td>
+                        <td colspan="1" rowspan="1">*</td>
+                        <td colspan="1" rowspan="1">✓</td>
+                        <td colspan="1" rowspan="1"></td>
+                        <td colspan="1" rowspan="1"></td>
+                        <td colspan="1" rowspan="1"></td>
+                        <td colspan="1" rowspan="1"></td>
+                        <td colspan="1" rowspan="1"></td>
+
+                    </tr>
+                    @{for (var i = 1; i < 16; i++)
+                        {
+                            <tr class="task-list-row" data-user="مشهد">
+                                <td colspan="1" rowspan="1">@i</td>
+                                <td colspan="2" rowspan="1">
+                                    <a class="D1" id="D1_@i" data-bs-toggle="modal" data-bs-target="#modalLg1" style="">---</a>
+                                </td>
+                                <td colspan="2" rowspan="1">مشهد</td>
+                                <td colspan="1" rowspan="1">-</td>
+                                <td colspan="1" rowspan="1">*</td>
+                                <td colspan="1" rowspan="1">✓</td>
+                                <td colspan="1" rowspan="1"></td>
+                                <td colspan="1" rowspan="1"></td>
+                                <td colspan="1" rowspan="1"></td>
+                                <td colspan="1" rowspan="1"></td>
+                                <td colspan="1" rowspan="1"></td>
+
+
+                            </tr>
+                        }
+                    }
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-xl-11"></div>
+        <div class="col-xl-1">
+            <a href="#" id="btnVirayeshVasile" class="btn form-control buttonGeneral" data-bs-toggle="modal" data-bs-target="#modalLg1">
+                <i class="fa fa-edit fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text">ويرايش وسيله نقليه</span>
+
+            </a>
+        </div>
+    </div>
+
+</div>
+
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Scripts/sweetalert2.js"></script>
+<script>
+        @*$("#btnVirayeshVasile").click(function () {
+            $("#big_modal_body1").load('@Url.Content("~/Reporter/Dashboard/MamoorinEmkanat_vasile")');
+        });*@
+</script>
+<script>
+        $(".D1").click(function () {
+            $("#big_modal_body1").load('@Url.Content("~/Reporter/Dashboard/MamoorinEmkanat_check")');
+        });
+
+</script>
+<script>
+
+    var
+        filters = {
+            user: null,
+            //status: null,
+            //milestone: null,
+            //priority: null,
+            //tags: null
+        };
+
+    function updateFilters() {
+        $('.task-list-row').hide().filter(function () {
+            var
+                self = $(this),
+                result = true; // not guilty until proven guilty
+
+            Object.keys(filters).forEach(function (filter) {
+                if (filters[filter] && (filters[filter] != 'None') && (filters[filter] != 'همه')) {
+                    result = result && filters[filter] === self.data(filter);
+                }
+            });
+
+            return result;
+        }).show();
+    }
+
+    function changeFilter(filterName) {
+        filters[filterName] = this.value;
+        updateFilters();
+    }
+
+    // Assigned User Dropdown Filter
+    $('#assigned-user-filter').on('change', function () {
+        changeFilter.call(this, 'user');
+    });
+
+
+           // برای زمانی که مودال باز می‌شود و محتوای آن بارگذاری می‌شود
+$("#btnVirayeshVasile").click(function () {
+    $("#big_modal_body1").load('@Url.Content("~/Reporter/Dashboard/MamoorinEmkanat_vasile")', function () {
+        // پس از بارگذاری محتوای مودال، فیلترها را دوباره اعمال کنید
+        updateFilters();
+    });
+});
+</script>
+
+

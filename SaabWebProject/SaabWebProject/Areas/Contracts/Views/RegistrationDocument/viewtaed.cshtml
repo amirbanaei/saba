@@ -1,0 +1,150 @@
+﻿
+
+@using SaabWebProject.Models.Classes;
+@using SaabWebProject.Models.DomainModels;
+
+@{
+    Layout = null;
+    SaabEntities db = new SaabEntities();
+
+}
+@model SaabWebProject.Models.DomainModels.tbDocuments
+
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+<div class="row">
+    <div class="col-xl-9">
+        <label class="form-label"> شرح </label>
+        <div class="col-xl-12">
+            <textarea class="form-control" id="Title" style="height: 50px;">
+</textarea>
+        </div>
+    </div>
+    <div class="col-xl-3">
+        <label class="form-label"> مبلغ تایید شده  </label>
+        <input class="form-control col_mablaq" oninput="formatCurrency(this)" id="uniform" />
+
+        @*<input class="form-control" id="soorat_number" />*@
+
+    </div>
+    <div class="col-xl-2">
+    </div>
+
+</div>
+<div class="row">
+    @*<div class="col-xl-3">
+            <a href="#" class="btn btn-outline-info form-control" id="Show_Etebar">
+                <i class="fa fa-eye"></i>
+                مشاهده اعتبار ردیف ها
+            </a>
+        </div>
+        <div class="col-xl-2">
+            <a href="#" class="btn btn-outline-info form-control">
+                <i class="bi bi-download"></i>
+                دانلود فایل نمونه
+            </a>
+
+        </div>
+        <div class="col-xl-2">
+            <a href="#" class="btn btn-outline-info form-control">
+                <i class="bi bi-upload"></i>
+                بارگذاری اطلاعات
+            </a>
+
+        </div>*@
+    <input style="display:none" value="@Model.ID" id="idd" />
+
+    <div class="col-xl-11"></div>
+    <div class="col-xl-1">
+        <div class="form-group mb-3">
+            <button class="btn btn-outline-success form-control buttonsabt" id="btnCreate12">
+                <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                <span class="bSabt-text">ثبت</span>
+            </button>
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/popper.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script>
+    function formatCurrency(input) {
+        // حذف همه کاراکترهای غیر از اعداد و "." (جداکننده اعشاری)
+        let value = input.value.replace(/[^\d.]/g, '');
+
+        // تبدیل مقدار به عدد اعشاری
+        let number = parseFloat(value);
+
+        // اگر عدد معتبر باشد، آن را به صورت سه رقمی جداکنده کنید
+        if (!isNaN(number)) {
+            let formattedValue = number.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+            // قرار دادن مقدار فرمت شده در ورودی
+            input.value = formattedValue;
+        }
+    }
+</script>
+
+<script>
+        $("#btnCreate12").click(function () {
+
+            var Filters = [];
+            console.log("dfd");
+
+            var obj = new Object();
+            console.log($("#idd").val());
+            var creditorCreditValue = $("#uniform").val();
+                  var resultString2 = creditorCreditValue.replace(/,/g, '');
+            console.log(resultString2);
+
+            obj.Creditorcredit = resultString2;
+
+            obj.Fk_Document =$("#idd").val();
+            ;
+            console.log($("#idd").val());
+
+            var obj2 = {
+                valuetaead: resultString2,
+                Fk_Document : $("#idd").val(),
+                Title:$("#Title").val()
+};
+
+sendAjax('@Url.Action("creattad", "Orders", new { area = "Setting" })', obj2);
+
+                  @*Filters.push(obj);
+                   console.log(Filters);
+                  sendAjax('@Url.Action("edit", "Peyman", new { area = "Contracts" })', obj);*@
+
+
+
+
+        });
+        function sendAjax(url, data) {
+            console.log(url);
+            console.log(data);
+
+
+                $.ajax({
+                    beforeSend: function () {
+                        document.getElementById("loading-message").style.display = "block";
+                    },
+                    url: url,
+                    data: data, // تغییر این قسمت                    type: "POST",
+                    dataType: "html",
+                    success: function (resp) {
+                        console.log(resp);
+                        document.getElementById("loading-message").style.display = "none";
+                        if (resp == "True") {
+                            alert("با موفقیت ثبت شد");
+                            location.reload();
+
+                        } else {
+                            alert("دچار مشکل شده است ");
+                        }
+                    },
+                    error: function (resp) {
+                        document.getElementById("loading-message").style.display = "none";
+                        alert("دچار مشکل شده است ");
+                        console.log(resp);
+                    }
+                });
+            }
+</script>

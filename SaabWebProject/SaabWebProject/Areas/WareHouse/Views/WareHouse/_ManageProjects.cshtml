@@ -1,0 +1,380 @@
+﻿@model SaabWebProject.Models.DomainModels.tbCommodityProject
+
+<div class="card mt-3" style="width: 100%">
+    <div class="tab-content p-2 pt-4">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="form-group mb-3">
+                    <label class="form-label"> کد پروژه </label>
+                    <input class="form-control" id="ProjectCodeE" name="ProjectCode" value="@Model.ProjectCode" />
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="form-group mb-3">
+                    <label class="form-label"> مبلغ کل  </label>
+                    <input class="form-control" id="Totalnumber1" value="@Model.Totalnumber" />
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="form-group mb-3">
+                    <label class="form-label"> نام پروژه</label>
+                    <input class="form-control" id="ProjectTitleE" name="ProjectTitle" value="@Model.ProjectTitle" />
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group mb-3">
+                    <div class="form-group mb-3" id="SectionCityEdit">
+                        <label class="form-label"> شهرستان /امور </label>
+                        <div id="sectionCities"></div>
+                        @Html.Action("_Cities_Select", "Users", new { area = "Users" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="form-group mb-3">
+                    <label class="form-label"> تاریخ تعریف پروژه کالایی </label>
+                    <div class="col-xl-12">
+                        <input class="form-control" id="datepickerFrom_EqEdit" />
+                        <input class="form-control" type="hidden" id="datepickerFromEn_EqEdit" value="@Model.DateOfDefinitionCommodityProject" />
+                    </div>
+                    @*<input class="form-control" />*@
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="">
+            <div class="form-group mb-3">
+                @*<label class="form-label"> نام پیمان</label>
+                    @Html.Action("_GetPeymanContractsSelectEdit", "WareHouse", new { area = "WareHouse", id = Model.ProjectCode })*@
+                <label class="form-label">  پیمان </label>
+                <div id="sectionPeymanEdit"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<input class="d-none" value="@Model.ProjectCode" id="ProjectCode1" />
+<div class="row mt-4">
+    <div class="col-xl-10"></div>
+    <div class="col-xl-1">
+        <button type="button" class="btn form-control buttonsabt" id="btnCreate2">
+            <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+            <span class="bSabt-text">ثبت</span>
+        </button>
+    </div>
+    <div class="col-xl-1">
+        <button class="btn form-control uploadSummery1 buttonGeneral" >
+            <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+            <span class="bGeneral-text">بارگذاری پیوست</span>
+        </button>
+        <input id="summery_file1" style="display:none" type="file" class="form-control" value="" />
+    </div>
+</div>
+@if (Model.File_RealName!=null)
+{
+<input style="display:none"id="Fill" value="@Model.File_SystemName"/>
+<input style="display:none"id="Fillll" value="@Model.File_RealName" />
+}
+<input style="display:none"id="iddd" value="@Model.Id" />
+<div class="card-arrow">
+    <div class="card-arrow-top-left"></div>
+    <div class="card-arrow-top-right"></div>
+    <div class="card-arrow-bottom-left"></div>
+    <div class="card-arrow-bottom-right"></div>
+</div>
+
+<script>
+    $("#sectionPeymanEdit").load('@Url.Content("/Contracts/MoalefeDastmozdi/PeymanList")', function () {
+        $("#sectionPeymanEdit > #select_Peymans").attr("id", "select_moalefePeymanEdit");
+        $("#SectionCityEdit > #cities").attr("id", "citiesEdit");
+
+        $("#citiesEdit").picker('set', @Model.City_Id);
+        $("#select_moalefePeymanEdit").picker('set', @Model.tbPeymanContracts.pec_ID);
+    });
+</script>
+
+@*
+    <script>
+        $("#sectionCities").load('@Url.Content("/Users/Users/_Cities_Select")', function () {
+            $("#sectionCities > #cities").attr("id", "citiesEdit");
+        });
+    </script>*@
+
+<script>
+    function SubmitProjectEdit() {
+
+        var dataO = {
+            ProjectCode: $("#ProjectCodeE").val(),
+            ProjectTitle: $("#ProjectTitleE").val(),
+            FK_PeymanContracts: $("#select_peymanEdit").val(),
+            City_Id: $("#citiesEdit").val(),
+            DateOfDefinitionCommodityProject: $("#DateOfDefinitionCommodityProjectE").val(),
+            FK_PeymanContracts: $("#select_peymanEdit").val(),
+            ProjectCode1: $("#ProjectCode1").val()
+        };
+        var json = JSON.stringify(dataO);
+        $.ajax({
+            type: "POST",
+            url: "/WareHouse/WareHouse/_ManageProjects",
+            data: json,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (msg) {
+                alert('In Ajax');
+            }
+        });
+    }
+</script>
+
+@* DatePicker *@
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+
+<script>
+    $(function () {
+  
+        $('#datepickerFrom_EqEdit').MdPersianDateTimePicker({
+            targetTextSelector: '#datepickerFrom_EqEdit',
+            targetDateSelector: '#datepickerFromEn_EqEdit',
+            dateFormat: 'yyyy-MM-dd',
+            isGregorian: false,
+            enableTimePicker: true,
+            disableBeforeToday: false
+        });
+
+        $('#datepickerTo_EqEdit').MdPersianDateTimePicker({
+            targetTextSelector: '#datepickerTo_EqEdit',
+            targetDateSelector: '#datepickerToEn_EqEdit',
+            dateFormat: 'yyyy-MM-dd',
+            isGregorian: false,
+            enableTimePicker: true,
+            disableBeforeToday: false
+        });
+
+    });
+
+</script>
+
+
+
+<script>
+
+
+
+    var Toast = Swal.mixin({
+        toast: true,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    });
+    var fd = new FormData();
+    function sendAjax2(url2, fd2) {
+
+
+
+        fd2.append("FK_PeymanContracts", $("#select_moalefePeymanEdit").val());
+
+        fd2.append("ProjectCode", $("#ProjectCodeE").val());
+        fd2.append("City_Id", $("#citiesEdit").val());
+        fd2.append("DateOfDefinitionCommodityProject", $("#datepickerFromEn_EqEdit").val());
+        fd2.append("ProjectTitle", $("#ProjectTitleE").val());
+
+
+        fd2.append("Totalnumber", $("#Totalnumber1").val());
+         fd2.append("Id", $("#iddd").val());
+        fd2.append("File_SystemName", $("#Fill").val());
+            fd2.append("File_RealName", $("#Fillll").val());
+
+        console.log(fd2);
+
+        $.ajax({
+            url: url2,
+            type: 'POST',
+            data: fd2,
+            processData: false,
+            contentType: false,
+            success: function (resp1) {
+                console.log("okeye");
+                console.log(resp1);
+                $("#loading-message").css("display", "none");
+                fd = new FormData();
+                if (resp1 == "True") {
+                    alert("با موفقیت ثبت شد");
+                    location.reload();
+                }
+                else {
+                    $("#loading-message").css("display", "none");
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                    }).then(() => {
+                        $("#loading-message").css("display", "none");
+                    });
+
+
+                }
+
+            },
+            error: function (resp1) {
+                console.log(resp1);
+                console.log("Nokeye");
+                $("#loading-message").css("display", "none");
+                Toast.fire({
+                    icon: 'success',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                }).then(() => {
+                    $("#loading-message").css("display", "none");
+                });
+            }
+        });
+    }
+</script>
+
+
+<script>
+           $(".uploadSummery1").click(function () {
+                 $("#summery_file1").click();
+           });
+
+            $("#summery_file1").change(function (e) {
+                   $.each(e.target.files, function (index, file) {
+                      fd.append("files", file);
+                   });
+            });
+    $("#btnCreate2").click(function () {
+        console.log("ds");
+
+            if ($("#select_peyman").val() == 0) {
+                alert("لطفا عنوان را انتخاب نمائید");
+            }
+            if (($("#ProjectCodeE").val() == 0))
+                 {
+                alert("لطفا عنوان را وارد  نمائید");
+            }
+               if (($("#cities").val() == null))
+                 {
+                alert("لطفا پیمان را انتخاب نمائید");
+               }
+
+              if (($("#datepickerFromEn_EqEdit").val() == 0))
+                 {
+                alert("لطفا تاریخ  را انتخاب نمائید");
+            }
+              else {
+
+                                     sendAjax2('@Url.Action("UploadAttachmentFile_edit", "WareHouse",new { area = "WareHouse" })', fd);
+
+
+                }
+              ;
+
+    });
+
+
+         //function sendAjax(url, data) {
+         //       console.log(url);
+
+         //       $.ajax({
+         //           beforeSend: function () {
+         //               document.getElementById("loading-message").style.display = "block";
+         //           },
+         //           url: url,
+         //           data: { Filters: data },
+         //           type: "POST",
+         //           dataType: "html",
+         //           success: function (resp) {
+         //               console.log(resp);
+         //               document.getElementById("loading-message").style.display = "none";
+         //               if (resp == "True") {
+         //                   alert("با موفقیت ثبت شد");
+         //               } else {
+         //                   alert("در ثبت دچار خطا شده ایم ! لطفا بعدا تلاش نمائید")
+         //               }
+         //           },
+         //           error: function (resp) {
+         //               document.getElementById("loading-message").style.display = "none";
+         //               alert("دچار مشکل شده است ");
+         //               console.log(resp);
+         //           }
+         //       });
+         //   }
+
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+
+        function EnableProject(e) {
+            var argumentEnableProject = {}
+            argumentEnableProject.id = e.id;
+            $.ajax({
+                type: "Post",
+                url: "@Url.Action("EnableProject","WareHouse")",
+                dataType: 'text',
+                contentType: 'application/json',
+                traditional: true,
+                data: JSON.stringify(argumentEnableProject),
+                success: function (data) {
+                    window.location.reload();
+                },
+                error: function () {
+                    alert(-1)
+                }
+            });
+        }
+        function DisableProject(e) {
+            var argumentDisableProject = {}
+            argumentDisableProject.id = e.id;
+            $.ajax({
+                type: "Post",
+                url: "@Url.Action("DisableProject","WareHouse")",
+                dataType: 'text',
+                contentType: 'application/json',
+                traditional: true,
+                data: JSON.stringify(argumentDisableProject),
+                success: function (data) {
+                    window.location.reload();
+                },
+                error: function () {
+                    alert(-1)
+                }
+            });
+        }
+</script>

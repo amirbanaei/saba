@@ -1,0 +1,138 @@
+﻿@model IEnumerable<SaabWebProject.Models.DomainModels.olaviat_1218_link>
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+@using SaabWebProject.Models.DomainModels;
+
+@{
+    ViewBag.Title = "";
+    SaabEntities db = new SaabEntities();
+    Layout = null;
+}
+<style>
+    .form-select {
+        margin-bottom: 0px !important;
+    }
+
+    .form-label {
+        position: absolute;
+        background-color: var(--bs-tab-content-bg);
+        padding: 0 5px;
+        font-size: 10px;
+        color: #fff;
+        pointer-events: none;
+        top: 0px;
+        right: 10px;
+    }
+
+    .col-xl-3 {
+        position: relative;
+    }
+</style>
+<style>
+    .custom-tooltip {
+        position: absolute;
+        background: #333;
+        color: aqua;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 13px;
+        pointer-events: none;
+        z-index: 9999;
+    }
+</style>
+<div class="tab-content" id="pills-tabContent" style="margin-top: 25px; max-height: 285px; overflow-y: auto;">
+    <div class="tab-pane fade show active" id="pills-profile">
+        @foreach (var item in Model)
+        {
+            var peymanId = "peymans_" + item.ID;
+            var userLabelId = "userlabel_" + item.ID;
+            var userInputId = "userinput_" + item.ID;
+            var userOfPeymanId = "UserOFPeyman_" + item.ID;
+            <div class="row" style="margin-top:10px;">
+                <div class="col-xl-3">
+                    <label class="form-label">input 1</label>
+                    <input class="form-control" type="text" value="@item.input1" disabled />
+                </div>
+                <div class="col-xl-3">
+                    <label class="form-label">input 2</label>
+                    <input class="form-control" type="text" value="@item.input2" disabled />
+                </div>
+                <div class="col-xl-3">
+                    <label class="form-label">عنوان فیلد</label>
+                    <input class="form-control" id="@peymanId" value="@item.dbergharel_4_4.name" disabled />
+                </div>
+                <div class="col-xl-3" id="@userLabelId">
+                    <label class="form-label">کاربر</label>
+                    <input class="form-control" id="@userInputId" value="@item.dbergha2.name" disabled />
+                    <div id="@userOfPeymanId"></div>
+                </div>
+            </div>
+            <div class="row" style="margin-top:10px;">
+                <div class="col-xl-3">
+                    <label class="form-label">مبلغ اول</label>
+                    <input class="form-control" type="text" value="@item.mablagh1_1" disabled />
+                </div>
+                <div class="col-xl-3">
+                    <label class="form-label">علامت</label>
+                    <select class="form-select" disabled>
+                        <option value="1" @(item.vaziat1 == 1 ? "selected" : "")><=</option>
+                        <option value="2" @(item.vaziat1 == 2 ? "selected" : "")><</option>
+                        <option value="3" @(item.vaziat1 == 3 ? "selected" : "")>=</option>
+                        <option value="4" @(item.vaziat1 == 4 ? "selected" : "")>></option>
+                        <option value="5" @(item.vaziat1 == 5 ? "selected" : "")>=></option>
+                    </select>
+                </div>
+                <div class="col-xl-3">
+                    <label class="form-label">مبلغ دوم</label>
+                    <input class="form-control" type="text" value="@item.mablagh1_2" disabled />
+                </div>
+                <div class="col-xl-3">
+                    <label class="form-label">علامت</label>
+                    <select class="form-select" disabled>
+                        <option value="1" @(item.vaziat2 == 1 ? "selected" : "")><=</option>
+                        <option value="2" @(item.vaziat2 == 2 ? "selected" : "")><</option>
+                        <option value="3" @(item.vaziat2 == 3 ? "selected" : "")>=</option>
+                        <option value="4" @(item.vaziat2 == 4 ? "selected" : "")>></option>
+                        <option value="5" @(item.vaziat2 == 5 ? "selected" : "")>=></option>
+                    </select>
+                </div>
+            </div>
+            <hr style="color:aqua;" />
+
+        }
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        // همه input های کاربر
+        $("input[id^='userinput_']").hover(function (e) {
+            // وقتی موس روی input رفت
+            var value = $(this).val(); // مقدار داخل input
+            // ایجاد یک باکس tooltip
+            var tooltip = $("<div class='custom-tooltip'></div>").text(value);
+            $("body").append(tooltip);
+
+            // موقعیت tooltip بالای input
+            tooltip.css({
+                top: e.pageY - $(this).outerHeight() - 10 + "px",
+                left: e.pageX + "px"
+            });
+
+            // وقتی موس حرکت کرد، tooltip هم حرکت کنه
+            $(this).mousemove(function (e) {
+                tooltip.css({
+                    top: e.pageY - $(this).outerHeight() - 10 + "px",
+                    left: e.pageX + "px"
+                });
+            });
+
+        }, function () {
+            // وقتی موس از input خارج شد، tooltip حذف بشه
+            $(".custom-tooltip").remove();
+            $(this).off("mousemove");
+        });
+    });
+</script>
+
+
+

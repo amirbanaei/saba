@@ -1,0 +1,442 @@
+﻿@{
+    Layout = null;
+
+}
+@*@section Styles{
+        <link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+        <link href="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.style.css" rel="stylesheet" />
+
+    }*@
+
+
+<script src="~/Assets/js/jalalidatepicker.min.js"></script>
+<link href="~/Assets/css/jalalidatepicker.min.css" rel="stylesheet" />
+<script src="~/Assets/js/jalaali.min.js"></script>
+<link href="~/MyStyles/jalalidatepicker.css" rel="stylesheet" />
+<style>
+    .modal-lg, .modal-xl {
+        margin-top: 10px !important;
+        max-width: 80% !important;
+    }
+</style>
+<div class="card p-4">
+    <div id="myModal">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group mb-3">
+                    <label class="form-label"> پیمان  </label>
+                    <div id="peyman1"></div>
+                </div>
+            </div>
+            @*<div class="col-xl-2">
+                    <div class="form-group mb-3">
+                        <label class="form-label"> ردیف اعتباری  </label>
+                        <select class="form-select" id="creditline">
+                            <option>انتخاب کنید</option>
+                            @Html.Action("_ListAllCreditIndicatior", "CreditLine", new { area = "Budget" })
+                        </select>
+                    </div>
+                </div>
+                <div class="col-xl-2">
+                    <label class="form-label"> اعتبار بستانکار (ریال)  </label>
+                    <input class="form-control" id="bestankar"  />
+                </div>
+                <div class="col-xl-2">
+                    <label class="form-label"> اعتبار بدهکار (ریال)  </label>
+                    <input class="form-control" id="bedehkar" />
+                </div>*@
+
+
+            <div class="col-md-2">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label class="form-label">از تاریخ</label>
+                        @*------------------------------------------------[1402/09/05]-|KH|-*@
+                        <input data-jdp jdp-btn-close data-jdp-miladi-input="miladi_date1" id="datepickerFrom_shw1" class="form-control pdate" name="datepickerFrom_shw1">
+                        <input id="miladi_date1" type="hidden" />
+                        @*-------------------------------------------------------------|KH|-*@
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2  ">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label class="form-label">تا تاریخ</label>
+                        @*------------------------------------------------[1402/09/05]-|KH|-*@
+                        <input data-jdp jdp-btn-close data-jdp-miladi-input="miladi_date2" id="datepickerToEn_shw1" class="form-control pdate" name="datepickerToEn_shw1">
+                        <input id="miladi_date2" type="hidden" />
+                        @*-------------------------------------------------------------|KH|-*@
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div id="SectionInstallmentInputs"></div>
+        </div>
+        @*<div class="col-md-2"></div>*@
+
+        <div class="row" style="margin-top:10px">
+            @*<div class="col-xl-3">
+                    <a href="#" class="btn btn-outline-info form-control" id="Show_Etebar">
+                        <i class="fa fa-eye"></i>
+                        مشاهده اعتبار ردیف ها
+                    </a>
+                </div>
+                <div class="col-xl-2">
+                    <a href="#" class="btn btn-outline-info form-control">
+                        <i class="bi bi-download"></i>
+                        دانلود فایل نمونه
+                    </a>
+
+                </div>
+                <div class="col-xl-2">
+                    <a href="#" class="btn btn-outline-info form-control">
+                        <i class="bi bi-upload"></i>
+                        بارگذاری اطلاعات
+                    </a>
+
+                </div
+                    >*@
+
+            <div class="col-xl-1">
+                <button id="btnPlusInput" onclick="plusInputInstallmentManually(this)" class="btn buttonGeneralPlus form-control">
+                    <i class="fa fa-plus  fa-fw me-1 VecGeneral"></i>
+                </button>
+            </div>
+            <div class="col-xl-10"></div>
+            <div class="col-xl-1">
+                <div class="form-group mb-3">
+                    <button class="btn form-control buttonsabt" id="btnCreate1">
+                        <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                        <span class="bSabt-text">ثبت</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div style="overflow-x:scroll;display:none" id="ShowImage">
+            <img src="~/Areas/Budget/ReportFiles/Tarif_Sabadha .jpg" style="width:1300px;height:400px" />
+        </div>
+    </div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Scripts/sweetalert2.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+@*<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>*@
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Scripts/sweetalert2.js" type="text/javascript"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+
+<script>
+    $(".installmentAmountInputManually").picker({ search: true });
+
+    jalaliDatepicker.startWatch({
+        time: false,
+        days: ["شنبه", "1شنبه", "2شنبه", "3شنبه", "4شنبه", "5شنبه", "جمعه"],
+        persianDigits: true,
+        autoClose: true,
+        autocomplete: true,
+        // showCloseBtn:true,
+        showEmptyBtn: false,
+
+        showCloseBtn: true,
+        zIndex: 100000,
+
+    });
+    //-----------------------------------------------------------------
+    var inputs = document.querySelectorAll("[data-jdp-miladi-input]");
+    for (var i = 0; i < inputs.length; i++) {
+        inputs[i].addEventListener("jdp:change", function (e) {
+            var miladiInput = document.getElementById(this.getAttribute("data-jdp-miladi-input"));
+            var date = this.value.replace(' ', '').slice(0, 10).split('/');
+            date = jalaali.toGregorian(parseInt(date[0]), parseInt(date[1]), parseInt(date[2]),)
+            // If it was empty
+            if (!this.value) {
+                date = "";
+            }
+            // If it was only history
+            else if (this.value.replace(' ', '').length < 11) {
+                date = date.gy + '-' + date.gm + '-' + date.gd
+            }
+            // If it was the date and time
+            else {
+                date = date.gy + '-' + date.gm + '-' + date.gd + ' ' + this.value.replace(' ', '').slice(10, 30)
+            }
+            miladiInput.value = date
+        });
+    }
+
+</script>
+@*-------------------------------------------------------------|KH|-*@
+
+<script>
+    $("#select_peyman1").picker({ search: true });
+    var nodesLength = 0; // Declare outside the function to maintain its value
+    function plusInputInstallmentManually(e) {
+        var a = 1;
+        nodesLength++;
+        a++;
+
+
+        $("#SectionInstallmentInputs").append(`
+            <div id="row_${nodesLength}" class="row">
+                <div class="col-md-12 col-xl-6">
+                        <label class="form-label"> ردیف اعتباری </label>
+                        <select class="form-select installmentAmountInputManually" id="creditline_${nodesLength}">
+                            <option>انتخاب کنید</option>
+                            @Html.Action("_ListAllCreditIndicatior", "CreditLine", new { area = "Budget" })
+                        </select>
+                </div>
+                <div class="col-md-12 col-xl-2">
+                    <label class="form-label">  بستانکار (ریال) </label>
+                    <input class="form-control" oninput="formatCurrency(this)" id="bestankar_${nodesLength}" />
+                </div>
+                <div class="col-md-12 col-xl-2">
+                    <label class="form-label">  بدهکار (ریال) </label>
+                    <input class="form-control" oninput="formatCurrency(this)" id="bedehkar_${nodesLength}" />
+                </div>
+                <div class="col-xl-1"></div>
+                <div class="col-xl-1">
+                     <button type="button" class="btn buttonGeneralMins form-control"  onclick="removeRow('row_${nodesLength}')">
+                        <i class="fa fa-multiply fa-fw me-1  VecGeneral"></i>
+                     </button>
+                </div>
+            </div>
+`);
+        $(`#creditline_${nodesLength}`).picker({ search: true });
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    $(".deleteBtn[data-row-id='" + nodesLength + "']").on("click", function () {
+        var rowId = $(this).data("row-id");
+        nodesLength--;
+        // Remove the entire row with the corresponding ID
+        $("#row_" + rowId).remove();
+    });
+
+
+    function removeRow(rowId) {
+        // Find the row element with the given ID
+        var row = document.getElementById(rowId);
+
+        // Check if the row exists
+        if (row) {
+            // Remove the row
+            row.remove();
+            nodesLength--;
+        } else {
+            console.error("Row with ID " + rowId + " does not exist.");
+        }
+    }
+
+
+    $().on('hidden.bs.modal', function () {
+        $(this).find('form')[0].reset();
+        location.reload();
+    });
+</script>
+
+<script type="text/javascript">
+    var fromDate = new AMIB.persianCalendar('datepickerFrom_shw1',);
+    var ToDate = new AMIB.persianCalendar('datepickerToEn_shw1');
+</script>
+<script>
+    function formatCurrency(input) {
+        // حذف همه کاراکترهای غیر از اعداد و "." (جداکننده اعشاری)
+        let value = input.value.replace(/[^\d.]/g, '');
+
+        // تبدیل مقدار به عدد اعشاری
+        let number = parseFloat(value);
+
+        // اگر عدد معتبر باشد، آن را به صورت سه رقمی جداکنده کنید
+        if (!isNaN(number)) {
+            let formattedValue = number.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+            // قرار دادن مقدار فرمت شده در ورودی
+            input.value = formattedValue;
+        }
+    }
+</script>
+
+
+
+<script>
+       $("#peyman1").load('@Url.Content("/../Contracts/Peyman/_GetAllListPeymans_Select")',function(){
+           $("#select_peyman").attr("id", "select_peyman1");
+            var $elem = $('#select_peyman1');
+                $elem.picker();
+                $elem.on('sp-change', function () {
+           });
+       });
+    $(".AmountInput").on("keyup", function (event) {
+
+        // کاربر متنی انتخابی انتخاب میکند
+        var selection = window.getSelection().toString();
+        if (selection !== '') {
+            return;
+        }
+
+        // زمانی که جهت ها کلیک میشوند
+        if ($.inArray(event.keyCode, [38, 40, 37, 39]) !== -1) {
+            return;
+        }
+
+        var $this = $(this);
+
+        // گرفتن مقدار
+        var input = $this.val();
+
+        var input = input.replace(/[\D\s\._\-]+/g, "");
+        input = input ? parseInt(input, 10) : 0;
+
+        $this.val(function () {
+            return (input === 0) ? "" : input.toLocaleString("en-US");
+        });
+    });
+</script>
+
+
+<script>
+
+
+        $("#btnCreate1").click(function () {
+                     var Filters  = [];
+            if ($("#bestankar").val() == 0) {
+                alert("لطفا اعتبار بستانکار را وارد نمائید");
+            }
+            else if  (($("#creditline").val() == 0))
+                 {
+                alert("لطفا ردیف اعتباری را انتخاب نمائید");
+            }
+            else if (($("#select_peyman1").val() == null))
+                 {
+                alert("لطفا پیمان را انتخاب نمائید");
+               }
+
+            else if (($("#datepickerFrom_shw1").val() == 0))
+                 {
+                alert("لطفا تاریخ  را انتخاب نمائید");
+            }
+            else if (($("#datepickerToEn_shw1").val() == 0)) {
+                alert("لطفا تاریخ  را انتخاب نمائید");
+            }
+              else {
+
+
+
+                $('.installmentAmountInputManually').each(function (i, obj) {
+
+                    let count = 0;
+
+                    if ($(this).attr("id").split("_").length == 2) {
+                        var obj = new Object();
+
+                        count++;
+                        console.log($(this).attr("id"));
+                        obj.Pyman_ID = $("#select_peyman1").val();
+                        console.log($("#select_peyman1").val());
+                        console.log($("#miladi_date2").val());
+                        console.log(count);
+                        obj.FK_creditline = $(this).val();;
+                        //obj.Creditorcredit = $("#bestankar").val();
+                        //obj.Debtorcredit = $("#bedehkar").val();
+                        obj.Starttime = $("#miladi_date1").val();
+                        obj.Endtime = $("#miladi_date2").val();
+                        var id = $(this).attr("id");
+
+                        var parts = id.split("_");
+                        var inputString = $(this).val();
+
+                        //console.log(parts);
+                        //console.log("kjkjkjkljkljk555555555555j");
+                        //var resultString = inputString.replace(/,/g, '');
+                        console.log($(this).val());
+
+                        var Year_id = "bestankar_" + parts[1];
+                        var Monthid = "bedehkar_" + parts[1];
+                        console.log(Year_id);
+                        console.log($("#" + Monthid).val());
+                        var inputString = $("#" + Monthid).val();
+                        var resultString = inputString.replace(/,/g, '');
+                        var inputString2 = $("#" + Year_id).val();
+                        var resultString2 = inputString2.replace(/,/g, '');
+                        obj.Debtorcredit = resultString;
+                        obj.Creditorcredit = resultString2;
+
+                        console.log(obj.Creditorcredit);
+
+                        Filters.push(obj);
+
+
+                    }
+                });
+
+
+
+
+
+
+                sendAjax('@Url.Action("tbDetermining_creditline_Add", "CreditLine",new { area = "Budget" })', Filters);
+                location.reload();
+
+                }
+              ;
+
+        });
+        function sendAjax(url, data) {
+                console.log(url);
+
+                $.ajax({
+                    beforeSend: function () {
+                        document.getElementById("loading-message").style.display = "block";
+                    },
+                    url: url,
+                    data: { Filters: data },
+                    type: "POST",
+                    dataType: "html",
+                    success: function (resp) {
+                        console.log(resp);
+                        document.getElementById("loading-message").style.display = "none";
+                        if (resp == "True") {
+                            alert("با موفقیت ثبت شد");
+                        }
+
+                        else {
+                            alert("مبلغ های های بستانکارهای شما بیش از حد مجاز در قرار داد است ")
+                        }
+                    },
+                    error: function (resp) {
+                        document.getElementById("loading-message").style.display = "none";
+                        alert("دچار مشکل شده است ");
+                        console.log(resp);
+                    }
+                });
+            }
+</script>

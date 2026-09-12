@@ -1,0 +1,170 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <title>فرم ارزیابی - نسخه نهایی</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet" />
+    <style>
+        .question-block {
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .btn-small {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+            line-height: 1;
+        }
+    </style>
+</head>
+<body class="container py-4">
+
+    <!-- هدر -->
+    <div id="fixedHeader">
+        <div class="col-xl-3">
+            <label class="form-label">نوع گزارش</label>
+
+            <select class="form-select " id="typegozarwsh">
+                @*<option hidden value="Select">انتخاب مورد</option>*@
+            
+                    <option value="0">انتخاب کنید</option>
+
+                    <option value="1">نظر سنجی </option>
+
+                    <option value="2">ارزیابی </option>
+
+                
+              
+
+            </select>
+
+        </div>
+        <div class="row align-items-center g-2 mb-3">
+            <div class="col-md-6">
+                <label for="evaluationTitle" class="form-label mb-1">عنوان ارزیابی:</label>
+                <input type="text" id="evaluationTitle" class="form-control" placeholder="مثلاً ارزیابی دوره جاوااسکریپت" />
+            </div>
+
+        </div>
+    </div>
+
+    <!-- دکمه افزودن سوال -->
+    <!-- محتوای سوالات -->
+    <div id="questionsContainer"></div>
+    <div class="col-md-2 d-flex align-items-end mb-4">
+        <button class="btn btn-success w-100" onclick="addQuestion()">➕ افزودن سؤال</button>
+    </div>
+    <button class="btn btn-primary" onclick="submitEvaluation()">✅ ذخیره نهایی</button>
+
+    <script>
+            let questionCount = 0;
+
+            function addQuestion() {
+                const container = document.getElementById('questionsContainer');
+                const qIndex = questionCount++;
+
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-block';
+
+                questionDiv.innerHTML = `
+                                                            <div class="row align-items-center g-2 mb-2">
+                                                                <div class="col-md-5">
+                                                                    <input type="text" name="questions[${qIndex}][text]" class="form-control" placeholder="متن سؤال" />
+                                                                </div>
+                                                                <div class="col-md-5">
+                                                                    <input type="text" name="questions[${qIndex}][description]" class="form-control" placeholder="شرح مختصر" />
+                                                                </div>
+                                                                <div class="col-md-1">
+                                                                    <button type="button" class="btn btn-danger btn-sm w-100" onclick="removeElement(this.closest('.question-block'))" style="margin-top: -25px;">❌ حذف سؤال</button>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row g-2" id="options-${qIndex}"></div>
+                                                            <div class="col-md-1">
+                                                                <button type="button" class="btn btn-success btn-sm w-100" onclick="addOption(${qIndex})">➕ افزودن گزینه</button>
+                                                            </div>
+                                                        `;
+
+                container.appendChild(questionDiv);
+            }
+
+            function addOption(questionIndex) {
+                const optionsContainer = document.getElementById(`options-${questionIndex}`);
+                const optionCount = optionsContainer.children.length;
+
+                const row = document.createElement('div');
+                row.className = 'row align-items-center g-2 mb-2';
+
+                row.innerHTML = `
+                                                            <div class="col-md-6">
+                                                                <input type="text" name="questions[${questionIndex}][options][${optionCount}][text]" class="form-control" placeholder="متن گزینه" />
+                                                            </div>
+                                                            <div class="col-md-5">
+                                                                <input type="number" name="questions[${questionIndex}][options][${optionCount}][weight]" class="form-control" placeholder="وزن" />
+                                                            </div>
+                                                            <div class="col-md-1">
+                                                                <button type="button" class="btn btn-danger btn-sm w-100" onclick="removeElement(this.closest('.row'))" style="margin-top: -25px;">❌ حذف گزینه</button>
+                                                            </div>
+                                                        `;
+
+                optionsContainer.appendChild(row);
+            }
+
+            function removeElement(el) {
+                el.remove();
+            }
+    </script>
+    <script>
+            async function submitEvaluation() {
+                const evaluationTitle = document.getElementById("evaluationTitle").value;
+                const typegozarwsh = document.getElementById("typegozarwsh").value;
+
+                const questions = [];
+
+                document.querySelectorAll(".question-block").forEach((questionEl, index) => {
+                    const text = questionEl.querySelector(`input[name^="questions[${index}][text]"]`).value;
+                    const description = questionEl.querySelector(`input[name^="questions[${index}][description]"]`).value;
+
+                    const options = [];
+                    questionEl.querySelectorAll(`#options-${index} .row`).forEach(optionEl => {
+                        const text = optionEl.querySelector(`input[name*="[text]"]`).value;
+                        const weight = optionEl.querySelector(`input[name*="[weight]"]`).value;
+                        options.push({ text, weight });
+                    });
+
+                    questions.push({ text, description, options });
+                });
+
+                const payload = {
+                    title: evaluationTitle,
+                    typegozarwsh: typegozarwsh,
+                    questions: questions
+                };
+
+                const response = await fetch('/Setting/Orders/SubmitEvaluation', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.success) {
+                        alert("با موفقیت ذخیره شد");
+                        location.reload();
+                    } else {
+                        alert("خطا: " + result.message);
+                    }
+                } else {
+                    alert("خطا در ارسال درخواست");
+                }
+            }
+    </script>
+
+</body>
+</html>

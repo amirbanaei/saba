@@ -1,0 +1,619 @@
+﻿@model SaabWebProject.Models.ViewModels.Contracts.Function.FunctionModel
+
+@{
+    Layout = null;
+}
+
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Modal_table50</title>
+    <link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+    <style>
+        .animate-lamp {
+            animation: lamp 1s infinite;
+        }
+
+        @@keyframes lamp {
+            0%,100% {
+                text-shadow: 0 0px 0px aqua;
+                font-size: 17px;
+                color: white;
+            }
+
+            50% {
+                text-shadow: 0 0px 10px aqua;
+                color: aqua;
+                font-size: 19px;
+            }
+        }
+
+        .tableH_Lock {
+            max-height: 472px;
+            overflow: auto;
+        }
+
+        thead {
+            position: sticky;
+            top: 0;
+            background: #1e1e1e;
+            color: white;
+            text-align: center;
+        }
+
+        th {
+            width: calc(100%/3);
+        }
+
+            th:nth-child(1) {
+                width: 80px !important;
+            }
+
+        td, th {
+            padding: 6px;
+            text-align: center;
+        }
+
+        tbody tr:nth-child(even) td .form-control {
+            margin-bottom: 0px !important;
+            background-color: transparent !important;
+            text-align: center;
+            border: 1px dashed white !important;
+            color: white !important;
+        }
+
+        tbody tr:nth-child(odd) td .form-control {
+            margin-bottom: 0px !important;
+            background-color: transparent !important;
+            text-align: center;
+            border: 1px dashed aqua !important;
+            color: aqua !important;
+        }
+
+        tbody tr:nth-child(even) td .form-control:focus {
+            outline: none !important;
+            border: 1px solid white !important;
+            box-shadow: 0 0 0 black !important;
+        }
+
+        tbody tr:nth-child(odd) td .form-control:focus {
+            outline: none !important;
+            box-shadow: 0 0 0 black !important;
+            border: 1px solid aqua !important;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
+
+        .inputWithFilterIcon {
+            width: 80%;
+            margin: auto;
+        }
+
+        .animate {
+            animation: pishbini 1s infinite;
+        }
+
+        @@keyframes pishbini {
+            100%,0%{
+                box-shadow:0 0 0px aqua;
+            }
+            50%{
+                box-shadow:0 0 25px aqua;
+            }
+        }
+    </style>
+    
+
+</head>
+<body>
+    <div class="tab-content" id="pills-tabContent">
+        <div class="row">
+            <div class="col-xl-8">
+                <input style="text-align: center; font-weight: bold; color: aqua !important;" class="form-control" id="" value="تعیین کارکرد غیر سیستمی کارکنان (مطابق استاندارد شهرستان ضریب یک )" title="تعیین کارکرد غیر سیستمی کارکنان (مطابق استاندارد شهرستان ضریب یک )" readonly disabled />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xl-4">
+                <label class="form-label">نام و نام خانوادگی</label>
+                <input class="form-control" value="@Model.fullname" id="" disabled title="@Model.fullname" />
+            </div>
+            <div class="col-xl-2">
+                <label class="form-label">کد پرسنلی</label>
+                <input class="form-control" value="@Model.personID" id="" disabled />
+            </div>
+            <div class="col-xl-4">
+                <label class="form-label">شغل</label>
+                <input class="form-control" value="@Model.jobname" id="" disabled title="@Model.jobname" />
+            </div>
+            <div class="col-xl-2">
+            </div>
+
+            <div class="col-xl-2">
+                <label class="form-label">معادل کار</label>
+                <input class="form-control"
+                       value="@(Model.moadelkar.ToString("0.000"))"
+                       id="karkardsystemi"
+                       disabled />
+            </div>
+            <div class="col-xl-2">
+                <label class="form-label">کارکرد غیر سیستمی</label>
+                <input class="form-control" id="karkardgheyr" disabled />
+            </div>
+            <div class="col-xl-2">
+                <label class="form-label">کارکرد سیستمی کل</label>
+                <input class="form-control" id="karkardkol" value="@Model.moadelkarkol" disabled />
+            </div>
+            @{
+                var ezafeh = (Model.moadelkarkol - 1) * Model.daykol * 7.333;
+                if (ezafeh < 0)
+                {
+                    ezafeh = 0;
+                }
+            }
+        <div class="col-xl-4">
+            <label class="form-label">پیش بینی تعداد ساعت اضافه کار</label>
+            <label class="form-label" style=" top:-5px; left: 16px; display:flex; justify-content:center;width:20px;">
+                <i class="bi bi-lightbulb-fill  "style="font-size:17px;" id ="icon"></i>
+            </label>
+            <input class="form-control " value="@ezafeh" id="karkardkol2" disabled />
+        </div>
+            @*<div class="col-xl-4">
+                <label class="form-label">پیش بینی تعداد ساعت اضافه کار</label>
+                <input class="form-control animate" id="karkardkol2" value="@ezafeh" disabled />
+            </div>*@
+        </div>
+        <div class="table-responsive tableH_Lock" style="max-height:200px; overflow-y:auto;">
+            <table class="table table-hover text-nowrap">
+                <thead>
+                    <tr style="text-align:center">
+                        <th>
+                            @Html.DisplayName("نام شهرستان")
+                            <div class="inputWithFilterIcon">
+                                <input type="text" id="filter01-filter" class="inputFilter form-control" placeholder="" data-filter1="filter04" />
+                                <span><i class="fas fa-filter"></i></span>
+                            </div>
+                        </th>
+                        <th>
+                            @Html.DisplayName("استاندارد")
+                            @*<div class="inputWithFilterIcon">
+                                    <input type="text" id="filter02-filter" class="inputFilter form-control" placeholder="" />
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>*@
+                        </th>
+                        <th>
+                            @Html.DisplayName("مقدار غیر سیستمی")
+                            @*<div class="inputWithFilterIcon">
+                                    <input type="text" id="filter03-filter" class="inputFilter form-control" placeholder="" />
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>*@
+                        </th>
+
+
+
+
+
+                    </tr>
+
+
+
+
+                </thead>
+
+
+                <tbody style="text-align:center">
+                    @*@{
+                            // ساخت لیست ۱۰ تایی از شهرستان‌ها با اعداد رندوم
+                            var random = new Random();
+                            var cities = new List<string> { "تهران", "مشهد", "اصفهان", "تبریز", "شیراز", "اهواز", "قم", "کرمانشاه", "رشت", "زاهدان" };
+
+                            var tableData = cities.Select((name, index) => new
+                            {
+                                Id = index + 1,
+                                CityName = name,
+                                StandardValue = random.Next(10, 99) // عدد ۲ رقمی رندوم
+                            }).ToList();
+                        }*@
+                    @{ 
+                        string FileSystemName = "";
+                    }
+                    @foreach (var item in Model.tbmadel_kar1.ToList())
+                    {
+
+                        var oldValue = Model.tbkarkard_notsystem?
+.FirstOrDefault(x => x.FK_moaldeh == item.tbContractMoalefeDastmozdi.md_ID);
+                        if (oldValue != null &&oldValue.FileSystemName != null)
+                        {
+                            FileSystemName = oldValue.FileSystemName;
+                        }
+                        string moadelValue = oldValue != null ? oldValue.moadel.ToString() : "";
+                        <tr class="task-list-row1" data-filter04="@item.tbContractMoalefeDastmozdi.md_Title">
+                            <td>
+                                @item.tbContractMoalefeDastmozdi.md_Title
+                            </td>
+                            <td>
+                                @item.tbContractMoalefeDastmozdi.tbCaranSettings.Select(s => s.CaranStandard).FirstOrDefault()
+                            </td>
+                            <td>
+
+                                @* نام گذاری داینامیک برای اینکه بتونی توی کنترلر دریافتشون کنی *@
+                                <input type="text" name="Values[@item.tbContractMoalefeDastmozdi.md_ID]" value="@moadelValue" class="form-control val-input" />
+
+                            </td>
+                        </tr>
+                    }
+
+
+                </tbody>
+
+            </table>
+        </div>
+        <div class="row">
+            @if (FileSystemName != "")
+            {
+                <div class="col-xl-9">
+                    <label class="form-label">
+                        کارکردهای ثبت شده در سامانه های پشتیبان :
+                    </label>
+                    <textarea class="form-control" id="" rows="4">@Model.name_moadel</textarea>
+                </div>
+                    <div class="col-xl-1 uplod">
+                        <a target="_blank" href="~/Areas/Suggestion/Contents/@FileSystemName" class="btn form-control buttonGeneral" style="display: block; text-decoration: none; color: inherit;">
+                            <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                            @*<span class="bGeneral-text"> پیوست </span>*@
+                        </a>
+                    </div>
+
+                
+            }
+            else
+            { <div class="col-xl-10">
+                    <label class="form-label">
+                        کارکردهای ثبت شده در سامانه های پشتیبان :
+                    </label>
+                    <textarea class="form-control" id="" rows="4">@Model.name_moadel</textarea>
+                </div>
+
+            }
+            <div class="col-xl-1 uplod">
+                <button class="btn form-control buttonGeneral uploadSummery3">
+                    <i class="bi bi-upload fa-fw me-1 VecGeneral" style="width:11px"></i>
+                    <span class="bGeneral-text">بارگذاری پیوست</span>
+                </button>
+                <input id="summery_file3" style="display: none;" type="file" class="form-control" value="" />
+            </div>
+            <div class="col-xl-1">
+                <button id="btnSave" type="button" class="btn form-control buttonsabt">
+                    <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                    <span class="bSabt-text">ثبت</span>
+                </button>
+            </div>
+        </div>
+
+
+        </div>
+    <input type="hidden" id="usrId" value="@Model.usr_ID" />
+
+    <script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+    
+    <script>
+        //var fd = new FormData();
+        //$(".uploadSummery3").click(function () {
+        //    $("#summery_file3").click();
+        //});
+        //$("#summery_file3").change(function (e) {
+        //    $.each(e.target.files, function (index, file) {
+        //        fd.append("MyExcelStream", file);
+        //    });
+        //});
+        $(document).ready(function () {
+            var fd = new FormData();  // ایجاد FormData برای تمام داده‌ها
+
+            // انتخاب فایل اکسل
+            $(".uploadSummery3").click(function () {
+                $("#summery_file3").click();
+            });
+
+            $("#summery_file3").change(function (e) {
+                fd.delete("MyExcelStream"); // اگر از قبل فایل انتخاب شده بود پاکش کن
+                $.each(e.target.files, function (index, file) {
+                    fd.append("MyExcelStream", file); // فایل Excel اضافه شود
+                });
+            });
+
+            // دکمه‌ی ذخیره
+            $("#btnSave").click(function () {
+                document.getElementById("loading-circle").style.display = "block";
+
+                fd.delete("items");
+                fd.delete("usrId");
+                fd.delete("moadelKol");
+
+                let dataList = [];
+
+                let usrId = $("#usrId").val();
+                let moadelKol = $("#karkardkol").val();
+
+                $(".task-list-row1").each(function () {
+                    let mdId = $(this).find(".val-input").attr("name");
+                    mdId = mdId.match(/\d+/)[0];
+                    let value = $(this).find(".val-input").val();
+                    if (!value || isNaN(parseFloat(value))) {
+                        value = 0;
+                    }
+                        dataList.push({
+                            FK_moaldeh: mdId,
+                            moadel: value
+                        });
+                    
+                });
+
+                // داده‌های متنی را هم به FormData اضافه می‌کنیم
+                fd.append("usrId", usrId);
+                fd.append("moadelKol", moadelKol);
+                fd.append("items", JSON.stringify(dataList));
+
+                // ارسال درخواست Ajax همراه فایل
+                $.ajax({
+                    url: '/Orders/SaveKarkardNotSystem',
+                    type: 'POST',
+                    data: fd,
+                    processData: false,      // جلوگیری از پردازش خودکار داده‌ها
+                    contentType: false,      // نوع محتوا خودکار تنظیم شود (برای FormData لازم است)
+                    success: function (res) {
+                        document.getElementById("loading-circle").style.display = "none";
+                        if (res.success) {
+                            alert("ثبت با موفقیت انجام شد");
+                            location.reload();
+                        } else {
+                            alert(res.message);
+                        }
+                    },
+                    error: function () {
+                        document.getElementById("loading-circle").style.display = "none";
+                        alert("خطا در ثبت اطلاعات");
+                    }
+                });
+            });
+
+            //$("#btnSave").click(function () {
+            //    document.getElementById("loading-circle").style.display = "block";
+
+            //    let dataList = [];
+
+            //    let usrId = $("#usrId").val();
+            //    let moadelKol = $("#karkardkol").val();
+
+            //    $(".task-list-row1").each(function () {
+
+            //        let mdId = $(this).find(".val-input").attr("name");
+            //        mdId = mdId.match(/\d+/)[0]; // استخراج md_ID از name
+
+            //        let value = $(this).find(".val-input").val();
+
+            //        if (value && parseFloat(value) != 0) {
+            //            dataList.push({
+            //                FK_moaldeh: mdId,
+            //                moadel: value
+            //            });
+            //        }
+            //    });
+
+            //    $.ajax({
+            //        url: '/Orders/SaveKarkardNotSystem',
+            //        type: 'POST',
+            //        data: JSON.stringify({
+            //            usrId: usrId,
+            //            moadelKol: moadelKol,
+            //            items: dataList
+            //        }),
+            //        contentType: 'application/json; charset=utf-8',
+            //        success: function (res) {
+            //            document.getElementById("loading-circle").style.display = "none";
+
+            //            if (res.success) {
+            //                alert("ثبت با موفقیت انجام شد");
+            //                location.reload();
+            //            } else {
+            //                alert(res.message);
+            //            }
+            //        },
+            //        error: function () {
+            //            alert("خطا در ثبت اطلاعات");
+            //        }
+            //    });
+
+            //});
+            // گوش دادن به تغییرات اینپوت‌های متنی داخل جدول و فیلد معادل کار
+            $(document).on("input", ".val-input, #karkardsystemi", function () {
+                calculateFinalResult2();
+            });
+
+            function calculateFinalResult() {
+                let tableSum = 0;
+
+                // ۱. پیمایش روی ردیف‌ها: محاسبه (مقدار تقسیم بر استاندارد)
+                $("tbody tr").each(function () {
+                    let standard = parseFloat($(this).find("td:eq(1)").text().trim()) || 0;
+                    let value = parseFloat($(this).find(".val-input").val()) || 0;
+
+                    if (standard > 0) {
+                        tableSum += (value / standard);
+                    }
+                });
+
+                // ۲. نمایش نتیجه جدول در "کارکرد غیر سیستمی"
+                $("#karkardgheyr").val(tableSum.toFixed(3));
+
+                // ۳. گرفتن مقدار "کارکرد سیستمی" (که یا دستی وارد شده یا از قبل هست)
+                let systemi = parseFloat($("#karkardsystemi").val()) || 0;
+
+                // ۴. جمع نهایی و نمایش در "کارکرد سیستمی کل"
+                let totalAll = tableSum + systemi;
+                let totalAll2 = (totalAll - 1) * @Model.daykol * 7.333;
+                if (totalAll2 < 0) {
+                    totalAll2 = 0;
+                }
+
+                if (Number.isInteger(totalAll)) {
+                    $("#karkardkol").val(totalAll);
+                    $("#karkardkol2").val(totalAll2);
+
+                } else {
+                    $("#karkardkol").val(totalAll.toFixed(3));
+                    $("#karkardkol2").val(totalAll2.toFixed(0));
+
+                }
+                //const $icon = $("#icon");
+                //$icon.removeClass("animate-lamp"); // برای اطمینان از ریست شدن انیمیشن
+
+                //if (totalAll2 > 0) {
+                //    // شرط دلخواهت، مثلاً وقتی عدد اضافه‌کار بیشتر از صفر است
+                //    $icon.addClass("animate-lamp");
+
+                //    // در صورت نیاز، بعد از چند ثانیه انیمیشن حذف شود
+                //    setTimeout(() => $icon.removeClass("animate-lamp"), 100000);
+                //}
+            }
+                        function calculateFinalResult2() {
+                let tableSum = 0;
+
+                // ۱. پیمایش روی ردیف‌ها: محاسبه (مقدار تقسیم بر استاندارد)
+                $("tbody tr").each(function () {
+                    let standard = parseFloat($(this).find("td:eq(1)").text().trim()) || 0;
+                    let value = parseFloat($(this).find(".val-input").val()) || 0;
+
+                    if (standard > 0) {
+                        tableSum += (value / standard);
+                    }
+                });
+
+                // ۲. نمایش نتیجه جدول در "کارکرد غیر سیستمی"
+                $("#karkardgheyr").val(tableSum.toFixed(3));
+
+                // ۳. گرفتن مقدار "کارکرد سیستمی" (که یا دستی وارد شده یا از قبل هست)
+                let systemi = parseFloat($("#karkardsystemi").val()) || 0;
+
+                // ۴. جمع نهایی و نمایش در "کارکرد سیستمی کل"
+                let totalAll = tableSum + systemi;
+                let totalAll2 = (totalAll - 1) * @Model.daykol * 7.333;
+                if (totalAll2 < 0) {
+                    totalAll2 = 0;
+                }
+
+                if (Number.isInteger(totalAll)) {
+                    $("#karkardkol").val(totalAll);
+                    $("#karkardkol2").val(totalAll2);
+
+                } else {
+                    $("#karkardkol").val(totalAll.toFixed(3));
+                    $("#karkardkol2").val(totalAll2.toFixed(0));
+
+                }
+                const $icon = $("#icon");
+                $icon.removeClass("animate-lamp"); // برای اطمینان از ریست شدن انیمیشن
+
+                if (totalAll2 > 0) {
+                    // شرط دلخواهت، مثلاً وقتی عدد اضافه‌کار بیشتر از صفر است
+                    $icon.addClass("animate-lamp");
+
+                    // در صورت نیاز، بعد از چند ثانیه انیمیشن حذف شود
+                    setTimeout(() => $icon.removeClass("animate-lamp"), 50000);
+                }
+            }
+
+    calculateFinalResult();
+        });
+        $(document).ready(function () {
+
+            function formatThousandsInput1(el) {
+                let v = el.value;
+                if (!v) return;
+                let op = "";
+                if (v.startsWith(">=") || v.startsWith("<=")) { op = v.substring(0, 2); v = v.substring(2); }
+                else if (v.startsWith(">") || v.startsWith("<") || v.startsWith("=")) { op = v.substring(0, 1); v = v.substring(1); }
+                v = v.replace(/[^\d]/g, '');
+                if (!v) { el.value = op; return; }
+                v = parseInt(v, 10).toLocaleString('en-US');
+                el.value = op + v;
+            }
+
+            $(document).on('input', '.dynamic-filter1', function () { formatThousandsInput1(this); });
+
+            function parseNumberFilter1(expr, value) {
+                if (!expr) return true;
+                expr = expr.replace(/,/g, '').trim();
+                let operator = null;
+                if (expr.startsWith(">=")) operator = ">=";
+                else if (expr.startsWith("<=")) operator = "<=";
+                else if (expr.startsWith("!=")) operator = "!=";
+                else if (expr.startsWith(">")) operator = ">";
+                else if (expr.startsWith("<")) operator = "<";
+                else if (expr.startsWith("=")) operator = "=";
+                else operator = "=";
+
+                let num = parseFloat(expr.replace(/^[<>!=]+/, ''));
+                if (isNaN(num)) return true;
+
+                value = (value || "0").toString().replace(/,/g, '');
+                value = parseFloat(value) || 0;
+
+                switch (operator) {
+                    case ">=": return value >= num;
+                    case "<=": return value <= num;
+                    case ">": return value > num;
+                    case "<": return value < num;
+                    case "=": return value == num;
+                    case "!=": return value != num;
+                    default: return true;
+                }
+            }
+
+            let filters = {};
+
+            $('[data-filter1]').each(function () {
+                filters[$(this).data('filter1')] = null;
+            });
+
+            $(document).on('input', '[data-filter1]', function () {
+                let key = $(this).data('filter1');
+                filters[key] = this.value;
+                updateFilters1();
+            });
+
+            function updateFilters1() {
+                $('.task-list-row1').each(function () {
+
+                    let self = $(this);
+                    let result = true;
+
+                    Object.keys(filters).forEach(function (filter) {
+
+                        let filterValue = filters[filter];
+                        if (!filterValue) return;
+
+                        let textValue = self.data(filter);
+
+                        result = result && textValue &&
+                            textValue.toString().toLowerCase()
+                                .indexOf(filterValue.toLowerCase()) !== -1;
+                    });
+
+                    if (result) self.show();
+                    else self.hide();
+                });
+            }
+        });
+        $(document).ready(function () {
+            // گوش دادن به تغییرات اینپوت‌های جدول و فیلد کارکرد سیستمی
+
+        });
+
+    </script>
+</body>
+
+</html>

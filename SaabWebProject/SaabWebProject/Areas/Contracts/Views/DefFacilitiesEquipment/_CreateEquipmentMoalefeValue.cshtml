@@ -1,0 +1,672 @@
+﻿@section Styles{
+    <link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+    <link href="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.style.css" rel="stylesheet" />
+}
+
+@using SaabWebProject.Models.DomainModels;
+
+@{
+    SaabEntities db = new SaabEntities();
+
+}
+<div class="row">
+    <div class="col-xl-4">
+        <label class="form-label">انتخاب نوع تجهیز</label>
+        @Html.Action("_ListGroup", "DefFacilitiesEquipment")
+    </div>
+    <div class="col-xl-8">
+        <label class="form-label"> پیمان </label>
+        <div id="pymn2"> </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-2">
+        <label class="form-label">سال</label>
+        <select id="year_Eq" name="year_Eq" class="form-select">
+            <option value="0">انتخاب کنید</option>
+
+            @{
+                System.Globalization.PersianCalendar cs2 = new System.Globalization.PersianCalendar();
+                int currentYear = cs2.GetYear(DateTime.Now);
+
+                for (var i = 4; i >= 0; i--)
+                {
+                    var s = DateTime.Now.AddYears(-i);
+
+                    <option value="@cs2.GetYear(s)">@cs2.GetYear(s)</option>
+                }
+            }
+        </select>
+
+    </div>
+    <div class="col-xl-2">
+        <label class="form-label">ماه</label>
+
+        <select id="month_Eq" name="month_Eq" class="form-select">
+            <option value="0">انتخاب کنید  </option>
+
+            <option value="1">فروردین </option>
+            <option value="2">اردیبهشت</option>
+            <option value="3">خرداد</option>
+            <option value="4">تیر</option>
+            <option value="5">مرداد</option>
+            <option value="6">شهریور</option>
+            <option value="7">مهر</option>
+            <option value="8">آبان</option>
+            <option value="9">آذر</option>
+            <option value="10">دی</option>
+            <option value="11">بهمن</option>
+            <option value="12">اسفند</option>
+        </select>
+    </div>
+
+    <div class="col-xl-3">
+        <label class="form-label">از تاریخ</label>
+        @*------------------------------------------------[1402/09/20]-|KH|-*@
+        <input data-jdp jdp-btn-close data-jdp-miladi-input="datepickerFromEn_Eq" id="datepickerFrom_Eq" class="form-control">
+        <input id="datepickerFromEn_Eq" type="hidden" />
+        @*-------------------------------------------------------------|KH|-*@
+    </div>
+    <div class="col-xl-3">
+        <label class="form-label">تا تاریخ</label>
+        @*------------------------------------------------[1402/09/20]-|KH|-*@
+        <input data-jdp jdp-btn-close data-jdp-miladi-input="datepickerToEn_Eq" id="datepickerTo_Eq" class="form-control">
+        <input id="datepickerToEn_Eq" type="hidden" />
+        @*-------------------------------------------------------------|KH|-*@
+    </div>
+
+
+</div>
+
+
+
+<div class="row">
+    <div class="col-xl-8"></div>
+    <div class="col-xl-1">
+        @*<a data-bs-toggle="modal" data-bs-target="#modalLg" class="dropdown-item HadeEntezar" id="HadeEntezar_@item.pec_ID">تعیین حدود انتظار</a>*@
+
+        <a class="btn form-control buttonGeneral" id="helpp" data-bs-toggle="modal" data-bs-target="#modalLg1">
+            <i class="fa fa-question-circle fa-fw me-1 VecGeneral"></i>
+            <span class="bGeneral-text">راهنما</span>
+        </a>
+    </div>
+
+    <div class="col-xl-1">
+        <button class="btn form-control buttonGeneral" onclick="downloadAjax()" >
+            <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+            <span class="bGeneral-text">دانلود فایل نمونه</span>
+        </button>
+    </div>
+
+    @*<div class="col-xl-1">
+            <a data-bs-toggle="modal" data-bs-target="#modalLg1" class="btn form-control buttonGeneral" id="upload" ">
+                <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text">بارگزاری اطلاعات</span>
+            </a>
+        </div>*@
+
+
+    <div class="col-xl-1">
+        <a class="btn form-control buttonGeneral" id="upload10" >
+            <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+            <span class="bGeneral-text">بارگزاری اطلاعات</span>
+        </a>
+    </div>
+
+
+
+
+    @*------------------------------------------------[1402/08/20]-|KH|-*@
+    @*<div class="col-xl-2">
+            <button class="btn btn-outline-theme csss" id="singleImport" style="border-radius:15px;font-size:10px;  color: white;
+        background-color: #0d3244;margin-bottom:10px;
+         " data-bs-toggle="modal" data-bs-target="#modalLg">
+                وارد کردن تکی
+            </button>
+        </div>*@
+    @*-------------------------------------------------------------|KH|-*@
+    <div class="col-xl-1">
+        <button class="btn form-control buttonGeneral" id="Cheack" >
+            <i class="fa fa-eye fa-fw me-1 VecGeneral"></i>
+            <span class="bGeneral-text">مشاهده جزئیات</span>
+        </button>
+    </div>
+</div>
+
+
+<div id="table_div"></div>
+<input id="summery_file2" style="display:none" type="file" class="form-control" value="" />
+<input id="summery_file10" style="display:none" type="file" class="form-control" value="" />
+
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Scripts/popper.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/sweetalert2.js"></script>
+
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script>
+    //$("#year_Eq").picker({ search: false });
+    //$("#month_Eq").picker({ search: false });
+</script>
+
+@*------------------------------------------------[1402/08/29]-|KH|-*@
+@*<script type="text/javascript">
+        jalaliDatepicker.startWatch({
+            time: true,
+            days: ["شنبه", "1شنبه", "2شنبه", "3شنبه", "4شنبه", "5شنبه", "جمعه"],
+            persianDigits: true,
+            autoClose: true,
+            autocomplete: true,
+            showCloseBtn:true,
+            showEmptyBtn: false,
+            showCloseBtn: true,
+            zIndex: 100000,
+
+        });
+
+    </script>*@
+@*-------------------------------------------------------------|KH|-*@
+
+<script>
+
+
+    @*$("#helpp").click(function () {
+        //var idd = $(this).attr("id").split("_")[1];
+        console.log("sakl");
+     $("#big_modal_body1").load('@Url.Content("../../Contracts/DefFacilitiesEquipment/helppview"));
+});*@
+    $("#helpp").click(function () {
+     $("#big_modal_body1").load('@Url.Content("../../Contracts/DefFacilitiesEquipment/helppview")');
+
+ });
+
+    $("#singleImport").click(function () {
+        $("#big_modal_body").load('@Url.Content("../../Contracts/Functions/_singleImportEquipment")');
+
+    });
+$(document).ready(function() {
+    console.log("aaa");
+    $("#pymn2").load('@Url.Content("/RegistrationAndConfirmationProcedures/ReffrenceSaveGetPeymans3")?isSabt=True&IsFor=0', function () {
+        // This function is executed after the content is successfully loaded
+    });
+});
+
+    $("#select_EquipmentGroup").change(function () {
+
+        var selectedValue = $(this).val(); // Get the selected value from the dropdown
+
+        console.log($(this).val());
+       if ($(this).val() != "Select") {
+           console.log($(this).val());
+           console.log(selectedValue);
+
+
+$("#pymn2").load('@Url.Content("/RegistrationAndConfirmationProcedures/ReffrenceSaveGetPeymans4")?isSabt=True&IsFor='+$(this).val(), function () {
+
+
+           });
+        }else{
+            $("#pymn2").html("");
+        }
+
+    });
+
+    //$('#year_Eq').picker({ search: true });
+    //$('#month_Eq').picker({ search: true });
+
+    // $('#datepickerFrom_Eq').MdPersianDateTimePicker({
+    //        targetTextSelector: '#datepickerFrom_Eq',
+    //        targetDateSelector: '#datepickerFromEn_Eq',
+    //        dateFormat: 'yyyy-MM-dd',
+    //        isGregorian: false,
+    //        enableTimePicker: true,
+    //        disableBeforeToday: false
+    //    });
+
+    // $('#datepickerTo_Eq').MdPersianDateTimePicker({
+    //        targetTextSelector: '#datepickerTo_Eq',
+    //        targetDateSelector: '#datepickerToEn_Eq',
+    //        dateFormat: 'yyyy-MM-dd',
+    //        isGregorian: false,
+    //        enableTimePicker: true,
+    //        disableBeforeToday: false
+    //    });
+</script>
+<script>
+    var fd = new FormData();
+    function downloadAjax() {
+        var selectedValue = $("#baste_peymanofAccept").val();
+
+        if (selectedValue) {
+            var parts = selectedValue.split('_');
+
+            if (parts.length >= 2) {
+                var FK_Baste = parts[1];
+                var pymnID = parts[0];
+
+                // Your further code logic here
+            } else {
+                console.error("Invalid format: " + selectedValue);
+            }
+        } else {
+            console.error("Selected value is undefined or null");
+        }
+        console.log(pymnID)
+        if (pymnID == undefined) {
+            alert("پیمان مورد نظر را انتخاب نمایید")
+        } else if ( $("#select_EquipmentGroup").val() == "Select") {
+            alert("نوع تجهیزات خود را مشخص کنید ")
+        }
+        else if ($("#year_Eq").val() == 0) {
+            alert("سال مورد نظر را انتخاب نمایید")
+
+        } else if ($("#month_Eq").val() == 0) {
+            console.log($("#month_usr").val())
+            alert("ماه مورد نظر را انتخاب نمایید")
+        } else if ($("#datepickerFromEn_usr").val() == null) {
+            alert("از تاریخ مورد نظر را انتخاب نمایید")
+        } else if ($("#datepickerToEn_usr").val() == null) {
+            alert("تا تاریخ مورد نظر را انتخاب نمایید")
+        } else {
+            var selectedValue = $("#baste_peymanofAccept").val();
+            var parts = selectedValue.split('_');
+            var FK_Baste = parts[1];
+            var pymnID = parts[0];
+
+
+
+
+
+
+            console.log($("#baste_peyman").val())
+            $.ajax({
+
+                beforeSend: function () {
+                    document.getElementById("loading-message").style.display = "block";//مهندس دارین برعککس میزارین
+                    //این درسته
+                    //شبیه هم ننوشتین
+                    //خوب ورودی هام فرق داتشنت الاان فهمیدم چیشد + اضافه گذاشته بود
+                },
+                url: '@Url.Action("ExportExcel_MachinsOrToolsForcheack", "DefFacilitiesEquipment",new { area = "Contracts" })?Peyman_ID=' + pymnID + '&type=' + $("#select_EquipmentGroup").val() + '&Month=' + $("#month_Eq").val() + '&Year=' + $("#year_Eq").val() + '&Basteh=' + FK_Baste,
+                type: 'GET',
+                dataType: 'html',
+
+
+                success: function (res) {
+                    if (res === "False") {
+                        // اجرای بلوک error در صورت مطابقت با "False"
+                        alert("برای این ماه و این سال این بسته تایید نهایی شده است ");
+                        console.log(res);
+                    }
+                    else {
+
+                        $("#loading-message").css("display", "block");
+                        var selectedValue = $("#baste_peymanofAccept").val();
+                        var parts = selectedValue.split('_');
+                        var FK_Baste = parts[1];
+                        var pymnID = parts[0];
+                        console.log($("#baste_peyman").val())
+                        window.location = '@Url.Action("ExportExcel_MachinsOrTools", "DefFacilitiesEquipment",new { area = "Contracts" })?Peyman_ID=' + pymnID + '&type=' + $("#select_EquipmentGroup").val() + '&Month=' + $("#month_Eq").val() + '&Year=' + $("#year_Eq").val();
+                                                @*window.location = '@Url.Action("ExportExcel_MachinsOrToolsforadmin", "DefFacilitiesEquipment",new { area = "Contracts" })?Peyman_ID=' + pymnID + '&type=' + $("#select_EquipmentGroup").val() + '&Month=' + $("#month_Eq").val() + '&Year=' + $("#year_Eq").val();*@
+
+                        $("#loading-message").css("display", "none");
+
+                    }
+                },
+                error: function (res) {
+                    alart("fdslsfdk")
+                    console.log(res);
+                }
+            });
+
+
+
+
+
+
+        }
+
+
+
+
+      }
+</script>
+<script>
+
+    $("#upload").click(function () {
+
+        var selectedValue = $("#baste_peymanofAccept").val();
+
+        if (selectedValue) {
+            var parts = selectedValue.split('_');
+
+            if (parts.length >= 2) {
+                var FK_Baste = parts[1];
+                var pymnID = parts[0];
+
+                // Your further code logic here
+            } else {
+                console.error("Invalid format: " + selectedValue);
+            }
+        } else {
+            console.error("Selected value is undefined or null");
+        }
+        console.log(pymnID)
+        if (pymnID == undefined) {
+            alert("پیمان مورد نظر را انتخاب نمایید")
+        } else if ($("#select_EquipmentGroup").val() == "Select") {
+            alert("نوع تجهیزات خود را مشخص کنید ")
+        }
+        else if ($("#year_Eq").val() == 0) {
+            alert("سال مورد نظر را انتخاب نمایید")
+
+        } else if ($("#month_Eq").val() == 0) {
+            console.log($("#month_usr").val())
+            alert("ماه مورد نظر را انتخاب نمایید")
+        } else if ($("#datepickerFromEn_usr").val() == null) {
+            alert("از تاریخ مورد نظر را انتخاب نمایید")
+        } else if ($("#datepickerToEn_usr").val() == null) {
+            alert("تا تاریخ مورد نظر را انتخاب نمایید")
+        } else {
+
+
+            $("#summery_file2").click();
+        }
+       });
+       $("#summery_file2").change(function (e) {
+                   $.each(e.target.files, function (index, file) {
+                      fd.append("files", file);
+                   });
+                   sendAjax4('@Url.Action("UploadAttachmentFile5", "DefFacilitiesEquipment",new { area = "Contracts" })', fd);
+       });
+
+
+
+
+    $("#upload10").click(function () {
+
+      var selectedValue = $("#baste_peymanofAccept").val();
+
+      if (selectedValue) {
+          var parts = selectedValue.split('_');
+
+          if (parts.length >= 2) {
+              var FK_Baste = parts[1];
+              var pymnID = parts[0];
+
+              // Your further code logic here
+          } else {
+              console.error("Invalid format: " + selectedValue);
+          }
+      } else {
+          console.error("Selected value is undefined or null");
+      }
+      console.log(pymnID)
+      if (pymnID == undefined) {
+          alert("پیمان مورد نظر را انتخاب نمایید")
+      } else if ($("#select_EquipmentGroup").val() == "Select") {
+          alert("نوع تجهیزات خود را مشخص کنید ")
+      }
+      else if ($("#year_Eq").val() == 0) {
+          alert("سال مورد نظر را انتخاب نمایید")
+
+      } else if ($("#month_Eq").val() == 0) {
+          console.log($("#month_usr").val())
+          alert("ماه مورد نظر را انتخاب نمایید")
+      } else if ($("#datepickerFromEn_usr").val() == null) {
+          alert("از تاریخ مورد نظر را انتخاب نمایید")
+      } else if ($("#datepickerToEn_usr").val() == null) {
+          alert("تا تاریخ مورد نظر را انتخاب نمایید")
+      } else {
+
+
+          $("#summery_file10").click();
+      }
+     });
+    $("#summery_file10").change(function (e) {
+                 $.each(e.target.files, function (index, file) {
+                    fd.append("files", file);
+                 });
+        sendAjax14('@Url.Action("UploadAttachmentFile5", "DefFacilitiesEquipment",new { area = "Contracts" })', fd);
+     });
+
+</script>
+<script>
+    function sendAjax4(url2, fd2) {
+
+        $("#loading-message").css("display", "block");
+        var selectedValue = $("#baste_peymanofAccept").val();
+        var parts = selectedValue.split('_');
+        var FK_Baste = parts[1];
+        var pymnID = parts[0];
+        fd2.append("peymanID", pymnID);
+        fd2.append("FK_BASTE", FK_Baste);
+        fd2.append("FromDate", $("#datepickerFromEn_Eq").val());
+        fd2.append("Todate", $("#datepickerToEn_Eq").val());
+        fd2.append("Year", $("#year_Eq").val());
+        fd2.append("Month", $("#month_Eq").val());
+        fd2.append("Type", $("#select_EquipmentGroup").val());
+
+        $.ajax({
+            url: url2,
+            type: 'POST',
+            data: fd2,
+            processData: false,
+            contentType: false,
+            success: function (res) {
+                $("#loading-message").css("display", "none");
+                fd = new FormData();
+                console.log(res);
+                console.log("jj");
+
+
+                if (res == "True") {
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "اطلاعات با موفقیت ثبت شد"
+                    }).then(() => {
+                        location.reload();
+                    });
+                }
+                else if (res == "این بسته در این ماه و سال  تایید نهایی شده است ") {
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "این بسته در این ماه و سال  تایید نهایی شده است "
+                    }).then(() => {
+                        location.reload();
+                    });
+                }
+                else if (res == "شما قبلا این بسته را در این سال و ماه ثبت کرده اید  ") {
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "شما قبلا این بسته را در این سال و ماه ثبت کرده اید "
+                    }).then(() => {
+                        location.reload();
+                    });
+                }
+                else {
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: res
+                    }).then(() => {
+                        location.reload();
+                    });
+                }
+
+            },
+            error: function (res) {
+                $("#loading-message").css("display", "none");
+                console.log(res);
+                console.log("jj");
+                Toast.fire({
+                    icon: 'success',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                }).then(() => {
+                    $("#loading-message").css("display", "none");
+                });
+            }
+        });
+    }
+
+
+
+
+     function sendAjax14(url2, fd2) {
+
+     $("#loading-message").css("display", "block");
+     var selectedValue = $("#baste_peymanofAccept").val();
+     var parts = selectedValue.split('_');
+     var FK_Baste = parts[1];
+     var pymnID = parts[0];
+     fd2.append("peymanID", pymnID);
+     fd2.append("FK_BASTE", FK_Baste);
+     fd2.append("FromDate", $("#datepickerFromEn_Eq").val());
+     fd2.append("Todate", $("#datepickerToEn_Eq").val());
+     fd2.append("Year", $("#year_Eq").val());
+     fd2.append("Month", $("#month_Eq").val());
+     fd2.append("Type", $("#select_EquipmentGroup").val());
+
+     $.ajax({
+         url: url2,
+         type: 'POST',
+         data: fd2,
+         processData: false,
+         contentType: false,
+         success: function (res) {
+             $("#loading-message").css("display", "none");
+             fd = new FormData();
+             console.log(res);
+             console.log("jj");
+
+             if (res == "True") {
+                 Toast.fire({
+                     icon: 'success',
+                     background: '#35434A',
+                     color: 'white',
+                     title: "اطلاعات با موفقیت ثبت شد"
+                 }).then(() => {
+                     location.reload();
+                 });
+
+
+             }
+             else if (res == "این بسته در این ماه و سال  تایید نهایی شده است ") {
+                 Toast.fire({
+                     icon: 'success',
+                     background: '#35434A',
+                     color: 'white',
+                     title: "این بسته در این ماه و سال  تایید نهایی شده است "
+                 }).then(() => {
+                     location.reload();
+                 });
+             }
+             else if (res == "شما قبلا این بسته را در این سال و ماه ثبت کرده اید  ") {
+                 Toast.fire({
+                     icon: 'success',
+                     background: '#35434A',
+                     color: 'white',
+                     title: "شما قبلا این بسته را در این سال و ماه ثبت کرده اید "
+                 }).then(() => {
+                     location.reload();
+                 });
+             }
+             else {
+                 Toast.fire({
+                     icon: 'success',
+                     background: '#35434A',
+                     color: 'white',
+                     title: "فایل با فایل اصلی مطابق نیست و یا این فایل را یک بار ثبت کردید "
+                 }).then(() => {
+                     location.reload();
+                 });
+             }
+                    @*$("#table_div").load('@Url.Content("../defFacilitiesEquipment/_ListEquipmentMoalefeValue")');*@
+
+
+
+         },
+         error: function (res) {
+             $("#loading-message").css("display", "none");
+             console.log(res);
+             console.log("jj");
+             Toast.fire({
+                 icon: 'success',
+                 background: '#35434A',
+                 color: 'white',
+                 title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+             }).then(() => {
+                 $("#loading-message").css("display", "none");
+             });
+         }
+     });
+ }
+</script>
+<script>
+    @*$("#table_div").load('@Url.Content("../defFacilitiesEquipment/_ListEquipmentMoalefeValue")');*@
+
+    $("#Cheack ").click(function () {
+        var selectedValue = $("#baste_peymanofAccept").val();
+
+        if (selectedValue) {
+            var parts = selectedValue.split('_');
+
+            if (parts.length >= 2) {
+                var FK_Baste = parts[1];
+                var pymnID = parts[0];
+
+                // Your further code logic here
+            } else {
+                console.error("Invalid format: " + selectedValue);
+            }
+        } else {
+            console.error("Selected value is undefined or null");
+        }
+        console.log(pymnID)
+        if (pymnID == undefined) {
+            alert("پیمان مورد نظر را انتخاب نمایید")
+        } else if ($("#select_EquipmentGroup").val() == "Select") {
+            alert("نوع تجهیزات خود را مشخص کنید ")
+        }
+        else if ($("#year_Eq").val() == 0) {
+            alert("سال مورد نظر را انتخاب نمایید")
+
+        } else if ($("#month_Eq").val() == 0) {
+            console.log($("#month_usr").val())
+            alert("ماه مورد نظر را انتخاب نمایید")
+        } else if ($("#datepickerFromEn_usr").val() == null) {
+            alert("از تاریخ مورد نظر را انتخاب نمایید")
+        } else if ($("#datepickerToEn_usr").val() == null) {
+            alert("تا تاریخ مورد نظر را انتخاب نمایید")
+        } else {
+            var Basteh = $('#basteOfPeyman').val();
+            console.log(Basteh);
+            var selectedValue = $("#baste_peymanofAccept").val();
+            var parts = selectedValue.split('_');
+            var FK_Baste = parts[1];
+            var pymnID = parts[0];
+
+            var url = '@Url.Content("~/Contracts/defFacilitiesEquipment/FilterSabt_Usr_Tools")';
+            var params = {
+                Year: $("#year_Eq").val(),
+                Month: $("#month_Eq").val(),
+                fk_basteh: FK_Baste
+            };
+
+            $("#table_div").load(url, params);
+        }
+});
+</script>

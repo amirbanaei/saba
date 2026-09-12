@@ -1,0 +1,559 @@
+﻿@using SaabWebProject.Models.DomainModels;
+
+@{
+    SaabEntities db = new SaabEntities();
+    ViewBag.Title = "پشتیبان گیری از اطلاعات";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<script src="~/Assets/js/jalalidatepicker.min.js"></script>
+<link href="~/Assets/css/jalalidatepicker.min.css" rel="stylesheet" />
+<script src="~/Assets/js/jalaali.min.js"></script>
+<link href="~/MyStyles/jalalidatepicker.css" rel="stylesheet" />
+
+<link href="~/MyStyles/MyStyle.css" rel="stylesheet" />
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+<style>
+    .tableH_Lock {
+        max-height: 451px;
+        /*height: 500px;*/
+    }
+</style>
+
+<div class="">
+
+    <ul class="nav nav-tabs nav-tabs-v2 ps-4 pe-4" id="pills-tab" style="margin-bottom:30px">
+        <li class="nav-item me-3">
+            <a class="nav-link active" id="pills-contact-tab" data-bs-toggle="pill" href="#pills-contact">
+                <button class=" nav-btn">تعریف دسته</button>
+            </a>
+        </li>
+        <li class="nav-item me-3">
+            <a class="nav-link " id="pills-home-tab" data-bs-toggle="pill" href="#pills-home">
+                <button class=" nav-btn">تعریف زیر مجموعه به دسته</button>
+            </a>
+        </li>
+        <li class="nav-item me-3">
+            <a class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" href="#pills-profile">
+                <button class=" nav-btn">مشاهده جزییات دسته ها </button>
+            </a>
+        </li>
+
+    </ul>
+
+    <div class="tab-content" id="pills-tabContent">
+        <div class="tab-pane fade  " id="pills-home" style="height:auto;">
+            <div class="card">
+                <div class="card-body pb-2">
+                    <form>
+                        <div class="row">
+                            @*<div class="col-xl-2">
+            <label class="form-label"> تاریخ شروع </label>
+            <div class="col-xl-12">
+                ------------------------------------------------[          ]-|KH|-
+                <input data-jdp jdp-btn-close data-jdp-miladi-input="datepickerFromEn_Eq12" id="datepickerFrom_Eq12" class="form-control">
+                <input id="datepickerFromEn_Eq12" type="hidden" />
+                -------------------------------------------------------------|KH|-
+            </div>
+        </div>*@
+                            <div class="col-xl-2">
+                                <label class="form-label"> نام دسته مورد نظر </label>
+
+                                <select class="form-select" id="dastehbandiii">
+                                    <option value="0">انتخاب مورد</option>
+
+                                    @foreach (var it in db.dbAsnadDastehband1.ToList())
+                                    {
+                                        <option value="@it.ID">@it.NAME</option>
+
+                                    }
+
+
+                                </select>
+                            </div>
+                            <div class="col-xl-2">
+                                <label class="form-label"> نام دیتابیس مورد نظر  </label>
+
+                                <select class="form-select" id="namedatabase">
+                                    <option value="0">انتخاب مورد</option>
+                                    <option value="1">کاربران حقیقی</option>
+                                    <option value="2">کاربران حقوقی</option>
+
+                                    @*@foreach (var it in db.dbAsnadDastehband1.ToList())
+                {
+                    <option value="@it.ID">@it.NAME</option>
+
+                }*@
+
+
+                                </select>
+                            </div>
+                            <div class="col-xl-1">
+                                <button id="btnCreadatabase" type="button" class="form-control btn buttonsabt">
+                                    <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                                    <span class="bSabt-text"> ثبت دیتابیسی</span>
+                                </button>
+                            </div>
+                            @*<div class="col-xl-2" id="hourlyInput" style="display:none">
+            <label class="form-label"> نام دسته بندی </label>
+            <input class="form-control" />
+        </div>*@
+
+                            @*<div class="col-xl-3">
+            <label class="form-label"> ایمیل </label>
+            <input class="form-control" />
+        </div>*@
+
+                        </div>
+                        <div class="row" id="SectionInstallmentInputs">
+
+                        </div>
+                        <div class="row" style="margin-top:8px">
+                            <div class="col-xl-1">
+                                <div class="form-group">
+                                    <button id="btnPlusInput" onclick="plusInputInstallmentManually(this)" type="button" class="btn form-control buttonGeneralPlus">
+                                        <i class="fa fa-plus fa-fw me-1  VecGeneral"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-xl-11"></div>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col-xl-11"></div>
+                            <div class="col-xl-1">
+                                <button id="btnCreatezerdasteh" type="button" class="form-control btn buttonsabt">
+                                    <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                                    <span class="bSabt-text">ثبت</span>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="card-arrow">
+                    <div class="card-arrow-top-left"></div>
+                    <div class="card-arrow-top-right"></div>
+                    <div class="card-arrow-bottom-left"></div>
+                    <div class="card-arrow-bottom-right"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="pills-profile" style="height:auto;">
+            <div class="card">
+                <div class="card-body pb-2">
+           
+                </div>
+                <div class="table-content p-4">
+                    <div class="tab-pane fade show active" id="allTab">
+                        <div class="table-responsive tableH_Lock">
+                            <table class="table table-hover text-nowrap">
+                                <thead>
+                                    <tr style="text-align:center">
+                                        <th>
+                                            @Html.DisplayName("فعالیت")
+                                        </th>
+                                        <th>
+                                            @Html.DisplayName("نام دسته")
+                                            <div class="inputWithFilterIcon">
+                                                <input type="text" id="filter01-filter" class="inputFilter form-control" placeholder="">
+                                                <span><i class="fas fa-filter"></i></span>
+                                            </div>
+                                        </th>
+                                        <th>
+                                            @Html.DisplayName("تعداد زیر مجموعه")
+                                            <div class="inputWithFilterIcon">
+                                                <input type="text" id="filter02-filter" class="inputFilter form-control" placeholder="">
+                                                <span><i class="fas fa-filter"></i></span>
+                                            </div>
+                                        </th>
+
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var it in db.dbAsnadDastehband1.ToList())
+                                    {
+                                        int count = 0;
+                                        var list = db.dbAsnadDastehband2.Where(s => s.FK_dbAsnadDastehband1 == it.ID).ToList();
+                                        if (list.Count > 0)
+                                        {
+                                            count = list.Count;
+                                        }
+                                        <tr class="task-list-row"
+                                            data-filter01="@it.NAME"
+                                            data-filter02="@count">
+
+                                            <td>
+                                                <div class="ms-sm-4 mt-sm-0 mt-2 dropdown-toggle">
+                                                    <a href="#" data-bs-toggle="dropdown" class="text-white text-opacity-75 text-decoration-none">
+                                                        <i class="fa fa-edit"></i>
+                                                    </a>
+                                                    <div class="dropdown-menu">
+                                                        <a data-bs-toggle="modal" data-bs-target="#modalLg1" class="dropdown-item Erja" id="Erja_@it.ID">ویرایش</a>
+
+                                                        <a data-bs-toggle="modal" data-bs-target="#modalLg1" class="dropdown-item Details" id="Details_@it.ID">مشاهده</a>
+                                                    </div>
+                                                </div>
+                                            </td>
+
+                                            <td>@it.NAME</td>
+                                            <td>@count</td>
+
+                                        </tr>
+                                    }
+
+
+
+
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+                <hr />
+                <div class="row mb-2">
+                    <div class="col-xl-11"></div>
+                    <div class="col-xl-1">
+                        <button id="btnCreate2" type="button" class="form-control btn buttonsabt">
+                            <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                            <span class="bSabt-text">ثبت</span>
+                        </button>
+                    </div>
+                </div>
+
+
+                <div class="card-arrow">
+                    <div class="card-arrow-top-left"></div>
+                    <div class="card-arrow-top-right"></div>
+                    <div class="card-arrow-bottom-left"></div>
+                    <div class="card-arrow-bottom-right"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade show active" id="pills-contact" style="height:auto;">
+            <div class="card">
+                <div class="card-body pb-2">
+                    <form>
+                        <div class="row">
+
+
+
+                            <div class="col-xl-2" id="namedastehbandi" >
+                                <label class="form-label"> نام دسته بندی </label>
+                                <input class="form-control"id="namedastehbanditarif" />
+                            </div>
+
+                            @*<div class="col-xl-3">
+                                    <label class="form-label"> ایمیل </label>
+                                    <input class="form-control" />
+                                </div>*@
+
+                        </div>
+                        @*<div class="row" id="SectionInstallmentInputs">
+
+                            </div>*@
+
+                        <hr />
+                        <div class="row">
+                            <div class="col-xl-11"></div>
+                            <div class="col-xl-1">
+                                <button id="btnCreatenamedasteh" type="button" class="form-control btn buttonsabt">
+                                    <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                                    <span class="bSabt-text">ثبت</span>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="card-arrow">
+                    <div class="card-arrow-top-left"></div>
+                    <div class="card-arrow-top-right"></div>
+                    <div class="card-arrow-bottom-left"></div>
+                    <div class="card-arrow-bottom-right"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/js/jquery3.6.0.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/Harkat.js"></script>
+<script src="~/Scripts/jquery-2.2.2.min.js"></script>
+<script>
+      $(".Details").click(function () {
+        var idd = $(this).attr("id").split("_")[1];
+          console.log(idd);
+      $("#big_modal_body1").load('@Url.Content("ManagementAccounting/FinancialDocuments/Listdasteh")?id='+idd);
+      });
+                  $(".Erja").click(function () {
+var idd = $(this).attr("id").split("_")[1];
+console.log(idd);
+    $("#big_modal_body1").load('@Url.Content("/ManagementAccounting/FinancialDocuments/Listdasteh")?id='+idd);
+});
+    var nodesLength = 0; // Declare outside the function to maintain its value
+
+
+    function plusInputInstallmentManually(e) {
+        var a = 1;
+        nodesLength++;
+        a++;
+        $("#SectionInstallmentInputs ").append(`
+            <div class="col-xl-4">
+                <label class="form-label"> نام ${nodesLength} </label>
+                <input class="form-control SectionInstallmentInputs1" id="row_${nodesLength}"/>
+            </div>
+                <div class="col-xl-2">
+        <label class="form-label"> کد موردنظر ${nodesLength} </label>
+        <input class="form-control SectionInstallmentInputs21" id="row1_${nodesLength}"/>
+    </div>
+       `);
+    }
+</script>
+<script>
+    jalaliDatepicker.startWatch({
+        time: false,
+        days: ["شنبه", "1شنبه", "2شنبه", "3شنبه", "4شنبه", "5شنبه", "جمعه"],
+        persianDigits: true,
+        autoClose: true,
+        //autocomplete: true,
+        showCloseBtn: true,
+        showEmptyBtn: false,
+        showCloseBtn: true,
+        zIndex: 100000,
+    });
+    function reinitializeDatepickers() {
+        var inputs = document.querySelectorAll("[data-jdp-miladi-input]");
+        console.log(inputs.length);
+
+        for (var i = 0; i < inputs.length; i++) {
+            inputs[i].addEventListener("jdp:change", function (e) {
+                var miladiInput = document.getElementById(this.getAttribute("data-jdp-miladi-input"));
+                var date = this.value.replace(' ', '').slice(0, 10).split('/');
+                date = jalaali.toGregorian(parseInt(date[0]), parseInt(date[1]), parseInt(date[2]));
+
+                if (!this.value) {
+                    date = "";
+                } else if (this.value.replace(' ', '').length < 11) {
+                    date = date.gy + '-' + date.gm + '-' + date.gd;
+                } else {
+                    date = date.gy + '-' + date.gm + '-' + date.gd + ' ' + this.value.replace(' ', '').slice(10, 30);
+                }
+                miladiInput.value = date;
+            });
+        }
+    }
+
+    //-----------------------------------------------------------------
+    var inputs = document.querySelectorAll("[data-jdp-miladi-input]");
+    for (var i = 0; i < inputs.length; i++) {
+        console.log(inputs.length);
+
+        inputs[i].addEventListener("jdp:change", function (e) {
+            var miladiInput = document.getElementById(this.getAttribute("data-jdp-miladi-input"));
+            var date = this.value.replace(' ', '').slice(0, 10).split('/');
+            date = jalaali.toGregorian(parseInt(date[0]), parseInt(date[1]), parseInt(date[2]),)
+            // If it was empty
+            if (!this.value) {
+                date = "";
+            }
+            // If it was only history
+            else if (this.value.replace(' ', '').length < 11) {
+                date = date.gy + '-' + date.gm + '-' + date.gd
+            }
+            // If it was the date and time
+            else {
+                date = date.gy + '-' + date.gm + '-' + date.gd + ' ' + this.value.replace(' ', '').slice(10, 30)
+            }
+            miladiInput.value = date
+        });
+    }
+</script>
+<script>
+    $("#btnCreatenamedasteh").click(function () {
+    var PeymanArr = [];
+        //      $.each($("#users").val().toString().split(","), function (index, item) {
+        //if (item !== "") {
+        //    if (item != 'Select') {
+        //        PeymanArr.push(item);
+        //        console.log(item);
+        //    }
+        //}
+        //      });
+        //      console.log(PeymanArr);
+        var month = $("#namedastehbanditarif").val();
+
+
+        console.log(month);
+
+        $.ajax({
+            url: "@Url.Action("createdastehasnad", "FinancialDocuments", new { area = "ManagementAccounting" })",
+            type: "Post",
+            dataType: "html",
+            data: {  name: month },
+            success: function (res) {
+                document.getElementById("loading-message").style.display = "none";
+                if (res = "True") {
+                    alert("با موفقیت ثبت شد ");
+                    location.reload();
+                }
+
+            },
+            error: function (res) {
+                console.log(res);
+
+                document.getElementById("loading-message").style.display = "none";
+                Toast.fire({
+                    icon: 'error',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "عملیات  با خطا مواجه شد"
+                });
+                return false;
+            }
+        });
+
+});
+    $("#btnCreadatabase").click(function () {
+    var PeymanArr = [];
+        //      $.each($("#users").val().toString().split(","), function (index, item) {
+        //if (item !== "") {
+        //    if (item != 'Select') {
+        //        PeymanArr.push(item);
+        //        console.log(item);
+        //    }
+        //}
+        //      });
+        //      console.log(PeymanArr);
+            var month = $("#dastehbandiii").val();
+        var namedatabase = $("#namedatabase").val();
+        console.log(namedatabase);
+
+
+        console.log(month);
+
+      $.ajax({
+          url: "/ManagementAccounting/FinancialDocuments/creatDATABASE",
+    type: "POST",
+    data: { name: month, namedatabase: namedatabase },
+    success: function (res) {
+        console.log("نتیجه درخواست:", res);
+        if (res == "True") {
+            alert("با موفقیت ثبت شد!");
+            location.reload();
+        }
+    },
+    error: function (xhr, status, error) {
+        console.log("خطا:", xhr.responseText);
+    }
+});
+
+
+});
+    $("#btnCreatezerdasteh").click(function () {
+    var PeymanArr = [];
+        //      $.each($("#users").val().toString().split(","), function (index, item) {
+        //if (item !== "") {
+        //    if (item != 'Select') {
+        //        PeymanArr.push(item);
+        //        console.log(item);
+        //    }
+        //}
+        //      });
+        //      console.log(PeymanArr);
+        var month = $("#dastehbandiii").val();
+
+        fd = new FormData();
+        var Filters = [];
+
+        console.log("djkjsdkl");
+
+        $('.SectionInstallmentInputs1').each(function (i, obj) {
+            console.log("djkjsdkl");
+            let count = 0;
+
+            if ($(this).attr("id").split("_").length == 2) {
+                var obj = new Object();
+                count++;
+                console.log($(this).attr("id"));
+
+                var parts = $(this).attr("id").split("_");
+
+
+                //var Year_id4 = "bedehkar3_" + parts[1];
+                //var val2 = $('#datepickerFromEn_Eq12323_' + parts[1]).val();
+                var Monthid = "row1_" + parts[1];
+                var inputString = $("#" + Monthid).val();
+                var inputString2 = $("#row_" + parts[1]).val().replace(/,/g, '') || 0;;
+                console.log(inputString);
+                console.log(inputString2);
+                obj.COD = inputString;
+                    obj.Titrl = inputString2;
+                //obj.vahd = $("#" + Year_id4).val().replace(/,/g, '') || 0;;
+                //obj.Title = ;
+                obj.FK_dbAsnadDastehband1 = month;
+             // بدون
+
+                //var inputString200 = $("#bedehkar30_" + parts[1]).val().replace(/,/g, '') || 0;;
+
+
+
+
+                Filters.push(obj);
+            }
+        });
+        console.log(month);
+
+        $.ajax({
+            url: "@Url.Action("creatasnadastandizer", "FinancialDocuments", new { area = "ManagementAccounting" })",
+            type: "Post",
+            dataType: "html",
+            data: { Filters: Filters },
+            success: function (res) {
+                console.log(res);
+
+                document.getElementById("loading-message").style.display = "none";
+                if (res === "True") {
+                    console.log(res);
+
+                    alert("با موفقیت ثبت شد ");
+                    location.reload();
+                }
+                else {
+                    console.log(res);
+
+                    alert(res);
+                }
+            },
+            error: function (res) {
+                console.log(res);
+
+                document.getElementById("loading-message").style.display = "none";
+                Toast.fire({
+                    icon: 'error',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "عملیات  با خطا مواجه شد"
+                });
+                return false;
+            }
+        });
+
+});
+
+    //document.getElementById('timePeriod').addEventListener('change', function () {
+    //    var hourlyInput = document.getElementById('hourlyInput');
+    //    if (this.value === '1') {
+    //        hourlyInput.style.display = 'block';
+    //    } else {
+    //        hourlyInput.style.display = 'none';
+    //    }
+    //});
+</script>

@@ -1,0 +1,110 @@
+﻿@{
+    Layout = null;
+}
+
+<div id="myTable4">
+
+</div>
+
+
+<script src="~/Assets/js/jquery3.6.0.js"></script>
+<script src="~/Scripts/sweetalert2.js"></script>
+<script>
+       $(".edit2").click(function () {
+    var idd = $(this).attr("id").split("_")[1];
+    console.log(idd);
+        $("#big_modal_body1").load('@Url.Content("/RegistrationDocument/taedordelview")?id='+idd);
+});
+    $(function () {
+        getlist();
+    });
+
+    function getlist() {
+        $("#myTable4").load('@Url.Content("/Contracts/RegistrationDocument/ControlDocuments_List")', function () {
+            $(".accept").click(function () {
+                var id = $(this).attr("id").split("_")[1];
+                sendAjax('@Url.Action("acceptDocument", "RegistrationDocument",new { area = "Contracts" })', id)
+            });
+            $(".Notaccept").click(function () {
+                var id = $(this).attr("id").split("_")[1];
+                sendAjax('@Url.Action("NotacceptDocument", "RegistrationDocument",new { area = "Contracts" })', id)
+            });
+
+
+        });
+
+    }
+</script>
+
+<script>
+    var Toast = Swal.mixin({
+        toast: true,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    });
+</script>
+
+<script>
+    function sendAjax(url, id) {
+        var fd2 = new FormData();
+        fd2.append("doc_ID", id);
+        $("#loading-message").css("display", "block");
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: fd2,
+            processData: false,
+            contentType: false,
+            success: function (resp1) {
+                console.log(resp1);
+                console.log("Okeye");
+                $("#loading-message").css("display", "none");
+
+                if (resp1 == "True") {
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "با موفقیت اعمال گردید"
+                    }).then(() => {
+                        getlist();
+                    });
+                } else {
+                    $("#loading-message").css("display", "none");
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                    }).then(() => {
+                        $("#loading-message").css("display", "none");
+                    });
+                }
+
+            },
+            error: function (resp1) {
+                console.log(resp1);
+                console.log("Nokeye");
+                $("#loading-message").css("display", "none");
+                Toast.fire({
+                    icon: 'success',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                }).then(() => {
+                    $("#loading-message").css("display", "none");
+                });
+            }
+        });
+
+
+    }
+
+
+</script>
+

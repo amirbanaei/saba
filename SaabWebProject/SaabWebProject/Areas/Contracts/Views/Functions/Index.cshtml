@@ -1,0 +1,1148 @@
+﻿@using SaabWebProject.Models.DomainModels;
+
+@{
+    ViewBag.Title = "ثبت و ویرایش عملکرد ها";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    SaabEntities db = new SaabEntities();
+
+}
+@section Styles{
+    <link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+    <link href="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.style.css" rel="stylesheet" />
+}
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+
+<script src="~/Assets/js/jalalidatepicker.min.js"></script>
+<link href="~/Assets/css/jalalidatepicker.min.css" rel="stylesheet" />
+<script src="~/Assets/js/jalaali.min.js"></script>
+<link href="~/MyStyles/jalalidatepicker.css" rel="stylesheet" />
+
+<style>
+
+    .buttonGeneral:hover .bGeneral-textSmal {
+        font-size: 11px !important;
+    }
+
+    /*===================================*/
+    .loader {
+        position: absolute;
+        top: calc(50% - 32px);
+        left: calc(50% - 32px);
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        perspective: 800px;
+    }
+
+    .inner {
+        position: absolute;
+        box-sizing: border-box;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+    }
+
+        .inner.one {
+            left: 0%;
+            top: 0%;
+            animation: rotate-one 1s linear infinite;
+            border-bottom: 3px solid #EFEFFA;
+        }
+
+        .inner.two {
+            right: 0%;
+            top: 0%;
+            animation: rotate-two 1s linear infinite;
+            border-right: 3px solid #EFEFFA;
+        }
+
+        .inner.three {
+            right: 0%;
+            bottom: 0%;
+            animation: rotate-three 1s linear infinite;
+            border-top: 3px solid #EFEFFA;
+        }
+
+    @@keyframes rotate-one {
+        0% {
+            transform: rotateX(35deg) rotateY(-45deg) rotateZ(0deg);
+        }
+
+        100% {
+            transform: rotateX(35deg) rotateY(-45deg) rotateZ(360deg);
+        }
+    }
+
+    @@keyframes rotate-two {
+        0% {
+            transform: rotateX(50deg) rotateY(10deg) rotateZ(0deg);
+        }
+
+        100% {
+            transform: rotateX(50deg) rotateY(10deg) rotateZ(360deg);
+        }
+    }
+
+    @@keyframes rotate-three {
+        0% {
+            transform: rotateX(35deg) rotateY(55deg) rotateZ(0deg);
+        }
+
+        100% {
+            transform: rotateX(35deg) rotateY(55deg) rotateZ(360deg);
+        }
+    }
+
+    @@media only screen and (min-width : 1400px) {
+        .buttonGeneral {
+            font-size: 15px !important;
+        }
+    }
+    /*.table {
+        width: 80%;*/ /* تنظیم عرض کل جدول */
+    /*table-layout: fixed;*/ /* جدول با عرض ثابت */
+    /*}
+
+    th, td {
+        padding: 5px;*/ /* کاهش فضای داخلی سلول‌ها */
+    /*white-space: nowrap;*/ /* جلوگیری از شکستن متن در چند خط */
+    /*text-overflow: ellipsis;*/ /* متن طولانی را به صورت سه‌نقطه نمایش می‌دهد */
+    /*overflow: hidden;*/ /* پنهان کردن متن اضافی */
+    /*}*/
+</style>
+
+
+
+
+<div class="">
+    <ul class="nav nav-tabs nav-tabs-v2 ps-4 pe-4">
+        <li class="nav-item me-3">
+            <a href="#FucntionUser" class="nav-link active" data-bs-toggle="tab">
+                <button class=" nav-btn">ثبت کارکرد کاربران</button>
+            </a>
+        </li>
+        <li class="nav-item me-3">
+            <a href="#FunctionEquipment" class="nav-link" data-bs-toggle="tab">
+                <button class=" nav-btn">ثبت کارکرد تجهیزات</button>
+            </a>
+        </li>
+        <li class="nav-item me-3">
+            <a href="#FunctionProject" class="nav-link" data-bs-toggle="tab">
+                <button class=" nav-btn">ثبت کارکرد صوررت وضعیت </button>
+            </a>
+        </li>
+        <li class="nav-item me-3">
+            <a href="#FunctionProject22" class="nav-link" data-bs-toggle="tab">
+                <button class=" nav-btn">ثبت مولفه های دستی فیش</button>
+            </a>
+        </li>
+        @*<li class="nav-item me-3"><a href="#Fish" class="nav-link" data-bs-toggle="tab"><button class=" nav-btn">ثبت کارکرد فیش</button></a></li>*@
+
+    </ul>
+    <div class="tab-content p-3">
+        @*<div class="tab-pane fade" id="Fish">
+                @Html.Action("Fishsabtview", "DefFacilitiesEquipment")
+
+            </div>*@
+        <div class="tab-pane fade" id="FunctionProject">
+            @Html.Action("viewsoartsabt", "DefFacilitiesEquipment")
+        </div>
+        <div class="tab-pane fade" id="FunctionEquipment">
+            @Html.Action("_CreateEquipmentMoalefeValue", "DefFacilitiesEquipment")
+
+        </div>
+        <div class="tab-pane fade" id="FunctionProject22">
+            @Html.Action("Exclevalue", "Formula", new { area = "Salaries" })
+
+        </div>
+
+        @*<div class="tab-pane fade" id="Fish">
+                @Html.Action("Exclevalue", "Formula", new { area = "Salaries" })
+
+            </div>*@
+
+
+        <div class="tab-pane fade show active" id="FucntionUser">
+            <div>
+                <div class="row" id="pymnandbasteh">
+                </div>
+
+                <div class="row">
+                    <div class="col-xl-2">
+                        <div class="col-xl-12">
+                            <label class="form-label">سال</label>
+                        </div>
+                        <div class="col-xl-12">
+                            <div class="col-xl-12">
+                                <select class="form-select" id="year_usr">
+                                    <option value="0">انتخاب کنید</option>
+
+                                    @{
+                                        System.Globalization.PersianCalendar cs2 = new System.Globalization.PersianCalendar();
+                                        int currentYear = cs2.GetYear(DateTime.Now);
+
+                                        for (var i = 4; i >= 0; i--)
+                                        {
+                                            var s = DateTime.Now.AddYears(-i);
+
+                                            <option value="@cs2.GetYear(s)">@cs2.GetYear(s)</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    @*<div class="col-xl-2">*@
+                    @*<div class="row">
+                            <div class="col-xl-12">
+                                <label class="form-label">سال</label>
+
+                            </div>
+
+                            <div class="col-xl-12">
+                                <select id="year_usr" name="year_usr" class="form-control">
+                                    <option value="0">انتخاب سال</option>
+                                    @{
+                                        System.Globalization.PersianCalendar cs3 = new System.Globalization.PersianCalendar();
+
+                                        for (var i = -1; i <= 5; i++)
+                                        {
+                                            var s = DateTime.Now.AddYears(i);
+                                            var x = @cs3.GetYear(s);
+                                            <option selected="selected" value="@cs3.GetYear(s)">@cs3.GetYear(s)</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>*@
+                    @*</div>*@
+                    @*<div class="col-xl-2">
+                            <div class="row">
+                                <div class="col-xl-12">
+                                    <label class="form-label">ماه</label>
+
+                                </div>
+
+                                <div class="col-xl-12">
+                                    <select id="month_usr" name="month_usr" class="form-control">
+                                        <option value="0">انتخاب ماه</option>
+                                        @{
+                                             for (var i = 1; i <= 12; i++)
+                                            {
+                                                <option selected="selected" value="@i">@i</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>*@
+                    @{
+                        var currentMonth = cs2.GetMonth(DateTime.Now);
+                    }
+                    <div class="col-xl-2">
+                        <div class="col-xl-12">
+                            <label class="form-label">ماه</label>
+
+                        </div>
+                        <div class="col-xl-12">
+                            <select class="form-select" id="month_usr">
+                                <option value="0">انتخاب کنید  </option>
+
+                                <option value="1">فروردین </option>
+                                <option value="2">اردیبهشت</option>
+                                <option value="3">خرداد</option>
+                                <option value="4">تیر</option>
+                                <option value="5">مرداد</option>
+                                <option value="6">شهریور</option>
+                                <option value="7">مهر</option>
+                                <option value="8">آبان</option>
+                                <option value="9">آذر</option>
+                                <option value="10">دی</option>
+                                <option value="11">بهمن</option>
+                                <option value="12">اسفند</option>
+                            </select>
+                        </div>
+
+                    </div>
+                    <div class="col-xl-3">
+
+                        <div class="col-xl-12">
+                            <label class="form-label">از تاریخ</label>
+
+                        </div>
+
+                        <div class="col-xl-12">
+                            @*------------------------------------------------[1402/09/20]-|KH|-*@
+                            <input data-jdp jdp-btn-close data-jdp-miladi-input="datepickerFromEn_usr" id="datepickerFrom_usr" class="form-control">
+                            <input id="datepickerFromEn_usr" type="hidden" />
+                            @*-------------------------------------------------------------|KH|-*@
+                        </div>
+
+                    </div>
+                    <div class="col-xl-3">
+
+                        <div class="col-xl-12">
+                            <label class="form-label">تا تاریخ</label>
+
+                        </div>
+
+                        <div class="col-xl-12">
+                            @*------------------------------------------------[1402/09/20]-|KH|-*@
+                            <input data-jdp jdp-btn-close data-jdp-miladi-input="datepickerToEn_usr" id="datepickerTo_usr" class="form-control">
+                            <input id="datepickerToEn_usr" type="hidden" />
+                            @*-------------------------------------------------------------|KH|-*@
+                        </div>
+
+                    </div>
+                    <div class="col-xl-1">
+
+                    </div>
+
+                </div>
+
+
+                @*<div class="row">
+                        <div class="col-xl-12">
+                            <div class="row">
+                                <div class="col-xl-12">
+                                    <label class="form-label">توضیحات</label>
+
+                                </div>
+                                <div class="col-xl-12">
+                                    <textarea class="form-control" rows="12" style="height: 20px;    width: 83%;">
+
+                                            </textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>*@
+
+                <div class="row">
+                    <div class="col-xl-8"></div>
+                    <div class="col-xl-1">
+                        @*<a data-bs-toggle="modal" data-bs-target="#modalLg" class="dropdown-item HadeEntezar" id="HadeEntezar_@item.pec_ID">تعیین حدود انتظار</a>*@
+
+                        <a class="btn form-control buttonGeneral" id="helpppopop" data-bs-toggle="modal" data-bs-target="#modalLg1" style="font-size:10px;margin-bottom:10px;">
+                            <i class="bi bi-question-octagon-fill"></i>
+                            <span class="bGeneral-text">راهنما</span>
+                        </a>
+                    </div>
+
+                    <div class="col-xl-1">
+                        <a href="#" class=" btn form-control buttonGeneral" id="dwn" onclick="DownloadExcel() ">
+                            <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                            <span class="bGeneral-text">دانلود فایل نمونه</span>
+                        </a>
+                    </div>
+
+                    @*<div class="col-xl-1">
+                            <a data-bs-toggle="modal" data-bs-target="#modalLg1" href="#" onclick="dataaa()" class=" btn form-control buttonGeneral" ">
+                                <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                                <span class="bGeneral-text bGeneral-textSmal">بارگذاری فایل مشاهده جدول</span>
+                            </a>
+                        </div>*@
+                    @if (db.tbPeymanContracts.Where(p => p.pec_Title == "آژانس خدمات مشترکین امور برق زاهدان 1").FirstOrDefault() != null)
+                    {
+                        <div class="col-xl-1">
+                            <a data-bs-toggle="modal" data-bs-target="#modalLg1" href="#" onclick="datano()" class="btn form-control buttonGeneral">
+                                <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                                <span class="bGeneral-text bGeneral-textSmal">بارگذاری فایل مشاهده جدول</span>
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-xl-1">
+                            <a href="#" onclick="upload112332444()" class="btn form-control buttonGeneral">
+                                <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                                <span class="bGeneral-text">بارگذاری فایل</span>
+                            </a>
+                        </div>
+                    }
+
+
+
+                    @*<div class="col-xl-2 xoi" style="text-align: right">
+                                            <button class="btn btn-outline-info xoi csss uploadSummery " style="width: 100%;border-radius:20px;  color: white;
+                        background-color: #0d3244;font-size:10px;margin-bottom:10px;
+                        " id="bargozari">
+                                                بارگزاری پیوست ها
+                                            </button>
+                                            <input id="summery_file" style="display: none;" type="file" class="form-control" value="" />
+
+
+                                        </div>*@
+                    <!--<div class="col-xl-1">
+                        <button class="btn form-control buttonGeneral" data-bs-toggle="modal" data-bs-target="#modalLg" id="ShowMoalefe">
+                            <i class="fa fa-check-circle fa-fw me-1 VecGeneral"></i>
+                            <span class="bGeneral-text">مولفه های ثبت شده</span>
+
+                        </button>
+
+                    </div>-->
+                    @*<div class="col-xl-1">
+                            <button class="btn form-control buttonGeneral" data-bs-toggle="modal" data-bs-target="#modalLg" id="ShowOnePerson">
+                                <i class="bi bi-person-circle fa-fw me-1 VecGeneral"></i>
+                                <span class="bGeneral-text">واردکردن تکی</span>
+
+                            </button>
+                        </div>*@
+                    <div class="col-xl-1">
+                        <button class="btn form-control buttonGeneral" id="showdet">
+                            <i class="fa fa-eye fa-fw me-1 VecGeneral"></i>
+                            <span class="bGeneral-text">مشاهده جزئیات</span>
+                        </button>
+                    </div>
+                </div>
+                <input name="uploasfdf" type="file" style="display:none" />
+
+                <input name="uploasfddfsljlf" type="file" style="display:none" />
+
+
+
+                <input name="upload11233244432132" type="file" style="display:none" />
+
+                <div class="row" style="margin-top:10px">
+                    <div id="myTable10">
+
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="loader" style="display:none">
+                <div class="inner one"></div>
+                <div class="inner two"></div>
+                <div class="inner three"></div>
+            </div>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Scripts/sweetalert2.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+@*<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>*@
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+
+
+<script>
+    @*$("#myTable10").load('@Url.Content("/Contracts/Functions/showtablesabtinsabtandedit")');*@
+
+</script>
+@*------------------------------------------------[1402/09/20]-|KH|-*@
+<script>
+    jalaliDatepicker.startWatch({
+        time: true,
+        days: ["شنبه", "1شنبه", "2شنبه", "3شنبه", "4شنبه", "5شنبه", "جمعه"],
+        persianDigits: true,
+        autoClose: true,
+        autocomplete: true,
+        showCloseBtn: true,
+        showEmptyBtn: false,
+        showCloseBtn: true,
+        zIndex: 100000,
+    });
+    //-----------------------------------------------------------------
+    var inputs = document.querySelectorAll("[data-jdp-miladi-input]");
+    for (var i = 0; i < inputs.length; i++) {
+        inputs[i].addEventListener("jdp:change", function (e) {
+            var miladiInput = document.getElementById(this.getAttribute("data-jdp-miladi-input"));
+            var date = this.value.replace(' ', '').slice(0, 10).split('/');
+            date = jalaali.toGregorian(parseInt(date[0]), parseInt(date[1]), parseInt(date[2]),)
+            // If it was empty
+            if (!this.value) {
+                date = "";
+            }
+            // If it was only history
+            else if (this.value.replace(' ', '').length < 11) {
+                date = date.gy + '-' + date.gm + '-' + date.gd
+            }
+            // If it was the date and time
+            else {
+                date = date.gy + '-' + date.gm + '-' + date.gd + ' ' + this.value.replace(' ', '').slice(10, 30)
+            }
+            miladiInput.value = date
+        });
+    }
+</script>
+@*-------------------------------------------------------------|KH|-*@
+<script>
+             $("#pymn" ).load('@Url.Content("/../Contracts/Peyman/_GetAllListPeymans_Select")',function(){
+                 $("#select_peyman").attr("id", "select_peyman");
+             });
+</script>
+@*<script>
+        var obj = new FormData();
+
+        $(".uploadSummery").click(function () {
+            $("#summery_file").click();
+        });
+
+        $("#summery_file").change(function (e) {
+            $.each(e.target.files, function (index, file) {
+
+                obj.append("files", file);
+                console.log(file);
+                console.log($("#baste_peyman2").val());
+                console.log($("#basteOfPeyman").val());
+                console.log($("#datepickerToEn_usr").val());
+                console.log($("#datepickerFromEn_usr").val());
+                sendAjax2('@Url.Action("sabtpavast1", "Moalefe", new { area = "Salaries" })', obj);
+
+            });
+        });
+
+        function sendAjax2(url2, fd2) {
+
+            obj.append("FromDate", $("#datepickerFromEn_usr").val());
+            obj.append("ToDate", $("#datepickerToEn_usr").val());
+            obj.append("Basteh", $('#basteOfPeyman').val());
+            obj.append("PeymanID", $("#baste_peyman2").val());
+            console.log($("#baste_peyman2").val());
+            console.log($("#basteOfPeyman").val());
+            console.log($("#datepickerToEn_usr").val());
+            console.log($("#datepickerFromEn_usr").val());
+
+
+            $.ajax({
+                url: url2,
+                type: 'POST',
+                data: fd2,
+                processData: false,
+                contentType: false,
+                success: function (resp1) {
+                    console.log("okeye");
+                    console.log(resp1);
+                    $("#loading-message").css("display", "none");
+                    fd = new FormData();
+                    if (resp1 == "True") {
+                        alert("با موفقیت ثبت شد");
+                        location.reload();
+                    }
+                    else {
+                        $("#loading-message").css("display", "none");
+                        console.log("jlk;;kkj");
+                        Toast.fire({
+
+                            icon: 'success',
+                            background: '#35434A',
+                            color: 'white',
+                            title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                        }).then(() => {
+                            $("#loading-message").css("display", "none");
+                        });
+                    }
+
+                },
+                error: function (resp1) {
+                    console.log(resp1);
+                    console.log("Nokeye");
+                    $("#loading-message").css("display", "none");
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                    }).then(() => {
+                        $("#loading-message").css("display", "none");
+                    });
+                }
+            });
+        }
+
+
+    </script>*@
+
+<script>
+
+
+    $(function () {
+        ///Select Picker Year
+        //$('#year_pr').picker({ search: true });
+
+        ///Select Picker Month
+        $('#month_pr').picker({ search: true });
+
+        //$('#year_usr').picker({ search: true });
+
+        //$('#month_usr').picker({ search: true });
+
+    });
+
+
+    ///DateTime Picker To
+    //$('#datepickerTo_pr').MdPersianDateTimePicker({
+    //    targetTextSelector: '#datepickerTo_pr',
+    //    targetDateSelector: '#datepickerToEn_pr',
+    //    dateFormat: 'yyyy-MM-dd',
+    //    isGregorian: false,
+    //    enableTimePicker: true,
+    //    disableBeforeToday: false
+    //});
+    /////DateTime Picker From
+    //$('#datepickerFrom_pr').MdPersianDateTimePicker({
+    //    targetTextSelector: '#datepickerFrom_pr',
+    //    targetDateSelector: '#datepickerFromEn_pr',
+    //    dateFormat: 'yyyy-MM-dd',
+    //    isGregorian: false,
+    //    enableTimePicker: true,
+    //    disableBeforeToday: false
+    //});
+
+    //$('#datepickerFrom_usr').MdPersianDateTimePicker({
+    //    targetTextSelector: '#datepickerFrom_usr',
+    //    targetDateSelector: '#datepickerFromEn_usr',
+    //    dateFormat: 'yyyy-MM-dd',
+    //    isGregorian: false,
+    //    enableTimePicker: true,
+    //    disableBeforeToday: false
+    //});
+
+    //$('#datepickerTo_usr').MdPersianDateTimePicker({
+    //    targetTextSelector: '#datepickerTo_usr',
+    //    targetDateSelector: '#datepickerToEn_usr',
+    //    dateFormat: 'yyyy-MM-dd',
+    //    isGregorian: false,
+    //    enableTimePicker: true,
+    //    disableBeforeToday: false
+    //});
+
+</script>
+<script>
+            const Toast = Swal.mixin({
+                toast: true,
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+
+                let year =0;
+                let month = 0;
+                let Basteh = 0;
+                var $elemyear = $('#year_usr');
+                //$elemyear.picker();
+                //year =1392;
+                //$elemyear.on('sp-change', function () {
+                //    year = $('#year_usr').find(":selected").val();
+
+                //});
+                //    var $elemmonth = $('#month_usr');
+                //    month = 1;
+                //    $elemmonth.picker();
+                //    $elemmonth.on('sp-change', function () {
+
+                //      month = $('#month_usr').find(":selected").val();
+
+                //});
+
+                   // Select Excel File And Submit Form
+    $("input[name='uploasfdf']").change(function () {
+
+        console.log($("#baste_peyman2").val());
+        if ($("#baste_peyman2").val() == 0) {
+            alert("پیمان مورد نظر را انتخاب نمایید")
+        } else if ($("#basteOfPeyman").val() == 0) {
+            alert("بسته مورد نظر را انتخاب نمایید")
+        }
+        else if ($("#year_usr").val() == 0) {
+            alert("سال مورد نظر را انتخاب نمایید")
+        } else if ($("#month_usr").val() == 0) {
+            console.log($("#month_usr").val())
+            alert("ماه مورد نظر را انتخاب نمایید")
+        } else if ($("#datepickerFromEn_usr").val() == null) {
+            alert("از تاریخ مورد نظر را انتخاب نمایید")
+        } else if ($("#datepickerToEn_usr").val() == null) {
+            alert("تا تاریخ مورد نظر را انتخاب نمایید")
+        } else {
+            $(".loader").css('display', 'block');
+
+                var file = this.files[0];
+                var ext = file.name.split('.')[1];
+                if (ext == "xlsx" || ext == "xls") {
+
+                    var  obj = new FormData();
+
+                    obj.append("MyExcelStream", file);
+                    obj.append("FromDate", $("#datepickerFromEn_usr").val());
+                    obj.append("ToDate", $("#datepickerToEn_usr").val());
+                    obj.append("Basteh", $('#basteOfPeyman').val());
+                    obj.append("PeymanID", $("#baste_peyman2").val());
+                    console.log(file);
+                    $.ajax({
+                    beforeSend:function (){
+                      document.getElementById("loading-message").style.display = "block";
+                    },
+                       url: "@Url.Action("ImportExcel_Moalefe", "Moalefe",new { area="Salaries" })",
+                       type: "post",
+                       contentType: false,
+                       data: obj,
+                       processData: false,
+                       cache: false,
+                        success: function (res) {
+                            $(".loader").css('display', 'none');
+
+                            document.getElementById("loading-message").style.display = "none";
+                            //UploadedFile(res);
+
+
+
+                            // نمایش مدال SweetAlert2
+
+                            // نمایش مدال شما
+                           // if (res.lenght() > 300) {
+                                $("#big_modal_body1").html(res);
+
+                           // } else {
+                           //     alert(res);
+                           // }
+
+
+
+
+                       },
+                        error: function (res) {
+                            $(".loader").css('display', 'none');
+
+                           console.log(res);
+                       }
+                   });
+                }
+                else {
+
+                    Swal.fire({
+                        icon: 'warning',
+                        background: 'rgb(29,40,52)',
+                        color: 'white',
+                        confirmButtonText: 'باشه',
+                        title: 'نوع فایل',
+                        text: 'لطفا فایل را صحیح وارد کنید',
+                    });
+                    return false;
+                }
+        }
+
+
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    $("input[name='uploasfddfsljlf']").change(function () {
+
+     console.log($("#baste_peyman2").val());
+     if ($("#baste_peyman2").val() == 0) {
+         alert("پیمان مورد نظر را انتخاب نمایید")
+     } else if ($("#basteOfPeyman").val() == 0) {
+         alert("بسته مورد نظر را انتخاب نمایید")
+     }
+     else if ($("#year_usr").val() == 0) {
+         alert("سال مورد نظر را انتخاب نمایید")
+     } else if ($("#month_usr").val() == 0) {
+         console.log($("#month_usr").val())
+         alert("ماه مورد نظر را انتخاب نمایید")
+     } else if ($("#datepickerFromEn_usr").val() == null) {
+         alert("از تاریخ مورد نظر را انتخاب نمایید")
+     } else if ($("#datepickerToEn_usr").val() == null) {
+         alert("تا تاریخ مورد نظر را انتخاب نمایید")
+     } else {
+         $(".loader").css('display', 'block');
+
+             var file = this.files[0];
+             var ext = file.name.split('.')[1];
+             if (ext == "xlsx" || ext == "xls") {
+
+                 var  obj = new FormData();
+
+                 obj.append("MyExcelStream", file);
+                 obj.append("FromDate", $("#datepickerFromEn_usr").val());
+                 obj.append("ToDate", $("#datepickerToEn_usr").val());
+                 obj.append("Basteh", $('#basteOfPeyman').val());
+                 obj.append("PeymanID", $("#baste_peyman2").val());
+                 console.log(file);
+                 $.ajax({
+                 beforeSend:function (){
+                   document.getElementById("loading-message").style.display = "block";
+                 },
+                    url: "@Url.Action("ImportExcel_Moalefesistan", "Moalefe",new { area="Salaries" })",
+                    type: "post",
+                    contentType: false,
+                    data: obj,
+                    processData: false,
+                    cache: false,
+                     success: function (res) {
+                         $(".loader").css('display', 'none');
+
+                         document.getElementById("loading-message").style.display = "none";
+                         //UploadedFile(res);
+
+
+
+                         // نمایش مدال SweetAlert2
+
+                         // نمایش مدال شما
+                        // if (res.lenght() > 300) {
+                             $("#big_modal_body1").html(res);
+
+                        // } else {
+                        //     alert(res);
+                        // }
+
+
+
+
+                    },
+                     error: function (res) {
+                         $(".loader").css('display', 'none');
+
+                        console.log(res);
+                    }
+                });
+             }
+             else {
+
+                 Swal.fire({
+                     icon: 'warning',
+                     background: 'rgb(29,40,52)',
+                     color: 'white',
+                     confirmButtonText: 'باشه',
+                     title: 'نوع فایل',
+                     text: 'لطفا فایل را صحیح وارد کنید',
+                 });
+                 return false;
+             }
+     }
+
+
+         });
+
+
+
+
+            /// Open Dialog File
+    function dataaa() {
+        try {
+            var inputElement = document.querySelector("input[name='uploasfdf']");
+            if (inputElement) {
+                inputElement.value = null;
+                console.log("Input value cleared");
+
+                setTimeout(function () {
+                    console.log("Attempting to click input element");
+                    inputElement.click();
+                    console.log("Input clicked");
+                }, 100);
+            } else {
+                console.error("Input element not found");
+            }
+
+        } catch (error) {
+            console.error("Error in uploasfdf function: ", error);
+        }
+
+            }
+
+
+
+
+
+
+
+
+
+
+    function datano() {
+        try {
+            var inputElement = document.querySelector("input[name='uploasfddfsljlf']");
+            if (inputElement) {
+                inputElement.value = null;
+                console.log("Input value cleared");
+
+                setTimeout(function () {
+                    console.log("Attempting to click input element");
+                    inputElement.click();
+                    console.log("Input clicked");
+                }, 100);
+            } else {
+                console.error("Input element not found");
+            }
+
+        } catch (error) {
+            console.error("Error in uploasfddfsljlf function: ", error);
+        }
+
+    }
+
+
+
+        function upload112332444() {
+            console.log("Starting upload function");
+
+            try {
+                var inputElement = document.querySelector("input[name='upload11233244432132']");
+                if (inputElement) {
+                    inputElement.value = null;
+                    console.log("Input value cleared");
+
+                    setTimeout(function () {
+                        console.log("Attempting to click input element");
+                        inputElement.click();
+                        console.log("Input clicked");
+                    }, 100);
+                } else {
+                    console.error("Input element not found");
+                }
+
+            } catch (error) {
+                console.error("Error in upload112332444 function: ", error);
+            }
+          }
+    $("input[name='upload11233244432132']").change(function () {
+        console.log("jdkswqasdasdj");
+
+        console.log($("#baste_peyman2").val());
+        if ($("#baste_peyman2").val() == 0) {
+            alert("پیمان مورد نظر را انتخاب نمایید")
+        } else if ($("#basteOfPeyman").val() == 0) {
+            alert("بسته مورد نظر را انتخاب نمایید")
+        }
+        else if ($("#year_usr").val() == 0) {
+            alert("سال مورد نظر را انتخاب نمایید")
+        } else if ($("#month_usr").val() == 0) {
+            console.log($("#month_usr").val())
+            alert("ماه مورد نظر را انتخاب نمایید")
+        } else if ($("#datepickerFromEn_usr").val() == null) {
+            alert("از تاریخ مورد نظر را انتخاب نمایید")
+        } else if ($("#datepickerToEn_usr").val() == null) {
+            alert("تا تاریخ مورد نظر را انتخاب نمایید")
+        } else {
+            $(".loader").css('display', 'block');
+
+                var file = this.files[0];
+                var ext = file.name.split('.')[1];
+                if (ext == "xlsx" || ext == "xls") {
+
+                    var  obj = new FormData();
+
+                    obj.append("files", file);
+                    //obj.append("FromDate", $("#datepickerFromEn_usr").val());
+                    //obj.append("ToDate", $("#datepickerToEn_usr").val());
+                    obj.append("svdfunc_BastehID", $('#basteOfPeyman').val());
+                    obj.append("svdfunc_pymnID", $("#baste_peyman2").val());
+                    console.log(file);
+                    $.ajax({
+                    beforeSend:function (){
+                      document.getElementById("loading-message").style.display = "block";
+                    },
+                       url: "@Url.Action("ImportExcel_Moalefe_forsabt", "Moalefe",new { area="Salaries" })",
+                       type: "post",
+                       contentType: false,
+                       data: obj,
+                       processData: false,
+                       cache: false,
+                        success: function (res) {
+                            $(".loader").css('display', 'none');
+
+                            document.getElementById("loading-message").style.display = "none";
+                            //UploadedFile(res);
+
+                            if (res == "True") {
+
+                                alert("با موفقیت ثبت شد ");
+                                location.reload();
+                            }
+                            else {
+                                alert(res);
+
+                            }
+
+                            // نمایش مدال SweetAlert2
+
+                            // نمایش مدال شما
+                           // if (res.lenght() > 300) {
+
+                           // } else {
+                           //     alert(res);
+                           // }
+
+
+
+
+                       },
+                        error: function (res) {
+                            $(".loader").css('display', 'none');
+
+                           console.log(res);
+                       }
+                   });
+                }
+                else {
+
+                    Swal.fire({
+                        icon: 'warning',
+                        background: 'rgb(29,40,52)',
+                        color: 'white',
+                        confirmButtonText: 'باشه',
+                        title: 'نوع فایل',
+                        text: 'لطفا فایل را صحیح وارد کنید',
+                    });
+                    return false;
+                }
+        }
+
+
+            });
+
+
+
+    function DownloadExcel() {
+        console.log($("#year_usr").val());
+        console.log($("#month_usr").val());
+        console.log($("#datepickerFromEn_usr").val());
+        console.log($("#datepickerToEn_usr").val());
+
+        if ($("#baste_peyman2").val() == 0) {
+            alert("پیمان مورد نظر را انتخاب نمایید")
+        } else if ($("#basteOfPeyman").val() == 0) {
+            alert("بسته مورد نظر را انتخاب نمایید")
+        }
+        else if ($("#year_usr").val() == 0) {
+            alert("سال مورد نظر را انتخاب نمایید")
+        } else if ($("#month_usr").val() == 0) {
+            console.log($("#month_usr").val())
+            alert("ماه مورد نظر را انتخاب نمایید")
+        } else if ($("#datepickerFromEn_usr").val() == null) {
+            alert("از تاریخ مورد نظر را انتخاب نمایید")
+        } else if ($("#datepickerToEn_usr").val() == null) {
+            alert("تا تاریخ مورد نظر را انتخاب نمایید")
+        } else {
+
+
+
+
+
+
+
+            console.log($("#month_usr").val());
+            var aa = $("#month_usr").val();
+            Basteh = $('#basteOfPeyman').val();
+
+
+            $.ajax({
+                beforeSend: function () {
+                    document.getElementById("loading-message").style.display = "block";//مهندس دارین برعککس میزارین
+                    //این درسته
+                    //شبیه هم ننوشتین
+                    //خوب ورودی هام فرق داتشنت الاان فهمیدم چیشد + اضافه گذاشته بود
+                },
+                @*url: '@Url.Action("ExportMoalefeExcel", "Moalefe", new { area = "Salaries" })?year=' + $("#year_usr").val() + '&month=' + aa + '&FromDate=' + $("#datepickerFromEn_usr").val() + '&ToDate=' + $("#datepickerToEn_usr").val() + '&PeymanID=' + $("#baste_peyman2").val() + '&Basteh=' + Basteh,*@
+                type: 'GET',
+                dataType: 'html',
+
+
+                success: function (res) {
+                    if (res === "False") {
+                        // اجرای بلوک error در صورت مطابقت با "False"
+                        alert("برای این ماه و این سال این بسته تایید نهایی شده است ");
+                        window.location.reload();
+                        console.log(res);
+                    }
+                    else {
+
+                        document.getElementById("loading-message").style.display = "none";
+                        window.location = '@Url.Action("ExportMoalefeExcel", "Moalefe",new { area = "Salaries" })?year=' + $("#year_usr").val() + '&month=' + aa + '&FromDate=' + $("#datepickerFromEn_usr").val() + '&ToDate=' + $("#datepickerToEn_usr").val() + '&PeymanID=' + $("#baste_peyman2").val() + '&Basteh=' + Basteh;
+
+                    }
+                },
+                error: function (res) {
+                    alart("fdslsfdk")
+                    console.log(res);
+                }
+            });
+        }
+    }
+
+        function UploadedFile(result) {
+                    Toast.fire({
+                        background: '#35434A',
+                        color: 'white',
+                        title: result
+                    }).then(function () {
+                        location.reload();
+                    });
+    }
+
+        $("#ShowMoalefe").click(function () {
+           $("#big_modal_body").load('@Url.Content("../../Contracts/Functions/_ShowMoalefeModal")');
+        });
+
+            $("#ShowOnePerson").click(function () {
+           $("#big_modal_body").load('@Url.Content("../../Contracts/Functions/_ShowOnePersonModal")');
+            });
+    $("#showdet").click(function () {
+        if ($("#baste_peyman2").val() == 0) {
+            alert("پیمان مورد نظر را انتخاب نمایید")
+        } else if ($("#basteOfPeyman").val() == 0) {
+            alert("بسته مورد نظر را انتخاب نمایید")
+        }
+        else if ($("#year_usr").val() == 0) {
+            alert("سال مورد نظر را انتخاب نمایید")
+        } else if ($("#month_usr").val() == 0) {
+            console.log($("#month_usr").val())
+            alert("ماه مورد نظر را انتخاب نمایید")
+        } else if ($("#datepickerFromEn_usr").val() == null) {
+            alert("از تاریخ مورد نظر را انتخاب نمایید")
+        } else if ($("#datepickerToEn_usr").val() == null) {
+            alert("تا تاریخ مورد نظر را انتخاب نمایید")
+        } else {
+
+
+
+
+
+    var Basteh = $('#basteOfPeyman').val();
+    console.log(Basteh);
+
+    var url = '@Url.Content("~/Contracts/Functions/FilterSabt_Usr")';
+            var params = {
+                Year: $("#year_usr").val(),
+                Month: $("#month_usr").val(),
+                fk_py: $("#baste_peyman2").val(),
+                fk_basteh: Basteh
+            }
+    };
+
+        $("#myTable10").load(url, params);
+});
+                      $("#pymnandbasteh").load('@Url.Content("/RegistrationAndConfirmationProcedures/Refrencepy")?isSabt=True&IsFor=1');
+
+
+
+
+
+
+
+</script>
+
+

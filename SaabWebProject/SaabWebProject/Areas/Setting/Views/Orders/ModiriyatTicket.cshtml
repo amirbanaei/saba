@@ -1,0 +1,358 @@
+﻿
+@model IEnumerable<SaabWebProject.Models.DomainModels.Ticket_motaghazi1>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "مدیریت تیکت";
+}
+
+
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>ModiriyatTicket</title>
+    <style>
+        table tbody td button {
+            border: none;
+            background-image: linear-gradient(#46b8cd, #10635b);
+            border-radius: 8px;
+            height: 25px;
+            width: 25px;
+            align-content: center;
+            display: flex;
+            justify-content: center;
+            margin: auto;
+        }
+
+            table tbody td button i {
+                font-size: 15px;
+                height: 100%;
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+    </style>
+</head>
+
+
+
+<body>
+    <div class="tab-content" id="pills-tabContent">
+        <div class="card">
+            <div class="card-body pb-2">
+                <div class="row">
+                    <input type="hidden" id="TicketId" value="0" />
+                    <div class="col-xl-2" id="">
+                        <label class="form-label">عنوان درخواست</label>
+                        <select class="form-select" id="OnvanDarkhast">
+                            <option value="0">انتخاب کنید..</option>
+                            <option value="1">رفع باگ</option>
+                            <option value="2">رفع خطا</option>
+                            <option value="3">بهبود خدمات </option>
+                            <option value="4">تولید گزارش جدید</option>
+                            <option value="5">نیاز به راهنمای</option>
+                            <option value="6">سایر</option>
+                        </select>
+                    </div>
+                    <div class="col-xl-5">
+                        <label class="form-label">شرح دلیل آنچه مورد نیاز است</label>
+                        <textarea class="form-control" id="Dalil" style="height:35px;"></textarea>
+                    </div>
+                    <div class="col-xl-5">
+                        <label class="form-label">علت بروز مشکل یا ریشه پیشنهاد</label>
+                        <textarea class="form-control" id="Ellat" style="height:35px;"></textarea>
+                    </div>
+                    <div class="col-xl-2">
+                        <label class="form-label">میزان بهبود کارایی نرم‌افزار ( درصد)</label>
+                        <textarea class="form-control" id="Behbood" style="height:35px;"></textarea>
+
+                        @*<input class="form-control" id="Behbood" />*@
+                    </div>
+                    <div class="col-xl-2">
+                        <label class="form-label">به چه بخش های دیگری کمک خواهد کرد</label>
+                        <textarea class="form-control" id="Komak" style="height:35px;"></textarea>
+
+                        @*<input class="form-control" id="Komak" />*@
+                    </div>
+                    <div class="col-xl-2">
+                        <label class="form-label">اولویت</label>
+                        <select class="form-select" id="Olaviyat">
+                            <option value="0">انتخاب کنید..</option>
+                            <option value="1">اضطراری</option>
+                            <option value="2">بالا</option>
+                            <option value="3">متوسط</option>
+                            <option value="4">پایین</option>
+
+                        </select>
+                    </div>
+
+
+
+                    <div class="col-xl-2">
+                        <label class="form-label">حداکثر مهلت انجام درخواست (تاریخ)</label>
+                        <input class="form-control" id="Mohlat" />
+                    </div>
+                    <div class="col-xl-2">
+                        <label class="form-label">فرآیند انجام کار</label>
+                        <textarea class="form-control" id="Farayand" style="height:35px;"></textarea>
+
+                        @*<input class="form-control" id="Farayand" />*@
+                    </div>
+
+
+                    <div class="col-xl-1"></div>
+                    <div class="col-xl-1">
+                        <button id="sabt" type="button" class="btn form-control buttonsabt">
+                            <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                            <span class="bSabt-text">ثبت</span>
+                        </button>
+                    </div>
+
+                    <hr />
+
+                    <div class="table-responsive tableH_Lock">
+                        <table class="table table-hover text-nowrap">
+                            <thead>
+                                <tr style="text-align:center">
+                                    <th>
+                                        @Html.DisplayName("عنوان درخواست")
+                                        <div class="inputWithFilterIcon">
+                                            <input type="text" id="filter01-filter" class="inputFilter form-control" placeholder="">
+                                            <span><i class="fas fa-filter"></i></span>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("اولویت")
+                                        <div class="inputWithFilterIcon">
+                                            <input type="text" id="filter02-filter" class="inputFilter form-control" placeholder="">
+                                            <span><i class="fas fa-filter"></i></span>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("شرح")
+                                        <div class="inputWithFilterIcon">
+                                            <input type="text" id="filter03-filter" class="inputFilter form-control" placeholder="">
+                                            <span><i class="fas fa-filter"></i></span>
+                                        </div>
+                                    </th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+
+                                </tr>
+                            </thead>
+
+
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr style="text-align:center">
+                                        <td>
+                                            @{
+                                                string onvan = item.OnvanDarkhast == 1 ? "رفع باگ" :
+                                                               item.OnvanDarkhast == 2 ? "رفع خطا" :
+                                                               item.OnvanDarkhast == 3 ? "بهبود خدمات" :
+                                                               item.OnvanDarkhast == 4 ? "تولید گزارش جدید" :
+                                                               item.OnvanDarkhast == 5 ? "نیاز به راهنمای" :
+                                                               item.OnvanDarkhast == 6 ? "سایر" :
+                                                               "نامشخص";
+                                            }
+                                            @onvan
+                                        </td>
+                                        <td>
+                                            @{
+                                                string olaviyat = item.Olaviat == 1 ? "اضطراری" :
+                                                                  item.Olaviat == 2 ? "بالا" :
+                                                                  item.Olaviat == 3 ? "متوسط" :
+                                                                  item.Olaviat == 4 ? "پایین" :
+                                                                  "نامشخص";
+                                            }
+                                            @olaviyat
+                                        </td>
+
+                                        <td>
+                                            @item.Sharh
+                                        </td>
+                                        <td>
+                                            <button class=" btn-sm btn-delete" style="background-image: linear-gradient(#cd4646, #631010);"
+                                                    data-id="@item.ID">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </td>
+                                        @*<td>
+                                                <button class=" btn-sm btn-primary" style="background-image: linear-gradient(#cda646, #634410);"
+                                                        data-id="@item.ID">
+                                                    <i class="bi bi-pencil-square"></i>
+                                                </button>
+                                            </td>*@
+
+                                        <td>
+                                            @*<button class="btn btn-sm btn-info btn-edit"*@
+                                            <button class=" btn-sm btn-primary" style="background-image: linear-gradient(#cda646, #634410);"
+                                                    data-id="@item.ID"
+                                                    data-onvan="@item.OnvanDarkhast"
+                                                    data-dalil="@item.Sharh"
+                                                    data-ellat="@item.ElatYaRishe"
+                                                    data-behbood="@item.BehbodKarayi"
+                                                    data-komak="@item.KomakBeSayerBakhshHa"
+                                                    data-olaviyat="@item.Olaviat"
+                                                    data-mohlat="@item.ZamanAnjam"
+                                                    data-farayand="@item.Farayand">
+                                                <i class="bi bi-pencil-square"></i>
+                                            </button>
+
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+
+
+
+
+
+                        </table>
+                    </div>
+
+
+                </div>
+            </div>
+            <div class="card-arrow">
+                <div class="card-arrow-top-left"></div>
+                <div class="card-arrow-top-right"></div>
+                <div class="card-arrow-bottom-left"></div>
+                <div class="card-arrow-bottom-right"></div>
+            </div>
+        </div>
+    </div>
+    <link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-3.3.1.js"></script>
+
+
+    <script>
+        $(document).on("click", ".btn-primary", function () {
+
+            $("#TicketId").val($(this).data("id"));
+            $("#OnvanDarkhast").val($(this).data("onvan"));
+            $("#Dalil").val($(this).data("dalil"));
+            $("#Ellat").val($(this).data("ellat"));
+            $("#Behbood").val($(this).data("behbood"));
+            $("#Komak").val($(this).data("komak"));
+            $("#Olaviyat").val($(this).data("olaviyat"));
+            $("#Mohlat").val($(this).data("mohlat"));
+            $("#Farayand").val($(this).data("farayand"));
+
+        });
+    </script>
+
+    @*<script>
+        $("#sabt").click(function () {
+
+            var data = {
+                OnvanDarkhast: $("#OnvanDarkhast").val(),
+                Dalil: $("#Dalil").val(),
+                Ellat: $("#Ellat").val(),
+                Behbood: $("#Behbood").val(),
+                Komak: $("#Komak").val(),
+                Olaviyat: $("#Olaviyat").val(),
+                Mohlat: $("#Mohlat").val(),
+                Farayand: $("#Farayand").val()
+            };
+
+            $.ajax({
+                url: '@Url.Action("SabtTicket_motaghazi", "Orders")',
+                type: 'POST',
+                data: data,
+                success: function (res) {
+                    if (res.success) {
+                        alert(res.message);
+                        location.reload();
+                    } else {
+                        alert(res.message);
+                    }
+                },
+                error: function () {
+                    alert("خطا در ارتباط با سرور");
+                }
+            });
+        });
+        </script>*@
+    <script>
+$("#sabt").click(function () {
+
+    var data = {
+        ID: $("#TicketId").val(),
+        OnvanDarkhast: $("#OnvanDarkhast").val(),
+        Dalil: $("#Dalil").val(),
+        Ellat: $("#Ellat").val(),
+        Behbood: $("#Behbood").val(),
+        Komak: $("#Komak").val(),
+        Olaviyat: $("#Olaviyat").val(),
+        Mohlat: $("#Mohlat").val(),
+        Farayand: $("#Farayand").val()
+    };
+
+    if (
+        data.OnvanDarkhast == "0" ||
+        !data.Dalil.trim() ||
+        !data.Ellat.trim() 
+     
+    ) {
+        alert("⚠️ بعضی از فیلدها خالی هستند");
+        return;
+    }
+
+    $.ajax({
+        url: '@Url.Action("SabtTicket_motaghazi", "Orders")',
+        type: 'POST',
+        data: data,
+        success: function (res) {
+            alert(res.message);
+
+            if (res.success) {
+
+                // ✅ اینجا دقیقاً همین‌جا
+                $("#TicketId").val(0);
+                $("input, select").val("");
+
+                location.reload(); // اگر نمی‌خوای ریفرش بشه، این خط رو حذف کن
+            }
+        },
+        error: function () {
+            alert("خطا در ارتباط با سرور");
+        }
+    });
+});
+    </script>
+
+
+    <script>
+    $(document).on("click", ".btn-delete", function () {
+
+        var id = $(this).data("id");
+
+        if (!confirm("آیا از حذف این تیکت مطمئن هستید؟")) return;
+
+        $.ajax({
+            url: '@Url.Action("DeleteTicket_motaghazi", "Orders")',
+            type: 'POST',
+            data: { id: id },
+            success: function (res) {
+                alert(res.message);
+                if (res.success) {
+                    location.reload();
+                }
+            },
+            error: function () {
+                alert("خطا در ارتباط با سرور");
+            }
+        });
+    });
+    </script>
+
+
+</body>
+</html>

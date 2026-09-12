@@ -1,0 +1,390 @@
+﻿@using SaabWebProject.Models.DomainModels
+@model SaabWebProject.Models.ViewModels.Contracts.Function.Marhale5ViewModel
+
+@{
+    Layout = null;
+}
+
+<style>
+    .tableH_Lock {
+        max-height: 364px;
+    }
+
+    thead {
+        position: sticky;
+        top: 0;
+        text-align: center;
+        z-index: 2;
+    }
+
+    .inputFilter {
+        margin-bottom: 0 !important;
+        min-width: 100px;
+    }
+
+    thead th {
+        vertical-align: middle;
+    }
+
+    .headRi3,
+    .headRi4,
+    .headRi5 {
+        position: sticky;
+        text-align: center;
+        backdrop-filter: blur(8px);
+    }
+
+    .headRi3 {
+        right: 0;
+    }
+
+    .headRi4 {
+        right: 368px;
+    }
+
+    .headRi5 {
+        right: 474px;
+    }
+
+    input[class="form-control"] {
+        margin-bottom: 0px !important;
+    }
+</style>
+
+<div class="card">
+    <div class="table-content p-4">
+        <div class="tab-pane fade show active">
+            <div class="table-responsive tableH_Lock">
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr>
+                            <th class="headRi3">
+                                نام کارگزاری
+                                <div>
+                                    <input type="text"
+                                           id="filter01-filter"
+                                           class="form-control inputFilter"
+                                           style="min-width:326px;" />
+                                </div>
+                            </th>
+
+                            <th class="headRi4">
+                                شهرستان
+                                <div>
+                                    <input type="text"
+                                           id="filter02-filter"
+                                           class="form-control inputFilter" />
+                                </div>
+                            </th>
+
+                            <th class="headRi5">
+                                دسته
+                                <div>
+                                    <input type="text"
+                                           id="filter03-filter"
+                                           class="form-control inputFilter" />
+                                </div>
+                            </th>
+
+                            @foreach (var moalef in Model.Moalefs)
+                            {
+                                <th>
+                                    @moalef.tbContractMoalefeDastmozdi.md_Title
+                                </th>
+                            }
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @{
+                            int rowIndex = 0;
+                        }
+
+                        @foreach (var peyman in Model.Peymans)
+                        {
+                            var relatedCities = Model.Cities
+                                .Where(c => c.FK_PYMN == peyman.pec_ID)
+                                .ToList();
+
+                            foreach (var city in relatedCities)
+                            {
+                                foreach (var marhale in Model.Marhale3)
+                                {
+                                    <tr data-filter01="@peyman.pec_Title"
+                                        data-filter02="@city.tbCities.Name"
+                                        data-filter03="@marhale.name">
+
+                                        <td>@peyman.pec_Title</td>
+                                        <td>@city.tbCities.Name</td>
+                                        <td>@marhale.name</td>
+
+                                        @foreach (var moalef in Model.Moalefs)
+                                        {
+                                            var valueItem = Model.Values.FirstOrDefault(v =>
+                                                v.FK_Pymn == peyman.pec_ID &&
+                                                v.FK_moalf == moalef.ID &&
+                                                v.FK_city == city.FK_City &&
+                                                v.FK_marhal4 == marhale.ID
+                                            );
+
+                                            var inputId = peyman.pec_ID + "_" +
+                                                          moalef.ID + "_" +
+                                                          city.FK_City + "_" +
+                                                          marhale.ID;
+
+                                            var inputValue = valueItem?.value?.ToString("N0") ?? "";
+
+                                            <td>
+                                                <input class="form-control numeric-input"
+                                                       style="margin-bottom:0px !important;"
+                                                       id="@inputId"
+                                                       data-peyman="@peyman.pec_ID"
+                                                       data-moalef="@moalef.ID"
+                                                       data-city="@city.FK_City"
+                                                       data-marhale="@marhale.ID"
+                                                       value="@inputValue" />
+                                            </td>
+                                        }
+                                    </tr>
+                                    rowIndex++;
+                                }
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+
+<div class="row mt-10px">
+    <div class="col-xl-9"></div>
+
+    <div class="col-xl-1">
+        <a href="#" class="btn form-control buttonGeneral" style="margin-bottom:10px;" id="dwn">
+            <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+            <span class="bGeneral-text">دانلود فایل نمونه</span>
+        </a>
+    </div>
+
+    <div class="col-xl-1">
+        <a href="#" onclick="ShowDialogFile45()" class="btn btn-outline-info form-control buttonGeneral uploadSummery7" style="margin-bottom:5px;">
+            <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+            <span class="bGeneral-text">بارگذاری اطلاعات</span>
+        </a>
+        <input id="summery_file477" style="display:none" type="file" class="form-control" accept=".xlsx,.xls" />
+    </div>
+
+    <div class="col-xl-1">
+        <button id="savabtn" type="button" class="btn form-control buttonsabt">
+            <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+            <span class="bSabt-text">ثبت</span>
+        </button>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- فقط بخش script را جایگزین کنید -->
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script>
+    function formatNumber(value) {
+        if (value === null || value === undefined) return '';
+
+        // تبدیل به رشته
+        value = value.toString().trim();
+        if (value === '') return '';
+
+        // حذف ویرگول‌ها
+        let numeric = value.replace(/,/g, '');
+
+        // اگر عدد نیست، دست نزن
+        if (numeric === '' || isNaN(numeric)) return value;
+
+        return Number(numeric).toLocaleString('en-US');
+    }
+
+    // ✅ هنگام لود صفحه فقط روی input های عددی
+    window.addEventListener('load', function () {
+        document.querySelectorAll('.numeric-input').forEach(input => {
+            if (input.value) {
+                input.value = formatNumber(input.value);
+            }
+        });
+    });
+
+    // ✅ هنگام تایپ کاربر فقط روی input های عددی
+    document.addEventListener('input', function (e) {
+        if (!e.target.classList.contains('numeric-input')) return;
+
+        // مقدار خام بدون ویرگول
+        let raw = e.target.value.replace(/,/g, '');
+
+        // اگر چیزی غیرعدد تایپ شد، حذفش کنیم
+        raw = raw.replace(/[^\d]/g, '');
+
+        if (raw === '') {
+            e.target.value = '';
+            return;
+        }
+
+        // فرمت سه‌رقم سه‌رقم
+        let formatted = raw.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+        e.target.value = formatted;
+    });
+
+    // ✅ قبل از ارسال فرم، ویرگول‌ها از input های عددی حذف شود
+    document.querySelector('form')?.addEventListener('submit', function () {
+        document.querySelectorAll('.numeric-input').forEach(input => {
+            input.value = input.value.replace(/,/g, '');
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+        $("#summery_file477").change(function (e) {
+            uploadExcel(e);
+        });
+
+        $("#savabtn").click(function (e) {
+            e.preventDefault();
+            saveData();
+        });
+
+        $("#dwn").click(function (e) {
+            e.preventDefault();
+            DownloadExcel7();
+        });
+
+        setupFilters();
+    });
+
+    var formData = new FormData();
+
+    function uploadExcel(e) {
+        formData = new FormData();
+        $.each(e.target.files, function (index, file) {
+            formData.append("MyExcelStream", file);
+        });
+
+        $.ajax({
+            url: '@Url.Action("ImportExcel_ShahrBahrebardari","DefFacilitiesEquipment", new { area = "Contracts" })',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                if (response === "با موفقیت انجام شد") {
+                    alert("✅ با موفقیت ثبت شد");
+                    location.reload();
+                } else {
+                    alert("❌ " + response);
+                }
+            }
+        });
+    }
+
+
+function saveData() {
+    var data = [];
+
+    $("tbody input.numeric-input").each(function() {
+        var $input = $(this);
+        var val = $input.val();
+
+        if (val !== "") {
+            var cleanVal = val.toString().replace(/,/g, '');
+
+            data.push({
+                FK_Pymn: parseInt($input.data('peyman')),
+                FK_moalf: parseInt($input.data('moalef')),
+                FK_city: parseInt($input.data('city')),
+                FK_marhal4: parseInt($input.data('marhale')),
+                value: cleanVal
+            });
+        }
+    });
+
+    if (data.length === 0) {
+        alert("❌ لطفاً مقادیری وارد کنید");
+        return;
+    }
+
+    $.ajax({
+        url: '@Url.Action("UpdateRecordmahdodat5", "Dashboard", new { area = "Reporter" })',
+        type: 'POST',
+        data: { modelList: data },
+        beforeSend: function() {
+            $("#savabtn").prop('disabled', true).html('در حال ثبت...');
+        },
+        success: function(response) {
+            if (response === "true") {
+                alert("✅ با موفقیت ثبت شد");
+                location.reload();
+            } else {
+                alert("❌ خطا: " + response);
+            }
+        },
+        error: function(xhr) {
+            alert("❌ خطا در اتصال: " + xhr.statusText);
+        },
+        complete: function() {
+            $("#savabtn").prop('disabled', false).html('<i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i><span class="bSabt-text">ثبت</span>');
+        }
+    });
+}
+
+
+    function DownloadExcel7() {
+        window.location.href = '@Url.Action("ExportMoalefeExcel4", "Moalefe", new { area = "Salaries" })';
+    }
+
+    function ShowDialogFile45() {
+        $("#summery_file477").click();
+    }
+
+    function setupFilters() {
+        $("#filter01-filter, #filter02-filter, #filter03-filter").on('keyup', function() {
+            var filter1 = $("#filter01-filter").val().toLowerCase();
+            var filter2 = $("#filter02-filter").val().toLowerCase();
+            var filter3 = $("#filter03-filter").val().toLowerCase();
+
+            $("tbody tr").each(function() {
+                var row = $(this);
+                var text1 = row.data('filter01')?.toLowerCase() || '';
+                var text2 = row.data('filter02')?.toLowerCase() || '';
+                var text3 = row.data('filter03')?.toLowerCase() || '';
+
+                if (text1.indexOf(filter1) > -1 &&
+                    text2.indexOf(filter2) > -1 &&
+                    text3.indexOf(filter3) > -1) {
+                    row.show();
+                } else {
+                    row.hide();
+                }
+            });
+        });
+    }
+
+
+
+</script>
+

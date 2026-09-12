@@ -1,0 +1,2883 @@
+﻿
+
+@{
+    ViewBag.Title = "محاسبه گر";
+    // Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = null;
+
+}
+<link href="assets/plugins/bootstrap-table/dist/bootstrap-table.min.css" rel="stylesheet" />
+<style>
+
+
+    /*scroll bar custom css*/
+    /* width */
+    ::-webkit-scrollbar {
+        width: 3px;
+    }
+
+    /* Track */
+    ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+        background: #888;
+    }
+
+        /* Handle on hover */
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+    /*content css*/
+    .box-formula:focus {
+        outline: none;
+    }
+
+    .td-formula {
+        padding: 15px;
+        width: 310px;
+    }
+
+    .tr-formula {
+        margin-top: 5px;
+        cursor: pointer;
+    }
+
+    .style-class {
+        text-align: center;
+        margin-top: 10px;
+        width: 100%;
+        height: 50px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        color: white;
+        transition: 0.5s all;
+    }
+
+        .style-class:hover {
+            transform: scale(1.1, 1.1);
+            box-shadow: -2px 1px 20px 0px #363636;
+        }
+</style>
+<div>
+    <div class="row">
+        <input id="textbox-calc" value=" " disabled type="text" class="box-formula border text-white rounded" style="background:none;padding:10px;border:none;width:100%;height:50px;font-size:15px;" dir="rtl" />
+    </div>
+    <div class="row" dir="rtl">
+        <div class="col-md-4" style="text-align: center;">
+            @Html.Action("Create56", "Formula", new { area = "Salaries" })
+        </div>
+        <div class="col-md-4" style="text-align:center;">
+            <select id="moalefeSelector" class="form-control" style="margin-bottom:10px;">
+                <option value="0">مولفه ها</option>
+                <option value="1">کاربران حقوقی۱</option>
+                <option value="2">پیمان ها</option>
+                <option value="3">شغل </option>
+                <option value="4">شهرستان</option>
+                <option value="5">قرارداد پرسنل</option>
+                <option value="6">تجهیزات</option>
+                <option value="7"> بودجه</option>
+                <option value="8">سایر عملیات صورت وضعیت</option>
+
+                <option value="9"> تراز فیش</option>
+                <option value="10">مولفه های فرمول</option>
+                <option value="11">اقساط</option>
+                <option value="12">معادل کار</option>
+
+                <!-- گزینه‌های دیگر -->
+            </select>
+
+            <div id="moalefeContainer">
+                @Html.Action("GetAllMoalefeForFormulasbyid", "MoalefeDastMozdi", new { area = "Contracts" })
+            </div>
+            @*@Html.Action("GetAllMoalefeForFormulas", "MoalefeDastMozdi", new { area = "Contracts" })*@
+        </div>
+        <div class="col-md-4" style="text-align:center;">
+            @Html.Action("GetAllFormula", "Formula", new { area = "Salaries" })
+        </div>
+
+    </div>
+</div>
+
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="assets/plugins/bootstrap-table/dist/bootstrap-table.min.js"></script>
+<script src="~/Scripts/sweetalert2.js" type="text/javascript"></script>
+<script>
+    document.getElementById("moalefeSelector").addEventListener("change", function () {
+        var selectedId = this.value;
+
+        fetch(`/Contracts/MoalefeDastMozdi/GetAllMoalefeForFormulasById?id=${selectedId}`)
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById("moalefeContainer").innerHTML = html;
+            })
+            .catch(error => {
+                console.error("خطا در بارگذاری:", error);
+            });
+    });
+</script>
+
+
+
+<script>
+
+    const amalghar_riyazi = ['multiplication', 'minus', 'plus', 'divide'];
+    var list_moalefeha = [];
+    var list_moalefeha_farsi = [];
+    var exitsts = false;
+    var datetime_exits = "";
+    /// Timer Tost
+
+    const Toast = Swal.mixin({
+        toast: true,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    });
+
+    //$("#textbox-calc").change(function() {
+
+    //    console.log("ss");
+
+
+    //});
+
+    /// Move up and move down order moalefe hay dast mozdi
+    $(function() {
+        $('.up').on('click',
+            function(e) {
+                var wrapper = $(this).closest('tr')
+                wrapper.insertBefore(wrapper.prev());
+            })
+        $('.down').on('click',
+            function(e) {
+                var wrapper = $(this).closest('tr')
+                wrapper.insertAfter(wrapper.next());
+            })
+
+        console.log("hey");
+    });
+
+
+
+    //add moalefehay dastmozdi for textbox
+    $(document).on("click", ".tr-moalefe", function () {
+        var textbox = $("#textbox-calc");
+
+        if (list_moalefeha.length == 0) {
+            var id = this.firstElementChild.id;
+            if (id != null) {
+                var s = id.split("_")[1];
+                if (isNaN(s)) {
+                    Toast.fire({
+                        icon: 'warning',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "برای این مولفه نمی توان فرمول نوشت"
+                    });
+                    return false;
+                }
+
+                $.ajax({
+                    beforeSend: function () {
+                        document.getElementById("loading-message").style.display = "block";
+                    },
+                    url: "/Formula/_GetFormulaExist",
+                    type: "POST",
+                    datatype: "html",
+                    data: { MoalefeDastMozdi: s },
+                    success: function (res) {
+                        document.getElementById("loading-message").style.display = "none";
+                        if (res != "false") {
+                            var formula = res.split("&");
+                            list_moalefeha = [];
+                            list_moalefeha_farsi = [];
+                            $("#textbox-calc").val(null);
+                            for (var i = 0; i < formula.length; i++) {
+                                list_moalefeha.push(formula[i]);
+                                var s = formula[i].split("_");
+                                if (s.length == 2) {
+                                    var jj = document.getElementById(formula[i]).innerText;
+                                    list_moalefeha_farsi.push(jj);
+                                    if (i == 0) {
+                                        $("#textbox-calc").val($("#textbox-calc").val() + " " + jj + " = ");
+                                    } else {
+                                        $("#textbox-calc").val($("#textbox-calc").val() + " " + jj);
+                                    }
+                                }
+                                var ress = check(formula[i]);
+                                if (ress != "") {
+                                    list_moalefeha_farsi.push(ress);
+                                    $("#textbox-calc").val($("#textbox-calc").val() + " " + ress);
+                                }
+
+                                if (formula[i] == ")" || formula[i] == "(" || formula[i] == "()") {
+                                    list_moalefeha_farsi.push(formula[i]);
+                                    $("#textbox-calc").val($("#textbox-calc").val() + " " + formula[i]);
+                                }
+                                if (!isNaN(formula[i])) {
+                                    var old = list_moalefeha_farsi[list_moalefeha_farsi.length - 1];
+                                    if (!isNaN(old)) {
+                                        list_moalefeha_farsi.push(formula[i]);
+                                        $("#textbox-calc").val($("#textbox-calc").val() + formula[i]);
+                                    } else {
+                                        list_moalefeha_farsi.push(formula[i]);
+                                        $("#textbox-calc").val($("#textbox-calc").val() + " " + formula[i]);
+                                    }
+                                }
+                                if (formula[i] == "virgol") {
+                                    list_moalefeha_farsi.push(",");
+                                    $("#textbox-calc").val($("#textbox-calc").val() + " " + ",");
+                                }
+                                if (formula[i] == "IF") {
+                                    list_moalefeha_farsi.push("اگر");
+                                    $("#textbox-calc").val($("#textbox-calc").val() + " اگر");
+                                }
+                                if (formula[i] == "BiggerThan") {
+                                    list_moalefeha_farsi.push(">");
+                                    $("#textbox-calc").val($("#textbox-calc").val() + " >");
+                                }
+                                if (formula[i] == "SmallerThan") {
+                                    list_moalefeha_farsi.push("<");
+                                    $("#textbox-calc").val($("#textbox-calc").val() + " <");
+                                }
+                                if (formula[i] == "equal") {
+                                    list_moalefeha_farsi.push("=");
+                                    $("#textbox-calc").val($("#textbox-calc").val() + " =");
+                                }
+                            }
+                        }
+                    },
+                    error: function () {
+                        document.getElementById("loading-message").style.display = "none";
+                        Toast.fire({
+                            icon: 'error',
+                            background: '#35434A',
+                            color: 'white',
+                            title: "عملیات با خطا مواجه شد"
+                        });
+                    }
+                });
+            }
+        }
+
+        if (list_moalefeha.length == 1) {
+            var x = this.firstElementChild;
+            list_moalefeha.push(x.id);
+            list_moalefeha_farsi.push(x.innerText);
+            textbox.val(textbox.val() + " " + x.innerText);
+            return false;
+        }
+
+        var lastChar_arry = list_moalefeha[list_moalefeha.length - 1];
+        var lastchar = list_moalefeha_farsi[list_moalefeha_farsi.length - 1];
+
+        if (textbox.val() == " " || textbox.val() == "" || textbox.val() == null) {
+            var x = this.firstElementChild;
+            list_moalefeha.push(x.id);
+            list_moalefeha_farsi.push(x.innerText);
+            textbox.val(x.innerText + " =");
+        } else if (["=", "+", "و", "یا", "/", "-", "*", "(", "^", "<", ">", "!=", "="].includes(lastchar)) {
+            var x = this.firstElementChild;
+            list_moalefeha.push(x.id);
+            list_moalefeha_farsi.push(x.innerText);
+            textbox.val(textbox.val() + " " + x.innerText);
+        } else if (lastChar_arry == "IF") {
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: "لطفا پرانتز مربوط به شرط را باز کنید"
+            });
+            return false;
+        } else if (lastChar_arry == "virgol") {
+            var x = this.firstElementChild;
+            if (if_status && CheckIf_persian(x.innerText)) {
+                CheckIf(x.innerText);
+            } else {
+                list_moalefeha.push(x.id);
+                list_moalefeha_farsi.push(x.innerText);
+                textbox.val(textbox.val() + " " + x.innerText);
+            }
+            return false;
+        } else {
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: "لطفا یک عملگر را انتخاب کنید !"
+            });
+        }
+
+        console.log(list_moalefeha);
+        console.log(list_moalefeha_farsi);
+    });
+
+
+    //$(".tr-moalefe").click(function () {
+    //    var textbox = $("#textbox-calc");
+    //    if (list_moalefeha.length == 0) {
+    //        var id = this.firstElementChild.id;
+    //        if (id != null) {
+    //            var s = id.split("_")[1];
+    //            if (isNaN(s)) {
+    //                Toast.fire({
+    //                    icon: 'warning',
+    //                    background: '#35434A',
+    //                    color: 'white',
+    //                    title: "برای این مولفه نمی توان فرمول نوشت"
+    //                });
+    //                return false;
+    //            }
+
+    //            $.ajax({
+    //            beforeSend:function (){
+    //              document.getElementById("loading-message").style.display = "block";
+    //            },
+    //                url: "/Formula/_GetFormulaExist",
+    //                type: "Post",
+    //                datatype: "html",
+    //                data: { MoalefeDastMozdi: s },
+    //                success: function (res) {
+    //                document.getElementById("loading-message").style.display = "none";
+    //                    if (res != "false") {
+
+    //                        var formula = res.split("&");
+    //                        list_moalefeha = [];
+    //                        list_moalefeha_farsi = [];
+    //                        $("#textbox-calc").val(null);
+    //                        for (var i = 0; i < formula.length; i++) {
+    //                            list_moalefeha.push(formula[i]);
+    //                            var s = formula[i].split("_");
+    //                            if (s.length == 2) {
+    //                                var jj = document.getElementById(formula[i]).innerText;
+    //                                list_moalefeha_farsi.push(jj);
+    //                                if (i == 0) {
+    //                                    $("#textbox-calc").val($("#textbox-calc").val() + " " + jj + " = ");
+    //                                }
+    //                                else {
+    //                                    $("#textbox-calc").val($("#textbox-calc").val() + " " + jj);
+    //                                }
+
+    //                            }
+    //                            var ress = check(formula[i]);
+    //                            if (ress != "") {
+    //                                list_moalefeha_farsi.push(ress);
+    //                                $("#textbox-calc").val($("#textbox-calc").val() + " " + ress);
+    //                            }
+
+    //                            if (formula[i] == ")" || formula[i] == "(" || formula[i] == "()") {
+    //                                list_moalefeha_farsi.push(formula[i]);
+    //                                $("#textbox-calc").val($("#textbox-calc").val() + " " + formula[i]);
+    //                            }
+    //                            if (!isNaN(formula[i])) {
+
+    //                                var old = list_moalefeha_farsi[list_moalefeha_farsi.length - 1];
+
+    //                                if (!isNaN(old)) {
+    //                                    list_moalefeha_farsi.push(formula[i]);
+    //                                    $("#textbox-calc").val($("#textbox-calc").val() + formula[i]);
+    //                                }
+    //                                else {
+    //                                    list_moalefeha_farsi.push(formula[i]);
+    //                                    $("#textbox-calc").val($("#textbox-calc").val() + " " + formula[i]);
+    //                                }
+
+    //                            }
+    //                            if (formula[i] == "virgol") {
+    //                                list_moalefeha_farsi.push(",");
+    //                                $("#textbox-calc").val($("#textbox-calc").val() + " " + ",");
+    //                            }
+    //                            if (formula[i] == "IF") {
+    //                                list_moalefeha_farsi.push("اگر");
+    //                                $("#textbox-calc").val($("#textbox-calc").val() + " " + "اگر");
+    //                            }
+    //                            if (formula[i] == "BiggerThan") {
+    //                                list_moalefeha_farsi.push(">");
+    //                                $("#textbox-calc").val($("#textbox-calc").val() + " " + ">");
+    //                            }
+    //                            if (formula[i] == "SmallerThan") {
+    //                                list_moalefeha_farsi.push("<");
+    //                                $("#textbox-calc").val($("#textbox-calc").val() + " " + "<");
+    //                            }
+    //                            if (formula[i] == "equal") {
+    //                                list_moalefeha_farsi.push("=");
+    //                                $("#textbox-calc").val($("#textbox-calc").val() + " " + "=");
+    //                            }
+    //                        }
+    //                        console.log(list_moalefeha);
+    //                        console.log(list_moalefeha_farsi);
+    //                    }
+
+    //                },
+    //                error:function (){
+    //                document.getElementById("loading-message").style.display = "none";
+    //                                   Toast.fire({
+    //                                       icon: 'error',
+    //                                       background: '#35434A',
+    //                                       color: 'white',
+    //                                       title: "عملیات با خطا مواجه شد"
+    //                                    });
+    //                }
+    //            });
+    //        }
+    //    }
+    //    if(list_moalefeha.length == 1){
+    //        var x = this.firstElementChild;
+    //             list_moalefeha.push(x.id);
+    //             list_moalefeha_farsi.push(x.innerText);
+    //             textbox.val(textbox.val() + " " + x.innerText);
+    //             return  false;
+    //    }
+
+    //    var lastChar_arry = list_moalefeha[list_moalefeha.length - 1];
+    //    var lastchar = list_moalefeha_farsi[list_moalefeha_farsi.length - 1];
+
+    //    if (textbox.val() == " " || textbox.val() == "" || textbox.val() == null) {
+    //        var x = this.firstElementChild;
+    //        list_moalefeha.push(x.id);
+    //        list_moalefeha_farsi.push(x.innerText);
+    //        textbox.val(x.innerText + " " + "=");
+
+    //    } else if (lastchar == "=" || lastchar == "+" || lastchar == "و" || lastchar == "یا" || lastchar == "/" || lastchar == "-" || lastchar == "*" || lastchar == "(" || lastchar == "^" || lastchar == "<" || lastchar == ">" || lastchar == "!=" || lastchar == "=") {
+    //        var x = this.firstElementChild;
+    //        list_moalefeha.push(x.id);
+    //        list_moalefeha_farsi.push(x.innerText);
+    //        textbox.val(textbox.val() + " " + x.innerText);
+    //    }
+    //    else if (lastChar_arry == "IF") {
+    //        Toast.fire({
+    //            icon: 'warning',
+    //            background: '#35434A',
+    //            color: 'white',
+    //            title: "لطفا پرانتز مربوط به شرط را باز کنید"
+    //        });
+    //        return false;
+    //    }
+    //    else if (lastChar_arry == "virgol") {
+    //        if (if_status) {
+    //            var x = this.firstElementChild;
+    //            if (CheckIf_persian(x.innerText)) {
+    //                CheckIf(x.innerText);
+    //            }
+    //        } else {
+    //            var x = this.firstElementChild;
+    //            list_moalefeha.push(x.id);
+    //            list_moalefeha_farsi.push(x.innerText);
+    //            textbox.val(textbox.val() + " " + x.innerText);
+    //        }
+
+    //        return false;
+    //    } else {
+    //        Toast.fire({
+    //            icon: 'warning',
+    //            background: '#35434A',
+    //            color: 'white',
+    //            title: "لطفا یک عملگر را انتخاب کنید !"
+    //        });
+    //    }
+
+    //    console.log(list_moalefeha);
+    //    console.log(list_moalefeha_farsi);
+    //});
+
+    //function Ereaser text
+
+    var flag = true;
+    $("#eraser").click(function () {
+        exitsts = true;
+        var textbox = document.getElementById("textbox-calc");
+
+        var len = list_moalefeha.length - 1;
+        var vall = list_moalefeha[len];
+        var vall2 = list_moalefeha[len - 1];
+        if (vall == "IF") {
+            $(".SaveFormula").addClass("col-md-12");
+            $(".SaveFormula").addClass("col-12");
+            $(".SaveFormula").removeClass("col-md-6");
+            $(".SaveFormula").removeClass("col-6");
+            $(".IfButton").css("display", "none");
+        }
+        if (if_status) {
+            if (vall == "virgol" && vall2 != "virgol") {
+
+                if (List_If_True_persian.length != 0) {
+                    var Lst = List_If_True_persian.length - 1;
+                    if (Lst > -1) {
+                        List_If_True_persian.splice(Lst, 1);
+                        List_If_True.splice(Lst, 1);
+                        var text = "";
+                        for (var i = 0; i < list_moalefeha.length; i++) {
+                            if (i == 0) {
+                                text += list_moalefeha_farsi[i] + " " + "=";
+                            }
+                            else {
+                                text += " " + list_moalefeha_farsi[i];
+                            }
+                        }
+
+                        for (var i = 0; i < List_If_True_persian.length; i++) {
+                            text += " " + List_If_True_persian[i];
+                        }
+                        textbox.value = text;
+
+                        return false;
+                    }
+                }
+            }
+        }
+        if (if_status) {
+            if (vall == "virgol" && vall2 == "virgol") {
+
+                list_moalefeha.splice(list_moalefeha.length - 1, 1);
+                list_moalefeha_farsi.splice(list_moalefeha_farsi.length - 1, 1);
+                var text = "";
+                for (var i = 0; i < list_moalefeha.length; i++) {
+                    if (i == 0) {
+                        text += list_moalefeha_farsi[i] + " " + "=";
+                    }
+                    else {
+                        text += " " + list_moalefeha_farsi[i];
+                    }
+                }
+
+                if (List_If_False_persian.length != 0) {
+                    var Lst = List_If_False_persian.length - 1;
+                    if (Lst > -1) {
+                        List_If_False_persian.splice(Lst, 1);
+                        List_If_False.splice(Lst, 1);
+                        for (var i = 0; i < List_If_True_persian.length; i++) {
+                            text += " " + List_If_True_persian[i];
+                        }
+                        list_moalefeha.push("virgol");
+                        list_moalefeha_farsi.push(",");
+                        text += " " + "," + " ";
+                        for (var i = 0; i < List_If_False_persian.length; i++) {
+                            text += " " + List_If_False_persian[i];
+                        }
+
+                        textbox.value = text;
+
+                        return false;
+                    }
+                }
+                else {
+                    if (List_If_True_persian.length != 0) {
+                        var Lst = List_If_True_persian.length - 1;
+                        if (Lst > -1) {
+                            List_If_True_persian.splice(Lst, 1);
+
+                            for (var i = 0; i < List_If_True_persian.length; i++) {
+                                text += " " + List_If_True_persian[i];
+                            }
+                            textbox.value = text;
+
+                            return false;
+                        }
+                    }
+                }
+
+
+
+            }
+        }
+        var vall1 = list_moalefeha_farsi[len];
+        var ch = check(vall);
+        if (!isNaN(vall)) {
+            flag_is_number = true;
+        }
+        if (CheckOperator(vall) != "" && CheckOperator(vall2) != "") {
+            flagO = true;
+        }
+        if (ch == "+" || ch == "/" || ch == "-" || ch == "*") {
+            var s = textbox.value;
+            s = s.slice(0, -1);
+            const index = list_moalefeha.lastIndexOf(vall);
+            if (index > -1) {
+                list_moalefeha.splice(index, 1);
+            }
+            const index1 = list_moalefeha_farsi.lastIndexOf(vall1);
+            if (index1 > -1) {
+                list_moalefeha_farsi.splice(index1, 1);
+            }
+
+            textbox.value = s;
+            flag = true;
+        }
+        else {
+            if (flag == false) {
+                return false;
+            }
+            const index = list_moalefeha.lastIndexOf(vall);
+            if (index > -1) {
+                list_moalefeha.splice(index, 2);
+            }
+            const index1 = list_moalefeha_farsi.lastIndexOf(vall1);
+            if (index1 > -1) {
+                list_moalefeha_farsi.splice(index1, 2);
+            }
+
+            var text = "";
+            textbox.value = null;
+            for (var i = 0; i < list_moalefeha.length; i++) {
+                if (i == 0) {
+                    text += list_moalefeha_farsi[i] + " " + "=";
+                }
+                else {
+                    if (!isNaN(list_moalefeha[i - 1]) && !isNaN(list_moalefeha[i])) {
+                        text += list_moalefeha_farsi[i];
+                    }
+                    else {
+                        text += " " + list_moalefeha_farsi[i];
+                    }
+                }
+            }
+            textbox.value = text;
+        }
+        console.log(list_moalefeha_farsi);
+        console.log(list_moalefeha);
+
+    });
+
+    /// function add + - / *
+
+    $(".calc_button").click(function () {
+        exitsts = false;
+        var textbox = $("#textbox-calc");
+        var vall = list_moalefeha[list_moalefeha.length - 1];
+        var vall2 = list_moalefeha[list_moalefeha.length - 2];
+        var vall2_persian = list_moalefeha_farsi[list_moalefeha_farsi.length - 2];
+        var vall1_persian = list_moalefeha_farsi[list_moalefeha_farsi.length - 1];
+        var vall3 = list_moalefeha[list_moalefeha.length - 3];
+
+        if (if_status) {
+            var par_open = List_If_True.filter(p => p == "(");
+            var par_close = List_If_True.filter(p => p == ")");
+            var par_open_f = List_If_False.filter(p => p == "(");
+            var par_close_f = List_If_False.filter(p => p == ")");
+            if (List_If_False_persian.length >= 1 || List_If_True_persian.length >= 1) {
+
+                if (par_close.length > par_open.length || par_close_f.length > par_open_f.length) {
+                    Toast.fire({
+                        icon: 'warning',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "شرط پایان یافت"
+                    });
+                    return false;
+                }
+            }
+        }
+        if (vall1_persian == ">" || vall1_persian == "<" || vall1_persian == "!=" || vall1_persian == "=") {
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: "لطفا یک مولفه یا عدد انتخاب کنید !"
+            });
+            return false;
+        }
+        //if (vall2_persian == ">" || vall2_persian == "<" || vall2_persian == "!=" || vall2_persian == "=") {
+        //    Toast.fire({
+        //        icon: 'warning',
+        //        background: '#35434A',
+        //        color: 'white',
+        //        title: "لطفا ' , ' را انتخاب کنید !"
+        //    });
+        //    return false;
+        //}
+        //if (vall3 == "IF" && vall2 == "(") {
+        //    Toast.fire({
+        //        icon: 'warning',
+        //        background: '#35434A',
+        //        color: 'white',
+        //        title: "لطفا یکی از عملگر های شرط را انتخاب کنید !"
+        //    });
+        //    return false;
+        //}
+        if (vall == "IF") {
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: "لطفا پرانتز مربوط به شرط را باز کنید"
+            });
+            return false;
+        }
+        if (vall == "(") {
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: "لطفا یک مولفه یا عدد انتخاب کنید !"
+            });
+            return false;
+        }
+        if (textbox.val() == " " || textbox.val() == "" || textbox.val() == null) {
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: "لطفا یک مولفه را انتخاب کنید !"
+            });
+            return false;
+        }
+        else {
+            var s = list_moalefeha_farsi[list_moalefeha_farsi.length - 1];
+            var data = this.firstElementChild.id;
+            var d = check(data);
+            if (if_status) {
+                //var ss1 = List_If_False_persian[List_If_False_persian.length - 1];
+                //if (ss1 == "=" || ss1 == "+" || ss1 == "/" || ss1 == "-" || ss1 == "*") {
+
+                //    Toast.fire({
+                //        icon: 'warning',
+                //        background: '#35434A',
+                //        color: 'white',
+                //        title: "لطفا یک مولفه یا عدد را انتخاب کنید !"
+                //    });
+                //    return false;
+                //}
+                //var ss = List_If_True_persian[List_If_True_persian.length - 1];
+                //if (ss == "=" || ss == "+" || ss == "/" || ss == "-" || ss == "*" || ss == "^") {
+
+                //    Toast.fire({
+                //        icon: 'warning',
+                //        background: '#35434A',
+                //        color: 'white',
+                //        title: "لطفا یک مولفه یا عدد را انتخاب کنید !"
+                //    });
+                //    return false;
+                //}
+                if (if_status) {
+                    if (CheckIf_persian(d)) {
+                        CheckIf(data);
+                        return false;
+                    }
+                }
+            }
+            if (s == "=" || s == "+" || s == "/" || s == "-" || s == "*" || s == "^") {
+
+                Toast.fire({
+                    icon: 'warning',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "لطفا یک مولفه یا عدد را انتخاب کنید !"
+                });
+                return false;
+            }
+            list_moalefeha.push(data);
+
+            if (amalghar_riyazi.includes(data)) {
+
+                switch (s) {
+                    case "+": {
+                        return false;
+                        break;
+                    }
+                    case "-": {
+                        return false;
+                        break;
+                    }
+                    case "/": {
+                        return false;
+                        break;
+                    }
+                    case "*": {
+                        return false;
+                        break;
+                    }
+                }
+
+                data = check(data);
+                list_moalefeha_farsi.push(data);
+
+
+
+                textbox.val(textbox.val() + " " + data);
+            }
+        }
+        console.log(list_moalefeha);
+        console.log(list_moalefeha_farsi);
+    });
+
+    function check(input) {
+        var data = input;
+        switch (data) {
+            case "plus": {
+                data = "+";
+                break;
+            }
+            case "minus": {
+                data = "-";
+                break;
+            }
+            case "divide": {
+                data = "/";
+                break;
+            }
+            case "multiplication": {
+                data = "*";
+                break;
+            }
+            default: {
+                data = "";
+            }
+        }
+        return data;
+    }
+    function checkName(input) {
+        var data = input;
+        switch (data) {
+            case "+": {
+                data = "plus";
+                break;
+            }
+            case "-": {
+                data = "minus";
+                break;
+            }
+            case "/": {
+                data = "minus";
+                break;
+            }
+            case "*": {
+                data = "multiplication";
+                break;
+            }
+        }
+        return data;
+    }
+
+    /// function Numbers
+
+    flag_is_number = true;
+    $(".num").click(function () {
+
+
+        var x = this.firstElementChild;
+
+
+
+        var textbox = document.getElementById("textbox-calc");
+
+        var s = list_moalefeha[list_moalefeha.length - 1];
+        if (s == "." || !isNaN(s)) {
+            textbox.value += x.innerText;
+            list_moalefeha.push(x.id);
+            list_moalefeha_farsi.push(x.innerText);
+            return false;
+        }
+        list_moalefeha.push(x.id);
+        list_moalefeha_farsi.push(x.innerText);
+
+        var textbox = document.getElementById("textbox-calc");
+
+        textbox.value += " " + x.innerText;
+        return false;
+
+
+        var x = this.firstElementChild;
+        var val = list_moalefeha_farsi[list_moalefeha_farsi.length - 1];
+        var val2 = list_moalefeha[list_moalefeha.length - 1];
+
+        if (if_status) {
+            if (CheckIf_persian(x.innerText)) {
+                CheckIf(x.innerText);
+                return false;
+
+            }
+        }
+        if (val != null || val != undefined) {
+            if (!isNaN(val)) {
+                var textbox = document.getElementById("textbox-calc");
+
+                textbox.value += x.innerText;
+                if (!isNaN(list_moalefeha[list_moalefeha.length - 1])) {
+                    list_moalefeha[list_moalefeha.length - 1] += x.innerText;
+                    list_moalefeha_farsi[list_moalefeha_farsi.length - 1] += x.innerText;
+                }
+                else {
+                    list_moalefeha.push(x.innerText);
+                    list_moalefeha_farsi.push(x.innerText);
+                }
+
+                return false;
+            } else if (val == "IF") {
+                Toast.fire({
+                    icon: 'warning',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "لطفا پرانتز مربوط به شرط را باز کنید"
+                });
+                return false;
+            } else
+                var ss = CheckOperator(val2);
+
+            if (val == "," || val == "^" || val == "=" || val == "(" || val == "+" || val == "/" || val == "-" || val == "*" || val == "و" || val == "یا" || val == "." || ss != "") {
+
+                var x = this.firstElementChild;
+
+
+
+                list_moalefeha.push(x.id);
+                list_moalefeha_farsi.push(x.innerText);
+
+                var textbox = document.getElementById("textbox-calc");
+                if (val == '.') {
+                    textbox.value += x.innerText;
+                    return false;
+                }
+                textbox.value += " " + x.innerText;
+                return false;
+            }
+            else {
+                if (list_moalefeha_farsi.length == 1) {
+
+                }
+                else
+                    if (isNaN(val)) {
+                        Toast.fire({
+                            icon: 'warning',
+                            background: '#35434A',
+                            color: 'white',
+                            title: "لطفا یک عملگر را انتخاب کنید"
+                        });
+                        return false;
+                    }
+                if (flag_is_number) {
+
+                    if (val == ")") {
+
+                        Toast.fire({
+                            icon: 'warning',
+                            background: '#35434A',
+                            color: 'white',
+                            title: "لطفا یک عملگر را انتخاب کنید"
+                        });
+                        return false;
+
+                    }
+                    var x = this.firstElementChild;
+                    list_moalefeha.push(x.id);
+                    list_moalefeha_farsi.push(x.innerText);
+
+                    var textbox = document.getElementById("textbox-calc");
+                    textbox.value += " " + x.innerText;
+
+                    flag_is_number = false;
+                    return false;
+                }
+                else {
+                    Toast.fire({
+                        icon: 'warning',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "لطفا یک عملگر را انتخاب کنید"
+                    });
+                    flag_is_number = false;
+                    return false;
+
+                }
+            }
+
+            console.log(list_moalefeha);
+
+
+        }
+        else {
+
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: "لطفا یک مولفه را انتخاب کنید"
+            });
+
+        }
+    });
+
+    /// print . in textbox calculator
+    $('.dot').click(function () {
+
+        var val = list_moalefeha[list_moalefeha.length - 1];
+        if (isNaN(val)) {
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: "لطفا یک عدد را وارد کنید"
+            });
+        } else if (val == "IF") {
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: "لطفا پرانتز مربوط به شرط را باز کنید"
+            });
+        }
+        else {
+
+            var textbox = document.getElementById('textbox-calc').value += ".";
+
+            list_moalefeha.push(".");
+            list_moalefeha_farsi.push(".");
+        }
+
+
+    });
+
+    /// parenthes full ()
+
+    $(".parenthes").click(function () {
+
+        var lastChar = list_moalefeha_farsi[list_moalefeha_farsi.length - 1];
+        var firstChar = list_moalefeha_farsi[(list_moalefeha_farsi.length - list_moalefeha_farsi.length)];
+        var textbox = $("#textbox-calc");
+        var vall2 = list_moalefeha[list_moalefeha.length - 2];
+        var vall3 = list_moalefeha[list_moalefeha.length - 3];
+        var vall2_persian = list_moalefeha_farsi[list_moalefeha_farsi.length - 2];
+        //if (vall2_persian == ">" || vall2_persian == "<" || vall2_persian == "!=" || vall2_persian == "=") {
+        //    Toast.fire({
+        //        icon: 'warning',
+        //        background: '#35434A',
+        //        color: 'white',
+        //        title: "لطفا ' , ' را انتخاب کنید !"
+        //    });
+        //    return false;
+        //}
+        //if (vall3 == "IF" && vall2 == "(") {
+        //    Toast.fire({
+        //        icon: 'warning',
+        //        background: '#35434A',
+        //        color: 'white',
+        //        title: "لطفا یکی از عملگر های شرط را انتخاب کنید !"
+        //    });
+        //    return false;
+        //}
+        //if (list_moalefeha.length == 2) {
+
+        //    Toast.fire({
+        //        icon: 'warning',
+        //        background: '#35434A',
+        //        color: 'white',
+        //        title: "لطفا یک عملگر را انتخاب کنید"
+        //    });
+        //    return false;
+        //}
+        //if (!isNaN(lastChar) && isNaN(!firstChar) || lastChar == undefined || lastChar == null || firstChar == null || lastChar == null || list_moalefeha_farsi.length == 1) {
+
+        //    Toast.fire({
+        //        icon: 'warning',
+        //        background: '#35434A',
+        //        color: 'white',
+        //        title: "لطفا مولفه ای را انتخاب کنید"
+        //    });
+        //    return false;
+
+        //}
+        //else {
+        //    if (lastChar == "^" || lastChar == "=" || lastChar == "+" || lastChar == "/" || lastChar == "-" || lastChar == "*" || lastChar == ".") {
+
+        //        Toast.fire({
+        //            icon: 'warning',
+        //            background: '#35434A',
+        //            color: 'white',
+        //            title: "قبل و بعد از عملگر نمی توان پرانتز گذاشت"
+        //        });
+        //        return false;
+
+        //    }
+        //    if (firstChar == "^" || firstChar == "=" || firstChar == "+" || firstChar == "/" || firstChar == "-" || firstChar == "*" || firstChar == ".") {
+        //        Toast.fire({
+        //            icon: 'warning',
+        //            background: '#35434A',
+        //            color: 'white',
+        //            title: "لطفا یک عدد را وارد کنید"
+        //        });
+        //        return false;
+        //    }
+
+            var str = " ";
+            var temp_list = list_moalefeha_farsi;
+            var temp_list1 = list_moalefeha;
+            list_moalefeha_farsi = [];
+            list_moalefeha = [];
+            list_moalefeha_farsi.push(temp_list[0]);
+            list_moalefeha_farsi.push("(");
+            list_moalefeha.push(temp_list1[0]);
+            list_moalefeha.push("(");
+
+            for (var i = 1; i < temp_list.length; i++) {
+                list_moalefeha_farsi.push(temp_list[i]);
+                list_moalefeha.push(temp_list1[i]);
+            }
+            list_moalefeha_farsi.push(")");
+        list_moalefeha.push(")");
+        var flg_cama = false;
+            for (var i = 0; i < list_moalefeha_farsi.length; i++) {
+                if (i == 0) {
+                    str += list_moalefeha_farsi[i] + " " + "=";
+                }
+                else {
+                    str += " " + list_moalefeha_farsi[i];
+                    if (!flg_cama) {
+                        if (list_moalefeha_farsi[i] == ",") {
+
+                            for (var j = 0; j < List_If_True_persian.length; j++) {
+                                str += List_If_True_persian[j];
+                            }
+                            flg_cama = true;
+                        }
+                    }
+                    else if (list_moalefeha_farsi[i] == ",") {
+                        for (var j = 0; j < List_If_False_persian.length; j++) {
+                            str += List_If_False_persian[j];
+                        }
+                    }
+
+                }
+            }
+
+            str += " ";
+            textbox.val(str);
+
+
+
+
+        //}
+    });
+
+
+    ///Click Parantes OK
+    $(".parenthes_open").click(function () {
+
+        var val = list_moalefeha_farsi[list_moalefeha_farsi.length - 1];
+        var vall2 = list_moalefeha[list_moalefeha.length - 2];
+        var vall3 = list_moalefeha[list_moalefeha.length - 3];
+
+        if (if_status) {
+            if (List_If_True_persian != undefined || List_If_True_persian.length >= 1) {
+                var last_true = List_If_True_persian[List_If_True_persian.length - 1];
+                if (last_true == "(") {
+
+                    List_If_True.push("(");
+                    List_If_True_persian.push("(");
+
+                    var textbox = $("#textbox-calc");
+                    textbox.val(textbox.val() + " " + "(");
+                    return false;
+
+                }
+            }
+            else
+                if (List_If_False_persian != undefined || List_If_False_persian.length >= 1) {
+
+                    var last_false = List_If_False_persian[List_If_False_persian.length - 1];
+                    if (last_false == "(") {
+
+                        List_If_False.push("(");
+                        List_If_False_persian.push("(");
+
+                        var textbox = $("#textbox-calc");
+                        textbox.val(textbox.val() + " " + "(");
+                        return false;
+
+                    }
+
+                }
+            //if (List_If_True_persian.length >= 1 && List_If_False_persian.length == 0) {
+            //    var last_if_item = List_If_True_persian[List_If_True_persian.length - 1];
+            //    if (last_if_item == "+" || last_if_item == "/" || last_if_item == "-" || last_if_item == "*") {
+            //        if (CheckIf_persian("(")) {
+            //            CheckIf("(");
+            //            return false;
+            //        }
+            //    }
+            //    else if (vall3 == "IF") {
+
+            //        Toast.fire({
+            //            icon: 'warning',
+            //            background: '#35434A',
+            //            color: 'white',
+            //            title: "لطفا یک عملگر را انتخاب کنید !"
+            //        });
+            //        return false;
+            //    }
+            //} else if (List_If_False_persian.length >= 1 && List_If_True_persian.length >= 0) {
+            //    var last_if_item = List_If_False_persian[List_If_False_persian.length - 1];
+            //    if (last_if_item == "+" || last_if_item == "/" || last_if_item == "-" || last_if_item == "*") {
+            //        if (CheckIf_persian("(")) {
+            //            CheckIf("(");
+            //            return false;
+            //        }
+            //    }
+            //    else if (vall3 == "IF") {
+
+            //        Toast.fire({
+            //            icon: 'warning',
+            //            background: '#35434A',
+            //            color: 'white',
+            //            title: "لطفا یک عملگر را انتخاب کنید !"
+            //        });
+            //        return false;
+            //    }
+            //}
+            //if (vall3 == "IF" && vall2 == "(") {
+            //    Toast.fire({
+            //        icon: 'warning',
+            //        background: '#35434A',
+            //        color: 'white',
+            //        title: "لطفا یکی از عملگر های شرط را انتخاب کنید !"
+            //    });
+            //    return false;
+            //}
+        }
+        if (val == "(") {
+            list_moalefeha.push("(");
+            list_moalefeha_farsi.push("(");
+            var textbox = $("#textbox-calc");
+            textbox.val(textbox.val() + " " + "(");
+            return false;
+        }
+
+
+        //if (val == "(") {
+
+        //    Toast.fire({
+        //        icon: 'warning',
+        //        background: '#35434A',
+        //        color: 'white',
+        //        title: "داخل پرانتز باز نمی شود پرانتز باز کرد"
+        //    });
+        //    return false;
+
+        //}
+        //if (val == ")") {
+
+        //    Toast.fire({
+        //        icon: 'warning',
+        //        background: '#35434A',
+        //        color: 'white',
+        //        title: "لطفا یک عملگر را انتخاب کنید !"
+        //    });
+        //    return false;
+
+        //}
+
+        //if (!isNaN(val)) {
+        //    Toast.fire({
+        //        icon: 'warning',
+        //        background: '#35434A',
+        //        color: 'white',
+        //        title: "لطفا یک عملگر را انتخاب کنید !"
+        //    });
+        //    return false;
+        //}
+        //if (val == ".") {
+
+        //    Toast.fire({
+        //        icon: 'warning',
+        //        background: '#35434A',
+        //        color: 'white',
+        //        title: "لطفا عدد اعشاری را وارد کنید"
+        //    });
+        //    return false;
+
+        //}
+        //if (list_moalefeha.length == 1) {
+
+        //    Toast.fire({
+        //        icon: 'warning',
+        //        background: '#35434A',
+        //        color: 'white',
+        //        title: "لطفا یک عملگر را انتخاب کنید"
+        //    });
+        //    return false;
+        //}
+      //  if (list_moalefeha.length == 1 || val == "=" || val == "+" || val == "^" || val == "/" || val == "-" || val == "*" || val == "." || val == "اگر" || val == "^" || val == "," || val == ">" || val == "<" val == ">") {
+            list_moalefeha.push("(");
+            list_moalefeha_farsi.push("(");
+
+            var textbox = $("#textbox-calc");
+            textbox.val(textbox.val() + " " + "(");
+        //}
+        //else {
+        //    Toast.fire({
+        //        icon: 'warning',
+        //        background: '#35434A',
+        //        color: 'white',
+        //        title: "لطفا یک عملگر را انتخاب کنید"
+        //    });
+        //    flag_is_number = false;
+        //    return false;
+
+        //}
+
+
+    });
+
+
+    //// Click Parenthes Close
+    $(".parenthes_close").click(function () {
+
+        var val = list_moalefeha_farsi[list_moalefeha_farsi.length - 1];
+        var vall2 = list_moalefeha[list_moalefeha.length - 2];
+        var vall3 = list_moalefeha[list_moalefeha.length - 3];
+        if (if_status) {
+            //if (vall3 == "IF") {
+            //    var par_open_if = List_If_True.filter(p => p == "(");
+            //    var par_close_if = List_If_True.filter(p => p == ")");
+            //    if (par_open_if.length == par_close_if.length) {
+
+            //        Toast.fire({
+            //            icon: 'warning',
+            //            background: '#35434A',
+            //            color: 'white',
+            //            title: "پرانتز بازی وجود ندارد"
+            //        });
+            //        return false;
+
+            //    }
+            //}
+            //var s = List_If_True_persian[List_If_True_persian.length - 1];
+            //if (s == "=" || s == "+" || s == "/" || s == "-" || s == "*" || s == "^" || s == "." || s == "^") {
+            //    Toast.fire({
+            //        icon: 'warning',
+            //        background: '#35434A',
+            //        color: 'white',
+            //        title: "بعد عملگر نمی توان پرانتز را بست"
+            //    });
+            //    return false;
+            //}
+            var par_open = List_If_True.filter(p => p == "(");
+            var par_close = List_If_True.filter(p => p == ")");
+            var par_open_f = List_If_False.filter(p => p == "(");
+            var par_close_f = List_If_False.filter(p => p == ")");
+            var par_true = List_If_True.filter(p => p == ")" || p == "(");
+            var par_false = List_If_False.filter(p => p == "(" || p == "(");
+            if (List_If_False_persian.length >= 1 || List_If_True_persian.length >= 1) {
+                var ss = par_false[par_false.length - 1];
+                var ss1 = par_true[par_true.length - 1];
+                if (ss1 != null && par_open.length != par_close.length) {
+                    if (CheckIf_persian(")")) {
+                        CheckIf(")");
+                        return false;
+                    }
+                }
+                if (ss != null && par_open_f.length != par_close_f.length) {
+                    if (CheckIf_persian(")")) {
+                        CheckIf(")");
+                        return false;
+                    }
+                }
+                if (ss == ")" || ss1 == ")" && par_close.length != par_open.length || par_close_f.length != par_open_f.length) {
+                    Toast.fire({
+                        icon: 'warning',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "شرط پایان یافت"
+                    });
+                    return false;
+                }
+                else if (par_close.length == par_open.length) {
+                    var virgol1 = list_moalefeha_farsi[list_moalefeha_farsi.length - 1];
+                    var virgol2 = list_moalefeha_farsi[list_moalefeha_farsi.length - 1];
+                    if (virgol1 == "," && virgol2 == ",") {
+
+                        const index = list_moalefeha.lastIndexOf("virgol");
+                        if (index > -1) {
+                            list_moalefeha.splice(index, 1);
+                        }
+                        const index1 = list_moalefeha_farsi.lastIndexOf(virgol2);
+                        if (index1 > -1) {
+                            list_moalefeha_farsi.splice(index1, 1);
+                        }
+
+                        var l_true = List_If_True.length;
+                        for (var i = 0; i < l_true; i++) {
+                            list_moalefeha.push(List_If_True[0]);
+                            list_moalefeha_farsi.push(List_If_True_persian[0]);
+                            const data = List_If_True.indexOf(List_If_True[0]);
+                            if (data > -1) {
+                                List_If_True.splice(data, 1);
+                            }
+                            const data1 = List_If_True_persian.indexOf(List_If_True_persian[0]);
+                            if (data1 > -1) {
+                                List_If_True_persian.splice(data1, 1);
+                            }
+                        }
+
+                        list_moalefeha.push("virgol");
+                        list_moalefeha_farsi.push(",");
+
+                        var l_false = List_If_False.length;
+                        for (var i = 0; i < l_false; i++) {
+                            list_moalefeha.push(List_If_False[0]);
+                            list_moalefeha_farsi.push(List_If_False_persian[0]);
+                            const data = List_If_False.indexOf(List_If_False[0]);
+                            if (data > -1) {
+                                List_If_False.splice(data, 1);
+                            }
+                            const data1 = List_If_False_persian.indexOf(List_If_False_persian[0]);
+                            if (data1 > -1) {
+                                List_If_False_persian.splice(data1, 1);
+                            }
+                        }
+                        console.log(list_moalefeha_farsi);
+                        $(".SaveFormula").addClass("col-md-12");
+                        $(".SaveFormula").addClass("col-12");
+                        $(".SaveFormula").removeClass("col-md-6");
+                        $(".SaveFormula").removeClass("col-6");
+                        $(".IfButton").css("display", "none");
+                    }
+                }
+            } else if (List_If_False_persian.length == 0 && par_open == undefined) {
+                Toast.fire({
+                    icon: 'warning',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "بعد از خاتمه پیدا کردن شرط می توان شرط را بست"
+                });
+                return false;
+            }
+
+            if (vall3 == "IF" && vall2 == "(") {
+                Toast.fire({
+                    icon: 'warning',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "لطفا یکی از عملگر های شرط را انتخاب کنید !"
+                });
+                return false;
+            }
+        }
+        //var par_open = list_moalefeha_farsi.filter(p => p == "(");
+        //var par_close = list_moalefeha_farsi.filter(p => p == ")");
+        //if (par_close.length == par_open.length) {
+
+        //    Toast.fire({
+        //        icon: 'warning',
+        //        background: '#35434A',
+        //        color: 'white',
+        //        title: "پرانتز بازی وجود ندارد"
+        //    });
+        //    return false;
+
+        //}
+        //if (val == "(") {
+
+        //    Toast.fire({
+        //        icon: 'warning',
+        //        background: '#35434A',
+        //        color: 'white',
+        //        title: "لطفا یک مولفه یا عدد را انتخاب کنید"
+        //    });
+        //    return false;
+
+        //}
+        //if (val == "=" || val == "+" || val == "/" || val == "-" || val == "*" || val == ".") {
+
+        //    Toast.fire({
+        //        icon: 'warning',
+        //        background: '#35434A',
+        //        color: 'white',
+        //        title: "بعد عملگر نمی توان پرانتز را بست"
+        //    });
+        //    return false;
+
+        //}
+
+
+
+        list_moalefeha.push(")");
+        list_moalefeha_farsi.push(")");
+
+        var textbox = $("#textbox-calc");
+        textbox.val(textbox.val() + " " + ")");
+
+        var par_o = list_moalefeha.filter(p => p == "(").length;
+        var par_c = list_moalefeha.filter(p => p == ")").length;
+        if (par_o == par_c) {
+            var max = list_moalefeha.indexOf("Max");
+            if (max != -1) {
+                var para = list_moalefeha[max + 1];
+                if (para == "(") {
+                    max_status = false;
+                }
+            }
+            var min = list_moalefeha.indexOf("Min");
+            if (min != -1) {
+                var para = list_moalefeha[min + 1];
+                if (para == "(") {
+                    min_status = false;
+                }
+            }
+            var ave = list_moalefeha.indexOf("Ave");
+            if (ave != -1) {
+                var para = list_moalefeha[ave + 1];
+                if (para == "(") {
+                    ave_status = false;
+                }
+            }
+            var ru = list_moalefeha.indexOf("RU");
+            if (ru != -1) {
+                var para = list_moalefeha[ru + 1];
+                if (para == "(") {
+                    ru_status = false;
+                }
+            }
+            var rou = list_moalefeha.indexOf("RU");
+                        if (rou != -1) {
+                            var para = list_moalefeha[rou + 1];
+                            if (para == "(") {
+                                round_status = false;
+                            }
+                        }
+            var zoj = list_moalefeha.indexOf("zoj");
+            if (zoj != -1) {
+                var para = list_moalefeha[zoj + 1];
+                if (para == "(") {
+                    zoj_status = false;
+                }
+            }
+            var rd = list_moalefeha.indexOf("RD");
+            if (rd != -1) {
+                var para = list_moalefeha[rd + 1];
+                if (para == "(") {
+                    rd_status = false;
+                }
+            }
+            var If = list_moalefeha.indexOf("IF");
+            if (If != -1) {
+                var para = list_moalefeha[If + 1];
+                if (para == "(") {
+                    if_status = false;
+                }
+            }
+        }
+
+    });
+
+    $(".sigma").click(function () {
+
+        var val = list_moalefeha_farsi[list_moalefeha_farsi.length - 1];
+        if (val == null || val == undefined) {
+            $(".modal-dialog").css("display", "none");
+            $(".modal-backdrop").hide();
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: "لطفا یک مولفه را انتخاب کنید"
+            });
+            return false;
+        }
+        if (val == "=" || val == "+" || val == "^" || val == "/" || val == "-" || val == "*" || val == "و" || val == "یا" || list_moalefeha_farsi.length >= 1) {
+
+            $(".modal-dialog").css("display", "block");
+            $(".modal-backdrop").show();
+            $.ajax({
+            beforeSend:function (){
+                 document.getElementById("loading-message").style.display = "block";
+            },
+                url: "/Salaries/Formula/SigmaView",
+                type: "get",
+                datatype: "html",
+                success: function (result) {
+   document.getElementById("loading-message").style.display = "none";
+                    var textbox = $("#textbox-calc");
+                    var value = textbox.val();
+                    var bool = value.includes("sigma");
+                    if (bool) {
+                        var sp = value.split("=");
+                        var sss = sp[1].split("(");
+                        var end_time = sss[1].split(",");
+                        var datas = sss[1].split(",");
+                        var start_time = datas[0];
+                        var end_time = datas[1];
+                        var moalefe = datas[2].split(")")[0];
+
+                        $("#start_sigma").val(start_time);
+                        $("#end_sigma").val(end_time);
+                        $("#moalefedastmozdi").picker('set', moalefe);
+                    }
+                    $("#big_modal_body").html(result);
+
+                },
+               error:function (){
+                document.getElementById("loading-message").style.display = "none";
+                                   Toast.fire({
+                                       icon: 'error',
+                                       background: '#35434A',
+                                       color: 'white',
+                                       title: "عملیات با خطا مواجه شد"
+                                    });
+               }
+
+            });
+        }
+        else {
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: "لطفا یک عملگر را انتخاب کنید"
+            });
+        }
+
+
+    });
+    var if_status = false;
+    $("#IF").click(function () {
+        if_status = true;
+        var val = list_moalefeha_farsi[list_moalefeha_farsi.length - 1];
+
+        if (list_moalefeha_farsi.length >= 1) {
+            $(".SaveFormula").removeClass("col-md-12");
+            $(".SaveFormula").removeClass("col-12");
+            $(".SaveFormula").addClass("col-md-6");
+            $(".SaveFormula").addClass("col-6");
+            $(".IfButton").css("display", "block");
+            list_moalefeha.push("IF");
+            list_moalefeha_farsi.push("اگر");
+            list_moalefeha.push("(");
+            list_moalefeha_farsi.push("(");
+            $("#textbox-calc").val($("#textbox-calc").val() + " " + "اگر" + " " + "(");
+        }
+        else {
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: "لطفا یک مولفه را انتخاب کنید"
+            });
+        }
+
+    });
+    var flagO = false;
+    $(".operator").click(function () {
+
+        if (if_status) {
+            var val = this.id;
+            var data = CheckOperator(val);
+
+            if (List_If_False_persian.length >= 1 && List_If_True_persian.length >= 1) {
+                var ss = List_If_False_persian[List_If_False_persian.length - 1];
+                if (ss == ")") {
+                    Toast.fire({
+                        icon: 'warning',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "شرط پایان یافت"
+                    });
+                }
+            }
+
+            var lastChar = list_moalefeha[list_moalefeha.length - 1];
+            var lastChar1 = list_moalefeha[list_moalefeha.length - 2];
+            if (lastChar == "<" || lastChar == ">" || lastChar == "=" || lastChar == "!=") {
+                Toast.fire({
+                    icon: 'warning',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "لطفا یک مولفه  یا عدد را انتخاب کنید"
+                });
+                return false;
+            }
+            //if (lastChar == ")" || lastChar == "(" || lastChar == "IF") {
+            //    Toast.fire({
+            //        icon: 'warning',
+            //        background: '#35434A',
+            //        color: 'white',
+            //        title: "لطفا یک مولفه  یا عدد را انتخاب کنید"
+            //    });
+            //    return false;
+            //}
+            if (CheckOperator(lastChar) != "" && CheckOperator(lastChar1) != "") {
+                Toast.fire({
+                    icon: 'warning',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "لطفا یک مولفه  یا عدد را انتخاب کنید"
+                });
+                return false;
+            }
+
+            if (flagO == true) {
+
+                if (CheckOperator(lastChar) == data) {
+
+                    Toast.fire({
+                        icon: 'warning',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "عملگر " + data + " را نمی توان گذاشت"
+                    });
+                    return false;
+                } else if (CheckOperator(lastChar) == ">" || CheckOperator(lastChar) == "<") {
+                    if (data == "=") {
+                        flagO = false;
+                    }
+                    else {
+                        Toast.fire({
+                            icon: 'warning',
+                            background: '#35434A',
+                            color: 'white',
+                            title: "عملگر " + data + " را نمی توان گذاشت"
+                        });
+                        return false;
+                    }
+                }
+                else {
+                    if (CheckOperator(lastChar) == "=" || CheckOperator(lastChar) == "!=") {
+                        Toast.fire({
+                            icon: 'warning',
+                            background: '#35434A',
+                            color: 'white',
+                            title: "عملگر " + data + " را نمی توان گذاشت"
+                        });
+                        return false;
+                    }
+                }
+
+            }
+            list_moalefeha.push(val);
+            list_moalefeha_farsi.push(data);
+            var textbox = $("#textbox-calc");
+            textbox.val(textbox.val() + " " + data);
+            flagO = true;
+        }
+
+    });
+
+    function CheckOperator(input) {
+        var data = input;
+        switch (data) {
+            case "SmallerThan": {
+                data = "<";
+                break;
+            }
+            case "BiggerThan": {
+                data = ">";
+                break;
+            }
+            case "Contrary": {
+                data = "!=";
+                break;
+            }
+            case "Equal": {
+                data = "=";
+                break;
+            }
+            default: {
+                data = "";
+            }
+        }
+        return data;
+    }
+
+    $(".virgol").click(function () {
+
+        var val = list_moalefeha[list_moalefeha.length - 1];
+        var val2 = list_moalefeha_farsi[list_moalefeha_farsi.length - 1];
+        var val3 = List_If_True_persian[List_If_True_persian.length - 1];
+
+        if (max_status) {
+            if (val != "virgol") {
+                var textbox = document.getElementById("textbox-calc");
+                list_moalefeha.push("virgol");
+                list_moalefeha_farsi.push(",");
+                textbox.value += " " + "," + " ";
+            }
+            return false;
+
+        }
+        if (ave_status) {
+            if (val != "virgol") {
+                var textbox = document.getElementById("textbox-calc");
+                list_moalefeha.push("virgol");
+                list_moalefeha_farsi.push(",");
+                textbox.value += " " + "," + " ";
+            }
+            return false;
+
+        }
+        if (min_status) {
+            if (val != "virgol") {
+                var textbox = document.getElementById("textbox-calc");
+                list_moalefeha.push("virgol");
+                list_moalefeha_farsi.push(",");
+                textbox.value += " " + "," + " ";
+            }
+            return false;
+
+        }
+        if (zoj_status) {
+             if (val != "virgol") {
+                 var textbox = document.getElementById("textbox-calc");
+                 list_moalefeha.push("virgol");
+                 list_moalefeha_farsi.push(",");
+                 textbox.value += " " + "," + " ";
+             }
+             return false;
+
+        }
+        if (val3 == "+" || val3 == "-" || val3 == "*" || val3 == "/") {
+            if (ss == ")") {
+                Toast.fire({
+                    icon: 'warning',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "لطفا ' " + val3 + " ' را پاک کنید !"
+                });
+            }
+        }
+        if (if_status) {
+            var s = list_moalefeha.filter(p => p == "IF");
+            if (List_If_False_persian.length >= 1 && List_If_True_persian.length >= 1) {
+                var ss = List_If_False_persian[List_If_False_persian.length - 1];
+                if (ss == ")") {
+                    Toast.fire({
+                        icon: 'warning',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "شرط پایان یافت"
+                    });
+                }
+            }
+            if (s.length != 0) {
+
+                var sf = list_moalefeha.lastIndexOf(s[s.length - 1]);
+                if (sf != -1) {
+
+                    if (List_If_True_persian.length >= 1 && List_If_False_persian.length >= 1) {
+                        Toast.fire({
+                            icon: 'warning',
+                            background: '#35434A',
+                            color: 'white',
+                            title: "از این عملگر نمی توان الان استفاده کرد"
+                        });
+                        return false;
+                    }
+                    if (val2 == "," && List_If_True_persian.length >= 1) {
+                        var textbox = document.getElementById("textbox-calc");
+                        list_moalefeha.push("virgol");
+                        list_moalefeha_farsi.push(",");
+                        textbox.value += " " + "," + " ";
+                        return false;
+                    }
+                    var last = list_moalefeha_farsi[list_moalefeha_farsi.length - 2];
+                    var textbox = document.getElementById("textbox-calc");
+                    var lastchar = list_moalefeha_farsi[list_moalefeha.length - 1];
+
+                    if (last == ">" || last == "<" || last == "!=" || last == "=") {
+                        list_moalefeha.push("virgol");
+                        list_moalefeha_farsi.push(",");
+                        textbox.value += " " + "," + " ";
+                        return false;
+                    }
+
+
+                }
+            }
+        }
+
+        list_moalefeha.push("virgol");
+        list_moalefeha_farsi.push(",");
+        var textbox = document.getElementById("textbox-calc");
+        textbox.value += " " + "," + " ";
+        return false;
+
+
+
+    });
+
+    $(".SaveFormula").click(function () {
+        var selectedId =0;
+
+        fetch(`/Contracts/MoalefeDastMozdi/GetAllMoalefeForFormulasById?id=${selectedId}`)
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById("moalefeContainer").innerHTML = html;
+            })
+            .catch(error => {
+                console.error("خطا در بارگذاری:", error);
+            });
+        Swal.fire({
+            title: 'آیا مطمئن هستید؟',
+            icon: 'question',
+            showCancelButton: true,
+            background: 'rgb(29,40,52)',
+            color: 'white',
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'بله ذخیره کن',
+            cancelButtonText: 'ذخیره نکن'
+        }).then((result) => {
+            if (result.isConfirmed) {
+
+                var last = list_moalefeha_farsi[list_moalefeha_farsi.length - 1];
+                var last_en = list_moalefeha[list_moalefeha.length - 1];
+                var rr = last_en.split("_");
+                var l = false;
+                if (rr.length == 2) {
+                    l = true;
+                }
+                if (last == ")" || !isNaN(last_en) || l == true) {
+
+                    if (list_moalefeha.length != 0) {
+                        console.log("hi");
+                        var obj = new Object();
+                        obj.FormulaView = "";
+                        obj.VariablesId = [];
+                        for (var i = 0; i < list_moalefeha_farsi.length; i++) {
+                            if (i == 0) {
+                                obj.FormulaView += list_moalefeha_farsi[i] + " " + "=" + " ";
+                            }
+                            else {
+                                if (!isNaN(list_moalefeha_farsi[i]) && !isNaN(list_moalefeha_farsi[i - 1])) {
+                                    obj.FormulaView += list_moalefeha_farsi[i];
+                                }
+                                else {
+                                    obj.FormulaView += " " + list_moalefeha_farsi[i];
+                                }
+
+                            }
+
+                        }
+                        for (var i = 0; i < list_moalefeha.length; i++) {
+                            var s = list_moalefeha[i].split("_");
+                            if (s.length == 2) {
+                                obj.VariablesId.push(list_moalefeha[i]);
+                            }
+                        }
+                        console.log("list_moalefeha" + list_moalefeha);
+
+                        obj.FormulaSchema = list_moalefeha.join("&");
+                        obj.Title = "فرمول" + " " + list_moalefeha_farsi[0];
+                        obj.MoalefeID = list_moalefeha[0].split('_')[1];
+                        console.log(obj);
+                        console.log("list_moalefeha"+list_moalefeha);
+                        //var el = document.getElementById(list_moalefeha[0]);
+                        //console.log("el" + obj);
+
+                        //if (el) {
+                        //    var moalefe = el.children;
+                        //    console.log(moalefe);
+                        //} else {
+                        //    console.warn("عنصر با id " + list_moalefeha[0] + " پیدا نشد.");
+                        //    // اینجا می‌تونی تصمیم بگیری که چکار کنی — مثلا alert یا return false
+                        //}
+                        var moalefe = document.getElementById(list_moalefeha[0]).children;
+                        console.log(moalefe);
+                        if (moalefe.length == 1) {
+
+                            $.ajax({
+                            beforeSend:function (){
+                                 document.getElementById("loading-message").style.display = "block";
+                            },
+                                url: "/Formula/Edit",
+                                type: "Post",
+                                datatype: "html",
+                                data: { frmVM: obj },
+                                success: function (res) {
+                                   document.getElementById("loading-message").style.display = "none";
+                                    if (res == "True") {
+                                        Toast.fire({
+                                            icon: 'success',
+                                            background: '#35434A',
+                                            color: 'white',
+                                            title: "فرمول با موفقیت به لیست الویت بندی ها اضافه شد"
+                                        }).then(() => {
+                                            location.reload();
+                                        });
+                                    }
+                                    else {
+                                        Toast.fire({
+                                            icon: 'error',
+                                            background: '#35434A',
+                                            color: 'white',
+                                            title: "ذخیره فرمول با خطا مواجه شد"
+                                        });
+                                    }
+                                },
+                                error: function (res) {
+                                    document.getElementById("loading-message").style.display = "none";
+                                                       Toast.fire({
+                                                           icon: 'error',
+                                                           background: '#35434A',
+                                                           color: 'white',
+                                                           title: "عملیات با خطا مواجه شد"
+                                                        });
+                                }
+                            });
+                            return false;
+                        }
+                        $.ajax({
+                        beforeSend:function (){
+                             document.getElementById("loading-message").style.display = "block";
+                        },
+                            url: "/Formula/Create",
+                            type: "Post",
+                            datatype: "html",
+                            data: { frmVM: obj },
+                            success: function (res) {
+                               document.getElementById("loading-message").style.display = "none";
+                                if (res == "True") {
+                                    Toast.fire({
+                                        icon: 'success',
+                                        background: '#35434A',
+                                        color: 'white',
+                                        title: "فرمول با موفقیت به لیست الویت بندی ها اضافه شد"
+                                    }).then(() => {
+                                        location.reload();
+                                    });
+                                }
+                                else {
+                                    Toast.fire({
+                                        icon: 'error',
+                                        background: '#35434A',
+                                        color: 'white',
+                                        title: "ذخیره فرمول با خطا مواجه شد"
+                                    });
+                                }
+                            },
+                            error: function (res) {
+                                document.getElementById("loading-message").style.display = "none";
+                                                   Toast.fire({
+                                                       icon: 'error',
+                                                       background: '#35434A',
+                                                       color: 'white',
+                                                       title: "عملیات با خطا مواجه شد"
+                                                    });
+                                console.log(res);
+                            }
+                        });
+
+                    }
+
+                }
+                else {
+                    Toast.fire({
+                        icon: 'error',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "لطفا فرمول را خاتمه دهید"
+                    });
+                    return false;
+                }
+
+
+            } else {
+                return false;
+            }
+        });
+
+
+
+
+    });
+
+
+    $(".delete").click(function () {
+
+        var id = this.id;
+        if (id != null) {
+            id = id.split('_')[1];
+            Swal.fire({
+                title: 'آیا مطمئن هستید می خواهید این فرمول را حذف کنید؟',
+                icon: 'question',
+                showCancelButton: true,
+                background: 'rgb(29,40,52)',
+                color: 'white',
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'بله ',
+                cancelButtonText: 'خیر'
+            }).then((result) => {
+
+                $.ajax({
+                    beforeSend: function () {
+                        document.getElementById("loading-message").style.display = "block";
+                    },
+                    url: "/Formula/DeleteFormul",
+                    type: "Get",
+                    datatype: "html",
+                    data: { id:id },
+                    success: function (res) {
+                        document.getElementById("loading-message").style.display = "none";
+                        if (res == "True") {
+                            Toast.fire({
+                                icon: 'success',
+                                background: '#35434A',
+                                color: 'white',
+                                title: "فرمول با موفقیت حذف شد"
+                            }).then(() => {
+                                location.reload();
+                            });
+                        }
+                        else {
+                            Toast.fire({
+                                icon: 'error',
+                                background: '#35434A',
+                                color: 'white',
+                                title: "خطا در حذف فرمول"
+                            });
+                        }
+                    },
+                    error: function (res) {
+                        document.getElementById("loading-message").style.display = "none";
+                        Toast.fire({
+                            icon: 'error',
+                            background: '#35434A',
+                            color: 'white',
+                            title: "خطا لطفا بعدا تلاش فرمائید"
+                        });
+                        console.log(res);
+                    }
+                });
+
+            });
+
+        }
+
+    });
+
+    $("#SavePrioritys").click(function () {
+
+        var input = document.getElementById("PriorityBody");
+
+        var childern = input.children;
+        var ListIds = [];
+
+        for (var i = 0; i < childern.length; i++) {
+            var Pri = new Object();
+            var child = childern[i];
+            var ids = child.id.split("_");
+            Pri.FormulaID = ids[1];
+            Pri.Priority = i + 1;
+            ListIds.push(Pri);
+
+        }
+
+        if (ListIds.length != 0) {
+
+            $.ajax({
+            beforeSend:function (){
+                 document.getElementById("loading-message").style.display = "block";
+            },
+                url: "/Formula/GetPriority",
+                type: "Post",
+                datatype: "html",
+                data: { lstFormulaPriority: ListIds },
+                success: function (res) {
+                   document.getElementById("loading-message").style.display = "none";
+                    if (res == "True") {
+                        Toast.fire({
+                            icon: 'success',
+                            background: '#35434A',
+                            color: 'white',
+                            title: "فرمول ها با موفقیت الویت بندی شد"
+                        }).then(() => {
+                            location.reload();
+                        });
+                    }
+                    else {
+                        Toast.fire({
+                            icon: 'error',
+                            background: '#35434A',
+                            color: 'white',
+                            title: "الویت فرمول با خطا مواجه شد"
+                        });
+                    }
+                },
+                error: function (res) {
+                   document.getElementById("loading-message").style.display = "none";
+                    Toast.fire({
+                        icon: 'error',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "خطا لطفا بعدا تلاش فرمائید"
+                    });
+                    console.log(res);
+                }
+            });
+
+        }
+
+    });
+
+    var List_If_True = [];
+    var List_If_False = [];
+    var List_If_True_persian = [];
+    var List_If_False_persian = [];
+    function CheckIf(value) {
+
+        var last = list_moalefeha_farsi[list_moalefeha_farsi.length - 1];
+        var last2 = list_moalefeha_farsi[list_moalefeha_farsi.length - 2];
+        if (last == "," && last2 != ",") {
+            var textbox = document.getElementById("textbox-calc");
+            if (!isNaN(List_If_True[List_If_True.length - 1]) && !isNaN(value)) {
+                List_If_True[List_If_True.length - 1] += value;
+            }
+            else {
+                List_If_True.push(value);
+
+            }
+            console.log(List_If_True);
+            return true;
+        }
+        else if (last == "," && last2 == ",") {
+            var textbox = document.getElementById("textbox-calc");
+            if (!isNaN(List_If_False[List_If_False.length - 1]) && !isNaN(value)) {
+                List_If_False[List_If_False.length - 1] += value;
+            }
+            else {
+                List_If_False.push(value);
+
+            }
+            console.log(List_If_False);
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    function CheckIf_persian(value) {
+
+        var last = list_moalefeha_farsi[list_moalefeha_farsi.length - 1];
+        var last2 = list_moalefeha_farsi[list_moalefeha_farsi.length - 2];
+        if (last == "," && last2 != ",") {
+            var textbox = document.getElementById("textbox-calc");
+            if (!isNaN(List_If_True_persian[List_If_True_persian.length - 1]) && !isNaN(value)) {
+                textbox.value += value;
+                List_If_True_persian[List_If_True_persian.length - 1] += value;
+            }
+            else {
+                textbox.value += " " + value;
+                List_If_True_persian.push(value);
+
+            }
+            console.log(List_If_True_persian);
+            return true;
+        }
+        else if (last == "," && last2 == ",") {
+            var textbox = document.getElementById("textbox-calc");
+            if (!isNaN(List_If_False_persian[List_If_False_persian.length - 1]) && !isNaN(value)) {
+                textbox.value += value;
+                List_If_False_persian[List_If_False_persian.length - 1] += value;
+            }
+            else {
+                textbox.value += " " + value;
+                List_If_False_persian.push(value);
+
+            }
+            console.log(List_If_False_persian);
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    var max_status = false;
+    $("#max").click(function () {
+
+        var textbox = $("#textbox-calc");
+        var lastchar = list_moalefeha[list_moalefeha.length - 1];
+        if (lastchar != null) {
+            max_status = true;
+            textbox.val(textbox.val() + " " + "حداکثر" + " " + "(" + " ");
+            list_moalefeha.push("Max");
+            list_moalefeha_farsi.push("حداکثر");
+            list_moalefeha.push("(");
+            list_moalefeha_farsi.push("(");
+            console.log(list_moalefeha);
+            console.log(list_moalefeha_farsi);
+        } else {
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: "لطفا یک مولفه را انتخاب کنید"
+            });
+            return false;
+        }
+
+    });
+
+    var min_status = false;
+    $("#min").click(function () {
+
+        var textbox = $("#textbox-calc");
+        var lastchar = list_moalefeha[list_moalefeha.length - 1];
+        if (lastchar != null) {
+            min_status = true;
+            textbox.val(textbox.val() + " " + "حداقل" + " " + "(" + " ");
+            list_moalefeha.push("Min");
+            list_moalefeha_farsi.push("حداقل");
+            list_moalefeha.push("(");
+            list_moalefeha_farsi.push("(");
+            console.log(list_moalefeha);
+            console.log(list_moalefeha_farsi);
+        } else {
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: "لطفا یک مولفه را انتخاب کنید"
+            });
+            return false;
+        }
+
+    });
+
+    var ave_status = false;
+    $("#ave").click(function () {
+
+        var textbox = $("#textbox-calc");
+        var lastchar = list_moalefeha[list_moalefeha.length - 1];
+        if (lastchar != null) {
+            ave_status = true;
+            textbox.val(textbox.val() + " " + "میانگین" + " " + "(" + " ");
+            list_moalefeha.push("Ave");
+            list_moalefeha_farsi.push("میانگین");
+            list_moalefeha.push("(");
+            list_moalefeha_farsi.push("(");
+            console.log(list_moalefeha);
+            console.log(list_moalefeha_farsi);
+        } else {
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: "لطفا یک مولفه را انتخاب کنید"
+            });
+            return false;
+        }
+
+    });
+    var ave_OR = false;
+    $("#OR").click(function () {
+
+        var textbox = $("#textbox-calc");
+        var lastchar = list_moalefeha[list_moalefeha.length - 1];
+        if (lastchar != null) {
+            ave_OR = true;
+            textbox.val(textbox.val() + " " + "یا" + " " );
+            list_moalefeha.push("OR");
+            list_moalefeha_farsi.push("یا");
+
+            console.log(list_moalefeha);
+            console.log(list_moalefeha_farsi);
+        } else {
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: "لطفا یک مولفه را انتخاب کنید"
+            });
+            return false;
+        }
+
+    });
+    var ave_AND = false;
+    $("#AND").click(function () {
+
+        var textbox = $("#textbox-calc");
+        var lastchar = list_moalefeha[list_moalefeha.length - 1];
+        if (lastchar != null) {
+            ave_AND = true;
+            textbox.val(textbox.val() + " " + "و" + " ");
+            list_moalefeha.push("AND");
+            list_moalefeha_farsi.push("و");
+
+            console.log(list_moalefeha);
+            console.log(list_moalefeha_farsi);
+        } else {
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: "لطفا یک مولفه را انتخاب کنید"
+            });
+            return false;
+        }
+
+    });
+
+    var ru_status = false;
+    $("#R_U").click(function () {
+
+        var textbox = $("#textbox-calc");
+        var lastchar = list_moalefeha[list_moalefeha.length - 1];
+        if (lastchar != null) {
+            ru_status = true;
+            textbox.val(textbox.val() + " " + "گرد به بالا" + " " + "(" + " ");
+            list_moalefeha.push("RU");
+            list_moalefeha_farsi.push("گرد به بالا");
+            list_moalefeha.push("(");
+            list_moalefeha_farsi.push("(");
+            console.log(list_moalefeha);
+            console.log(list_moalefeha_farsi);
+        } else {
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: "لطفا یک مولفه را انتخاب کنید"
+            });
+            return false;
+        }
+
+    });
+    var round_status = false;
+       $("#round").click(function () {
+
+            var textbox = $("#textbox-calc");
+            var lastchar = list_moalefeha[list_moalefeha.length - 1];
+            if (lastchar != null) {
+                round_status = true;
+                textbox.val(textbox.val() + " " + "گرد" + " " + "(" + " ");
+                list_moalefeha.push("rn");
+                list_moalefeha_farsi.push("گرد");
+                list_moalefeha.push("(");
+                list_moalefeha_farsi.push("(");
+                console.log(list_moalefeha);
+                console.log(list_moalefeha_farsi);
+            } else {
+                Toast.fire({
+                    icon: 'warning',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "لطفا یک مولفه را انتخاب کنید"
+                });
+                return false;
+            }
+
+        });
+    var rd_status = false;
+    $("#R_D").click(function () {
+
+        var textbox = $("#textbox-calc");
+        var lastchar = list_moalefeha[list_moalefeha.length - 1];
+        if (lastchar != null) {
+            ru_status = true;
+            textbox.val(textbox.val() + " " + "گرد به پایین" + " " + "(" + " ");
+            list_moalefeha.push("RD");
+            list_moalefeha_farsi.push("گرد به پایین");
+            list_moalefeha.push("(");
+            list_moalefeha_farsi.push("(");
+            console.log(list_moalefeha);
+            console.log(list_moalefeha_farsi);
+        } else {
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: "لطفا یک مولفه را انتخاب کنید"
+            });
+            return false;
+        }
+
+    });
+
+    var zoj_status = false;
+    $("#zoj").click(function () {
+        var val = list_moalefeha_farsi[list_moalefeha_farsi.length - 1];
+
+        if (val == "=" || val == "+" || val == "^" || val == "/" || val == "-" || val == "*" || val == "و" || val == "یا" || list_moalefeha_farsi.length == 1) {
+
+            var textbox = $("#textbox-calc");
+            var lastchar = list_moalefeha[list_moalefeha.length - 1];
+            if (lastchar != null) {
+                zoj_status = true;
+                textbox.val(textbox.val() + " " + "زوج" + " " + "(" + " ");
+                list_moalefeha.push("zoj");
+                list_moalefeha_farsi.push("زوج");
+                list_moalefeha.push("(");
+                list_moalefeha_farsi.push("(");
+                console.log(list_moalefeha);
+                console.log(list_moalefeha_farsi);
+                return false;
+            } else {
+                $(".modal-dialog").css("display", "none");
+                $(".modal-backdrop").hide();
+                Toast.fire({
+                    icon: 'warning',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "لطفا یک مولفه را انتخاب کنید"
+                });
+                return false;
+            }
+
+        }
+        else {
+             $(".modal-dialog").css("display", "none");
+             $(".modal-backdrop").hide();
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: "لطفا یک عملگر را انتخاب کنید"
+            });
+            return false;
+        }
+
+
+
+    });
+
+    $("#tavan").click(function () {
+
+        var textbox = $("#textbox-calc");
+        var lastchar = list_moalefeha[list_moalefeha.length - 1];
+        if (lastchar != null) {
+            if (lastchar != "^") {
+                textbox.val(textbox.val() + " " + "^");
+                list_moalefeha.push("^");
+                list_moalefeha_farsi.push("^");
+                console.log(list_moalefeha);
+                console.log(list_moalefeha_farsi);
+            }
+
+        } else {
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: "لطفا یک مولفه را انتخاب کنید"
+            });
+            return false;
+        }
+
+    });
+
+    $("#day").click(function () {
+
+        var val = list_moalefeha_farsi[list_moalefeha_farsi.length - 1];
+        var textbox = $("#textbox-calc");
+        if (val == null || val == undefined) {
+            $(".modal-dialog").css("display", "none");
+            $(".modal-backdrop").hide();
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: "لطفا یک مولفه را انتخاب کنید"
+            });
+            return false;
+        }
+        if (val == "=" || val == "+" || val == "^" || val == "/" || val == "-" || val == "*" || val == "و" || val == "یا") {
+
+            $("#datetime_exists").val("روز");
+            $("#datetime_exists_en").val("day");
+            $(".modal-dialog").css("display", "block");
+            $(".modal-backdrop").show();
+            $("#big_modal_body").load('@Url.Action("_GetAllMoalefeTypeDateAndTime","Formula")');
+
+
+        }
+        else {
+            if (list_moalefeha.length == 1) {
+                $("#datetime_exists").val("روز");
+                $("#datetime_exists_en").val("day");
+                $(".modal-dialog").css("display", "block");
+                $(".modal-backdrop").show();
+                $("#big_modal_body").load('@Url.Action("_GetAllMoalefeTypeDateAndTime", "Formula")');
+                return false;
+            }
+            $(".modal-dialog").css("display", "none");
+            $(".modal-backdrop").hide();
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: "لطفا یک عملگر را انتخاب کنید"
+            });
+        }
+
+    });
+
+    $("#year").click(function () {
+
+        var val = list_moalefeha_farsi[list_moalefeha_farsi.length - 1];
+        var textbox = $("#textbox-calc");
+        if (val == null || val == undefined) {
+            $(".modal-dialog").css("display", "none");
+            $(".modal-backdrop").hide();
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: "لطفا یک مولفه را انتخاب کنید"
+            });
+            return false;
+        }
+        if (val == "=" || val == "+" || val == "^" || val == "/" || val == "-" || val == "*" || val == "و" || val == "یا") {
+
+            $("#datetime_exists").val("سال");
+            $("#datetime_exists_en").val("year");
+            $(".modal-dialog").css("display", "block");
+            $(".modal-backdrop").show();
+            $("#big_modal_body").load('@Url.Action("_GetAllMoalefeTypeDateAndTime","Formula")');
+
+
+        }
+        else {
+            if (list_moalefeha.length == 1) {
+                $("#datetime_exists").val("سال");
+                $("#datetime_exists_en").val("year");
+                $(".modal-dialog").css("display", "block");
+                $(".modal-backdrop").show();
+                $("#big_modal_body").load('@Url.Action("_GetAllMoalefeTypeDateAndTime", "Formula")');
+                return false;
+            }
+            $(".modal-dialog").css("display", "none");
+            $(".modal-backdrop").hide();
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: "لطفا یک عملگر را انتخاب کنید"
+            });
+        }
+
+    });
+
+    $("#month").click(function () {
+
+        var val = list_moalefeha_farsi[list_moalefeha_farsi.length - 1];
+        var textbox = $("#textbox-calc");
+        if (val == null || val == undefined) {
+            $(".modal-dialog").css("display", "none");
+            $(".modal-backdrop").hide();
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: "لطفا یک مولفه را انتخاب کنید"
+            });
+            return false;
+        }
+        if (val == "=" || val == "+" || val == "^" || val == "/" || val == "-" || val == "*" || val == "و" || val == "یا") {
+
+            $("#datetime_exists").val("ماه");
+            $("#datetime_exists_en").val("month");
+            $(".modal-dialog").css("display", "block");
+            $(".modal-backdrop").show();
+            $("#big_modal_body").load('@Url.Action("_GetAllMoalefeTypeDateAndTime","Formula")');
+
+
+        }
+        else {
+            if (list_moalefeha.length == 1) {
+                $("#datetime_exists").val("ماه");
+                $("#datetime_exists_en").val("month");
+                $(".modal-dialog").css("display", "block");
+                $(".modal-backdrop").show();
+                $("#big_modal_body").load('@Url.Action("_GetAllMoalefeTypeDateAndTime", "Formula")');
+                return false;
+            }
+            $(".modal-dialog").css("display", "none");
+            $(".modal-backdrop").hide();
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: "لطفا یک عملگر را انتخاب کنید"
+            });
+        }
+
+    });
+
+    $("#minute").click(function () {
+
+        var val = list_moalefeha_farsi[list_moalefeha_farsi.length - 1];
+        var textbox = $("#textbox-calc");
+        if (val == null || val == undefined) {
+            $(".modal-dialog").css("display", "none");
+            $(".modal-backdrop").hide();
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: "لطفا یک مولفه را انتخاب کنید"
+            });
+            return false;
+        }
+        if (val == "=" || val == "+" || val == "^" || val == "/" || val == "-" || val == "*" || val == "و" || val == "یا") {
+
+            $("#datetime_exists").val("دقیقه");
+            $("#datetime_exists_en").val("minute");
+            $(".modal-dialog").css("display", "block");
+            $(".modal-backdrop").show();
+            $("#big_modal_body").load('@Url.Action("_GetAllMoalefeTypeDateAndTime","Formula")');
+
+
+        }
+        else {
+            if (list_moalefeha.length == 1) {
+                $("#datetime_exists").val("دقیقه");
+                $("#datetime_exists_en").val("minute");
+                $(".modal-dialog").css("display", "block");
+                $(".modal-backdrop").show();
+                $("#big_modal_body").load('@Url.Action("_GetAllMoalefeTypeDateAndTime", "Formula")');
+                return false;
+            }
+            $(".modal-dialog").css("display", "none");
+            $(".modal-backdrop").hide();
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: "لطفا یک عملگر را انتخاب کنید"
+            });
+        }
+
+    });
+
+    $("#hour").click(function () {
+
+        var val = list_moalefeha_farsi[list_moalefeha_farsi.length - 1];
+        var textbox = $("#textbox-calc");
+        if (val == null || val == undefined) {
+            $(".modal-dialog").css("display", "none");
+            $(".modal-backdrop").hide();
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: "لطفا یک مولفه را انتخاب کنید"
+            });
+            return false;
+        }
+        if (val == "=" || val == "+" || val == "^" || val == "/" || val == "-" || val == "*" || val == "و" || val == "یا") {
+
+            $("#datetime_exists").val("ساعت");
+            $("#datetime_exists_en").val("hour");
+            $(".modal-dialog").css("display", "block");
+            $(".modal-backdrop").show();
+            $("#big_modal_body").load('@Url.Action("_GetAllMoalefeTypeDateAndTime","Formula")');
+
+
+        }
+        else {
+            if (list_moalefeha.length == 1) {
+                $("#datetime_exists").val("ساعت");
+                $("#datetime_exists_en").val("hour");
+                $(".modal-dialog").css("display", "block");
+                $(".modal-backdrop").show();
+                $("#big_modal_body").load('@Url.Action("_GetAllMoalefeTypeDateAndTime", "Formula")');
+                return false;
+            }
+            $(".modal-dialog").css("display", "none");
+            $(".modal-backdrop").hide();
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: "لطفا یک عملگر را انتخاب کنید"
+            });
+        }
+
+    });
+
+    $("#count").click(function () {
+
+        var val = list_moalefeha_farsi[list_moalefeha_farsi.length - 1];
+        if (val == null || val == undefined) {
+            $(".modal-dialog").css("display", "none");
+            $(".modal-backdrop").hide();
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: "لطفا یک مولفه را انتخاب کنید"
+            });
+            return false;
+        }
+        if (val == "=" || val == "+" || val == "^" || val == "/" || val == "-" || val == "*" || val == "و" || val == "یا" || list_moalefeha_farsi.length >= 1) {
+
+            $(".modal-dialog").css("display", "block");
+            $(".modal-backdrop").show();
+            $.ajax({
+            beforeSend:function (){
+                  document.getElementById("loading-message").style.display = "block";
+                },
+                url: "/Salaries/Formula/_Count",
+                type: "get",
+                datatype: "html",
+                success: function (result) {
+document.getElementById("loading-message").style.display = "none";
+                    var textbox = $("#textbox-calc");
+                    var value = textbox.val();
+                    var bool = value.includes("count");
+                    if (bool) {
+                        var sp = value.split("=");
+                        var sss = sp[1].split("(");
+                        var end_time = sss[1].split(",");
+                        var datas = sss[1].split(",");
+                        var start_time = datas[0];
+                        var end_time = datas[1];
+                        var moalefe = datas[2].split(")")[0];
+
+                        $("#start_sigma").val(start_time);
+                        $("#end_sigma").val(end_time);
+                        $("#moalefedastmozdi").picker('set', moalefe);
+                    }
+                    $("#big_modal_body").html(result);
+
+                },
+                error:function (){
+                   document.getElementById("loading-message").style.display = "none";
+                   Toast.fire({
+                       icon: 'error',
+                       background: '#35434A',
+                       color: 'white',
+                       title: "عملیات با خطا مواجه شد"
+                    });
+                }
+            });
+        }
+        else {
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: "لطفا یک عملگر را انتخاب کنید"
+            });
+        }
+
+
+    });
+
+
+    $("#clearall").click(function() {
+
+        if (list_moalefeha.length >= 1) {
+
+            list_moalefeha = [];
+            list_moalefeha_farsi = [];
+            List_If_False = [];
+            List_If_False_persian = [];
+            List_If_True = [];
+            List_If_True_persian = [];
+            $("#textbox-calc").val(null);
+
+        }
+
+    });
+
+</script>

@@ -1,0 +1,200 @@
+﻿@model List<SaabWebProject.Models.ViewModels.Contracts.Function.FunctionModel.MarhaleMahdodayatViewModel>
+
+@{
+    Layout = null;
+}
+
+<style>
+    .tableH_Lock {
+        max-height: 364px;
+    }
+
+    thead {
+        position: sticky;
+        top: 0;
+        text-align: center;
+        z-index: 2;
+    }
+
+    .inputFilter {
+        margin-bottom: 0 !important;
+        min-width: 100px;
+    }
+
+    .form-control490 {
+        margin-bottom: 0 !important;
+    }
+
+    .headRi6, .headRi7, .headRi8 {
+        position: sticky;
+        text-align: center;
+        backdrop-filter: blur(8px);
+    }
+
+    .headRi6 {
+        right: 0;
+    }
+
+    .headRi7 {
+        right: 158px;
+    }
+
+    .headRi8 {
+        right: 525px;
+    }
+</style>
+
+<div class="card">
+    <div class="table-content p-4">
+        <div class="tab-pane fade show active" id="allTab">
+            <div class="table-responsive tableH_Lock">
+                <table class="table table-hover text-nowrap">
+                    <thead class="sticky-header">
+                        <tr>
+                            <th class="headRi6">
+                                نام و نام خانوادگی
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter04-filter" class="inputFilter form-control" style="min-width:150px;">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            <th class="headRi7">
+                                پیمان
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter06-filter" class="inputFilter form-control" style="min-width:278px;">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            <th class="headRi8">
+                                شهرستان
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter07-filter" class="inputFilter form-control">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+
+                            @if (Model.Any())
+                            {
+                                foreach (var moalefe in Model.First().MoalefeValues)
+                                {
+                                    <th class="TitelL">@moalefe.MoalefeTitle</th>
+                                }
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model.Select((val, index) => new { val, index }))
+                        {
+                            <tr class="task-list-row1 dateS_@(user.index + 1)"
+                                data-filter04="@user.val.FullName"
+                                data-filter06="@user.val.PeymanTitle"
+                                data-filter07="@user.val.CityName">
+
+                                <td class="headRi6">@user.val.FullName</td>
+                                <td class="headRi7">@user.val.PeymanTitle</td>
+                                <td class="headRi8">@user.val.CityName</td>
+
+                                @foreach (var m in user.val.MoalefeValues)
+                                {
+                                    <td class="TitelL">
+                                        <input class="form-control form-control490 form-control3"
+                                               id="@($"{user.val.FK_usr}_{m.MoalefeId}")"
+                                               value="@m.Value"
+                                               title="@m.Value" />
+                                    </td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+
+<div class="row mt-2">
+    <div class="col-xl-1">
+        <a href="#" class="btn form-control buttonGeneral" id="dwn" onclick="DownloadExcel5()">
+            <i class="bi bi-download fa-fw me-1"></i> دانلود فایل نمونه
+        </a>
+    </div>
+    <div class="col-xl-1">
+        <a href="#" onclick="ShowDialogFile45()" class="btn btn-outline-info form-control uploadSummery512">
+            <i class="bi bi-upload fa-fw me-1"></i> بارگذاری اطلاعات
+        </a>
+        <input id="summery_file498" style="display:none" type="file" />
+    </div>
+    <div class="col-xl-1">
+        <button id="btnSaveEs" type="button" class="btn form-control buttonsabt">
+            <i class="bi bi-clipboard-check fa-fw me-1"></i> ثبت
+        </button>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        var filters1 = { filter04: null, filter06: null, filter07: null };
+
+        function updateFilters4354() {
+            $('.task-list-row1').hide().filter(function () {
+                var self = $(this), result = true;
+                Object.keys(filters1).forEach(function (filter) {
+                    if (filters1[filter] && filters1[filter] != 'None' && filters1[filter] != 'همه') {
+                        result = result && self.data(filter).indexOf(filters1[filter]) !== -1;
+                    }
+                });
+                return result;
+            }).show();
+        }
+
+        function changeFilter345667(filterName) {
+            filters1[filterName] = this.value;
+            updateFilters4354();
+        }
+
+        $('#filter04-filter').on('input', function () { changeFilter345667.call(this, 'filter04'); });
+        $('#filter06-filter').on('input', function () { changeFilter345667.call(this, 'filter06'); });
+        $('#filter07-filter').on('input', function () { changeFilter345667.call(this, 'filter07'); });
+
+        function removeCommas(number) { return number.replace(/,/g, ''); }
+        function formatNumberWithCommas(number) { return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
+
+        $("input.form-control3").on('input', function () {
+            var value = $(this).val();
+            value = removeCommas(value);
+            if ($.isNumeric(value)) $(this).val(formatNumberWithCommas(value));
+        });
+
+        $("#btnSaveEs").click(function () {
+            var dataList = [];
+            $("input.form-control490").each(function () {
+                var parts = $(this).attr("id").split('_');
+                var value = removeCommas($(this).val()) || 0;
+                dataList.push({ FK_usr: parts[0], FK_moalfe: parts[1], value: value });
+            });
+            if (dataList.length > 0) updateDatabase22222(dataList);
+        });
+
+        function updateDatabase22222(dataList) {
+            $.ajax({
+                url: '/Reporter/Dashboard/UpdateRecordmahdodat2',
+                method: 'POST',
+                data: JSON.stringify(dataList),
+                contentType: 'application/json',
+                success: function (response) {
+                    if (response == "true") {
+                        alert("با موفقیت ثبت شد");
+                        location.reload();
+                    }
+                }
+            });
+        }
+    </script>
+}

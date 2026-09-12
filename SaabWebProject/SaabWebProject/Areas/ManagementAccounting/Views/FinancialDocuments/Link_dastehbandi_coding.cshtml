@@ -1,0 +1,76 @@
+﻿@using SaabWebProject.Models.DomainModels;
+
+@{
+    SaabEntities db = new SaabEntities();
+    ViewBag.Title = "پشتیبان گیری از اطلاعات";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دریافت موقعیت GPS</title>
+</head>
+<body>
+
+    <h2>دریافت موقعیت جغرافیایی</h2>
+    <button onclick="getLocation()">دریافت موقعیت</button>
+    <p id="status"></p>
+
+    <script>
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(sendPosition, showError);
+            } else {
+                document.getElementById("status").innerHTML = "مرورگر شما از GPS پشتیبانی نمی‌کند.";
+            }
+        }
+
+        function sendPosition(position) {
+            var latitude = position.coords.latitude;
+            var longitude = position.coords.longitude;
+
+            document.getElementById("status").innerHTML =
+                "📍 موقعیت دریافت شد:<br>عرض جغرافیایی: " + latitude +
+                "<br>طول جغرافیایی: " + longitude;
+
+            // ارسال موقعیت به سرور
+            fetch('/ManagementAccounting/FinancialDocuments/SaveGPS', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ Latitude: latitude, Longitude: longitude })
+            })
+                .then(response => response.text())
+                .then(data => {
+                    console.log("✅ سرور پاسخ داد:", data);
+                    document.getElementById("status").innerHTML += "<br>✅ موقعیت ارسال شد!";
+                })
+                .catch(error => {
+                    console.error("❌ خطا در ارسال:", error);
+                    document.getElementById("status").innerHTML += "<br>❌ خطا در ارسال!";
+                });
+        }
+
+        function showError(error) {
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    document.getElementById("status").innerHTML = "❌ دسترسی به موقعیت رد شد.";
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    document.getElementById("status").innerHTML = "⚠️ اطلاعات موقعیت در دسترس نیست.";
+                    break;
+                case error.TIMEOUT:
+                    document.getElementById("status").innerHTML = "⏳ درخواست موقعیت زمان‌بر شد.";
+                    break;
+                case error.UNKNOWN_ERROR:
+                    document.getElementById("status").innerHTML = "❌ خطای ناشناخته.";
+                    break;
+            }
+        }
+    </script>
+
+</body>
+</html>

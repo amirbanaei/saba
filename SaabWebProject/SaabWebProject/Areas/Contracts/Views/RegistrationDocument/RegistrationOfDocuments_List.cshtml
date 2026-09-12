@@ -1,0 +1,292 @@
+﻿@model List<SaabWebProject.Models.DomainModels.tbDocuments>
+@{
+    Layout = null;
+}
+<div class="card">
+    <div class="table-content p-4">
+        <div class="tab-pane fade show active" id="allTab">
+            <div class="table-responsive tableH_Lock">
+
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr style="text-align:center">
+
+                            <th>
+                                @Html.DisplayName("#")
+                            </th>
+                            <th>
+                                @Html.DisplayName("پروژه")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter12-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            <th>
+                                @Html.DisplayName("عنوان")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter13-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+
+                            <th>
+                                @Html.DisplayName(" نوع مدرک")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter14-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            <th>
+                                @Html.DisplayName(" خلاصه مدرک")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter15-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            <th>
+                                @Html.DisplayName(" پیوست مدرک")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter16-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+
+                            <th>
+                                @Html.DisplayName("نوع کنترل")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter17-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+
+                            <th>
+                                @Html.DisplayName("وضعیت تایید مدرک")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter18-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+
+                            <th>
+                                @Html.DisplayName("امکان تغییر ثبت")
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody style="text-align:center;">
+                        @{
+                            int counter = 0;
+                            string noemadrak = "";
+                            string kholasemadrak = "";
+                            string peyvastmadrak = "";
+                            string noecontrol = "";
+                            string vazeyatetaeedmadrak = "";
+
+                        }
+                        @foreach (var item in Model)
+                        {
+                            counter++;
+                            if (item.TypeOfDocument == 1)
+                            {
+                                noemadrak = "صورت وضعیت";
+                            }
+                            else if (item.TypeOfDocument == 2)
+                            {
+                                noemadrak = "حقوق و دست مزد";
+                            }
+                            else if (item.TypeOfDocument == 3)
+                            {
+                                noemadrak = "اسناد سیستمی";
+                            }
+                            else if (item.TypeOfDocument == 4)
+                            {
+                                noemadrak = "پیشخوان";
+                            }
+                            //======================================
+                            if (item.doc_ableToSaveSummery == true)
+                            {
+                                if (item.SummaryDocument != null)
+                                {
+                                    kholasemadrak = "دانلود";
+                                }
+                                else
+                                {
+                                    kholasemadrak = "ذخیره نشده";
+                                }
+                            }
+                            else
+                            {
+                                kholasemadrak = "بدون نیاز";
+                            }
+                            //======================================
+                            if (item.attachment != null)
+                            {
+                                peyvastmadrak = "دانلود";
+                            }
+                            else
+                            {
+                                peyvastmadrak = "ذخیره نشده";
+                            }
+                            //======================================
+                            if (item.type_control == 2)
+                            {
+                                noecontrol = "مکانیزه";
+                            }
+                            else
+                            {
+                                noecontrol = "دستی";
+                            }
+                            //======================================
+                            if (item.IsAccepted == true)
+                            {
+                                vazeyatetaeedmadrak = "تایید شده";
+                            }
+                            else if (item.IsAccepted == false)
+                            {
+                                vazeyatetaeedmadrak = "رد شده";
+                            }
+                            else
+                            {
+                                vazeyatetaeedmadrak = "بررسی نشده";
+                            }
+                            //======================================
+                            <tr class="task-list-rowS"
+                                data-filter12="@item.peyman_Title"
+                                data-filter13="@item.doc_Title"
+                                data-filter14="@noemadrak"
+                                data-filter15="@kholasemadrak"
+                                data-filter16="@peyvastmadrak"
+                                data-filter17="@noecontrol"
+                                data-filter18="@vazeyatetaeedmadrak">
+                                <td>@counter</td>
+                                <td>@item.peyman_Title</td>
+                                <td>@item.doc_Title</td>
+                                <td>@noemadrak</td>
+
+                                @if (item.doc_ableToSaveSummery == true)
+                                {
+                                    //kholasemadrak
+                                    if (item.SummaryDocument != null)
+                                    {
+                                        <td style="color:green">
+                                            <a target="_blank" href="~/Areas/Contracts/Contents/RegistrationDucumentSummery/@item.SummaryDocumentSystemName">
+                                                دانلود
+                                            </a>
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td style="color:red">ذخیره نشده</td>
+                                    }
+                                }
+                                else
+                                {
+                                    <td>بدون نیاز</td>
+                                }
+                                @if (item.attachment != null)
+                                {
+                                    //peyvastmadrak
+                                    <td style="color:green">
+                                        <a target="_blank" href="~/Areas/Contracts/Contents/RegistrationDucumentAttachmentsFile/@item.attachmentSystemName">
+                                            دانلود
+                                        </a>
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td style="color:red">ذخیره نشده</td>
+                                }
+                                <td>@noecontrol</td>
+                                @if (item.IsAccepted == true)
+                                {
+                                    <td><i class="bi bi-brightness-high-fill" style="color:green" title="تایید شده"></i></td>
+                                }
+                                else if (item.IsAccepted == false)
+                                {
+                                    <td><i class="bi bi-brightness-high-fill" style="color:red" title="رد شده"></i></td>
+
+                                }
+                                else
+                                {
+                                    <td>بررسی نشده</td>
+                                }
+
+                                @if (item.IsAccepted == true)
+                                {
+                                    <td><i class="bi bi-ckeck-circle" style="color:red"></i></td>
+                                }
+                                else
+                                {
+                                    <td><i class="bi bi-check-circle" style="color:green"></i></td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+<script>
+    var filtersS = {
+        filter12: null,
+        filter13: null,
+        filter14: null,
+        filter15: null,
+        filter16: null,
+        filter17: null,
+        filter18: null,
+
+    };
+
+    function updateFiltersS() {
+        $('.task-list-rowS').hide().filter(function () {
+            var self = $(this),
+                result = true;
+
+            Object.keys(filtersS).forEach(function (filter) {
+                var filterData = self.data(filter);
+                if (filtersS[filter] && (filtersS[filter] != 'None') && (filtersS[filter] != 'همه')) {
+                    // تبدیل داده به رشته و بررسی مقدار
+                    result = result && (filterData && filterData.toString().indexOf(filtersS[filter]) !== -1);
+                }
+            });
+
+            return result;
+        }).show();
+    }
+
+    function changeFilterS(filterName) {
+        filtersS[filterName] = this.value;
+        updateFiltersS();
+    }
+
+    // Assigned User Dropdown Filter
+    $('#filter12-filter').on('input', function () {
+        changeFilterS.call(this, 'filter12');
+    });
+    $('#filter13-filter').on('input', function () {
+        changeFilterS.call(this, 'filter13');
+    });
+    $('#filter14-filter').on('input', function () {
+        changeFilterS.call(this, 'filter14');
+    });
+    $('#filter15-filter').on('input', function () {
+        changeFilterS.call(this, 'filter15');
+    });
+    $('#filter16-filter').on('input', function () {
+        changeFilterS.call(this, 'filter16');
+    });
+    $('#filter17-filter').on('input', function () {
+        changeFilterS.call(this, 'filter17');
+    });
+    $('#filter18-filter').on('input', function () {
+        changeFilterS.call(this, 'filter18');
+    });
+
+</script>

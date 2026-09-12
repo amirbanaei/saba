@@ -1,0 +1,415 @@
+﻿
+@{
+    ViewBag.Title = "جدول مشترکین بدهکار";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using SaabWebProject.Models.Classes;
+
+@model IEnumerable<SaabWebProject.Models.DomainModels.NatigeEshterakBala50>
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>tableNatijeGiri</title>
+
+    <link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+    <style>
+
+        .tableH_Lock {
+            max-height: 472px;
+            /*height: 472px;*/
+        }
+
+        thead {
+            position: sticky;
+            top: 0;
+            text-align: center;
+            z-index: 2;
+        }
+
+        .inputFilter {
+            margin-bottom: 0px !important;
+        }
+
+        thead th {
+            vertical-align: middle;
+            width: calc(100%/9);
+        }
+
+        .limit-tooltip {
+            position: absolute;
+            background: var(--bs-tab-content-bg);
+            color: aqua;
+            padding: 2px 5px;
+            border: 1px solid aqua;
+            border-radius: 6px;
+            font-size: 13px;
+            max-width: 500px; /* عرض محدود */
+            z-index: 9999;
+            white-space: normal; /* اجازه رفتن به خط بعد */
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            display: none;
+            line-height: 1.6;
+            font-size: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="tab-content" id="pills-tabContent">
+        <div class="table-responsive tableH_Lock">
+            <table class="table table-hover text-nowrap">
+                <thead>
+                    <tr style="text-align:center">
+                        <th>
+                            @Html.DisplayName("نام مشترک")
+                            <div class="inputWithFilterIcon">
+                                <input type="text" id="filter01-filter" class="inputFilter form-control" placeholder="" />
+                                <span><i class="fas fa-filter"></i></span>
+                            </div>
+                        </th>
+                        <th>
+                            @Html.DisplayName("شناسه قبض")
+                            <div class="inputWithFilterIcon">
+                                <input type="text" id="filter02-filter" class="inputFilter form-control" placeholder="" />
+                                <span><i class="fas fa-filter"></i></span>
+                            </div>
+                        </th>
+                        <th>
+                            @Html.DisplayName("شهرستان")
+                            <div class="inputWithFilterIcon">
+                                <input type="text" id="filter03-filter" class="inputFilter form-control" placeholder="" />
+                                <span><i class="fas fa-filter"></i></span>
+                            </div>
+                        </th>
+                        <th>
+                            @Html.DisplayName("مانده کل (بدهکاری) ریال- زمان ارجاع ")
+                            <div class="inputWithFilterIcon">
+                                <input type="text" id="filter04-filter" class="inputFilter form-control" placeholder="" />
+                                <span><i class="fas fa-filter"></i></span>
+                            </div>
+                        </th>
+                        <th>
+                            @Html.DisplayName("مانده کل (بدهکاری) ریال-بروز")
+                            <div class="inputWithFilterIcon">
+                                <input type="text" id="filter05-filter" class="inputFilter form-control" placeholder="" />
+                                <span><i class="fas fa-filter"></i></span>
+                            </div>
+                        </th>
+                        <th>
+                            @Html.DisplayName("نتیجه پیگیری")
+                            <div class="inputWithFilterIcon">
+                                <input type="text" id="filter06-filter" class="inputFilter form-control" placeholder="" />
+                                <span><i class="fas fa-filter"></i></span>
+                            </div>
+                        </th>
+                        <th class="limit-cell">
+                            @Html.DisplayName("مسئول")
+                            <div class="inputWithFilterIcon">
+                                <input type="text" id="filter08-filter" class="inputFilter form-control" placeholder="" />
+                                <span><i class="fas fa-filter"></i></span>
+                            </div>
+                        </th>
+                        <th class="limit-cell">
+                            @Html.DisplayName("شرح")
+                            <div class="inputWithFilterIcon">
+                                <input type="text" id="filter07-filter" class="inputFilter form-control" placeholder="" />
+                                <span><i class="fas fa-filter"></i></span>
+                            </div>
+                        </th>
+
+
+                    </tr>
+
+
+                    <tr id="sum-row" style="background:#1f2a36;font-weight:bold;text-align:center">
+                        <th colspan="3">جمع فیلتر شده</th>
+                        <th id="sum-erja">0</th>
+                        <th id="sum-beroz">0</th>
+                        <th colspan="4"></th>
+                    </tr>
+
+                </thead>
+                @{
+
+                    var natigeMap = new Dictionary<int, string>
+                                {
+        {1, "وصول کامل"},
+        {2, "تقسیط"},
+        {3, "قطع"},
+        {4, "مهلت (پیگیری مجدد)"},
+        {5, "ادعای قبض اشتباه (پیگیری مجدد)"},
+        {6, "اصلاح شماره تماس (پیگیری مجدد)"},
+        {7, "پرونده حقوقی (پیگیری مجدد)"},
+        {8, "نیاز به پیگیری ستاد"},
+        {9, "عدم پاسخگویی تلفنی"},
+        {10, "عدم تماس یا اعلام مسئول پیگیری"}
+    };
+
+
+                }
+
+                <tbody style="text-align:center">
+                    @foreach (var it in Model)
+                    {
+                        <tr class="task-list-row " data-filter01="@it.NameMoshtarak"
+                            data-filter02="@it.ShenaseGhabz"
+                            data-filter03="@it.city_name"
+                            data-filter04="@it.MandeKolErja"
+                            data-filter05="@it.MandeKolBeroz1"
+                            data-filter06="@(it.NatigePeygiri.HasValue && natigeMap.ContainsKey(it.NatigePeygiri.Value) ? natigeMap[it.NatigePeygiri.Value] : "")"
+                            data-filter07="@it.SharhPeygiri"
+                            data-filter08="@it.value_bi"
+                            data-erja="@it.MandeKolErja"
+                            data-beroz="@it.MandeKolBeroz1">
+                            <td> @it.NameMoshtarak</td>
+                            <td> @it.ShenaseGhabz</td>
+                            <td> @it.city_name</td>
+                            <td> @it.MandeKolErja</td>
+                            <td>
+                                @(decimal.TryParse(it.MandeKolBeroz1, out var v)
+        ? v.ToString("N0")
+        : it.MandeKolBeroz1)
+                            </td>
+
+                            <td>
+                                @(it.NatigePeygiri.HasValue && natigeMap.ContainsKey(it.NatigePeygiri.Value)
+        ? natigeMap[it.NatigePeygiri.Value]
+        : "")
+                            </td>
+                            <td> @it.value_bi</td>
+
+                            <td>
+
+                                @if (it.SharhPeygiri.Length > 20)
+                                {
+                                    <span title="@it.SharhPeygiri">@it.SharhPeygiri.Substring(0, 20)...</span>
+                                }
+                                else
+                                {
+                                    @it.SharhPeygiri
+                                }
+                            </td>
+                        </tr>
+
+                    }
+
+
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+    <script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+    <script src="~/Scripts/jquery-ui.js"></script>
+    <script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+    <script src="~/Scripts/jquery-ui.js"></script>
+    <script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            function updateSums() {
+
+                let sumErja = 0;
+                let sumBeroz = 0;
+
+                $('.task-list-row:visible').each(function () {
+
+                    let erja = $(this).data('erja') || 0;
+                    let beroz = $(this).data('beroz') || 0;
+
+                    erja = parseInt(erja.toString().replace(/,/g, '')) || 0;
+                    beroz = parseInt(beroz.toString().replace(/,/g, '')) || 0;
+
+                    sumErja += erja;
+                    sumBeroz += beroz;
+                });
+
+                // 👇 بدون اعشار + هزارگان
+                $('#sum-erja').text(sumErja.toLocaleString('en-US', { maximumFractionDigits: 0 }));
+                $('#sum-beroz').text(sumBeroz.toLocaleString('en-US', { maximumFractionDigits: 0 }));
+            }
+
+
+
+            filters = {
+                filter01: null,
+                filter02: null,
+                filter03: null,
+                filter04: null, filter05: null,
+                filter06: null,
+                filter07: null,
+                filter08: null,
+
+            };
+            function updateFilters() {
+                $('.task-list-row').hide().filter(function () {
+                    var self = $(this),
+                        result = true;
+
+                    Object.keys(filters).forEach(function (filter) {
+                        var filterData = self.data(filter);
+                        if (filters[filter] && (filters[filter] != 'None') && (filters[filter] != 'همه')) {
+                            if (filter === 'filter04' || filter === 'filter05') {
+
+                                let numericValue = self.data(filter === 'filter04' ? 'erja' : 'beroz');
+                                result = result && parseNumberFilter(filters[filter], numericValue);
+
+                            } else {
+
+                                result = result && (filterData && filterData.toString().indexOf(filters[filter]) !== -1);
+
+                            }
+
+                            // تبدیل داده به رشته و بررسی مقدار
+                        //    result = result && (filterData && filterData.toString().indexOf(filters[filter]) !== -1);
+                        }
+                    });
+
+                    return result;
+                }).show();
+                updateSums();
+
+            }
+
+
+            function changeFilter(filterName) {
+                filters[filterName] = this.value;
+                updateFilters();
+            }
+
+            $('#filter01-filter').on('input', function () {
+                changeFilter.call(this, 'filter01');
+            });
+            $('#filter02-filter').on('input', function () {
+                changeFilter.call(this, 'filter02');
+            });
+            $('#filter03-filter').on('input', function () {
+                changeFilter.call(this, 'filter03');
+            });
+            $('#filter04-filter').on('input', function () {
+                changeFilter.call(this, 'filter04');
+            });
+            $('#filter05-filter').on('input', function () {
+                changeFilter.call(this, 'filter05');
+            });
+            $('#filter06-filter').on('input', function () {
+                changeFilter.call(this, 'filter06');
+            }); $('#filter07-filter').on('input', function () {
+                changeFilter.call(this, 'filter07');
+            });
+            $('#filter08-filter').on('input', function () {
+                changeFilter.call(this, 'filter08');
+            });
+            document.addEventListener("DOMContentLoaded", function () {
+
+                const maxLength = 30;
+
+                document.querySelectorAll(".limit-cell").forEach(cell => {
+
+                    // فقط یک بار متن کامل رو ذخیره کن
+                    if (!cell.dataset.fullText) {
+                        cell.dataset.fullText = cell.innerText.trim();
+                    }
+
+                    const fullText = cell.dataset.fullText;
+
+                    if (fullText.length > maxLength) {
+                        cell.innerText = fullText.substring(0, maxLength) + "...";
+                    }
+
+                    let tooltip = null;
+
+                    cell.addEventListener("mouseenter", function () {
+
+                        if (fullText.length <= maxLength) return;
+
+                        tooltip = document.createElement("div");
+                        tooltip.className = "limit-tooltip";
+                        tooltip.innerText = fullText;
+                        document.body.appendChild(tooltip);
+
+                        const rect = cell.getBoundingClientRect();
+
+                        tooltip.style.left = rect.left + window.scrollX + "px";
+                        tooltip.style.top =
+                            rect.top + window.scrollY - tooltip.offsetHeight + 30 + "px";
+
+                        tooltip.style.display = "block";
+                    });
+
+                    cell.addEventListener("mouseleave", function () {
+                        if (tooltip) {
+                            tooltip.remove();
+                            tooltip = null;
+                        }
+                    });
+                });
+
+            });
+            updateSums();
+
+        });
+        function formatThousandsInput(el) {
+
+            let v = el.value;
+
+            if (!v) return;
+
+            // جدا کردن اپراتور
+            let op = "";
+            if (v.startsWith(">=") || v.startsWith("<=")) {
+                op = v.substring(0, 2);
+                v = v.substring(2);
+            } else if (v.startsWith(">") || v.startsWith("<") || v.startsWith("=")) {
+                op = v.substring(0, 1);
+                v = v.substring(1);
+            }
+
+            // حذف همه چیز غیر عدد
+            v = v.replace(/[^\d]/g, '');
+
+            if (!v) {
+                el.value = op;
+                return;
+            }
+
+            // هزارگان
+            v = parseInt(v, 10).toLocaleString('en-US');
+
+            el.value = op + v;
+        }
+        $('#filter04-filter, #filter05-filter').on('input', function () {
+            formatThousandsInput(this);
+        });
+
+        function parseNumberFilter(expr, value) {
+
+            if (!expr) return true;
+
+            expr = expr.replace(/,/g, '').toLowerCase().trim();
+
+            let num = parseFloat(expr.replace(/[<>=]/g, ''));
+            if (isNaN(num)) return true;
+
+            value = value.toString().replace(/,/g, ''); // ✅ مهم
+            value = parseFloat(value) || 0;
+
+            if (expr.startsWith(">=")) return value >= num;
+            if (expr.startsWith("<=")) return value <= num;
+            if (expr.startsWith(">")) return value > num;
+            if (expr.startsWith("<")) return value < num;
+            if (expr.startsWith("=")) return value == num;
+
+            return value == num;
+        }
+
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,666 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "جدول با قابلیت Drag & Drop و Merge";
+     }
+    <html lang="fa">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>جدول پویا با قابلیت Drag & Drop و محاسبه فرمول</title>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+        <style>
+
+                table {
+                    /*        width: 100%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            text-align: center;*/
+                }
+
+                th, td {
+                    padding: 15px;
+                    cursor: pointer;
+                    padding: 15px !important;
+                }
+
+                td {
+                    border: 1px dashed #687278;
+                }
+
+
+
+                .draggable {
+                    padding: 4px;
+                    border: 1px solid #007BFF;
+                    cursor: grab;
+                    border-radius: 5px;
+                    font-size: 12px;
+                    display: inline-block;
+                }
+
+                .drop-target {
+                    /*border: 2px dashed;*/
+                }
+
+                .dragging {
+                    opacity: 0.5;
+                }
+
+                .selected {
+                    background-color: #f080807a !important;
+                }
+
+                .highlight {
+                    background-color: #f0f8ff;
+                }
+
+                .merged {
+                    background-color: #d1ffd1;
+                }
+
+                /*---------------------------*/
+                .form-control {
+                    margin-bottom: 0 !important;
+                }
+
+                .rowOption {
+                    display: flex;
+                    flex-wrap: nowrap;
+                }
+
+                .boxOption {
+                    display: flex;
+                    flex-wrap: nowrap;
+                    border-left: 1px dashed;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                    .boxOption input {
+                        max-width: 62px;
+                        border-left: 1px dashed;
+                    }
+
+                .boxBit {
+                    /*margin: 0px 4px;*/
+                    margin: 5px;
+                }
+
+                    .boxBit i {
+                        font-size: 18px;
+                    }
+
+                .tableH_Lock {
+                    max-height: 447px;
+                }
+
+                thead {
+                    position: sticky;
+                    top: 0;
+                    text-align: center;
+                    z-index: 2;
+                }
+        </style>
+    </head>
+    <body>
+
+        <h2>جدول با قابلیت Drag & Drop و Merge</h2>
+
+        <div>
+            <input type="number" id="rowsInput" placeholder="تعداد سطرها" min="1">
+            <input type="number" id="colsInput" placeholder="تعداد ستون‌ها" min="1">
+            <button id="createTable">ایجاد جدول</button>
+        </div>
+
+        <div class="table-container"></div>
+
+        <input type="text" id="textInput" placeholder="متن را وارد کنید">
+        <button id="addText">افزودن</button>
+        <button id="mergeCells">ادغام سلول‌های انتخاب‌شده</button>
+        <button id="unmergeCells">جدا کردن سلول‌ها</button>
+
+
+        <div>
+            <!-- ورودی برای نام سلول -->
+            <input type="text" id="removeBorderCellInput" placeholder="نام سلول (مثلاً A1)">
+            <!-- انتخاب طرف مرز -->
+            <select id="borderSide">
+                <option value="top">بالا</option>
+                <option value="right">راست</option>
+                <option value="bottom">پایین</option>
+                <option value="left">چپ</option>
+            </select>
+            <!-- دکمه حذف مرز -->
+            <button id="removeBorder">حذف مرز</button>
+            <!-- دکمه بازگرداندن مرز -->
+            <button id="restoreBorder">بازگرداندن مرز</button>
+        </div>
+
+        <div>
+            <input type="number" id="hideRowInput" placeholder="شماره ردیف برای مخفی کردن" min="1">
+            <button id="hideRow">مخفی کردن ردیف</button>
+        </div>
+        <div>
+            <input type="number" id="showRowInput" placeholder="شماره ردیف برای نمایش دوباره" min="1">
+            <button id="showRow">نمایش دوباره ردیف</button>
+        </div>
+
+        <div>
+            <input type="number" id="showColInput" placeholder="شماره ستون برای نمایش دوباره" min="1">
+            <button id="showCol">نمایش دوباره ستون</button>
+        </div>
+
+        <div>
+            <input type="number" id="hideColInput" placeholder="شماره ستون برای مخفی کردن" min="1">
+            <button id="hideCol">مخفی کردن ستون</button>
+        </div>
+        <div>
+            <input type="text" id="formulaInput" placeholder="فرمول (مثلاً A1+B2 یا sqrt(A2) یا log(A3))">
+            <input type="text" id="targetCellInput" placeholder="سلول مقصد (مثلاً A4)">
+            <button id="calculate">محاسبه</button>
+            <p id="result"></p>
+        </div>
+
+        <script>
+            // تبدیل نام سلول به ایندکس‌های ردیف و ستون
+            // تبدیل نام سلول به ایندکس‌های ردیف و ستون
+            // شیء برای ذخیره مرزهای حذف‌شده
+            var removedBorders = {};
+
+            // تبدیل نام سلول به ایندکس‌های ردیف و ستون
+            function cellNameToIndex1(cellName) {
+                var col = cellName.match(/[A-Za-z]+/)[0]; // استخراج نام ستون (حروف)
+                var row = parseInt(cellName.match(/[0-9]+/)[0]) - 1; // استخراج شماره ردیف (اعداد) و کم کردن 1 برای ایندکس 0
+                var colIndex = columnToIndex1(col); // تبدیل نام ستون به ایندکس عددی
+
+                return { row, colIndex };
+            }
+            function columnToIndex1(col) {
+                let index = 0;
+                let colLength = col.length;
+
+                for (let i = 0; i < colLength; i++) {
+                    // تبدیل حرف به عدد (A = 1, B = 2, ..., Z = 26)
+                    let charValue = col.charCodeAt(i) - 65 + 1;
+                    index = index * 26 + charValue; // محاسبه ایندکس برای ستون‌های ترکیبی
+                }
+
+                return index - 1; // تبدیل به ایندکس مناسب (شروع از 0)
+            }
+            // تبدیل نام ستون به ایندکس عددی
+
+            // هنگام کلیک بر روی حذف مرز
+            $("#removeBorder").click(function () {
+                var cellName = $("#removeBorderCellInput").val(); // نام سلول مثل A1
+                var borderSide = $("#borderSide").val(); // طرف مرز برای حذف
+
+                // بررسی اینکه نام سلول صحیح است یا خیر
+                if (cellName && table) {
+                    var { row, colIndex } = cellNameToIndex1(cellName); // تبدیل نام سلول به ایندکس ردیف و ستون
+
+                    if (row >= 0 && row < table.find("tbody tr").length && colIndex >= 0 && colIndex < table.find("thead th").length) {
+                        // پیدا کردن سلول مورد نظر
+                        var targetCell = table.find("tbody tr").eq(row).find("td").eq(colIndex);
+
+                        // ذخیره مرز فعلی در شیء removedBorders
+                        var currentBorder = targetCell.css(`border-${borderSide}`);
+                        if (!removedBorders[cellName]) {
+                            removedBorders[cellName] = {}; // ایجاد ورودی برای سلول
+                        }
+                        removedBorders[cellName][borderSide] = currentBorder;
+
+                        // حذف مرز انتخابی برای سلول
+                        targetCell.css({
+                            [`border-${borderSide}`]: "none"
+                        });
+                    } else {
+                        alert("لطفاً نام سلول صحیح وارد کنید.");
+                    }
+                } else {
+                    alert("لطفاً جدول را ابتدا بسازید.");
+                }
+            });
+
+            // هنگام کلیک بر روی بازگرداندن مرز
+            $("#restoreBorder").click(function () {
+                var cellName = $("#removeBorderCellInput").val(); // نام سلول مثل A1
+                var borderSide = $("#borderSide").val(); // طرف مرز برای بازگرداندن
+
+                // بررسی اینکه آیا مرزی قبلاً حذف شده است یا خیر
+                if (cellName && removedBorders[cellName] && removedBorders[cellName][borderSide]) {
+                    var { row, colIndex } = cellNameToIndex1(cellName); // تبدیل نام سلول به ایندکس ردیف و ستون
+
+                    if (row >= 0 && row < table.find("tbody tr").length && colIndex >= 0 && colIndex < table.find("thead th").length) {
+                        // پیدا کردن سلول مورد نظر
+                        var targetCell = table.find("tbody tr").eq(row).find("td").eq(colIndex);
+
+                        // بازیابی مرز قبلی
+                        targetCell.css({
+                            [`border-${borderSide}`]: removedBorders[cellName][borderSide]
+                        });
+
+                        // پاک کردن مرز از شیء removedBorders
+                        delete removedBorders[cellName][borderSide];
+                    } else {
+                        alert("لطفاً نام سلول صحیح وارد کنید.");
+                    }
+                } else {
+                    alert("این مرز قبلاً حذف نشده است یا وارد نام سلول اشتباه شده‌اید.");
+                }
+            });
+
+            // تابع برای تبدیل نام ستون (مثل A, B, ...) به ایندکس عددی
+            function columnToIndex(col) {
+                let index = 0;
+                for (let i = 0; i < col.length; i++) {
+                    index = index * 26 + (col.charCodeAt(i) - 65);
+                }
+                return index;
+            }
+
+            $("#showRow").click(function () {
+                var rowNumber = $("#showRowInput").val();
+                if (rowNumber > 0 && rowNumber <= table.find("tbody tr").length) {
+                    var row = table.find("tbody tr").eq(rowNumber - 1); // شماره ردیف را با ایندکس تطبیق می‌دهیم
+                    row.css("display", "table-row"); // نمایش دوباره ردیف
+                } else {
+                    alert("لطفاً شماره ردیف صحیح وارد کنید.");
+                }
+            });
+
+            // برای نمایش دوباره ستون‌ها
+            $("#showCol").click(function () {
+                var colNumber = $("#showColInput").val();
+                if (colNumber > 0 && colNumber <= table.find("thead th").length) {
+                    // نمایش دوباره تمامی سلول‌های آن ستون
+                    table.find("tbody tr").each(function () {
+                        $(this).find("td").eq(colNumber - 1).css("display", "table-cell");
+                    });
+                    table.find("thead th").eq(colNumber - 1).css("display", "table-cell"); // نمایش دوباره هدر ستون
+                } else {
+                    alert("لطفاً شماره ستون صحیح وارد کنید.");
+                }
+            });
+
+            $("#hideRow").click(function () {
+                var rowNumber = $("#hideRowInput").val();
+                if (rowNumber > 0 && rowNumber <= table.find("tbody tr").length) {
+                    var row = table.find("tbody tr").eq(rowNumber - 1); // شماره ردیف را با ایندکس تطبیق می‌دهیم
+                    row.css("display", "none"); // مخفی کردن ردیف
+                } else {
+                    alert("لطفاً شماره ردیف صحیح وارد کنید.");
+                }
+            });
+
+            $("#hideCol").click(function () {
+                var colNumber = $("#hideColInput").val();
+                if (colNumber > 0 && colNumber <= table.find("thead th").length) {
+                    // مخفی کردن تمامی سلول‌های آن ستون
+                    table.find("tbody tr").each(function () {
+                        $(this).find("td").eq(colNumber - 1).css("display", "none");
+                    });
+                    table.find("thead th").eq(colNumber - 1).css("display", "none"); // مخفی کردن هدر ستون
+                } else {
+                    alert("لطفاً شماره ستون صحیح وارد کنید.");
+                }
+            });
+
+            // تابع برای تبدیل نام ستون به ایندکس
+            function columnToIndex(col) {
+                let index = 0;
+                for (let i = 0; i < col.length; i++) {
+                    index = index * 26 + (col.charCodeAt(i) - 65 + 1);
+                }
+                return index - 1; // تبدیل به ایندکس مناسب
+            }
+
+            // تابع برای تبدیل نام سلول به ایندکس
+            function cellNameToIndex(cellName) {
+                var col = cellName.match(/[A-Za-z]+/)[0]; // استخراج حروف برای ستون
+                var row = parseInt(cellName.match(/[0-9]+/)[0]) - 1; // استخراج شماره ردیف
+                var colIndex = columnToIndex(col); // تبدیل نام ستون به ایندکس
+
+                return row * $("#colsInput").val() + colIndex + 1;
+            }
+
+            // تابع برای ارزیابی فرمول‌ها
+            function evaluateFormula(formula) {
+                // تبدیل `if(x, y, z)` به `x ? y : z`
+                formula = formula.replace(/([A-Z]+)(\d+)/g, function (match, col, row) {
+                    var colIndex = columnToIndex(col);
+                    var cellValue = $("td[data-id='" + ((row - 1) * $("#colsInput").val() + colIndex + 1) + "']").text();
+                    return cellValue ? parseFloat(cellValue) : 0;
+                });
+
+                formula = formula.replace(/if\(([^,]+),\s*([^,]+),\s*([^,]+)\)/g, "$1 ? $2 : $3");
+
+                // تبدیل `sqrt(x)` به `Math.sqrt(x)`
+                formula = formula.replace(/sqrt\(([^)]+)\)/g, "Math.sqrt($1)");
+
+                // تبدیل `log(x)` به `Math.log(x)`
+                formula = formula.replace(/log\(([^)]+)\)/g, "Math.log($1)");
+
+                // اصلاح برای برخورد با پرانتزهای اضافی
+                formula = formula.replace(/(\d+)\s*\+\s*\(\d+\s*\+\s*\d+\)/g, "($1 + ($2))");
+
+                // اصلاح برای پردازش تو در تو if
+                formula = formula.replace(/if\(([^,]+),\s*([^,]+),\s*([^,]+)\)/g, "($1) ? ($2) : ($3)");
+                try {
+                    return eval(formula);
+                } catch (e) {
+                    return "خطا در فرمول!";
+                }
+            }
+
+            // تابع برای ایجاد نام ستون‌ها بر اساس تعداد ستون‌ها
+            function getColumnName(index) {
+                let columnName = '';
+                while (index >= 0) {
+                    columnName = String.fromCharCode(index % 26 + 65) + columnName;
+                    index = Math.floor(index / 26) - 1;
+                }
+                return columnName;
+            }
+
+            // برای نمایش دوباره ردیف‌ها
+            $("#showRow").click(function () {
+                var rowNumber = $("#showRowInput").val();
+                if (rowNumber > 0 && rowNumber <= table.find("tbody tr").length) {
+                    var row = table.find("tbody tr").eq(rowNumber - 1); // شماره ردیف را با ایندکس تطبیق می‌دهیم
+                    row.css("display", "table-row"); // نمایش دوباره ردیف
+                } else {
+                    alert("لطفاً شماره ردیف صحیح وارد کنید.");
+                }
+            });
+
+            // برای نمایش دوباره ستون‌ها
+            $("#showCol").click(function () {
+                var colNumber = $("#showColInput").val();
+                if (colNumber > 0 && colNumber <= table.find("thead th").length) {
+                    // نمایش دوباره تمامی سلول‌های آن ستون
+                    table.find("tbody tr").each(function () {
+                        $(this).find("td").eq(colNumber - 1).css("display", "table-cell");
+                    });
+                    table.find("thead th").eq(colNumber - 1).css("display", "table-cell"); // نمایش دوباره هدر ستون
+                } else {
+                    alert("لطفاً شماره ستون صحیح وارد کنید.");
+                }
+            });
+            let mergedData = [
+                {
+                    mergedCell: "I24",                // نام سلول مرج‌شده
+                    mergedCellId: 469,                // شناسه سلول مرج‌شده
+                    mergedIds: [469, 490, 470, 489],  // شناسه‌های سلول‌های مرج‌شده
+                    mergedWith: "I24, J25, J24, I25", // سلول‌هایی که با آن مرج شده‌اند
+                    rowspan: 2,                       // تعداد سطرهایی که سلول مرج‌شده در آن قرار دارد
+                    colspan: 2,                       // تعداد ستونی که سلول مرج‌شده در آن قرار دارد
+                    mergedText: "Some merged text"    // متنی که از سلول‌های مرج‌شده ترکیب می‌شود
+                },
+                {
+                    mergedCell: "E29",                // نام سلول مرج‌شده
+                    mergedCellId: 565,                // شناسه سلول مرج‌شده
+                    mergedIds: [565, 566, 567],       // شناسه‌های سلول‌های مرج‌شده
+                    mergedWith: "E29, F29, G29",      // سلول‌هایی که با آن مرج شده‌اند
+                    rowspan: 1,                       // تعداد سطرهایی که سلول مرج‌شده در آن قرار دارد
+                    colspan: 3,                       // تعداد ستونی که سلول مرج‌شده در آن قرار دارد
+                    mergedText: "Another merged text" // متنی که از سلول‌های مرج‌شده ترکیب می‌شود
+                }
+            ];
+
+            // فراخوانی تابع mergeCellsOnLoad برای مرج کردن سلول‌ها پس از بارگذاری جدول
+            mergeCellsOnLoad();
+            let table;
+            let selectedCells = [];
+            $(document).ready(function () {
+                // تعداد سطرها و ستون‌ها را از ورودی‌ها می‌گیریم
+                $("#rowsInput").val(30);
+                $("#colsInput").val(20);
+                // در صورتی که ورودی خالی باشد مقدار پیش‌فرض 20
+                createTable(30, 20);
+
+
+                // ایجاد جدول
+
+                // بعد از ساخت جدول، باید سلول‌های مرج‌شده را اعمال کنیم
+                mergeCellsOnLoad();
+            });
+
+            function mergeCellsOnLoad() {
+                // مرج کردن سلول‌ها بر اساس داده‌های ذخیره شده در mergedData
+                mergedData.forEach(data => {
+                    let firstCell = $(`td[data-id='${data.mergedCellId}']`); // پیدا کردن اولین سلول مرج‌شده
+
+                    // اعمال ویژگی‌های rowspan و colspan
+                    firstCell.attr("rowspan", data.rowspan).attr("colspan", data.colspan).addClass("merged").text(data.mergedText);
+
+                    // حذف سلول‌های دیگر در این مجموعه که باید مرج شوند
+                    data.mergedIds.forEach(cellId => {
+                        if (cellId !== data.mergedCellId) {
+                            $(`td[data-id='${cellId}']`).remove(); // حذف سلول‌های غیر از سلول اول
+                        }
+                    });
+                });
+            }
+
+
+            $("#createTable").click(function () {
+                var rows = $("#rowsInput").val();
+                var cols = $("#colsInput").val();
+                if (rows > 0 && cols > 0) {
+                    table = $("<table></table>");
+                    var thead = $("<thead><tr></tr></thead>");
+                    for (let i = 0; i < cols; i++) {
+                        thead.find("tr").append("<th>" + getColumnName(i) + "</th>");
+                    }
+                    table.append(thead);
+
+                    var tbody = $("<tbody></tbody>");
+                    for (let i = 0; i < rows; i++) {
+                        var row = $("<tr></tr>");
+                        for (let j = 0; j < cols; j++) {
+                            var cell = $("<td class='drop-target'></td>").attr("data-id", (i * cols) + j + 1);
+                            cell.attr("title", "ستون: " + getColumnName(j) + " ردیف: " + (i + 1));
+                            row.append(cell);
+                        }
+                        tbody.append(row);
+                    }
+                    table.append(tbody);
+                    $(".table-container").html(table);
+                } else {
+                    alert("لطفاً مقدار صحیح وارد کنید.");
+                }
+            });
+
+            function createTable(rows, cols) {
+
+
+                if (rows > 0 && cols > 0) {
+                    table = $("<table></table>");
+                    var thead = $("<thead><tr></tr></thead>");
+                    for (let i = 0; i < cols; i++) {
+                        thead.find("tr").append("<th>" + getColumnName(i) + "</th>");
+                    }
+                    table.append(thead);
+
+                    var tbody = $("<tbody></tbody>");
+                    for (let i = 0; i < rows; i++) {
+                        var row = $("<tr></tr>");
+                        for (let j = 0; j < cols; j++) {
+                            var cell = $("<td class='drop-target'></td>").attr("data-id", (i * cols) + j + 1);
+                            cell.attr("title", "ستون: " + getColumnName(j) + " ردیف: " + (i + 1));
+                            row.append(cell);
+                        }
+                        tbody.append(row);
+                    }
+                    table.append(tbody);
+                    $(".table-container").html(table);
+                } else {
+                    alert("لطفاً مقدار صحیح وارد کنید.");
+                }
+
+
+            }
+            $("#addText").click(function () {
+                var text = $("#textInput").val().trim();
+                if (text !== "") {
+                    var newText = $("<div class='draggable'></div>").text(text);
+                    newText.attr("draggable", "true");
+                    $("body").append(newText);
+                    $("#textInput").val("");
+                }
+            });
+
+            $(document).on("dragstart", ".draggable", function () { $(this).addClass("dragging"); });
+            $(document).on("dragend", ".draggable", function () { $(this).removeClass("dragging"); });
+
+            $(document).on("dragover", ".drop-target", function (e) { e.preventDefault(); $(this).addClass("highlight"); });
+            $(document).on("dragleave", ".drop-target", function () { $(this).removeClass("highlight"); });
+
+            $(document).on("drop", ".drop-target", function (e) {
+                e.preventDefault();
+                var draggedElement = $(".dragging");
+                $(this).append(draggedElement);
+                $(this).removeClass("highlight");
+            });
+
+            // Merge Cells
+
+            // هنگام کلیک بر روی یک سلول برای انتخاب آن
+
+            // هنگام کلیک بر روی یک سلول برای انتخاب آن
+            // شیء برای ذخیره اطلاعات مرج شده‌ها
+            let mergedCells = {};
+
+            $(document).on("click", "td", function () {
+                if ($(this).hasClass("selected")) {
+                    $(this).removeClass("selected");
+                    selectedCells = selectedCells.filter(cell => cell !== this);
+                } else {
+                    $(this).addClass("selected");
+                    selectedCells.push(this);
+                }
+            });
+
+            // Merge Cells
+            // Merge Cells
+            // شیء برای ذخیره اطلاعات مرج شده
+
+            // Merge Cells
+            $("#mergeCells").click(function () {
+                if (selectedCells.length < 2) {
+                    alert("حداقل دو سلول را انتخاب کنید!");
+                    return;
+                }
+
+                let tableCols = parseInt($("#colsInput").val()); // تعداد ستون‌ها از ورودی
+                let minRow = Infinity, maxRow = -Infinity, minCol = Infinity, maxCol = -Infinity;
+                let selectedCellIds = [];
+
+                // محاسبه حداقل و حداکثر ردیف‌ها و ستون‌ها
+                selectedCells.forEach(cell => {
+                    let cellId = parseInt($(cell).attr("data-id"));
+                    let row = Math.floor((cellId - 1) / tableCols); // محاسبه ردیف
+                    let col = (cellId - 1) % tableCols; // محاسبه ستون
+                    selectedCellIds.push(cellId); // ذخیره data-id
+
+                    minRow = Math.min(minRow, row);
+                    maxRow = Math.max(maxRow, row);
+                    minCol = Math.min(minCol, col);
+                    maxCol = Math.max(maxCol, col);
+                });
+                let firstCellId = (minRow * tableCols) + minCol + 1; // محاسبه data-id اولین سلول مرج‌شده
+
+                // انتخاب اولین سلول برای اعمال ویژگی‌های rowspan و colspan
+                let firstCell = $(`td[data-id='${(minRow * tableCols) + minCol + 1}']`);
+                let mergedText = selectedCells.map(cell => $(cell).text()).join(" "); // ترکیب متن تمام سلول‌ها
+
+                // تعیین rowspan و colspan برای سلول اول
+                let rowspan = maxRow - minRow + 1;
+                let colspan = maxCol - minCol + 1;
+
+                // ذخیره اطلاعات مرج شده
+                let mergedKey = `R${minRow + 1}C${minCol + 1}`;  // کلید برای شناسه مرج شده
+                let mergedCellNames = selectedCells.map(cell => {
+                    let cellId = parseInt($(cell).attr("data-id"));
+                    let row = Math.floor((cellId - 1) / tableCols); // محاسبه ردیف
+                    let col = (cellId - 1) % tableCols; // محاسبه ستون
+                    return getColumnName(col) + (row + 1);  // نام سلول
+                });
+
+                // ذخیره داده‌های مرج‌شده
+                mergedData.push({
+                    mergedCell: getColumnName(minCol) + (minRow + 1), // نام سلول جدید
+                    mergedWith: mergedCellNames.join(", "),
+                    mergedIds: selectedCellIds,
+                    mergedCellId: firstCellId, // data-id سلول اصلی
+                    // ذخیره data-id سلول‌ها
+
+                    // سلول‌هایی که مرج شده‌اند
+                });
+
+                // اعمال ویژگی‌های rowspan و colspan به اولین سلول
+                firstCell.attr("rowspan", rowspan).attr("colspan", colspan).addClass("merged").text(mergedText);
+
+                // حذف سلول‌های دیگر که در ادغام حضور دارند
+                selectedCells.forEach(cell => {
+                    let cellId = parseInt($(cell).attr("data-id"));
+                    let row = Math.floor((cellId - 1) / tableCols); // محاسبه ردیف
+                    let col = (cellId - 1) % tableCols; // محاسبه ستون
+
+                    // حذف سلول‌های غیر از اولین سلول ادغام‌شده
+                    if (!(row === minRow && col === minCol)) {
+                        $(cell).remove();
+                    }
+                });
+
+                // خالی کردن لیست انتخاب‌شده‌ها و برداشتن کلاس selected از تمامی سلول‌ها
+                selectedCells = [];
+                $("td").removeClass("selected");
+
+                // نمایش اطلاعات مرج شده در کنسول
+                console.log("Merged Data:", mergedData);
+
+                // حالا mergedData آماده ارسال به دیتابیس است
+                // ارسال به دیتابیس می‌تواند در اینجا انجام شود
+                // مثلا ارسال به یک API
+                sendMergedDataToDatabase(mergedData);
+            });
+
+            // تابع برای ارسال داده‌ها به دیتابیس
+            function sendMergedDataToDatabase(data) {
+                // مثال: استفاده از fetch برای ارسال داده‌ها به یک API
+
+            }
+
+            // محاسبه فرمول
+            let formulas = []; // ذخیره‌ی فرمول‌ها و سلول‌های مرتبط
+
+            $("#calculate").click(function () {
+                var formula = $("#formulaInput").val().trim();
+                var targetCell = $("#targetCellInput").val().trim();
+
+                if (formula !== "" && targetCell !== "") {
+                    var result = evaluateFormula(formula);
+                    $("td[data-id='" + cellNameToIndex(targetCell) + "']").text(result);
+                    $("#result").text("نتیجه: " + result);
+
+                    // ذخیره فرمول و سلول مقصد
+                    formulas.push({ cell: targetCell, formula: formula });
+
+                    console.log("فرمول‌های ذخیره‌شده:", formulas); // نمایش در کنسول
+                } else {
+                    alert("لطفاً فرمول و سلول مقصد را وارد کنید.");
+                }
+            });
+
+            // تابع برای نمایش تمام فرمول‌های ذخیره‌شده
+            function showFormulas() {
+                console.log("تمام فرمول‌های ذخیره‌شده:", formulas);
+                alert(JSON.stringify(formulas, null, 2)); // نمایش فرمول‌ها در قالب JSON
+            }
+
+        </script>
+    </body>
+</html>

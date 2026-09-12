@@ -1,0 +1,495 @@
+﻿@using SaabWebProject.Models.DomainModels;
+@model SaabWebProject.Models.DomainModels.tbNamshnaght
+
+@{
+    SaabEntities db = new SaabEntities();
+
+
+    Layout = null;
+//Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{if (Model != null)
+    {
+
+    }
+}
+
+<style>
+
+
+    table th, table td {
+        vertical-align: middle;
+    }
+
+    th, td {
+        padding: 3px 6px !important;
+    }
+
+    .WTH {
+        width: 10%;
+        padding: 0 !important;
+    }
+
+    select.form-select, input.form-control {
+        margin-bottom: 0 !important;
+    }
+
+    input.form-control {
+        border-width: 1px !important;
+    }
+
+    .btn {
+        margin-bottom: 10px !important;
+    }
+
+    .TitelL {
+        border-radius: 10px;
+        background-color: #146792 !important;
+    }
+
+    .TitelC {
+        border-radius: 0 10px 10px 0;
+        background-color: #146792 !important;
+    }
+
+    .Titel3 {
+        border-radius: 10px 0 0 10px;
+        background-color: #146792 !important;
+    }
+
+    .Titel1 {
+        border-radius: 10px;
+        background-color: #1469a18f !important;
+    }
+
+    .Titel2 {
+        border-radius: 0 10px 10px 0;
+        background-color: #1469a18f !important;
+    }
+
+    .Titel4 {
+        border-radius: 10px;
+        background-color: #1469a18f !important;
+    }
+
+    .Titel5 {
+        border-radius: 10px;
+        background-color: #00eaff7d !important;
+    }
+
+    tbody, td, tfoot, th, thead, tr {
+        border-color: var(--bs-tab-content-bg) !important;
+        border-style: solid !important;
+        border-width: 1px !important;
+        text-align: center
+    }
+
+     /*   tbody tr:nth-child(even) td:not(.Titel1,.Titel2,.Titel6) {
+            background-color: #4a8fbc63 !important;
+        }
+
+        tbody tr:nth-child(even) td:last-child {
+            border-radius: 10px 0 0 10px;
+            background-color: #4a8fbc63 !important;
+        }
+
+    .table1 td {
+        border-radius: 10px !important;
+        background-color: #1469a18f !important;
+    }*/
+
+    input {
+        text-align: center;
+    }
+</style>
+<style>
+    .modal-dialog {
+        max-width: 80% !important;
+    }
+
+
+    .modal2 {
+        display: none;
+        position: absolute; /* Change this from fixed */
+        z-index: 1000; /* Adjust z-index as needed */
+        left: 0;
+        top: 0;
+        width: 65%;
+        height: auto;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content2 {
+        background-color: black;
+        position: relative; /* Add relative positioning */
+        /*  margin: 15% auto;*/
+        padding: 20px;
+        border: 4px solid aqua;
+        border-radius: 30px;
+        width: 100%;
+        max-height: 100%;
+        overflow-y: auto;
+    }
+
+    .modal3 {
+        display: none;
+        position: absolute; /* Change this from fixed */
+        z-index: 1000; /* Adjust z-index as needed */
+        left: 0;
+        top: 0;
+        width: 65%;
+        height: auto;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content3 {
+        background-color: black;
+        position: relative; /* Add relative positioning */
+        margin: 65% auto;
+        padding: 20px;
+        border: 4px solid aqua;
+        border-radius: 30px;
+        width: 100%;
+        max-height: 100%;
+        overflow-y: auto;
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+    .fade-in {
+        animation: fadeIn 1s ease-in-out; /* Adjust duration and timing function as needed */
+    }
+</style>
+
+<div class="card p-2">
+    <div class="card-body">
+        <div class="row">
+            <h5>تعریف شاخص های کلیدی >>@Model.Name</h5>
+        </div>
+        <hr />
+
+        <div class="row" style="margin-top:20px">
+            <div class="col-xl-6">
+                <table class="table table-bordered" id="table_First41" style=" height: 100%;">
+                    <thead>
+                        <tr style="text-align:center;margin:auto">
+                            <th class="TitelL" colspan="6" rowspan="1" style=" padding: 15px 6px !important;">
+                                @Html.DisplayName("متوسط حقوق و مزایای دریافتی کارکنان را وارد نمایید")
+
+                            </th>
+                        </tr>
+                        <tr>
+                            <th class="WTH" rowspan="1"></th>
+                            <th class="WTH" rowspan="1"></th>
+                            <th class="WTH" rowspan="1"></th>
+                            <th class="WTH" rowspan="1"></th>
+                            <th class="WTH" rowspan="1"></th>
+                            <th class="WTH" rowspan="1"></th>
+                        </tr>
+
+                    </thead>
+                    <tbody style="text-align:center">
+                        @if (Model != null)
+                        {
+                            var ty = db.tbnergh.Where(p => p.FK_name == Model.ID).ToList();
+
+                            <tr>
+                                <td colspan="3" rowspan="1" class="">خالص حقوق و مزایا *</td>
+                                <td colspan="2" rowspan="1"><input class="form-control" id="ghalse" value="@ty.Where(p=>p.ghalse!=0).Select(s=>s.ghalse).FirstOrDefault()" /></td>
+                                <td colspan="1" rowspan="1">ریال</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" rowspan="1" class="">اضافه کار *</td>
+                                <td colspan="2" rowspan="1"><input class="form-control" id="ezafeh" value="@ty.Where(p=>p.ezafeh!=0).Select(s=>s.ezafeh).FirstOrDefault()" /></td>
+                                <td colspan="1" rowspan="1">ریال</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" rowspan="1" class="">ایاب و ذهاب</td>
+                                <td colspan="2" rowspan="1"><input class="form-control" id="ayab" value="@ty.Where(p=>p.ayab!=0).Select(s=>s.ayab).FirstOrDefault()" /></td>
+                                <td colspan="1" rowspan="1">ریال</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" rowspan="1" class="">اجاره خودرو</td>
+                                <td colspan="2" rowspan="1"><input class="form-control" id="egareh" value="@ty.Where(p=>p.egareh!=0).Select(s=>s.egareh).FirstOrDefault()" /></td>
+                                <td colspan="1" rowspan="1">ریال</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" rowspan="1" class="">ابزار کار و لوازم ایمنی</td>
+                                <td colspan="2" rowspan="1"><input class="form-control" id="abzar" value="@ty.Where(p=>p.abzar!=0).Select(s=>s.abzar).FirstOrDefault()" /></td>
+                                <td colspan="1" rowspan="1">ریال</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" rowspan="1" class="">کسورات قانونی</td>
+                                <td colspan="2" rowspan="1"><input class="form-control" id="kosorat" value="@ty.Where(p=>p.kosorat!=0).Select(s=>s.kosorat).FirstOrDefault()" /></td>
+                                <td colspan="1" rowspan="1">ریال</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" rowspan="1" class="">سود و بالاسری </td>
+                                <td colspan="2" rowspan="1"><input class="form-control" id="sode" value="@ty.Where(p=>p.sode!=0).Select(s=>s.sode).FirstOrDefault()" /></td>
+                                <td colspan="1" rowspan="1">ریال</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" rowspan="1" class="">جمع *</td>
+                                <td colspan="2" rowspan="1"><input class="form-control sumAll" value="0" /></td>
+                                <td colspan="1" rowspan="1">ریال</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="3" rowspan="1" class="">خالص حقوق و مزایا *</td>
+                                <td colspan="2" rowspan="1"><input class="form-control" id="ghalse" value="0" /></td>
+                                <td colspan="1" rowspan="1">ریال</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" rowspan="1" class="">اضافه کار *</td>
+                                <td colspan="2" rowspan="1"><input class="form-control" id="ezafeh" value="0" /></td>
+                                <td colspan="1" rowspan="1">ریال</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" rowspan="1" class="">ایاب و ذهاب</td>
+                                <td colspan="2" rowspan="1"><input class="form-control" id="ayab" value="0" /></td>
+                                <td colspan="1" rowspan="1">ریال</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" rowspan="1" class="">اجاره خودرو</td>
+                                <td colspan="2" rowspan="1"><input class="form-control" id="egareh" value="0"  /></td>
+                                <td colspan="1" rowspan="1">ریال</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" rowspan="1" class="">ابزار کار و لوازم ایمنی</td>
+                                <td colspan="2" rowspan="1"><input class="form-control" id="abzar" value="0"  /></td>
+                                <td colspan="1" rowspan="1">ریال</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" rowspan="1" class="">کسورات قانونی</td>
+                                <td colspan="2" rowspan="1"><input class="form-control" id="kosorat" value="0"  /></td>
+                                <td colspan="1" rowspan="1">ریال</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" rowspan="1" class="">سود و بالاسری </td>
+                                <td colspan="2" rowspan="1"><input class="form-control" id="sode"value="0"  /></td>
+                                <td colspan="1" rowspan="1">ریال</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" rowspan="1" class="">جمع *</td>
+                                <td colspan="2" rowspan="1"><input class="form-control sumAll" value="0" /></td>
+                                <td colspan="1" rowspan="1">ریال</td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+
+            </div>
+            <div class="col-xl-6" style="position:relative">
+                <table class="table table-bordered" id="table_First42">
+                    <thead>
+                        <tr style="text-align:center;margin:auto">
+                            <th class="TitelL" colspan="6" rowspan="1" style=" padding: 15px 6px !important;">
+                                @Html.DisplayName("متوسط حقوق و مزایای دریافتی کارکنان را وارد نمایید")
+
+                            </th>
+                        </tr>
+                        <tr>
+                            <th class="WTH"></th>
+                            <th class="WTH"></th>
+                            <th class="WTH"></th>
+                            <th class="WTH"></th>
+                            <th class="WTH"></th>
+                            <th class="WTH"></th>
+                        </tr>
+
+                    </thead>
+                    <tbody style="text-align:center">
+                        @if (Model != null)
+                        {
+                            var ty = db.tbnergh.Where(p => p.FK_name == Model.ID).ToList();
+                            <tr>
+                                <td colspan="2" rowspan="1"></td>
+                                <td colspan="2" rowspan="1"><input class="form-control" id="saatezafeh" value="@ty.Where(p=>p.saatezafeh!=0).Select(s=>s.saatezafeh).FirstOrDefault()" /></td>
+                                <td colspan="2" rowspan="1"></td>
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="2" rowspan="1"></td>
+                                <td colspan="2" rowspan="1"><input class="form-control" id="saatezafeh" value="0"  /></td>
+                                <td colspan="2" rowspan="1"></td>
+                            </tr>
+                        }
+
+
+                    </tbody>
+                </table>
+                <div></div>
+                <div class="row" style="position: absolute; bottom: 0; width: 100%;">
+                    <div class="col-xl-9"></div>
+                    <div class="col-xl-2">
+                        <button id="btnSave04" type="button" class="btn form-control buttonGeneral">
+                            <i class="bi bi-card-checklist fa-fw  me-1 VecGeneral"></i>
+                            <span class="bGeneral-text">نرخ پیش فرض</span>
+                        </button>
+                    </div>
+                    <div class="col-xl-1">
+                        <button id="btnSaveEs1" type="button" class="btn form-control buttonsabt">
+                            <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                            <span class="bSabt-text">sdثبت</span>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+
+
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+
+<script>
+
+    function formatNumberWithCommas(number) {
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    // Function to remove commas from a formatted number
+    function removeCommas(number) {
+        return number.replace(/,/g, '');
+    }
+
+    // Apply the formatting to all relevant input fields
+    $('input.form-control').on('input', function () {
+        var value = $(this).val();
+        value = removeCommas(value); // Remove existing commas
+        if ($.isNumeric(value)) {
+            $(this).val(formatNumberWithCommas(value)); // Format with commas
+        }
+    });
+    $('input.form-control').each(function () {
+        var value = $(this).val();
+        if ($.isNumeric(value)) {
+            $(this).val(formatNumberWithCommas(value)); // اعمال فرمت
+        }
+    });
+
+    $(document).ready(function () {
+        // انتخاب همه فیلدهای ورودی به جز فیلد جمع کل
+        var inputFields = $('#table_First41 input').not('.sumAll');
+
+        // تابعی برای محاسبه جمع
+        function calculateSum() {
+            var sum = 0;
+            inputFields.each(function () {
+                var value = parseFloat($(this).val().replace(/,/g, '')); // حذف کاماها و تبدیل به عدد
+                if (!isNaN(value)) {
+                    sum += value;
+                }
+            });
+            $('#table_First41 .sumAll').val(sum.toLocaleString('en')); // افزودن کاماها و نمایش جمع
+        }
+
+        // اجرای تابع هنگام تغییر هر فیلد ورودی
+        inputFields.on('input', calculateSum);
+
+        // اجرای اولیه تابع برای محاسبه مقدار اولیه جمع
+        calculateSum();
+    });
+
+</script>
+
+
+<script>
+
+</script>
+
+<script>
+    $("#btnSaveEs1").click(function () {
+        console.log("dsajd;s");
+
+        // جمع‌آوری داده‌ها
+        var dataList = [];
+        var dataList2 = []; // ایجاد یک آرایه برای ذخیره تمام داده‌ها
+        // ایجاد یک آرایه برای ذخیره تمام داده‌ها
+        dataList.push({
+            saatezafeh: removeCommas($("#saatezafeh").val()),
+            sode: removeCommas($("#sode").val()),
+            kosorat: removeCommas($("#kosorat").val()),
+            abzar: removeCommas($("#abzar").val()),
+            ayab: removeCommas($("#ayab").val()),
+            ezafeh: removeCommas($("#ezafeh").val()),
+            ghalse: removeCommas($("#ghalse").val()),
+            egareh: removeCommas($("#egareh").val()),
+            FK_name:@Model.ID            // Corrected to .val()
+        });
+        $("input.form-control3f343").each(function () {
+            var inputId = $(this).attr("id");
+            var value = $(this).val();
+
+            if (value) { // اگر ورودی پر شده است
+                var parts = inputId.split('_'); // تقسیم ID به اجزا
+                var type = parts[0];   // مثلا 'fardi'
+                var phase = parts[1];  // مثلا 'takfaz'
+                var area = parts[2];   // مثلا 'shahri'
+                var id = parts[3];     // ID رکورد در دیتابیس
+                dataList2.push({
+                    id: id,
+                    type: type,
+                    phase: phase,
+                    area: area,
+                    value: value
+                });
+                // ارسال داده‌ها به سرور
+            }
+        });
+        if (dataList.length > 0) {
+            updateDatabase(dataList);
+            console.log(dataList);
+        }
+    });
+    function updateDatabase(dataList) {
+        $.ajax({
+            url: '/Reporter/Dashboard/UpdateRecord6', // آدرس اکشن کنترلر شما
+            method: 'POST',
+            data: JSON.stringify(dataList), // ارسال آرایه به سرور
+
+            contentType: 'application/json',
+            success: function (response) {
+                console.log("Record updated successfully.");
+                if (response == "true") {
+                    alert("با موفقیت ثبت شد");
+                    location.reload();
+
+                }
+            },
+            error: function (error) {
+                console.error("Error updating record:", error);
+            }
+        });
+    }
+
+</script>

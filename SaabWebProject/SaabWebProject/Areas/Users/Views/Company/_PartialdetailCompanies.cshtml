@@ -1,0 +1,322 @@
+﻿@model SaabWebProject.Models.DomainModels.tbCompanies
+@using SaabWebProject.Models.DomainModels;
+
+@{
+    ViewBag.TitleLargModal = "اضافه کردن مشتری";
+    SaabEntities db = new SaabEntities();
+}
+<style>
+
+    .modal-lg, .modal-xl {
+        margin-top: 8px;
+        margin-bottom: 8px;
+        max-width: 100%;
+    }
+</style>
+<link href="~/Areas/Users/Styles/ShareStyle.css" rel="stylesheet" />
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+
+@using (Ajax.BeginForm("Company_Update", "Company", new AjaxOptions { HttpMethod = "Post", OnBegin = "Loading", OnSuccess = "SavedCompany", OnFailure = "FailedAjax" }, new { id = "CreateCompanyForm" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.ID)
+    @Html.HiddenFor(model => model.tbUsers.usr_ID)
+    @Html.HiddenFor(model => model.FK_ManagerID)
+    @Html.HiddenFor(model => model.tbUsers.usr_Personal_ID)
+    <div class="card p-4">
+        <div id="info_customer">
+            <form>
+                <div style="text-align:center;">
+                    <h6>اطلاعات مسئول</h6>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label class="form-label">نام و نام خانوادگی</label>
+                            </div>
+                            <input class="form-control" type="text" id="CompanyName" name="CompanyName" value="@Model.tbUsers.FullName"disabled />
+
+                        </div>
+                    </div>
+                    @*<div class="col-md-3">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label class="form-label">نام خانوادگی</label>
+                                </div>
+                                <div class="col-md-12">
+                                    <input class="form-control" id="Family" name="tbUsers.usr_Family" type="text" value="@Model.tbUsers.usr_Family" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label class="form-label">شماره همراه</label>
+                                </div>
+                                <div class="col-md-12">
+                                    <input class="form-control" id="PhoneNumber" name="tbUsers.usr_PhoneNumber" type="number" value="@Model.tbUsers.usr_PhoneNumber" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label class="form-label">پست الکترونیک</label>
+                                </div>
+                                <div class="col-md-12">
+                                    <input class="form-control" id="usr_Email" name="tbUsers.usr_Email" type="email" value="@Model.tbUsers.usr_Email" />
+                                </div>
+                            </div>
+                        </div>*@
+                </div>
+                <hr />
+                <div style="text-align:center;">
+                    <h6>اطلاعات شرکت</h6>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label class="form-label">
+                                    کد اختصاصی شرکت
+                                    <span class="red-star">*</span>
+                                </label>
+
+                            </div>
+                            <div class="col-md-12">
+                                <input class="form-control" type="number" id="ExclusiveCode" name="ExclusiveCode" value="@Model.ExclusiveCode" />
+                                <div class="invalid-feedback">این فیلد مورد نیاز است !</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label class="form-label">
+                                    نام شرکت
+                                    <span class="red-star">*</span>
+                                </label>
+
+                            </div>
+                            <div class="col-md-12">
+                                <input class="form-control" type="text" id="CompanyName" name="CompanyName" value="@Model.CompanyName" />
+                                <div class="invalid-feedback">این فیلد مورد نیاز است !</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label class="form-label">شماره ثبت</label>
+                            </div>
+                            <div class="col-md-12">
+                                <input class="form-control" id="RegistrationNumber" name="RegistrationNumber" type="number" value="@Model.RegistrationNumber" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label class="form-label">محل ثبت</label>
+                            </div>
+                            <div class="col-md-12">
+                                @Html.Action("_Cities_Select", "Users", new { area = "Users" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label class="form-label">شناسه ملی</label>
+                            </div>
+                            <div class="col-md-12">
+                                <input class="form-control" id="Company_National_ID" name="Company_National_ID" type="number" value="@Model.Company_National_ID" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label class="form-label">کد اقتصادی</label>
+                            </div>
+                            <div class="col-md-12">
+                                <input class="form-control" id="Enconomic_Code" name="Enconomic_Code" type="number" value="@Model.Enconomic_Code" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label class="form-label">تلفن 1</label>
+                            </div>
+                            <div class="col-md-12">
+                                <input class="form-control" id="Telephone_1" name="Telephone_1" type="number" value="@Model.Telephone_1" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label class="form-label">تلفن 2</label>
+                            </div>
+                            <div class="col-md-12">
+                                <input class="form-control" id="Telephone_2" name="Telephone_2" type="number" value="@Model.Telephone_2" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label class="form-label">فکس</label>
+                            </div>
+                            <div class="col-md-12">
+                                <input class="form-control" id="Fax_Number" name="Fax_Number" type="number" value="@Model.Fax_Number" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label class="form-label">آدرس سایت</label>
+                            </div>
+                            <div class="col-md-12">
+                                <input class="form-control" id="Url_site" name="Url_site" type="text" value="@Model.Url_site" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label class="form-label">پست الکترونیک</label>
+                            </div>
+                            <div class="col-md-12">
+                                <input class="form-control" type="text" name="Company_Email" id="Company_Email" value="@Model.Company_Email" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label class="form-label">آدرس</label>
+                            </div>
+                            <div class="col-md-12">
+                                <textarea class="form-control" rows="4" name="Company_Address" id="Company_Address">@Model.Company_Address</textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+
+                <div class="row">
+                    <div class="col-md-11"></div>
+                    @*<div class="col-md-1" style="text-align:left;margin-top:20px;">
+                        <button id="btnSaveCompany" type="button" class="btn form-control buttonGeneral">
+                            <i class="fa fa-edit fa-fw me-1 VecGeneral"></i>
+                            <span class="bGeneral-text"> ویرایش</span>
+
+                        </button>
+                    </div>*@
+                </div>
+            </form>
+        </div>
+        <div class="card-arrow">
+            <div class="card-arrow-top-left"></div>
+            <div class="card-arrow-top-right"></div>
+            <div class="card-arrow-bottom-left"></div>
+            <div class="card-arrow-bottom-right"></div>
+        </div>
+    </div>
+
+}
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.js" type="text/javascript"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/sweetalert2.js" type="text/javascript"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script>
+    $("#editname").picker({ search: true });
+    $("#editname").html( @Model.tbUsers.FullName );
+
+</script>
+@*<script type="application/javascript">*@
+<script>
+    var aaa = @Model.PlaceOfRegister
+
+    $(document).ready(function () {
+
+        $("#cities").picker('set', '@Model.PlaceOfRegister')
+    });
+
+
+    $("#cities").attr("name", "PlaceOfRegister");
+
+    $("#btnSaveCompany").click(function () {
+        var ExclusiveCode = $("#ExclusiveCode");
+        var CompanyName = $("#CompanyName");
+        if (ExclusiveCode.val().length == 0) {
+            ExclusiveCode.addClass("is-invalid");
+            return false;
+        }
+        if (CompanyName.val().length == 0) {
+            CompanyName.addClass("is-invalid");
+            return false;
+        }
+        $("#CreateCompanyForm").submit();
+    });
+
+    function SavedCompany(res) {
+document.getElementById("loading-message").style.display = "none";
+        const Toast = Swal.mixin({
+            toast: true,
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+
+        //Toast.fire({
+        //    icon: 'success',
+        //    background: '#35434A',
+        //    color: 'white',
+        //    title: "اطلاعات با موفقیت ذخیره شد"
+        //});
+        //document.location.reload();
+        Swal.fire({
+            icon: 'success',
+            title: 'اطلاعات با موفقیت ذخیره شد',
+        }).then(function () {
+            document.location.reload();
+        });
+    }
+
+    function Loading(){
+        document.getElementById("loading-message").style.display = "block";
+    }
+    function FailedAjax(res) {
+document.getElementById("loading-message").style.display = "none";
+        const Toast = Swal.mixin({
+            toast: true,
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+
+        Toast.fire({
+            icon: 'success',
+            background: '#35434A',
+            color: 'white',
+            title: res
+        });
+    }
+</script>
+

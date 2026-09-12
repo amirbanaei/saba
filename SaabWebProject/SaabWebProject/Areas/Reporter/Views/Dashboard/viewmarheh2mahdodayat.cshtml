@@ -1,0 +1,410 @@
+﻿@using SaabWebProject.Models.DomainModels;
+@model SaabWebProject.Models.ViewModels.Contracts.Function.Marhale2ViewModel
+
+
+@{
+    Layout = null;
+}
+<style>
+    .tableH_Lock {
+        max-height: 364px;
+        /*height: 260px;*/
+    }
+
+    thead {
+        position: sticky;
+        top: 0;
+        text-align: center;
+        z-index: 2;
+    }
+
+    .inputFilter {
+        margin-bottom: 0px !important;
+        min-width: 100px;
+    }
+
+    thead th {
+        vertical-align: middle;
+    }
+
+    .form-control490 {
+        margin-bottom: 0px !important;
+    }
+
+    .headRi6, .headRi7, .headRi8 {
+        position: sticky;
+        text-align: center;
+    }
+
+    .headRi6 {
+        right: 0;
+        backdrop-filter: blur(8px);
+    }
+
+    .headRi7 {
+        right: 158px;
+        backdrop-filter: blur(8px);
+    }
+
+    .headRi8 {
+        right: 525px;
+        backdrop-filter: blur(8px);
+    }
+</style>
+
+
+<div class="card">
+
+    <div class="table-content p-4">
+        <div class="tab-pane fade show active" id="allTab">
+            <div class="table-responsive tableH_Lock">
+                <table class="table table-hover text-nowrap">
+                    <thead class="sticky-header">
+                        <tr>
+                            <th class="headRi6">
+                                نام و نام خانوادگی
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter04-filter" class="inputFilter form-control" placeholder="" style=" min-width: 150px;">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            <th class="headRi7">
+                                پیمان
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter06-filter" class="inputFilter form-control" placeholder="" style=" min-width: 278px;">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            <th class="headRi8">
+                                شهرستان
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter07-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+
+                            @* به جای db.dbtarifmahdodayt1.ToList() از Model.Moalefeh استفاده می‌کنیم *@
+                            @foreach (var item in Model.Moalefeh)
+                            {
+                                <th class="TitelL TitelL323234" colspan="1" rowspan="1">
+                                    @item.Title
+                                </th>
+                            }
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @{
+                            int II = 0;
+                        }
+
+                        @* به جای db.tbUsers.ToList() از Model.Users *@
+                        @foreach (var it in Model.Users)
+                        {
+                            II++;
+
+                            var name = it.Peyman ?? "وصل نیست ";
+                            var city = it.City ?? "وصل نیست ";
+
+                            <tr class="task-list-row1 dateS_@II"
+                                data-filter04="@it.FullName"
+                                data-filter06="@name"
+                                data-filter07="@city">
+
+                                <td class="headRi6">@it.FullName</td>
+                                <td class="headRi7">@name</td>
+                                <td class="headRi8">@city</td>
+
+                                @* اینجا قبلاً برای هر سلول Query به db زده می‌شد *@
+                                @foreach (var item in Model.Moalefeh)
+                                {
+                                    var findvalu = Model.Values
+                                        .FirstOrDefault(p => p.FK_usr == it.UserId && p.FK_moalfe == item.Id);
+
+                                    if (findvalu != null)
+                                    {
+                                        <td class="TitelL" colspan="1" rowspan="1">
+                                            <input class="form-control form-control490 form-control3"
+                                                   id="@it.UserId _@item.Id"
+                                                   value="@findvalu.Value"
+                                                   title="@findvalu.Value" />
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td class="TitelL" colspan="1" rowspan="1">
+                                            <input class="form-control form-control490 form-control3"
+                                                   id="@it.UserId _@item.Id" />
+                                        </td>
+                                    }
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+
+<div class="row mt-10px">
+    <div class="col-xl-9">
+    </div>
+
+    <div class="col-xl-1">
+        <a href="#" class=" btn form-control buttonGeneral" style="margin-bottom:10px;" id="dwn333" onclick="DownloadE33xcel52() ">
+            <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+            <span class="bGeneral-text">دانلود فایل نمونه</span>
+        </a>
+    </div>
+    <div class="col-xl-1">
+        <a href="#" onclick="ShowDialogFile45()" class=" btn btn-outline-info form-control buttonGeneral uploadSummery512" style="margin-bottom:5px;">
+            <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+            <span class="bGeneral-text">بارگذاری اطلاعات</span>
+        </a>
+        <input id="summery_file498" style="display:none" type="file" class="form-control" value="" />
+    </div>
+
+    <div class="col-xl-1">
+        <button id="btnSaveEs" type="button" class="btn form-control buttonsabt">
+            <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+            <span class="bSabt-text">ثبت</span>
+        </button>
+    </div>
+</div>
+<div id="loading-message" style="display:none;">
+    <div class="loading-overlay">
+        <div class="spinner"></div>
+        <div class="loading-text">در حال ثبت اطلاعات...</div>
+    </div>
+</div>
+
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Scripts/popper.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+
+
+
+
+
+<script>
+$(document).ready(function () {
+
+    // ----------- دکمه دانلود -----------
+    function DownloadExcel52() {
+        $.ajax({
+            beforeSend: function () {
+                $("#loading-message").show();
+            },
+            type: 'GET',
+            dataType: 'html',
+            success: function () {
+                $("#loading-message").hide();
+                window.location = '@Url.Action("ExportMoalefeExcelAdamcode", "DefFacilitiesEquipment", new { area = "Contracts" })';
+            },
+            error: function () {
+                alert("خطا در دانلود");
+                $("#loading-message").hide();
+            }
+        });
+    }
+    $("#dwn333").click(function (e) {
+        e.preventDefault();
+        DownloadExcel117();
+    });
+    function DownloadExcel117() {
+                window.location = '@Url.Action("ExportMoalefeExcelAdamcode", "DefFacilitiesEquipment", new { area = "Contracts" })';
+    }
+    // ----------- آپلود فایل -----------
+    var obj2000 = new FormData();
+
+    $(".uploadSummery512").click(function () {
+        $("#summery_file498").click();
+    });
+
+    $("#summery_file498").change(function (e) {
+        $.each(e.target.files, function (index, file) {
+            obj2000.append("MyExcelStream", file);
+        });
+
+        sendAjax51('@Url.Action("ImportExcel_AdamCode", "DefFacilitiesEquipment", new { area = "Contracts" })', obj2000);
+    });
+
+    function sendAjax51(url2, fd2) {
+        $.ajax({
+            url: url2,
+            type: 'POST',
+            data: fd2,
+            processData: false,
+            contentType: false,
+            success: function (resp1) {
+
+                $("#loading-message").hide();
+
+                if (resp1 == "با موفقیت انجام شد") {
+                    alert("با موفقیت ثبت شد");
+                    setTimeout(function () { location.reload(); }, 2000);
+                } else {
+                    Toast.fire({
+                        icon: 'warning',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "با خطا مواجه شد"
+                    });
+                }
+            },
+            error: function () {
+                $("#loading-message").hide();
+                Toast.fire({
+                    icon: 'warning',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "با خطا مواجه شد"
+                });
+            }
+        });
+    }
+
+    // ----------- فیلتر -----------
+    var filters1 = {
+        filter04: null,
+        filter05: null,
+        filter06: null,
+        filter07: null,
+    };
+
+    function updateFilters4354() {
+        $('.task-list-row1').hide().filter(function () {
+            var self = $(this), result = true;
+
+            Object.keys(filters1).forEach(function (filter) {
+                if (filters1[filter] && filters1[filter] != 'None' && filters1[filter] != 'همه') {
+                    if (!self.data(filter) || self.data(filter).indexOf(filters1[filter]) === -1) {
+                        result = false;
+                    }
+                }
+            });
+
+            return result;
+        }).show();
+    }
+
+    function changeFilter345667(filterName) {
+        filters1[filterName] = this.value;
+        updateFilters4354();
+    }
+
+    $('#filter04-filter').on('input', function () { changeFilter345667.call(this, 'filter04'); });
+    $('#filter05-filter').on('input', function () { changeFilter345667.call(this, 'filter05'); });
+    $('#filter06-filter').on('input', function () { changeFilter345667.call(this, 'filter06'); });
+    $('#filter07-filter').on('input', function () { changeFilter345667.call(this, 'filter07'); });
+
+    // ----------- فرمت اعداد -----------
+    function formatNumberWithCommas(number) {
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    function removeCommas(number) {
+        return number.replace(/,/g, '');
+    }
+
+    $("input.form-control3").on('input', function () {
+        var value = removeCommas($(this).val());
+        if ($.isNumeric(value)) {
+            $(this).val(formatNumberWithCommas(value));
+        }
+    });
+
+    $("input.form-control3").each(function () {
+        var value = removeCommas($(this).val());
+        if ($.isNumeric(value)) {
+            $(this).val(formatNumberWithCommas(value));
+        }
+    });
+
+    // ----------- ذخیره اطلاعات -----------
+    $("#btnSaveEs").click(function () {
+
+        var dataList = [];
+
+        $("input.form-control490").each(function () {
+            var inputId = $(this).attr("id");
+            var value = removeCommas($(this).val());
+
+            var parts = inputId.split('_');
+            var type = parts[0];
+            var phase = parts[1];
+
+            dataList.push({
+                FK_usr: type,
+                FK_moalfe: phase,
+                value: value ? value : 0
+            });
+        });
+
+        if (dataList.length > 0) {
+            updateDatabase22222(dataList);
+        }
+    });
+
+    function updateDatabase22222(dataList) {
+
+        // نمایش لودینگ شما
+        document.getElementById("loading-circle").style.display = "block";
+        $("#btnSaveEs").prop("disabled", true);
+
+        $.ajax({
+            url: '/Reporter/Dashboard/UpdateRecordmahdodat2',
+            method: 'POST',
+            data: JSON.stringify(dataList),
+            contentType: 'application/json',
+
+            success: function (response) {
+
+                document.getElementById("loading-circle").style.display = "none";
+                $("#btnSaveEs").prop("disabled", false);
+
+                if (response == "true") {
+                    alert("با موفقیت ثبت شد");
+                    location.reload();
+                } else {
+                    alert("خطا در ثبت اطلاعات");
+                }
+            },
+
+            error: function (error) {
+
+                document.getElementById("loading-circle").style.display = "none";
+                $("#btnSaveEs").prop("disabled", false);
+
+                console.error("Error updating record:", error);
+                alert("خطای سیستمی رخ داده است");
+            }
+        });
+    }
+
+
+
+});
+</script>
+
+
+
+
+
+
+
+

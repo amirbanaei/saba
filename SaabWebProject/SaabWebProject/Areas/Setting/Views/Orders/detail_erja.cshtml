@@ -1,0 +1,238 @@
+﻿@model SaabWebProject.Models.ViewModels.Contracts.Function.FunctionModel
+@using System.Globalization
+
+@using SaabWebProject.Models.DomainModels;
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+
+@{
+    SaabEntities db = new SaabEntities();
+    Layout = null;
+}
+<div class="card">
+    <div class="table-content p-4">
+        <div class="tab-pane fade show active" id="allTab">
+            <div class="row">
+                <div class="col-xl-3">
+                    <label class="form-label">پاداش</label>
+                    <input id="taghsitBed2ehi" class="form-control" name="taghsitBed3223ehi" type="text" value="676,787"/>
+                </div>      
+                <div class="col-xl-3">
+                    <label class="form-label">جریمه</label>
+                    <input id="taghsitBedehi23" class="form-control" name="taghsitBede32hi" type="text" value="675,654" />
+                </div>
+            </div>
+
+            <div class="table-responsive tableH_LockSS">
+                <table class="table table-hover text-nowrap">
+                    <thead class="sticky-header">
+                        <tr>
+                            <th class="users headRi0">
+                                نام مرجله
+
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter20-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            <th class="users headRi1">
+                                تعداد کارها
+
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter30-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            <th class="users headRi1">
+                                جمع مبالغ
+
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter31-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            @{
+                                long sum0 = 0;
+                                long sum1 = 0;
+                                long sum2 = 0;
+                                long count0 = 0;
+                                long count1 = 0;
+                                long count2 = 0;
+                            }
+                            @foreach (var it in db.dbergharelicratgrouprel11.Where(s => s.FK_usr == Model.usrID && s.vaziat == 0))
+                            {
+                                var fild = db.dbergharelrelationseefild_10.Where(s => s.ID != 0).FirstOrDefault();
+                                var fild1 = fild.fild1;
+                                var fild2 = fild.file2;
+                                var fild3 = fild.fild3;
+                                var fild4 = fild.fild4;
+                                var fild5 = fild.fild5;
+                                var fild6 = fild.fild4;
+
+                                var findvalue = db.dbergharelimsertfk1_7.Where(s => s.FK_db2 == fild1 && s.valuunic == it.unic).OrderByDescending(t => t.ID).FirstOrDefault();
+                                var findvalue1 = db.dbergharelimsertfk1_7.Where(s => s.FK_db2 == fild2 && s.valuunic == it.unic).OrderByDescending(t => t.ID).FirstOrDefault();
+                                var findvalue2 = db.dbergharelimsertfk1_7.Where(s => s.FK_db2 == fild3 && s.valuunic == it.unic).OrderByDescending(t => t.ID).FirstOrDefault();
+                                var findvalue4 = db.dbergharelimsertfk1_7.Where(s => s.FK_db2 == fild4 && s.valuunic == it.unic).OrderByDescending(t => t.ID).FirstOrDefault();
+                                //var findvalue5 = db.dbergharelimsertfk1_7.Where(s => s.FK_db2 == fild1).FirstOrDefault();
+
+                                var findvalue5 = db.dbergharelimsertfk1_7.Where(s => s.FK_db2 == fild5 && s.valuunic == it.unic).OrderByDescending(t => t.ID).FirstOrDefault();
+                                count0 += 1;
+
+                                long val1 = 0;
+                                if (findvalue1 != null && !string.IsNullOrEmpty(findvalue1.valueFK_db2))
+                                {
+                                    string raw = findvalue1.valueFK_db2.Replace(",", "").Trim();
+                                    long.TryParse(raw, out val1);
+                                }
+
+                                sum0 += val1;
+
+                            }
+                            @foreach (var it in db.dbergharelicratgrouprel11.Where(s => s.FK_usr == Model.usrID && s.vaziat == 1))
+                            {
+                                var fild = db.dbergharelrelationseefild_10.Where(s => s.ID != 0).FirstOrDefault();
+                                var fild1 = fild.fild1;
+                                var fild2 = fild.file2;
+                                var fild3 = fild.fild3;
+                                var fild4 = fild.fild4;
+                                var fild5 = fild.fild5;
+                                var fild6 = fild.fild4;
+
+                                var findvalue = db.dbergharelimsertfk1_7.Where(s => s.FK_db2 == fild1 && s.valuunic == it.unic).OrderByDescending(t => t.ID).FirstOrDefault();
+                                var findvalue1 = db.dbergharelimsertfk1_7.Where(s => s.FK_db2 == fild2 && s.valuunic == it.unic).OrderByDescending(t => t.ID).FirstOrDefault();
+                                var findvalue2 = db.dbergharelimsertfk1_7.Where(s => s.FK_db2 == fild3 && s.valuunic == it.unic).OrderByDescending(t => t.ID).FirstOrDefault();
+                                var findvalue4 = db.dbergharelimsertfk1_7.Where(s => s.FK_db2 == fild4 && s.valuunic == it.unic).OrderByDescending(t => t.ID).FirstOrDefault();
+                                //var findvalue5 = db.dbergharelimsertfk1_7.Where(s => s.FK_db2 == fild1).FirstOrDefault();
+
+                                var findvalue5 = db.dbergharelimsertfk1_7.Where(s => s.FK_db2 == fild5 && s.valuunic == it.unic).OrderByDescending(t => t.ID).FirstOrDefault();
+                                count1 += 1;
+
+                                long val1 = 0;
+                                if (findvalue1 != null && !string.IsNullOrEmpty(findvalue1.valueFK_db2))
+                                {
+                                    string raw = findvalue1.valueFK_db2.Replace(",", "").Trim();
+                                    long.TryParse(raw, out val1);
+                                }
+
+                                sum1 += val1;
+
+                            }
+                            @foreach (var it in db.dbergharelicratgrouprel11.Where(s => s.FK_usr == Model.usrID && s.vaziat == 2))
+                            {
+                                var fild = db.dbergharelrelationseefild_10.Where(s => s.ID != 0).FirstOrDefault();
+                                var fild1 = fild.fild1;
+                                var fild2 = fild.file2;
+                                var fild3 = fild.fild3;
+                                var fild4 = fild.fild4;
+                                var fild5 = fild.fild5;
+                                var fild6 = fild.fild4;
+
+                                var findvalue = db.dbergharelimsertfk1_7.Where(s => s.FK_db2 == fild1 && s.valuunic == it.unic).OrderByDescending(t => t.ID).FirstOrDefault();
+                                var findvalue1 = db.dbergharelimsertfk1_7.Where(s => s.FK_db2 == fild2 && s.valuunic == it.unic).OrderByDescending(t => t.ID).FirstOrDefault();
+                                var findvalue2 = db.dbergharelimsertfk1_7.Where(s => s.FK_db2 == fild3 && s.valuunic == it.unic).OrderByDescending(t => t.ID).FirstOrDefault();
+                                var findvalue4 = db.dbergharelimsertfk1_7.Where(s => s.FK_db2 == fild4 && s.valuunic == it.unic).OrderByDescending(t => t.ID).FirstOrDefault();
+                                //var findvalue5 = db.dbergharelimsertfk1_7.Where(s => s.FK_db2 == fild1).FirstOrDefault();
+
+                                var findvalue5 = db.dbergharelimsertfk1_7.Where(s => s.FK_db2 == fild5 && s.valuunic == it.unic).OrderByDescending(t => t.ID).FirstOrDefault();
+                                count2 += 1;
+
+                                long val1 = 0;
+                                if (findvalue1 != null && !string.IsNullOrEmpty(findvalue1.valueFK_db2))
+                                {
+                                    string raw = findvalue1.valueFK_db2.Replace(",", "").Trim();
+                                    long.TryParse(raw, out val1);
+                                }
+
+                                sum2 += val1;
+                            }
+
+
+
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int II = 0;
+                            var marahls = db.tbmarahlsabtbastedit1.Where(p => p.naem != null).ToList(); // ستون‌های ثابت
+
+                            var list = db.madarek_linkcheack_2.ToList();
+                            var cit = db.tbpeymancities.ToList();
+                        }
+                        @*@foreach (var contract in db.tbUsers.Where(s => s.usr_Personal_ID != null).ToList())
+                            {
+                                string semat = "";
+                                //var cities = cit.Where(p => p.FK_PYMN == contract.pec_ID).ToList();
+                                var find = db.tbUser_link_BusinessSide.Where(s => s.FK_u_ID == contract.usr_ID).FirstOrDefault();
+                                if (find != null)
+                                {
+                                    //var find2 = db.tbBusinessSide.Where(s => s.up_Id == find.FK_u_ID).FirstOrDefault();
+                                    semat = find.tbBusinessSide.up_name;
+
+                                }
+                                else
+                                {
+                                    semat = "مامور خدمات مشترکین";
+
+
+                                }
+                                <tr class="task-list-rowEM2"
+                                    data-filter20="@contract.FullName"
+                                    data-filter30="@contract.usr_Personal_ID" data-filter31="@semat">
+
+                                    <td class="headRi0">@contract.FullName</td>
+                                    <td class="headRi1">@contract.usr_Personal_ID</td>
+                                    <td class="headRi2">@semat</td>
+
+
+                                </tr>
+                                II++;
+
+                            }*@
+                        <tr class="task-list-rowEM2">
+                            <td>
+                                در انتظار
+                            </td>
+                            <td>
+                                @count0
+                            </td>
+                            <td style="direction:ltr; ">
+                                @sum0.ToString("N0")
+                            </td>
+                        </tr>
+                        <tr class="task-list-rowEM2">
+                            <td>
+                                در انتظار ارسال
+                            </td>
+                            <td>
+                                @count1
+                            </td>
+                            <td style="direction:ltr;">
+                                @sum1.ToString("N0")
+                            </td>
+                        </tr>
+                        <tr class="task-list-rowEM2">
+                            <td>
+                                 ارسال
+                            </td>
+                            <td>
+                                @count2
+                            </td>
+                            <td style="direction:ltr;">
+                                @sum2.ToString("N0")
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>

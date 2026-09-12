@@ -1,0 +1,323 @@
+﻿@model List<SaabWebProject.Models.DomainModels.tbEquipments>
+
+@{
+    SaabEntities db = new SaabEntities();
+
+}
+@using SaabWebProject.Models.DomainModels;
+
+
+
+<div class="card" style="width: 100%">
+    <div class="table-content p-4">
+        <div class="tab-pane fade show active" id="specifTable">
+            <div class="table-responsive">
+                <table class="table table-hover text-nowrap">
+                    @if (Model.Count != 0)
+                    {
+
+                        <thead>
+                            <tr style="text-align:center">
+                                <th>
+                                    @Html.DisplayName("فعالیت")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("#")
+                                </th>
+
+                                @foreach (var item in Model[0].tbEquipmentSpecificationData)
+                                {
+                                    <th>
+                                        @Html.DisplayName(item.tbEquipmentSpecifications.sp_SpecTitle)
+                                    </th>
+                                }
+                                <th>
+                                    @Html.DisplayName("کد تجهیز")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("مدل ساخت")
+                                </th>
+
+
+                                <th>
+                                    @Html.DisplayName("کل مبلغ")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("واحد")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("تعداد واحد")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("مقدار واحد")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("تحویل گیرندگان")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("نوع مالیکت")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("نوع تضمین")
+                                </th>
+
+                                <th>
+                                    @Html.DisplayName("مبلغ تضمین")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("تاریخ اعتبار تضمین")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("سهم سوخت")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("سهم اجاره")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("سهم یونیفرم")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("مالک")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("نوع وسیله")
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+
+                            @{int counter = 1;
+                                foreach (var item in Model)
+                                {
+                                                        <tr>
+                                                            <td>
+                                                                <div class="ms-sm-4 mt-sm-0 mt-2 dropdown-toggle">
+                                                                    <a href="#" data-bs-toggle="dropdown" class="text-white text-opacity-75 text-decoration-none">
+                                                                        <i class="fa fa-edit"></i>
+                                                                    </a>
+                                                                    <div class="dropdown-menu">
+                                                                        <a class="dropdown-item Delete" id="Delete_@item.ID">حذف</a>
+                                                                        <a data-bs-toggle="modal" data-bs-target="#modalLg1" class="dropdown-item edit2" id="Edit_@item.ID">ویرایش</a>
+
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td>@counter</td>
+                                                            @if (item.tbEquipmentSpecificationData.Count != 0)
+                                                            {
+                                                                foreach (var item2 in item.tbEquipmentSpecificationData)
+                                                                {
+                                                                    <td>@item2.SpcData</td>
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                foreach (var item3 in Model[0].tbEquipmentSpecificationData)
+                                                                {
+                                                                    <td></td>
+                                                                }
+                                                            }
+
+
+                                                            @{
+                                                                string typetazmin = "";
+                                                                switch (item.TypeTazmin)
+                                                                {
+                                                                    case 1:
+                                                                        typetazmin = "چک";
+                                                                        break;
+                                                                    case 2:
+                                                                        typetazmin = "سفته";
+                                                                        break;
+                                                                    case 3:
+                                                                        typetazmin = "ضمانت نامه بانکی";
+                                                                        break;
+                                                                    case 4:
+                                                                        typetazmin = "وجه نقد";
+                                                                        break;
+                                                                    case 5:
+                                                                        typetazmin = "نامه ضمانت";
+                                                                        break;
+                                                                    default:
+                                                                        break;
+                                                                }
+
+
+
+
+
+                                                                string timeunit = "";
+                                                                switch (item.Unit)
+                                                                {
+                                                                    case 1:
+                                                                        timeunit = "ساعتی";
+                                                                        break;
+                                                                    case 2:
+                                                                        timeunit = "روزانه";
+                                                                        break;
+                                                                    case 3:
+                                                                        timeunit = "ماهیانه";
+                                                                        break;
+                                                                    case 4:
+                                                                        timeunit = "سالانه";
+                                                                        break;
+                                                                    case 5:
+                                                                        timeunit = "نامه ضمانت";
+                                                                        break;
+                                                                    default:
+                                                                        break;
+                                                                }
+                                                            }
+                                                            <td>@item.model</td>
+                                                            <td>@item.codtaghiz</td>
+
+                                                            <td class="number">@item.TotalPrice</td>
+                                                            <td>@timeunit</td>
+                                                            <td>@item.UnitCount</td>
+                                                            <td class="number">@item.EachValue</td>
+                                                            <td>@item.Users</td>
+                                                            @if (item.personal == true)
+                                                            {
+                                                                <td>پرسنلی</td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td>کارگزاری</td>
+                                                            }
+                                                            <td>@typetazmin</td>
+                                                            <td class="number">@item.TazminPrice</td>
+                                                            <td>@item.ExpiredDate</td>
+                                                            <td class="number">@item.Soght</td>
+                                                            <td class="number">@item.egareh</td>
+                                                            <td class="number">@item.uniform</td>
+
+                                                            @{
+                                                                var yy = db.tbUsers.Where(p => p.usr_ID == item.Fk_usr).FirstOrDefault();
+
+
+                                                            }
+                                                            @if (yy != null)
+                                                            {
+                                                                <td>@yy.FullName</td>
+
+                                                            }
+                                                            else
+                                                            {
+                                                                <td>_</td>
+
+                                                            }
+
+
+                                                            @if (item.type == 1)
+                                                            {
+                                                                <td>تیرسان</td>
+
+                                                            }
+                                                            else if (item.type == 3)
+                                                            {
+                                                                <td>بدون یونیفرم</td>
+
+                                                            }
+                                                            else if (item.type == 2)
+                                                            {
+
+
+                                                                <td value="3">یونیفرم ساده</td>
+
+                                                            }
+                                                            else
+                                                            {
+                                                                <td>_</td>
+
+                                                            }
+                                                            @*<td>@item.tbUsers.FullName</td>*@
+
+
+                                                        </tr>
+                                }
+                                counter++;
+                            }
+
+
+                        </tbody>
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+
+<script>
+          $(".Delete").click(function () {
+        var idd = $(this).attr("id").split("_")[1];
+          $("#loading-message").css("display", "block");
+          $.ajax({
+              url: '@Url.Action("DeleteEquipment", "DefFacilitiesEquipment", new { area = "Contracts" })',
+              data: { ID: idd },
+              type: "Post",
+              dataType: "html",
+              success: function (resp) {
+                  $("#loading-message").css("display", "none");
+                  if (resp == "True") {
+                      Toast.fire({
+                          icon: 'success',
+                          background: '#35434A',
+                          color: 'white',
+                          title: "با موفقیت حذف شد"
+                      }).then(() => {
+                          location.reload();
+                      });
+                  } else {
+                      Toast.fire({
+                          icon: 'error',
+                          background: '#35434A',
+                          color: 'white',
+                          title: "قادر به حذف  نیستید"
+                      }).then(() => {
+                      });
+                  }
+
+              },
+              error: function (resp2) {
+                  $("#loading-message").css("display", "none");
+                  Toast.fire({
+                      icon: 'error',
+                      background: '#35434A',
+                      color: 'white',
+                      title: "حذف  با خطا مواجه شده است "
+                  }).then(() => {
+                      location.reload();
+                  });
+              }
+          });
+      });
+
+
+</script>
+<script>
+
+    $(function () {
+        $.each($(".number"), function (index, item) {
+
+            var amount = $(this).text().replace(/[\D\s\._\-]+/g, "");
+
+            amount = amount ? parseInt(amount, 10) : 0;
+            $(this).text(function () {
+                return (amount === 0) ? "" : amount.toLocaleString("en-US");
+            });
+        });
+
+    });
+    $(".edit2").click(function () {
+     var idd = $(this).attr("id").split("_")[1];
+     console.log(idd);
+         $("#big_modal_body1").load('@Url.Content("/DefFacilitiesEquipment/editeqview")?id='+idd);
+ });
+</script>

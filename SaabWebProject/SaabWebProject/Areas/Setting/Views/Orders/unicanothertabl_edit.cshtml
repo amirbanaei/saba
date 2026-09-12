@@ -1,0 +1,96 @@
+﻿
+@{
+    Layout = null;
+}
+@model  SaabWebProject.Models.DomainModels.dberganametanble2_2
+
+@using SaabWebProject.Models.DomainModels;
+
+@{
+    SaabEntities db = new SaabEntities();
+}
+@{
+    var letters = Enumerable.Range('A', 26).Select(x => ((char)x).ToString()).ToList();
+}
+
+<div class="form-container">
+    <h2>تعریف یونیک جدول</h2>
+
+    <form id="unicForm">
+        <div class="row">
+            <div class="col-md-3">
+                <label>نام جدول</label>
+                <input type="text" id="namegozareshtable1" class="form-control" value="@Model.nametable" />
+            </div>
+            <div class="col-md-3">
+                <label>انتخاب فیلد یونیک </label>
+                <select class="form-select fk_dbergha2" id="fk_dbergha21">
+                    <option value="@Model.dbergha2.ID" selected>@Model.dbergha2.name</option>
+
+                    @foreach (var item in db.dbergha2)
+                    {
+                        <option value="@item.ID">@item.name</option>
+                    }
+                </select>
+            </div>
+            @*<div class="col-md-2">
+                    <label>Start</label>
+                    <input type="number" id="start" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label>Unic</label>
+                    <input type="text" id="unic" class="form-control" />
+                </div>*@
+        </div>
+
+        <hr />
+        <div id="subContainer"></div>
+
+        @*<button type="button" id="addSubBtn" class="btn btn-success mt-2">+</button>*@
+        <button id="btnSave22" class="btn btn-primary mt-2">ثبت</button>
+    </form>
+</div>
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#fk_dbergha21").picker({
+            search: true
+        });
+    });
+    $(document).ready(function () {
+    $("#btnSave22").click(function () {
+        var name33 = $("#namegozareshtable1").val().trim();
+        var id = @Model.ID;
+        var fkdb2 = $("#fk_dbergha21").val();
+
+        if (name33 == "") {
+            alert("لطفا مقدار شرط را وارد کنید");
+            return;
+        }
+
+        $.ajax({
+            url: "/Setting/Orders/Saveunicanothertabledit2",
+            type: "POST",
+            data: { id: id, name2: name33, fkdb2: fkdb2 },
+            success: function (res) {
+                if (res.status === true) {
+                    alert("با موفقیت ثبت شد");
+                    $("#name").val("");
+                } else {
+                    alert("خطا در ثبت");
+                }
+            },
+            error: function () {
+                alert("خطای ارتباط با سرور");
+            }
+        });
+    });
+    });
+</script>

@@ -1,0 +1,573 @@
+﻿
+@using SaabWebProject.Models.DomainModels;
+
+@{
+    SaabEntities db = new SaabEntities();
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section Styles{
+    <link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+    <link href="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.style.css" rel="stylesheet" />
+}
+<script src="~/Assets/js/jalalidatepicker.min.js"></script>
+<link href="~/Assets/css/jalalidatepicker.min.css" rel="stylesheet" />
+<script src="~/Assets/js/jalaali.min.js"></script>
+<link href="~/MyStyles/jalalidatepicker.css" rel="stylesheet" />
+
+
+<ul class="nav nav-tabs nav-tabs-v2 ps-4 pe-4" id="pills-tab" style="margin-bottom:30px">
+    <li class="nav-item me-3">
+        <a class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" href="#page-1">
+            <button class=" nav-btn">اول</button>
+        </a>
+    </li>
+    <li class="nav-item me-3">
+        <a class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" href="#page-2">
+            <button class=" nav-btn">دوم</button>
+        </a>
+    </li>
+</ul>
+
+<div class="tab-content" id="pills-tabContent">
+    <div class="tab-pane fade show active " id="page-1">
+        <div class="row">
+            <div class="col-xl-4">
+                <label class="form-label">کاربران زیرمجموعه</label>
+                <span id="users-1"></span>
+            </div>
+            <div class="col-xl-2">
+                <label class="form-label">از تاریخ</label>
+
+                @*------------------------------------------------[1402/09/20]-|KH|-*@
+                <input data-jdp jdp-btn-close data-jdp-miladi-input="datepickerFromEn_usr" id="datepickerFrom_Eq" class="form-control">
+                <input id="datepickerFromEn_usr" type="hidden" />
+                @*-------------------------------------------------------------|KH|-*@
+            </div>
+            <div class="col-xl-2">
+                <label class="form-label">تا تاریخ</label>
+
+                @*------------------------------------------------[1402/09/20]-|KH|-*@
+                <input data-jdp jdp-btn-close data-jdp-miladi-input="datepickerToEn_usr" id="datepickerTo_Eq" class="form-control">
+                <input id="datepickerToEn_usr" type="hidden" />
+                @*-------------------------------------------------------------|KH|-*@
+            </div>
+            <div class="col-xl-3"></div>
+            <div class="col-xl-1">
+                <button id="submit-tab1" type="button" class="btn form-control buttonGeneral">
+                    <i class="fa fa-calculator fa-fw me-1 VecGeneral"></i>
+                    <span class="bGeneral-text">ثبت</span>
+                </button>
+            </div>
+
+        </div>
+
+
+    </div>
+    <div class="tab-pane fade " id="page-2">
+
+        <div class="row">
+            <div class="col-xl-4">
+                <label class="form-label">کاربران زیرمجموعه</label>
+                <span id="users-2"></span>
+            </div>
+            <div class="col-xl-2">
+                <label class="form-label">ماه</label>
+
+                <select id="month1" name="month_Eq4" class="form-select">
+                    <option value="0">انتخاب کنید  </option>
+
+                    <option value="1">فروردین </option>
+                    <option value="2">اردیبهشت</option>
+                    <option value="3">خرداد</option>
+                    <option value="4">تیر</option>
+                    <option value="5">مرداد</option>
+                    <option value="6">شهریور</option>
+                    <option value="7">مهر</option>
+                    <option value="8">آبان</option>
+                    <option value="9">آذر</option>
+                    <option value="10">دی</option>
+                    <option value="11">بهمن</option>
+                    <option value="12">اسفند</option>
+                </select>
+            </div>
+            <div class="col-xl-2">
+                <label class="form-label">سال</label>
+
+                <select id="Year1" name="year_Eq" class="form-select">
+                    <option value="0">انتخاب کنید</option>
+
+                    <option value="1400">1400</option>
+                    <option value="1401">1401</option>
+                    <option value="1402">1402</option>
+                    <option value="1403">1403</option>
+                    <option value="1404">1404</option>
+
+                </select>
+
+            </div>
+            <div class="col-xl-3"></div>
+            <div class="col-xl-1">
+                @*<button id="" type="button" class="btn form-control buttonGeneral">*@
+                <button id="submit25" type="button" class="btn form-control buttonGeneral">
+                    <i class="fa fa-calculator fa-fw me-1 VecGeneral"></i>
+                    <span class="bGeneral-text">ثبت</span>
+                </button>
+            </div>
+            @*<button id="submit" style="height:100px;"> </button>*@
+        </div>
+    </div>
+
+</div>
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/sweetalert2.js"></script>
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Scripts/popper.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/sweetalert2.js"></script>
+
+<script type="text/javascript">
+    jalaliDatepicker.startWatch({
+        time: true,
+        days: ["شنبه", "1شنبه", "2شنبه", "3شنبه", "4شنبه", "5شنبه", "جمعه"],
+        persianDigits: true,
+        autoClose: true,
+        autocomplete: true,
+        showCloseBtn: true,
+        showEmptyBtn: false,
+        showCloseBtn: true,
+        zIndex: 100000,
+
+    });
+    var inputs = document.querySelectorAll("[data-jdp-miladi-input]");
+    for (var i = 0; i < inputs.length; i++) {
+        inputs[i].addEventListener("jdp:change", function (e) {
+            var miladiInput = document.getElementById(this.getAttribute("data-jdp-miladi-input"));
+            var date = this.value.replace(' ', '').slice(0, 10).split('/');
+            date = jalaali.toGregorian(parseInt(date[0]), parseInt(date[1]), parseInt(date[2]),)
+            // If it was empty
+            if (!this.value) {
+                date = "";
+            }
+            // If it was only history
+            else if (this.value.replace(' ', '').length < 11) {
+                date = date.gy + '-' + date.gm + '-' + date.gd
+            }
+            // If it was the date and time
+            else {
+                date = date.gy + '-' + date.gm + '-' + date.gd + ' ' + this.value.replace(' ', '').slice(10, 30)
+            }
+            miladiInput.value = date
+        });
+    }
+</script>
+<script>
+        $("#users-1").load('@Url.Content("/../Users/Users/_PartialViewUsersListWithSearchAndMultiple")', function () {
+            $("#select_users1").attr("id", "users1");
+            $('#users1').attr("multiple", "multiple");
+            $('#users1').picker({ search: true });
+            $('#users1').on('sp-change', function () { });
+
+        });
+
+
+
+
+</script>
+@*<script>
+        $("#submit-tab1").click(function () {
+
+     var PeymanArr = [];
+         $.each($("#users1").val().toString().split(","), function (index, item) {
+         if (item !== "") {
+             if (item != 'Select') {
+                 PeymanArr.push(item);
+                 console.log(item);
+             }
+         }
+               });
+               console.log(PeymanArr);
+             var az = $("#datepickerFromEn_usr").val();
+             var ta = $("#datepickerToEn_usr").val();
+
+
+
+
+         $.ajax({
+             url: "@Url.Action("vi2", "UserContract", new { area = "Contracts" })",
+             type: "Post",
+             dataType: "html",
+             data: { Fkpym: PeymanArr, month: month, year: year },
+             success: function (res) {
+                 document.getElementById("loading-message").style.display = "none";
+                 if (res = "True") {
+                     alert("با موفقیت ثبت شد ");
+                     location.reload();
+                 }
+
+             },
+             error: function (res) {
+                 console.log(res);
+
+                 document.getElementById("loading-message").style.display = "none";
+                 Toast.fire({
+                     icon: 'error',
+                     background: '#35434A',
+                     color: 'white',
+                     title: "عملیات  با خطا مواجه شد"
+                 });
+                 return false;
+             }
+         });
+
+     });
+        //document.getElementById("submit-tab1").addEventListener("click", function () {
+            const users = $('#users1').val(); // چون select-picker استفاده کردی
+            const fromDate = document.getElementById("datepickerFromEn_usr").value;
+            const toDate = document.getElementById("datepickerToEn_usr").value;
+
+            if (!users || users.length === 0 || !fromDate || !toDate) {
+                alert("همه فیلدها باید پر شوند.");
+                return;
+            }
+
+            fetch("/YourController/SubmitTab1", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    users: users, // اینجا می‌تونه آرایه باشه
+                    fromDate: fromDate,
+                    toDate: toDate
+                })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    alert("اطلاعات تب اول با موفقیت ارسال شد.");
+                    console.log(data);
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert("خطا در ارسال اطلاعات تب اول.");
+                });
+
+    </script>*@
+
+
+
+
+
+
+<script>
+    $(document).ready(function () {
+
+        // هندل کلیک برای دکمه ثبت در تب اول
+        $(document).on("click", "#submit-tab1", function () {
+
+            console.log("submit-tab1 clicked");
+            document.getElementById("loading-circle").style.display = "block";
+
+            var PeymanArr = [];
+            $.each($("#users1").val().toString().split(","), function (index, item) {
+                if (item !== "" && item !== "Select") {
+
+
+                    PeymanArr.push(item);
+                    console.log(item);
+                }
+            });
+
+
+            var az = $("#datepickerFromEn_usr").val();
+            var ta = $("#datepickerToEn_usr").val();
+
+            // بررسی کن که رشته‌ای که گرفته می‌تونی به Date تبدیل بشه
+            //var azFormatted = new Date(az).toISOString().split("T")[0]; // yyyy-MM-dd
+            //var taFormatted = new Date(ta).toISOString().split("T")[0];
+            console.log(az);
+            console.log(ta);
+
+            //var year = new Date(az).getFullYear() || 0;
+            //var month = new Date(az).getMonth() + 1 || 0;
+
+            // اگر تاریخ یا کاربران پر نشده‌اند
+            //if (!PeymanArr.length || !az || !ta) {
+            //    alert("لطفاً تمام فیلدها را کامل کنید.");
+            //    return;
+            //}
+
+            //console.log("کاربران:", PeymanArr);
+            //console.log("از تاریخ:", az);
+            //console.log("تا تاریخ:", ta);
+            //console.log("ماه:", month);
+            //console.log("سال:", year);
+
+
+            $.ajax({
+
+                url: "@Url.Action("UserContract_Details1022", "Orders", new { area = "Setting" })",
+                type: "POST",
+                dataType: "html",
+                data: {
+                    Fkpym: PeymanArr,
+                    ta: ta,
+                    az: az
+                },
+                success: function (res) {
+                    document.getElementById("loading-circle").style.display = "none";
+
+                    //document.getElementById("loading-message").style.display = "none";
+                    if (res === "True") {
+
+                        alert("با موفقیت ثبت شد");
+                        location.reload();
+                    } else {
+                        alert("خطا در ثبت اطلاعات: " + res);
+                    }
+                },
+                error: function (res) {
+                    console.log("Ajax error:", res);
+                    document.getElementById("loading-message").style.display = "none";
+
+                    // اگر از SweetAlert استفاده می‌کنی، اینو تعریف کرده باش:
+                    /*
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                    */
+
+                    // اگر نه، اینو به Swal.fire تغییر بده
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'عملیات با خطا مواجه شد'
+                    });
+                }
+            });
+
+        });
+
+    });
+</script>
+
+
+
+<script>
+        $("#users-2").load('@Url.Content("/../Users/Users/_PartialViewUsersListWithSearchAndMultiple")', function () {
+        $("#select_users1").attr("id", "users2");
+        $('#users2').attr("multiple", "multiple");
+        $('#users2').picker({ search: true });
+        $('#users2').on('sp-change', function () { });
+
+    });
+
+</script>
+@*<script>
+
+
+        $("#submit25").click(function () {
+            console.log("submit clicked!");
+           var PeymanArr = [];
+           console.log(PeymanArr);
+           console.log("1234");
+
+        $.each($("#users2").val().toString().split(","), function (index, item) {
+            if (item !== "" && item !== "Select") {
+                PeymanArr.push(item);
+                console.log(item);
+            }
+        });
+        console.log(PeymanArr);
+
+        var year = $("#Year1").val();
+        var month = $("#month1").val();
+           console.log(month);
+           console.log(year);
+
+        document.getElementById("loading-message").style.display = "block"; // نمایش پیام لودینگ
+
+        $.ajax({
+            url: "@Url.Action("vi1", "UserContract", new { area = "Contracts" })",
+            type: "POST",
+            dataType: "html",
+            data: { Fkpym: PeymanArr, month: month, year: year },
+            success: function (res) {
+                document.getElementById("loading-message").style.display = "none";
+                if (res === "True") {
+                    alert("با موفقیت ثبت شد");
+                    location.reload();
+                } else {
+                    alert("ثبت با خطا مواجه شد: " + res);
+                }
+            },
+            error: function (res) {
+                console.log(res);
+                document.getElementById("loading-message").style.display = "none";
+                Toast.fire({
+                    icon: 'error',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "عملیات با خطا مواجه شد"
+                });
+            }
+        });
+    });
+
+
+        //document.getElementById("submit-tab2").addEventListener("click", function () {
+        //    const users = $('#users2').val();
+        //    const month = document.getElementById("month_Eq4").value;
+        //    const year = document.getElementById("Year").value;
+
+        //    if (!users || users.length === 0 || month === "0" || year === "0") {
+        //        alert("همه فیلدها را کامل کنید.");
+        //        return;
+        //    }
+
+        //    fetch("/YourController/SubmitTab2", {
+        //        method: "POST",
+        //        headers: {
+        //            "Content-Type": "application/json"
+        //        },
+        //        body: JSON.stringify({
+        //            users: users,
+        //            month: month,
+        //            year: year
+        //        })
+        //    })
+        //        .then(res => res.json())
+        //        .then(data => {
+        //            alert("اطلاعات تب دوم با موفقیت ارسال شد.");
+        //            console.log(data);
+        //        })
+        //        .catch(err => {
+        //            console.error(err);
+        //            alert("خطا در ارسال اطلاعات تب دوم.");
+        //        });
+        //});
+    </script>*@
+
+<script>
+    $(document).ready(function () {
+
+        // کلیک روی دکمه submit (تب دوم)
+        $(document).on("click", "#submit25", function () {
+            console.log("submit clicked!");
+            document.getElementById("loading-circle").style.display = "block";
+
+            var PeymanArr = [];
+            $.each($("#users2").val().toString().split(","), function (index, item) {
+                if (item !== "" && item !== "Select") {
+                    PeymanArr.push(item);
+                    console.log(item);
+                }
+            });
+
+            var year = $("#Year1").val();
+            var month = $("#month1").val();
+            var count = 0; // اگر مقدار خاصی نداری، پیش‌فرض صفر
+
+            console.log("سال:", year);
+            console.log("ماه:", month);
+            console.log("کاربران:", PeymanArr);
+
+            $.ajax({
+                url: "@Url.Action("vi1", "UserContract", new { area = "Contracts" })",
+                type: "POST",
+                dataType: "html",
+                data: { Fkpym: PeymanArr, month: month, year: year, count: count },
+                success: function (res) {
+
+                    console.log("نتیجه:", res);
+                    if (res === "True") {
+                        document.getElementById("loading-circle").style.display = "none";
+
+                        alert("با موفقیت ثبت شد");
+                        location.reload();
+                    } else {
+                        alert("خطا در ثبت: " + res);
+                    }
+                },
+                error: function (res) {
+                    console.log("خطای Ajax:", res);
+                    alert("خطای سرور در ثبت اطلاعات.");
+                }
+            });
+        });
+
+    });
+</script>
+
+
+@*<script>
+        $("#submit").click(function () {
+            console.log("submit clicked!");
+
+            const PeymanArr = [];
+            const selectedUsers = $("#users2").val();
+            const year = $("#Year1").val();
+            const month = $("#month1").val();
+
+            if (!selectedUsers || selectedUsers.length === 0) {
+                alert("لطفاً یک پیمانکار انتخاب کنید.");
+                return;
+            }
+
+            $.each(selectedUsers.toString().split(","), function (index, item) {
+                if (item !== "" && item !== "Select") {
+                    PeymanArr.push(item);
+                }
+            });
+
+            if (!month || !year) {
+                alert("لطفاً سال و ماه را انتخاب کنید.");
+                return;
+            }
+
+
+            sendAjax(PeymanArr, month, year);
+        });
+
+        function sendAjax(Fkpym, month, year) {
+            document.getElementById("loading-message").style.display = "block";
+
+            $.ajax({
+                url: "@Url.Action("vi1", "UserContract", new { area = "Contracts" })",
+                type: "POST",
+                dataType: "html",
+                data: {
+                    Fkpym: Fkpym,
+                    month: month,
+                    year: year
+                },
+                success: function (res) {
+                    document.getElementById("loading-message").style.display = "none";
+                    if (res === "True") {
+                        alert("با موفقیت ثبت شد");
+                        location.reload();
+                    } else {
+                        alert("ثبت با خطا مواجه شد: " + res);
+                    }
+                },
+                error: function (res) {
+                    console.error(res);
+                    document.getElementById("loading-message").style.display = "none";
+                    Toast.fire({
+                        icon: 'error',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "عملیات با خطا مواجه شد"
+                    });
+                }
+            });
+        }
+    </script>*@
+
+

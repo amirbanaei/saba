@@ -1,0 +1,54 @@
+﻿@{
+    Layout = null;
+}
+
+
+@model IEnumerable<SaabWebProject.Models.DomainModels.tbReffrenceSaveLevel>
+
+<div class="col-xl-6">
+    <label class="form-label"> پیمان ها </label>
+    <select class="form-select" id="baste_peyman_ACCEpt">
+        <option value="0">انتخاب نمایید..</option>
+        @foreach (var item in Model)
+        {
+            <option value="@item.ID">@item.tbReffrenceSave.tbPeymanContracts.pec_Title</option>
+        }
+
+    </select>
+</div>
+
+
+
+<div class="col-xl-4">
+    <label class="form-label"> بسته ها </label>
+    <div id="mybasteAccept"></div>
+
+</div>
+
+
+
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+
+<script src="~/Scripts/popper.min.js"></script>
+<script>
+    $(function(){
+        $("#mybasteAccept").load('@Url.Content("/Functions/Accerpt_Baste")?peyman_id=0', function () {
+        });
+
+        $("#baste_peyman_ACCEpt").change(function () {
+            var a1 = $(this).val();
+            var a = $(this).val().split('_')[0].toString();
+            console.log(a1);
+            console.log(a);
+
+            var x = '?peyman_id=' + a;
+
+            $("#mybasteAccept").load('@Url.Content("/Functions/Accerpt_Baste")' + x, function () {
+                // Callback function after load
+            });
+        });
+    });
+</script>

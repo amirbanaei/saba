@@ -1,0 +1,1000 @@
+﻿@using SaabWebProject.Models.Classes;
+@{
+
+    ViewBag.Title = "انبار کالاها";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.style.css" rel="stylesheet" />
+
+<script src="~/Assets/js/jalalidatepicker.min.js"></script>
+<link href="~/Assets/css/jalalidatepicker.min.css" rel="stylesheet" />
+<script src="~/Assets/js/jalaali.min.js"></script>
+<link href="~/MyStyles/jalalidatepicker.css" rel="stylesheet" />
+
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+
+
+<div class="">
+
+    <ul class="nav nav-tabs nav-tabs-v2  ps-1 pe-1" id="pills-tab">
+        @if (UserStuf.PosID == "9")
+        {
+            <li class="nav-item me-3">
+                <a class="nav-link" id="" data-bs-toggle="pill" href="#Descript_Warehouse">
+                    <button class=" nav-btn">تعریف انبار</button>
+                </a>
+            </li>
+            <li class="nav-item me-3">
+                <a class="nav-link" id="" data-bs-toggle="pill" href="#Classification">
+                    <button class=" nav-btn">طبقه بندی انبار</button>
+                </a>
+            </li>
+            <li class="nav-item me-3">
+                <a class="nav-link" id="" data-bs-toggle="pill" href="#Grouping">
+                    <button class=" nav-btn">دسته بندی کالا</button>
+                </a>
+            </li>
+            <li class="nav-item me-3">
+                <a class="nav-link" id="" data-bs-toggle="pill" href="#Describe_Goods">
+                    <button class=" nav-btn">تعریف کالا</button>
+                </a>
+            </li>
+            <li class="nav-item me-3">
+                <a class="nav-link" id="" data-bs-toggle="pill" href="#InPut_Goods">
+                    <button class=" nav-btn">ثبت ورودی انبار</button>
+                </a>
+            </li>
+            <li class="nav-item me-3">
+                <a class="nav-link" id="" data-bs-toggle="pill" href="#Out_Goods">
+                    <button class=" nav-btn">ثبت خروجی از انبار</button>
+                </a>
+            </li>
+            <li class="nav-item me-3">
+                <a class="nav-link" id="" data-bs-toggle="pill" href="#Moavaqat">
+                    <button class=" nav-btn">تعریف پروژه کالایی موقت</button>
+                </a>
+            </li>
+        }
+        else if (UserStuf.PosID == "2175")
+        {
+            <li class="nav-item me-3 ">
+                <a class="nav-link active" id="" data-bs-toggle="pill" href="#Moavaqat">
+                    <button class=" nav-btn">تعریف پروژه کالایی موقت</button>
+                </a>
+            </li>
+        }
+
+
+    </ul>
+    <div class="tab-content" id="pills-tabContent">
+        <div class="tab-pane fade " id="Descript_Warehouse" style="height:auto;">
+            <div class="card">
+                <div class="card-body pb-2">
+                    <div class="row">
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> نام انبار </label>
+                                <input class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> مشخصات مسئول </label>
+                                @Html.Action("_GetAllUsers_Select", "Users", new { area = "Users" })
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> تلفن </label>
+                                <input class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <label class="form-label"> آدرس  </label>
+                            <input class="form-control" />
+                        </div>
+
+
+                    </div>
+                    <div class="row" style="margin-top:30PX;">
+                        <div class="col-xl-11">
+                        </div>
+                        <div class="col-xl-1">
+                            <div class="form-group mb-3">
+                                <button id="btnCreate" type="button" class="btn form-control buttonsabt">
+                                    <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                                    <span class="bSabt-text">ثبت</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-arrow">
+                    <div class="card-arrow-top-left"></div>
+                    <div class="card-arrow-top-right"></div>
+                    <div class="card-arrow-bottom-left"></div>
+                    <div class="card-arrow-bottom-right"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade show active" id="Moavaqat" style="height:auto;">
+            <div class="card">
+                <div class="card-body pb-2">
+                    <div class="row">
+                        <div class="col-xl-4">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> پیمان </label>
+                                @Html.Action("_GetAllListPeymans_SingleSelec2", "Peyman", new { area = "Contracts" })
+
+                            </div>
+                        </div>
+                        <div class="col-xl-2">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> کدپروژه </label>
+                                <input class="form-control" id="ProjectCode" />
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> شهرستان /امور </label>
+                                @Html.Action("_Cities_Select", "Users", new { area = "Users" })
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> تاریخ تعریف پروژه کالایی </label>
+                                <div class="col-xl-12">
+                                    @*<input class="form-control" id="datepickerFrom_Eq" />*@
+                                    @*<input class="form-control" type="hidden" id="datepickerFromEn_Eq" />*@
+
+
+                                    @*------------------------------------------------[1402/09/27]-|KH|-*@
+                                    <input data-jdp jdp-btn-close data-jdp-miladi-input="datepickerFromEn_Eq" id="datepickerFrom_Eq" class="form-control">
+                                    <input id="datepickerFromEn_Eq" type="hidden" />
+                                    @*-------------------------------------------------------------|KH|-*@
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> مبلغ کل  </label>
+                                <input class="form-control" id="Totalnumber" />
+                            </div>
+                        </div>
+                        <div class="col-xl-9">
+                            <label class="form-label"> عنوان پروژه  </label>
+                            <input class="form-control" id="ProjectTitle" />
+                        </div>
+
+
+                    </div>
+
+
+
+                    <div class="row" >
+
+                        <div class="col-xl-10"></div>
+
+                        <div class="col-xl-1">
+                            <button class="btn form-control uploadSummery buttonGeneral" >
+                                <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                                <span class="bGeneral-text">بارگذاری پیوست</span>
+                            </button>
+                            <input id="summery_file" style="display:none" type="file" class="form-control" value="" />
+                        </div>
+                        <div class="col-xl-1">
+                            <button class="btn buttonsabt form-control" id="btnCreate1">
+                                <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                                <span class="bSabt-text">ثبت</span>
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="card-arrow">
+                    <div class="card-arrow-top-left"></div>
+                    <div class="card-arrow-top-right"></div>
+                    <div class="card-arrow-bottom-left"></div>
+                    <div class="card-arrow-bottom-right"></div>
+                </div>
+            </div>
+
+
+            <div id="ListProjects">
+                @Html.Action("TableProjects", "WareHouse", new { area = "WareHouse" })
+            </div>
+        </div>
+
+
+        <div class="tab-pane fade" id="Classification" style="height:auto;">
+            <div class="card">
+                <div class="card-body pb-2">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <label class="form-label"> نام انبار </label>
+                            <select class="form-select">
+                                <option>انتخاب مورد</option>
+                                <option>انبار 1</option>
+                            </select>
+                        </div>
+
+
+                    </div>
+                    <div class="row">
+
+                        @Html.Action("Tree", "WareHouse", new { area = "WareHouse" })
+                    </div>
+                </div>
+
+                <div class="card-arrow">
+                    <div class="card-arrow-top-left"></div>
+                    <div class="card-arrow-top-right"></div>
+                    <div class="card-arrow-bottom-left"></div>
+                    <div class="card-arrow-bottom-right"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="Grouping" style="height:auto;">
+            <div class="card">
+                <div class="card-body pb-2">
+                    <div class="row">
+                    </div>
+                </div>
+
+                <div class="card-arrow">
+                    <div class="card-arrow-top-left"></div>
+                    <div class="card-arrow-top-right"></div>
+                    <div class="card-arrow-bottom-left"></div>
+                    <div class="card-arrow-bottom-right"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade show" id="InPut_Goods" style="height:auto;">
+            <div class="p-2">
+
+                <div class="row" style="margin-bottom:10px;">
+                    <div class="col-xl-9"></div>
+                    <div class="col-xl-1">
+                        <button class="btn form-control buttonGeneral">
+                            <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                            <span class="bGeneral-text">دانلود فایل نمونه</span>
+                        </button>
+                    </div>
+                    <div class="col-xl-1">
+                        <button class="btn form-control buttonGeneral">
+                            <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                            <span class="bGeneral-text">بارگذاری پیوست ها</span>
+                        </button>
+                    </div>
+                    <div class="col-xl-1">
+                        <button class="btn form-control buttonGeneral">
+                            <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                            <span class="bGeneral-text">بارگذاری اطلاعات</span>
+                        </button>
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+
+                    <div class="col-xl-3">
+                        <label class="form-label"> تاریخ سند </label>
+                        @*<input class="form-control" />*@
+
+                        @*------------------------------------------------[1402/09/20]-|KH|-*@
+                        <input data-jdp jdp-btn-close data-jdp-miladi-input="datepickerDocEn_Eq" id="datepickerDoc_Eq" class="form-control">
+                        <input id="datepickerDocEn_Eq" type="hidden" />
+                        @*-------------------------------------------------------------|KH|-*@
+                    </div>
+                    <div class="col-xl-3">
+                        <label class="form-label"> تحویل گیرنده </label>
+                        @Html.Action("_GetAllUsers_Select", "Users", new { area = "Users" })
+                    </div>
+                    <div class="col-xl-3">
+                        <label class="form-label"> مجموعه تحویل دهنده </label>
+                        @Html.Action("_PartialListCompaniesInDropDown", "Company", new { area = "Users" })
+
+                    </div>
+                    <div class="col-xl-3">
+                        <label class="form-label"> شخص تحویل دهنده </label>
+                        @Html.Action("_GetAllUsers_Select", "Users", new { area = "Users" })
+
+                    </div>
+
+                    <div class="col-xl-3">
+                        <label class="form-label"> کالا </label>
+                        <select class="form-select">
+                            <option>انتخاب مورد</option>
+                            <option>موتور</option>
+                        </select>
+                    </div>
+                    <div class="col-xl-3">
+                        <label class="form-label"> مقدار/تعداد کالا </label>
+                        <input class="form-control" />
+                    </div>
+                    <div class="col-xl-2">
+                        <label class="form-label"> وضعیت سلامت </label>
+                        <select class="form-select">
+                            <option>انتخاب مورد</option>
+                            <option>سالم(نو)</option>
+                            <option>سالم(مستعمل)</option>
+                            <option>اسقاط</option>
+                            <option>معیوب</option>
+                            <option>آزمایشگاهی</option>
+                        </select>
+                    </div>
+                    <div class="col-xl-2">
+                        <label class="form-label"> کد کالا فروشنده </label>
+                        <input class="form-control" />
+                    </div>
+                    <div class="col-xl-2">
+                        <label class="form-label"> جانمایی انبار </label>
+                        <select class="form-select">
+                            <option>انتخاب مورد</option>
+                            <option>انبار 1</option>
+                            <option>انبار 2</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xl-11">
+                    </div>
+                    <div class="col-xl-1">
+                        <button id="btnCreate" type="button" class="btn form-control buttonsabt">
+                            <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                            <span class="bSabt-text">ثبت</span>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="card">
+                <div class="card-body pb-2">
+                    <div class="row">
+                        <div class="table-responsive">
+                            <table class="table table-hover" style="text-align:center;">
+                                <thead>
+                                    <tr>
+                                        <th>ردیف</th>
+                                        <th>کد شناسایی</th>
+                                        <th>نام کالا </th>
+                                        <th>نوع کالا </th>
+                                        <th>واحد </th>
+                                        <th>تعداد </th>
+                                        <th>وضعیت </th>
+                                        <th>ویرایش / حذف </th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-arrow">
+                    <div class="card-arrow-top-left"></div>
+                    <div class="card-arrow-top-right"></div>
+                    <div class="card-arrow-bottom-left"></div>
+                    <div class="card-arrow-bottom-right"></div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="tab-pane fade show" id="Out_Goods" style="height:auto;">
+            <div class="p-2">
+
+                <div class="row">
+                    <div class="col-xl-9"></div>
+                    <div class="col-xl-1">
+                        <button class="btn form-control buttonGeneral">
+                            <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                            <span class="bGeneral-text">دانلود فایل نمونه</span>
+                        </button>
+                    </div>
+                    <div class="col-xl-1">
+                        <button class="btn form-control buttonGeneral">
+                            <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                            <span class="bGeneral-text">بارگذاری پیوست ها</span>
+                        </button>
+                    </div>
+                    <div class="col-xl-1">
+                        <button class="btn form-control buttonGeneral">
+                            <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                            <span class="bGeneral-text">بارگذاری اطلاعات</span>
+                        </button>
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="col-xl-3">
+                        <label class="form-label"> تاریخ سند </label>
+                        <input class="form-control" />
+                    </div>
+                    <div class="col-xl-4">
+                        <label class="form-label"> تحویل گیرنده </label>
+                        @Html.Action("_GetAllUsers_Select", "Users", new { area = "Users" })
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xl-2">
+                        <div class="row">
+                            <div class="col-xl-3">
+                                <input class="form-check-input" name="radiobutton_1" type="radio" value="" id="defaultRadio1" />
+                            </div>
+                            <div class="col-xl-9">
+                                <label class="form-check-label" for="defaultRadio1">پیمان </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-5">
+                        <label class="form-label"> پیمان </label>
+                        @Html.Action("_GetAllListPeymans_Select", "Peyman", new { area = "Contracts" })
+                    </div>
+                    <div class="col-xl-2">
+                        <div class="row">
+                            <div class="col-xl-3">
+                                <input class="form-check-input" name="radiobutton_1" type="radio" value="" id="defaultRadio1" />
+                            </div>
+                            <div class="col-xl-9" ">
+                                <label class="form-check-label" for="defaultRadio1">طبق دستور</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-2"></div>
+                    <div class="col-xl-1">
+                        <button class="btn form-control buttonGeneral">
+                            <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                            <span class="bGeneral-text">بارگذاری پیوست ها</span>
+                        </button>
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="col-xl-3">
+                        <div class="form-group mb-3">
+                            <label class="form-label"> کالا </label>
+                            <select class="form-select">
+                                <option>انتخاب مورد</option>
+                                <option>موتور</option>
+                            </select>
+                        </div>
+
+                    </div>
+                    <div class="card p-2">
+
+                            <div class="row">
+                                <div class="table-responsive">
+                                    <table class="table table-hover" style="text-align:center;">
+                                        <thead>
+                                            <tr>
+                                                <th>ردیف</th>
+                                                <th>نام انبار</th>
+                                                <th>تعداد موجود </th>
+                                                <th>وضعیت </th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>1</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td>2</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td>3</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                        </tbody>
+
+                                    </table>
+                                </div>
+                            </div>
+
+                        <div class="card-arrow">
+                            <div class="card-arrow-top-left"></div>
+                            <div class="card-arrow-top-right"></div>
+                            <div class="card-arrow-bottom-left"></div>
+                            <div class="card-arrow-bottom-right"></div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top:20px">
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> مقدار/تعدا کالا </label>
+                                <input class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> وضعیت سلامت </label>
+                                <input class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> انبار مورد نظر </label>
+                                <select class="form-select">
+                                    <option>انتخاب مورد</option>
+                                    <option>انیار 1</option>
+                                    <option>انیار 2</option>
+                                </select>
+                            </div>
+
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> شهرستان / امور </label>
+                                @Html.Action("_Cities_Select", "Users", new { area = "Users" })
+                            </div>
+
+                        </div>
+                    </div>
+                    <hr class="hr-bg" />
+                    <h5>مشاهده سبد کالای تعریف شده (رسید ثبت خروجی کالا)</h5>
+                    <div class="row">
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> شماره پروژه کالایی </label>
+                                <input class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> تاریخ سند </label>
+                                <input class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card p-2">
+                        <div class="row">
+                            <div class="table-responsive">
+                                <table class="table table-hover" style="text-align:center;">
+                                    <thead>
+                                        <tr>
+                                            <th>ردیف</th>
+                                            <th>کد شناسایی</th>
+                                            <th>نام کالا </th>
+                                            <th>واحد </th>
+                                            <th>تعداد </th>
+                                            <th>وضعیت </th>
+                                            <th>ویرایش/حذف</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>2</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>3</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+                        </div>
+                        <div class="card-arrow">
+                            <div class="card-arrow-top-left"></div>
+                            <div class="card-arrow-top-right"></div>
+                            <div class="card-arrow-bottom-left"></div>
+                            <div class="card-arrow-bottom-right"></div>
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-top:10px">
+                        <div class="col-xl-11">
+                        </div>
+                        <div class="col-xl-1">
+                            <div class="form-group mb-3">
+                                <button id="btnCreate" type="button" class="btn form-control buttonsabt">
+                                    <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                                    <span class="bSabt-text">ثبت</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@*------------------------------------------------[1402/09/27]-|KH|-*@
+<script>
+    jalaliDatepicker.startWatch({
+        time: true,
+        days: ["شنبه", "1شنبه", "2شنبه", "3شنبه", "4شنبه", "5شنبه", "جمعه"],
+        persianDigits: true,
+        autoClose: true,
+        //autocomplete: true,
+        showCloseBtn: true,
+        showEmptyBtn: false,
+        showCloseBtn: true,
+        zIndex: 100000,
+    });
+    //-----------------------------------------------------------------
+    var inputs = document.querySelectorAll("[data-jdp-miladi-input]");
+    for (var i = 0; i < inputs.length; i++) {
+        inputs[i].addEventListener("jdp:change", function (e) {
+            var miladiInput = document.getElementById(this.getAttribute("data-jdp-miladi-input"));
+            var date = this.value.replace(' ', '').slice(0, 10).split('/');
+            date = jalaali.toGregorian(parseInt(date[0]), parseInt(date[1]), parseInt(date[2]),)
+            // If it was empty
+            if (!this.value) {
+                date = "";
+            }
+            // If it was only history
+            else if (this.value.replace(' ', '').length < 11) {
+                date = date.gy + '-' + date.gm + '-' + date.gd
+            }
+            // If it was the date and time
+            else {
+                date = date.gy + '-' + date.gm + '-' + date.gd + ' ' + this.value.replace(' ', '').slice(10, 30)
+            }
+            miladiInput.value = date
+        });
+    }
+</script>
+@*-------------------------------------------------------------|KH|-*@
+@section Scripts{
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+    <script src="~/Scripts/jquery-ui.js"></script>
+    <script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+
+
+
+    @* DatePicker *@
+    <script>
+
+        //$(function () {
+        //    $('#year_Eq').picker({ search: true });
+        //    $('#month_Eq').picker({ search: true });
+
+        //    $('#datepickerFrom_Eq').MdPersianDateTimePicker({
+        //        targetTextSelector: '#datepickerFrom_Eq',
+        //        targetDateSelector: '#datepickerFromEn_Eq',
+        //        dateFormat: 'yyyy-MM-dd',
+        //        isGregorian: false,
+        //        enableTimePicker: true,
+        //        disableBeforeToday: false
+        //    });
+
+        //    $('#datepickerTo_Eq').MdPersianDateTimePicker({
+        //        targetTextSelector: '#datepickerTo_Eq',
+        //        targetDateSelector: '#datepickerToEn_Eq',
+        //        dateFormat: 'yyyy-MM-dd',
+        //        isGregorian: false,
+        //        enableTimePicker: true,
+        //        disableBeforeToday: false
+        //    });
+
+        //});
+
+    </script>
+
+    @* submitCommodityProject *@
+    <script>
+    function submitCommodityProject() {
+        var arguments = {};
+        arguments.Peymans = $("#select_peyman1").val();
+        arguments.ProjectCode = $("#ProjectCode").val();
+        arguments.City_Id = $("#cities").val();
+        arguments.DateOfDefinitionCommodityProject = $("#datepickerFromEn_Eq").val();
+        arguments.ProjectTitle = $("#ProjectTitle").val();
+
+        document.getElementById("loading-message").style.display = "block";
+        $.ajax({
+            type: "Post",
+            url: "@Url.Action("SubmitCommodityProject","WareHouse")",
+            dataType: 'text',
+            contentType: 'application/json',
+            traditional: true,
+            data: JSON.stringify(arguments),
+            success: function (data) {
+                document.getElementById("loading-message").style.display = "none";
+                if (data == "1") {
+                    alert('اطلاعات ثبت شد')
+                    window.location.reload();
+                }
+            },
+            error: (error) => {
+                console.log(error);
+            }
+        });
+    }
+    </script>
+    <script>
+        function creatprogect() {
+         $("#big_modal_body").load('@Url.Content("/../WareHouse/WareHouse/Product_definition")')
+        }
+
+    </script>
+
+
+
+    <script>
+
+
+
+        var Toast = Swal.mixin({
+            toast: true,
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+        var fd = new FormData();
+        function sendAjax2(url2, fd2) {
+
+
+
+            fd2.append("FK_PeymanContracts", $("#select_peyman1").val());
+
+            fd2.append("ProjectCode", $("#ProjectCode").val());
+            fd2.append("City_Id", $("#cities").val());
+            fd2.append("DateOfDefinitionCommodityProject", $("#datepickerFromEn_Eq").val());
+            fd2.append("ProjectTitle", $("#ProjectTitle").val());
+
+
+            fd2.append("Totalnumber", $("#Totalnumber").val());
+
+
+
+            console.log(fd2);
+
+            $.ajax({
+                url: url2,
+                type: 'POST',
+                data: fd2,
+                processData: false,
+                contentType: false,
+                success: function (resp1) {
+                    console.log("okeye");
+                    console.log(resp1);
+                    $("#loading-message").css("display", "none");
+                    fd = new FormData();
+                    if (resp1 == "True") {
+                        alert("با موفقیت ثبت شد");
+                        location.reload();
+                    }
+                    else {
+                        $("#loading-message").css("display", "none");
+                        Toast.fire({
+                            icon: 'success',
+                            background: '#35434A',
+                            color: 'white',
+                            title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                        }).then(() => {
+                            $("#loading-message").css("display", "none");
+                        });
+
+
+                    }
+
+                },
+                error: function (resp1) {
+                    console.log(resp1);
+                    console.log("Nokeye");
+                    $("#loading-message").css("display", "none");
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                    }).then(() => {
+                        $("#loading-message").css("display", "none");
+                    });
+                }
+            });
+        }
+    </script>
+
+
+    <script>
+           $(".uploadSummery").click(function () {
+                 $("#summery_file").click();
+           });
+
+            $("#summery_file").change(function (e) {
+                   $.each(e.target.files, function (index, file) {
+                      fd.append("files", file);
+                   });
+            });
+        $("#btnCreate1").click(function () {
+
+     if ($("#select_peyman1").val() == 0) {
+                alert("لطفا عنوان را انتخاب نمائید");
+            }
+            else if (($("#ProjectCode").val() == 0))
+                 {
+                alert("لطفا عنوان را وارد  نمائید");
+            }
+            else  if (($("#cities").val() == null))
+                 {
+                alert("لطفا پیمان را انتخاب نمائید");
+               }
+
+              else if (($("#datepickerFromEn_Eq").val() == 0))
+                 {
+                alert("لطفا تاریخ  را انتخاب نمائید");
+            }
+              else {
+
+                                     sendAjax2('@Url.Action("UploadAttachmentFile", "WareHouse",new { area = "WareHouse" })', fd);
+
+
+                }
+              ;
+
+    });
+
+
+         //function sendAjax(url, data) {
+         //       console.log(url);
+
+         //       $.ajax({
+         //           beforeSend: function () {
+         //               document.getElementById("loading-message").style.display = "block";
+         //           },
+         //           url: url,
+         //           data: { Filters: data },
+         //           type: "POST",
+         //           dataType: "html",
+         //           success: function (resp) {
+         //               console.log(resp);
+         //               document.getElementById("loading-message").style.display = "none";
+         //               if (resp == "True") {
+         //                   alert("با موفقیت ثبت شد");
+         //               } else {
+         //                   alert("در ثبت دچار خطا شده ایم ! لطفا بعدا تلاش نمائید")
+         //               }
+         //           },
+         //           error: function (resp) {
+         //               document.getElementById("loading-message").style.display = "none";
+         //               alert("دچار مشکل شده است ");
+         //               console.log(resp);
+         //           }
+         //       });
+         //   }
+
+
+
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script>
+
+        function EnableProject(e) {
+            var argumentEnableProject = {}
+            argumentEnableProject.id = e.id;
+            $.ajax({
+                type: "Post",
+                url: "@Url.Action("EnableProject","WareHouse")",
+                dataType: 'text',
+                contentType: 'application/json',
+                traditional: true,
+                data: JSON.stringify(argumentEnableProject),
+                success: function (data) {
+                    window.location.reload();
+                },
+                error: function () {
+                    alert(-1)
+                }
+            });
+        }
+        function DisableProject(e) {
+            var argumentDisableProject = {}
+            argumentDisableProject.id = e.id;
+            $.ajax({
+                type: "Post",
+                url: "@Url.Action("DisableProject","WareHouse")",
+                dataType: 'text',
+                contentType: 'application/json',
+                traditional: true,
+                data: JSON.stringify(argumentDisableProject),
+                success: function (data) {
+                    window.location.reload();
+                },
+                error: function () {
+                    alert(-1)
+                }
+            });
+        }
+    </script>
+}

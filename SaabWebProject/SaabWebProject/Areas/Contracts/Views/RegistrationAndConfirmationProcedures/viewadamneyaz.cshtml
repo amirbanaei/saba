@@ -1,0 +1,109 @@
+﻿
+@model SaabWebProject.Models.ViewModels.Contracts.Function.FunctionModel
+@using SaabWebProject.Models.DomainModels;
+
+@{ SaabEntities db = new SaabEntities();
+
+    ViewBag.Title = "گزارش کارها";
+    Layout = null;
+}
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+
+
+
+<div class="row" style="margin-top:10px">
+    <div class="col-xl-2">
+        <label class="form-label">  شرح عدم نیاز</label>
+        @*<select class="form-select " id="sanad">
+                <option>انتخاب کنید</option>
+                @for (int I = 1; I <= 10; I++)
+                {
+                    <option value="@I">@I</option>
+
+                }
+
+            </select>*@
+        @*@{
+
+                var find = db.dbAsnadsalvorodi.Where(p => p.year != null).FirstOrDefault();
+
+
+            }
+
+            @if (find == null)
+            {*@
+        <input class="form-control" id="adamneyaz" @*value="@Model.id.id2"*@ @*disabled*@ />
+
+        <!--}
+        else
+        {
+
+        }-->
+
+    </div>
+    <div class="col-xl-1">
+        <button class="btn form-control buttonsabt" id="sabtadamsabt">
+            <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+            <span class="bSabt-text">ثبت</span>
+        </button>
+    </div>
+</div>
+<script>
+    $("#sabtadamsabt").click(function () {
+    //var PeymanArr = [];
+    //$.each($("#select_peymancitys").val().toString().split(","), function (index, item) {
+    //    if (item !== "" && item !== 'Select') {
+    //        PeymanArr.push(item);
+    //    }
+    //});
+
+        var adamneyaz = $("#adamneyaz").val();
+        //var nomoalf = $("#nomoalf").val();
+        //var nameghrogi = $("#nameghrogi").val();
+        //var Dorehgozaresh = $("#Dorehgozaresh").val();
+        //var tupeupload = $("#tupeupload").val();
+        //var typemoalfeh = $("#typemoalfeh").val();
+
+
+    //    console.log(PeymanArr);
+    var formData = new FormData();
+    //    PeymanArr.forEach((item) => {
+    //        formData.append("FKcity[]", item); // ارسال هر عنصر به صورت جداگانه
+    //    });
+        formData.append("adamneyaz", adamneyaz);
+        formData.append("monnth", @Model.tim.month);
+        formData.append("year", @Model.tim.MoalfeVal_Year);
+        formData.append("id", @Model.tim.id2);
+       
+
+    //    fd.forEach((value, key) => {
+    //    formData.append(key, value);
+    //});
+        console.log(formData);
+
+    $.ajax({
+                  url: "@Url.Action("createadamneyaz", "RegistrationAndConfirmationProcedures", new { area = "Contracts" })",
+        type: "POST",
+        processData: false,
+        contentType: false,
+        data: formData,
+        success: function (res) {
+            if (res == "True") {
+                alert("با موفقیت ثبت شد ");
+                location.reload();
+            }
+            console.log(res);
+        },
+        error: function (res) {
+            console.log(res);
+            Toast.fire({
+                icon: 'error',
+                background: '#35434A',
+                color: 'white',
+                title: "عملیات با خطا مواجه شد"
+            });
+        }
+    });
+});
+</script>

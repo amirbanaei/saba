@@ -1,0 +1,431 @@
+﻿@model SaabWebProject.Models.ViewModels.Contracts.Function.FunctionModel
+@{
+
+}
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+@using System.Globalization
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>ModiriatStedad</title>
+
+    <style>
+        @@media (max-width: 768px) {
+            .sticky-col {
+                position: sticky;
+                right: 0;
+                background: #fff;
+                z-index: 2000;
+                min-width: 120px;
+            }
+
+            .sticky-col-header {
+                z-index: 3;
+            }
+
+            table {
+                overflow-x: auto !important;
+            }
+
+            .title {
+                padding-right: 0 !important;
+                flex-direction: column !important;
+                gap: 10px !important;
+            }
+
+            .title-page {
+                display: none !important;
+            }
+
+            .lebel-title {
+                font-size: 10px;
+                margin-right: 10px;
+            }
+
+            #SaatKhateme, #SaatShoroo {
+                width: 80px;
+            }
+        }
+
+        input[type="radio"] {
+            margin-bottom: 0 !important;
+            margin-top: 4px;
+        }
+
+        .time-input {
+            margin-bottom: 0 !important;
+            width: 100px;
+            margin: auto;
+        }
+
+        .inputWithFilterIcon {
+            width: 100px;
+            margin: auto;
+        }
+
+        .TextCenter {
+            align-content: center;
+            align-items: center;
+            justify-content: center;
+            border-left: 1px solid white;
+        }
+
+        tbody tr td:first-child {
+            border-top-right-radius: 0px !important;
+            border-bottom-right-radius: 0px !important;
+            border-left: 1px solid white;
+            border-bottom: 1px solid white !important;
+        }
+
+        .position {
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px !important;
+        }
+
+        .title-page {
+            display: flex;
+            height: 100%;
+            width: 200px;
+            background: var(--bs-Meno-color);
+            align-content: center;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            padding: 0px !important;
+        }
+
+        .title {
+            border-width: 2px;
+            margin-bottom: 50px;
+            display: flex;
+            gap: 20px;
+            padding-right: 900px;
+        }
+
+            .title div {
+                display: flex;
+                gap: 5px;
+                align-content: center;
+                align-items: baseline;
+            }
+
+        .thwidth {
+            width: 60px;
+        }
+
+        thead {
+            position: sticky;
+            top: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="tab-content" id="pills-tabContent" style="padding:20px; background:#f7f7f7;">
+
+        <div class="tab-pane fade show active" id="allTab">
+            <div class="table-responsive tableH_Lock">
+                <div style="overflow-x:auto; height:300px; position:relative;">
+                    <table class="table table-hover" style="text-align:center; border-radius:10px; ">
+                        <thead>
+                            <tr>
+                                <th class="TextCenter sticky-col sticky-col-header" rowspan="4" style="border-bottom-right-radius:0px !important;">
+                                    نام و نام خانوادگی
+                                    <div class="inputWithFilterIcon">
+                                        <input type="text" id="filter05-filter" class="inputFilter form-control" placeholder="">
+                                        <span><i class="fas fa-filter"></i></span>
+                                    </div>
+                                </th>
+                                <th colspan="19" style="border-bottom-left-radius:0px !important;border-bottom:1px solid white !important;">وضعیت حضور و غیاب</th>
+                            </tr>
+                            <tr>
+                                <th rowspan="3" class="TextCenter thwidth" style="border-radius:0px !important;">غایب</th>
+                                <th rowspan="3" class="TextCenter thwidth" style="border-radius:0px !important;">مرخصی استعلاجی</th>
+                                <th colspan="6" class="TextCenter" style="border-radius: 0px !important; border-bottom: 1px solid white !important;">ماموریت اداری</th>
+                                <th colspan="5" class="TextCenter" style="border-radius: 0px !important; border-bottom: 1px solid white !important;">شرایط خاص</th>
+                                <th colspan="3" class="TextCenter" style="border-radius: 0px !important; border-bottom: 1px solid white !important;">مرخصی استحقاقی</th>
+                                <th rowspan="3" class="TextCenter thwidth" style="border-radius: 0px !important; border-bottom: 1px solid white !important;">حاضر</th>
+                                <th rowspan="3" class="TextCenter">ساعت ورود</th>
+                                <th rowspan="3" class="TextCenter" style="border-top-left-radius: 0px !important; border-bottom-left-radius:0px !important ; border-left:0px !important;">ساعت خروج</th>
+                            </tr>
+                            <tr>
+                                <th rowspan="1" class="TextCenter thwidth" style="border-radius:0px !important;">آموزش</th>
+                                <th rowspan="1" class="TextCenter thwidth">بهره برداری</th>
+                                <th rowspan="1" class="TextCenter thwidth">انبار</th>
+                                <th rowspan="1" class="TextCenter thwidth">همراهی با ناظر</th>
+                                <th rowspan="1" class="TextCenter thwidth">خارج از استان</th>
+                                <th rowspan="1" class="TextCenter thwidth">روزانه</th>
+                                <th rowspan="1" class="TextCenter thwidth">طوفان</th>
+                                <th rowspan="1" class="TextCenter thwidth">سیل</th>
+                                <th rowspan="1" class="TextCenter thwidth">کمبود برق</th>
+                                <th rowspan="1" class="TextCenter thwidth">سایر</th>
+                                <th rowspan="1" class="TextCenter thwidth">شرح</th>
+                            
+                                <th class="TextCenter thwidth" style="border-bottom: 1px solid white !important; border-top-left-radius: 0px !important; border-bottom-left-radius: 0px !important">ساعتی</th>
+                                <th style="border-radius:0px !important;" class="TextCenter">ساعت شروع</th>
+                                <th style="border-radius:0px !important;" class="TextCenter">ساعت خاتمه</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                var rowIndex = 0;
+                            }
+                            @foreach (var item in Model.SubUsersData)
+                            {
+                                rowIndex++;
+                                string groupName = $"attendance_{rowIndex}";
+                                <tr data-userid="@item.usr_ID"  class="task-list-row234234"                                                                          data-filter05="@item.FullName _(@item.usr_Personal_ID)"
+>
+                                    <td class="sticky-col" style="background-color: var(--bs-table-th-bg)">
+                                        @item.FullName _(@item.usr_Personal_ID)
+                                    </td>
+
+                                    <td><input class="radioha hazer" type="radio" name="@groupName" value="1" @(item.Vaziat == 1 ? "checked" : "") /></td>
+                                    <td><input class="radioha hazer" type="radio" name="@groupName" value="2" @(item.Vaziat == 2 ? "checked" : "") /></td>
+                                    <td><input class="radioha hazer" type="radio" name="@groupName" value="3" @(item.Vaziat == 3 ? "checked" : "") /></td>
+                                    <td><input class="radioha hazer" type="radio" name="@groupName" value="4" @(item.Vaziat == 4 ? "checked" : "") /></td>
+                                    <td><input class="radioha hazer" type="radio" name="@groupName" value="5" @(item.Vaziat == 5 ? "checked" : "") /></td>
+                                    <td><input class="radioha hazer" type="radio" name="@groupName" value="6" @(item.Vaziat == 6 ? "checked" : "") /></td>
+                                    <td><input class="radioha hazer" type="radio" name="@groupName" value="7" @(item.Vaziat == 7 ? "checked" : "") /></td>
+                                    <td><input class="radioha hazer" type="radio" name="@groupName" value="8" @(item.Vaziat == 8 ? "checked" : "") /></td>
+                                    <td><input class="radioha hazer" type="radio" name="@groupName" value="9" @(item.Vaziat == 9 ? "checked" : "") /></td>
+                                    <td><input class="radioha hazer" type="radio" name="@groupName" value="10" @(item.Vaziat == 10 ? "checked" : "") /></td>
+                                    <td><input class="radioha hazer" type="radio" name="@groupName" value="11" @(item.Vaziat == 11 ? "checked" : "") /></td>
+                                    <td><input class="radioha hazer" type="radio" name="@groupName" value="12" @(item.Vaziat == 12 ? "checked" : "") /></td>
+                                    @*<td><input class="form-control time-input" type="text" name="" value="@item.Sharh" /></td>*@
+                                    @*<td>
+                                            <input class="form-control sharh-input"
+                                                   type="text"
+                                                   name="Sharh_@rowIndex"
+                                                   value="@item.Sharh"
+                                                   disabled
+                                                   style="background-color:#e9ecef;" />
+                                        </td>*@
+
+                                    @*<td>
+                                            <input class="form-control sharh-input"
+                                                   type="text"
+                                                   name="Sharh_@rowIndex"
+                                                   value="@item.Sharh"
+                                                   disabled
+                                                   style="background-color:#e9ecef;" />
+                                        </td>*@
+
+
+
+                                    <td>
+                                        <input class="form-control sharh-input"
+                                               type="text"
+                                               name="Sharh_@rowIndex"
+                                               value="@item.Sharh"
+                                               disabled
+                                               style="background-color:#e9ecef; width: 185px; margin-bottom:0px !important;" />
+                                    </td>
+
+
+
+
+                                    @*<td>
+                                            <input class="form-control sharh-input"
+                                                   type="text"
+                                                   name="Sharh_@rowIndex"
+                                                   value="@item.Sharh"
+                                                   disabled />
+                                        </td>*@
+
+
+
+                                    <td><input class="radioha hazer" type="radio" name="@groupName" value="13" @(item.Vaziat == 13 ? "checked" : "") /></td>
+
+
+                                    <td>
+                                        <input id="SaatShoroo_@rowIndex" name="start_@rowIndex"
+                                               value="@item.SaatShoro"
+                                               class="time-input time-start form-control"
+                                               placeholder="شروع"
+                                               pattern="^([01]\d|2[0-3]):([0-5]\d)$"
+                                               title="فرمت ساعت باید مثل 07:00 تا 23:59 باشد" />
+                                    </td>
+
+                                    <td>
+                                        <input id="SaatKhateme_@rowIndex" name="end_@rowIndex"
+                                               value="@item.SaatKhateme"
+                                               class="time-input time-end form-control"
+                                               placeholder="پایان"
+                                               pattern="^([01]\d|2[0-3]):([0-5]\d)$"
+                                               title="فرمت ساعت باید مثل 07:00 تا 23:59 باشد" />
+                                    </td>
+
+                                    <td><input class="radioha hazer" type="radio" name="" value="0" @(item.Vaziat == 9 ? "checked" : "") /></td>
+
+                                    <td>
+                                        <input id="SaatVorood_@rowIndex" name="entry_@rowIndex"
+                                               value="@item.SaatVorod"
+                                               class="time-input time-entry form-control"
+                                               placeholder="ورود"
+                                               pattern="^([01]\d|2[0-3]):([0-5]\d)$"
+                                               title="فرمت ساعت باید مثل 07:00 تا 23:59 باشد" />
+                                    </td>
+
+                                    <td>
+                                        <input id="SaatKhorooj_@rowIndex" name="exit_@rowIndex"
+                                               value="@item.SaatKhorog"
+                                               class="time-input time-exit form-control"
+                                               placeholder="خروج"
+                                               pattern="^([01]\d|2[0-3]):([0-5]\d)$"
+                                               title="فرمت ساعت باید مثل 07:00 تا 23:59 باشد" />
+                                    </td>
+
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xl-11"></div>
+                <div class="col-xl-1">
+                    <button type="button" class="btn form-control buttonGeneral" id="Send">
+                        <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                        <span class="bGeneral-text">ثبت</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/Assets/js/jalalidatepicker.min.js"></script>
+    <link href="~/Assets/css/jalalidatepicker.min.css" rel="stylesheet" />
+    <script src="~/Assets/js/jalaali.min.js"></script>
+    <link href="~/MyStyles/jalalidatepicker.css" rel="stylesheet" />
+    <script>
+        var
+            filters123677 = {
+                filter01: null,
+                filter02: null,
+                filter03: null,
+                filter04: null,
+                filter05: null,
+                filter06: null,
+                filter07: null,
+                filter08: null,
+                filter09: null,
+                filter10: null,
+              
+            };
+        function updateFilters60() {
+            $('.task-list-row234234').hide().filter(function () {
+                var self = $(this),
+                    result = true; // not guilty until proven guilty
+
+                Object.keys(filters123677).forEach(function (filter) {
+                    if (filters123677[filter] && (filters123677[filter] != 'None') && (filters123677[filter] != 'همه')) {
+                        // تطبیق جزئی (contains) به جای تطبیق کامل
+                        result = result && self.data(filter).indexOf(filters123677[filter]) !== -1;
+                    }
+                });
+
+                return result;
+            }).show();
+        }
+
+        function changeFilter600(filterName) {
+            filters123677[filterName] = this.value;
+            updateFilters60();
+        } $('#filter05-filter').on('input', function () {
+            changeFilter600.call(this, 'filter05');
+        });
+    </script>
+
+    @*<script>
+                    document.getElementById("Send").addEventListener("click", function (e) {
+                e.preventDefault();
+
+                const dateField = document.getElementById("miladi_date1")?.value.trim();
+                if (!dateField) {
+                    alert("⚠️ لطفاً تاریخ را وارد کنید.");
+                    return;
+                }
+
+                const rows = document.querySelectorAll("tbody tr");
+                const dataToSend = [];
+                let isValid = true;
+
+                rows.forEach(row => {
+                    const userId = row.getAttribute("data-userid");
+                    const selectedRadio = row.querySelector(".radioha:checked");
+                    const vaziat = selectedRadio ? parseInt(selectedRadio.value) : null;
+
+                    const saatShoro = row.querySelector(".time-start")?.value.trim() || "";
+                    const saatKhateme = row.querySelector(".time-end")?.value.trim() || "";
+                    const saatVorod = row.querySelector(".time-entry")?.value.trim() || "";
+                    const saatKhorog = row.querySelector(".time-exit")?.value.trim() || "";
+
+                    if (vaziat !== null) {
+                        if (vaziat === 9) {
+                            if (!saatShoro || !saatKhateme || !saatVorod || !saatKhorog) {
+                                alert(`لطفاً تمام ساعت‌های شروع، خاتمه، ورود و خروج را برای ${row.cells[0].innerText} وارد کنید.`);
+                                isValid = false;
+                                return;
+                            }
+                        }
+
+                        if (vaziat === 0) {
+                            if ((!saatVorod && saatKhorog) || (saatVorod && !saatKhorog)) {
+                                alert(` لطفاً هر دو ساعت ورود و خروج را برای ${row.cells[0].innerText} وارد کنید.`);
+                                isValid = false;
+                                return;
+                            }
+                        }
+
+                        dataToSend.push({
+                            Fk_User: parseInt(userId),
+                            SaatShoro: saatShoro,
+                            SaatKhateme: saatKhateme,
+                            SaatVorod: saatVorod,
+                            SaatKhorog: saatKhorog,
+                            Vaziat: vaziat,
+                            TarikhSabt: dateField,
+                            Sharh: Sharh
+                        });
+                    }
+                });
+
+                if (!isValid) return;
+                if (dataToSend.length === 0) {
+                    alert("⚠️ هیچ ردیفی انتخاب نشده است!");
+                    return;
+                }
+
+                fetch("@Url.Action("SabtEstedadNiroEnsani", "Orders")", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "RequestVerificationToken": document.querySelector('input[name="__RequestVerificationToken"]')?.value || ""
+                    },
+                    body: JSON.stringify(dataToSend)
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (result === true || result.success) {
+                        alert("✅ ثبت اطلاعات با موفقیت انجام شد.");
+                        location.reload();
+                    } else {
+                        alert("❌ خطا در ثبت اطلاعات: " + (result.message || ""));
+                    }
+                })
+                .catch(err => {
+                    alert("❌ خطا در ارتباط با سرور: " + err);
+                });
+            });
+        </script>*@
+
+
+
+</body>
+</html>
+
+

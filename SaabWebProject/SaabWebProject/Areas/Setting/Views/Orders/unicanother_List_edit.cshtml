@@ -1,0 +1,59 @@
+﻿@{
+    ViewBag.Title = "نقشه راه گزارش ها";
+    Layout = null;
+}
+@model SaabWebProject.Models.ViewModels.Contracts.Function.FunctionModel
+<div class="row">
+
+    <div class="col-xl-2">
+        <label class="form-label">تبدیل به یک روز</label>
+        <input class="form-control" id="countday1" value="@Model.name_gozaresh" />
+    </div>
+    <div class="col-xl-1">
+        <a href="#" class=" btn form-control buttonGeneral" id="dwn">
+            <i class="bi bi-eye fa-fw me-1 VecGeneral"></i>
+            <span class="bGeneral-text">ثبت</span>
+        </a>
+    </div>
+</div>
+
+<script>
+
+$(document).ready(function() {
+    $("#dwn").click(function () {
+        var fromDate = $("#select_peyman22").val();
+        var toDate = $("#countday").val();
+        var day1 = $("#select_peyman").val();
+        var day2 = $("#countday1").val();
+
+        if (!fromDate || !toDate) {
+            alert("لطفاً بازه تاریخ را انتخاب کنید");
+            return;
+        }
+
+        $.ajax({
+            url: '@Url.Action("unicanother_List_edit_sabt", "Orders", new { area = "Setting" })',
+            type: 'GET',
+            data: {
+                fromDate: fromDate,
+                toDate: toDate,
+                day1: day1,
+                day2: day2
+            },
+            success: function(response) {
+                // اگر سرور "True" برگرداند، پیام موفقیت نشان داده می‌شود
+                if(response === "True") {
+                    alert("عملیات با موفقیت انجام شد!");
+                } else {
+                    alert(response);
+                }
+            },
+            error: function() {
+                alert("خطا در ارتباط با سرور.");
+            }
+        });
+    });
+});
+
+</script>
+

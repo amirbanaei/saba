@@ -1,0 +1,277 @@
+﻿@model IEnumerable<SaabWebProject.Models.DomainModels.madarek_sabtdoreh_4>
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+@using System.Globalization
+@using SaabWebProject.Models.DomainModels;
+
+@{
+    SaabEntities db = new SaabEntities();
+
+}
+
+<div class="table-content p-4">
+    <div class="tab-pane fade show active" id="allTab">
+        <div class="table-responsive tableH_Lock">
+            <table class="table table-hover" style="text-align:center;">
+                <thead>
+                    <tr>
+                        <th>
+                            فعالیت
+                            <div class="inputWithFilterIcon">
+                                <input type="text" id="filter00-filter" class="inputFilter form-control" placeholder="">
+                                <span><i class="fas fa-filter"></i></span>
+                            </div>
+                        </th>
+
+                        <th>
+                            نام دوره
+                            <div class="inputWithFilterIcon">
+                                <input type="text" id="filter01-filter" class="inputFilter form-control" placeholder="">
+                                <span><i class="fas fa-filter"></i></span>
+                            </div>
+                        </th>
+                        <th>
+                            شرح
+                            <div class="inputWithFilterIcon">
+                                <input type="text" id="filter02-filter" class="inputFilter form-control" placeholder="">
+                                <span><i class="fas fa-filter"></i></span>
+                            </div>
+                        </th>
+                        <th>
+                            تاریخ
+                            <div class="inputWithFilterIcon">
+                                <input type="text" id="filter03-filter" class="inputFilter form-control" placeholder="">
+                                <span><i class="fas fa-filter"></i></span>
+                            </div>
+                        </th>
+                        <th>
+                            وضعیت
+                            <div class="inputWithFilterIcon">
+                                <input type="text" id="filter04-filter" class="inputFilter form-control" placeholder="">
+                                <span><i class="fas fa-filter"></i></span>
+
+                            </div>
+                        </th>
+                        <th>
+                            دانلود فایل
+                            <div class="inputWithFilterIcon">
+                                <input type="text" id="filter05-filter" class="inputFilter form-control" placeholder="">
+                                <span><i class="fas fa-filter"></i></span>
+
+                            </div>
+                        </th>
+
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        var pc = new PersianCalendar();
+                        string persianDate = "";
+                        if (item.timesabt.HasValue)
+                        {
+                            var dt = item.timesabt.Value; // استفاده از Value برای DateTime واقعی
+                            persianDate = string.Format("{0}/{1:00}/{2:00}", pc.GetYear(dt), pc.GetMonth(dt), pc.GetDayOfMonth(dt));
+                        }
+                        int vaz = 1;
+                        string vazzziat = "در انتظار تایید ";
+
+                        {
+                            var findddb = db.madarek_vaziatdoreh_5.Where(s => s.FK_sabtdoreh == item.ID).FirstOrDefault();
+                            if (findddb != null)
+                            {
+                                if (findddb.vaziat != 2)
+                                {
+                                    vaz = 0;
+                                    if (findddb.vaziat == 0)
+                                    {
+                                        vazzziat = "تایید ";
+                                    }
+                                    if (findddb.vaziat == 1)
+                                    {
+                                        vazzziat = " رد";
+                                    }
+                                }
+                                else
+                                {
+                                    vazzziat = " اصلاح";
+
+                                }
+                            }
+
+
+                        }
+                        <tr class="task-list-row"
+                            data-filter01="@item.madarek_1.name"
+                            data-filter02="@item.sharh"
+                            data-filter03="@persianDate"
+                            data-filter04="@vazzziat">
+                            <td>
+                                <div class="ms-sm-4 mt-sm-0 mt-2 dropdown-toggle">
+                                    <a href="#" data-bs-toggle="dropdown" class="text-white text-opacity-75 text-decoration-none">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                    <div class="dropdown-menu">
+                                        @if (vaz != 0)
+                                        {
+                                            <a class="dropdown-item uploadSummery" id="uploadSummery_@item.ID">
+                                                <span>ویرایش مدرک آپلود شده </span>
+                                            </a>
+
+
+                                        }
+                                        <input id="inp_file" style="display:none" type="file" class="form-control" value="" />
+                                        <input id="summery_file5" style="display:none" type="file" class="form-control" value="" />
+
+
+                                    </div>
+                                </div>
+                            </td>
+                            <td>@item.madarek_1.name</td>
+                            <td>@item.sharh</td>
+                            <td>@persianDate</td> <!-- تاریخ شمسی -->
+                            <td>@vazzziat</td>
+
+                            @if (item.System_FIle != null)
+                            {
+                                <!--<td>-->
+                                @*<a style="cursor:pointer; z-index:10000;" target="_blank" href="@Url.Content("~/Areas/Suggestion/Contents/" + item.System_FIle)">دانلود</a>*@
+                                <!--</td>-->
+                                <td><a target="_blank" href="~/Areas/Suggestion/Contents/@item.System_FIle">دانلود</a></td>
+
+                            }
+                            else
+                            {
+                                <td>ندارد</td>
+                            }
+
+
+                        </tr>
+                    }
+                </tbody>
+                @*<i class="bi bi-eye"></i>
+                    <i class="bi bi-eye-slash"></i>
+                    <i class="bi bi-arrow-clockwise"></i>*@
+
+
+            </table>
+        </div>
+
+    </div>
+
+</div>
+
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script>
+
+    var
+        filters = {
+            filter01: null,
+            filter02: null,
+            filter03: null,
+            filter04: null,
+        };
+
+    function updateFilters() {
+        $('.task-list-row').hide().filter(function () {
+            var self = $(this),
+                result = true;
+
+            Object.keys(filters).forEach(function (filter) {
+                var filterData = self.data(filter);
+                if (filters[filter] && (filters[filter] != 'None') && (filters[filter] != 'همه')) {
+                    // تبدیل داده به رشته و بررسی مقدار
+                    result = result && (filterData && filterData.toString().indexOf(filters[filter]) !== -1);
+                }
+            });
+
+            return result;
+        }).show();
+    }
+
+    function changeFilter(filterName) {
+        filters[filterName] = this.value;
+        updateFilters();
+    }
+
+    // Assigned User Dropdown Filter
+    $('#filter01-filter').on('input', function () {
+        changeFilter.call(this, 'filter01');
+    });
+    $('#filter02-filter').on('input', function () {
+        changeFilter.call(this, 'filter02');
+    });
+    $('#filter03-filter').on('input', function () {
+        changeFilter.call(this, 'filter03');
+    });
+    $('#filter04-filter').on('input', function () {
+        changeFilter.call(this, 'filter04');
+    });
+
+</script>
+<script>
+    $(".show").click(function () {
+        var id = $(this).attr("id");
+            $("#big_modal_body").load('@Url.Content("/Suggestion/SuggestionandCriticism/_Sabt_Pasokh")?suggestion_ID='+id);
+        $(this).css("box-shadow", "unset");
+    });
+             var obj = new FormData();
+
+  $(".uploadSummery").click(function () {
+    FK_DDOfTitle = $(this).attr("id").split("_")[2];
+    ID = $(this).attr("id").split("_")[1];
+      $("#summery_file5").click();
+});
+
+ $("#summery_file5").change(function (e) {
+    $.each(e.target.files, function (index, file) {
+        obj.append("files", file);
+    });
+     console.log("obj", obj);
+
+     sendAjaxFile('@Url.Action("Peyman_UploadFile2", "Peyman", new { area = "Contracts" })', obj);
+ });</script>
+<script>
+    var fd = new FormData();
+
+    function sendAjaxFile(url2, fd2) {
+        //alert("hjdsvfhjfdsv2");
+        console.log("ID",ID);
+        $("#loading-message").css("display", "block");
+        fd2.append("PeymanID", ID);
+        $.ajax({
+            url: url2,
+            type: 'POST',
+            data: fd2,
+            processData: false,
+            contentType: false,
+            success: function (resp1) {
+                $("#loading-message").css("display", "none");
+
+                if (resp1 == "True") {
+                    alert("True")
+                        location.reload();
+                   
+                } else {
+                    $("#loading-message").css("display", "none");
+                    alert(resp1)
+                        $("#loading-message").css("display", "none");
+                    location.reload();
+
+
+
+                }
+
+            },
+            error: function (resp1) {
+                alert(resp1)
+
+                    $("#loading-message").css("display", "none");
+               
+            }
+        });
+
+
+
+    } 
+</script>

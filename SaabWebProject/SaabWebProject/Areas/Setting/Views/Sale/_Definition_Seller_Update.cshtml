@@ -1,0 +1,377 @@
+﻿@using SaabWebProject.Models.DomainModels;
+@{
+    SaabEntities db = new SaabEntities();
+}
+@{
+    //ViewBag.Title = "تنظیمات فروش";
+    Layout = null;
+}
+<script src="/Assets/js/jalalidatepicker.min.js"></script>
+<link href="/Assets/css/jalalidatepicker.min.css" rel="stylesheet">
+<script src="/Assets/js/jalaali.min.js"></script>
+<link href="/MyStyles/jalalidatepicker.css" rel="stylesheet">
+@{
+    var item = db.tbSetting_Sell_Create.ToList();
+}
+
+<div class="row">
+    <div class="col-xl-3"></div>
+    <div class="col-xl-6">
+        <div class="card">
+            <div class="card-body">
+                <div class=" row">
+                    <h6 style="margin-bottom:20px">مواردی را که میخواهید ویرایش کنید انتخاب کنید</h6>
+                    <div class="col-xl-6">
+                        <div class="row">
+                            <div class="col-xl-2">
+                                <input class="form-check-input" name="" type="checkbox" value="" id="defaultRadio1" onchange="toggleD3()" />
+                            </div>
+                            <div class="col-xl-10" style="padding-right: 0;">
+                                <label class="form-check-label" for="defaultRadio1" style="padding-top:4px;">تغییر سایر موارد</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6">
+                        <div class="row">
+                            <div class="col-xl-2">
+                                <input class="form-check-input" name="" type="checkbox" value="" id="defaultRadio2" onchange="toggleD3()" />
+                            </div>
+                            <div class="col-xl-10" style="padding-right: 0;">
+                                <label class="form-check-label" for="defaultRadio2" style="padding-top:4px;">تغییر کلمه عبور</label>
+                            </div>
+                        </div>
+                    </div>
+                    <hr style="margin-top:20px" />
+                </div>
+
+                <div class="row D2" style="display:none">
+                    @*<div class="col-xl-6" >
+                            <label class="form-label">کلمه عبور قبلی</label>
+                            <input class="form-control" type="password" id="oldPassword" autocomplete="new-password">
+                        </div>*@
+                    <div class="col-xl-6" >
+                        <label class="form-label">کلمه عبور جدید 1</label>
+                        <input class="form-control" type="password" id="Password011" autocomplete="new-password" />
+                    </div>
+                    <div class="col-xl-6" >
+                        <label class="form-label">تکرار کلمه عبورجدید 1</label>
+                        <input class="form-control" type="password" id="Password01_R1" autocomplete="new-password" />
+                        <div id="error-message1" class="error-message011" style="color: #ff8400; margin-top: 5px; font-size: 10px "></div>
+                    </div>
+                    <div class="col-xl-6" >
+                        <label class="form-label">کلمه عبور جدید 2</label>
+                        <input class="form-control" type="password" id="Password021" autocomplete="new-password" />
+                    </div>
+                    <div class="col-xl-6" >
+                        <label class="form-label">تکرار کلمه عبور جدید 2</label>
+                        <input class="form-control" type="password" id="Password02_R1" autocomplete="new-password" />
+                        <div id="error-message1" class="error-message021" style="color: #ff8400; margin-top: 5px; font-size: 10px "></div>
+                    </div>
+                    <hr />
+                </div>
+                <div class="row D1" style="display:none">
+                    <div class="col-xl-6" >
+                        <label class="form-label">نام نرم افزار</label>
+                        <input class="form-control" type="text" id="NameSoftwar1" value="@item[0].NameSoftwar" />
+                    </div>
+                    <div class="col-xl-6" >
+                        <label class="form-label">ورژن نرم افزار</label>
+                        <input class="form-control" type="text" id="VersionSoftwar1" value="@item[0].VersionSoftwar" />
+                    </div>
+                    <div class="col-xl-6" >
+                        <label class="form-label">از تاریخ</label> @*تاریخ فروش*@
+                        <input data-jdp="" jdp-btn-close="" data-jdp-miladi-input="DateSell1" id="dateFrom_Eq1" class="form-control">
+                        <input cont-date="dateFrom_Eq1" hidden value="@item[0].DateSell.ToString()" id="DateSell1" type="hidden">
+                    </div>
+                    <div class="col-xl-6" >
+                        <label class="form-label">تا تاریخ</label> @*تاریخ پشتیبانی*@
+                        <input data-jdp="" jdp-btn-close="" data-jdp-miladi-input="DateSuport1" id="dateTo_Eq1" class="form-control">
+                        <input cont-date="dateTo_Eq1" hidden value="@item[0].DateSuport.ToString()" id="DateSuport1" type="hidden">
+                    </div>
+                    <div class="col-xl-5"> </div>
+                    <div class="col-xl-1" >
+                        <button id="upload-button1" class="btn form-control buttonGeneral" style="margin-top:52px">
+                            <i class="fa fa-image fa-fw me-1 VecGeneral"></i>
+                            <span class="bGeneral-text">انتخاب عکس</span>
+                        </button>
+                        <input type="file" id="image-input1" accept="image/*" style="display: none;" />
+                    </div>
+                    <div class="col-xl-6" style="margin-bottom: 10px;">
+                        <img id="image-preview1" alt="عکس آپلود شده" src="~/Areas/Setting/Images/AdminImages/@(item[0].UserImage != null ? item[0].UserImage : "picture.png")"
+                             style="margin-right: 64px; border-radius: 119px;
+                                    background: linear-gradient(#0d3244, #0d3244) padding-box, linear-gradient(to bottom, #7bf1f5, #3cd0a5) border-box;
+                                    border: 3px solid transparent; " height="140" width="140">
+                    </div>
+
+                    <hr />
+                </div>
+
+
+                <div class="row" id="D3" style="display:none">
+                    <div class="col-xl-10"></div>
+                    <div class="col-xl-2">
+                        <button class="btn form-control buttonGeneral" id="btnSave2">
+                            <i class="fa fa-edit fa-fw me-1 VecGeneral"></i>
+                            <span class="bGeneral-text">ویرایش</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- arrow -->
+            <div class="card-arrow">
+                <div class="card-arrow-top-left"></div>
+                <div class="card-arrow-top-right"></div>
+                <div class="card-arrow-bottom-left"></div>
+                <div class="card-arrow-bottom-right"></div>
+            </div>
+
+        </div>
+    </div>
+    <div class="col-xl-3"></div>
+</div>
+
+
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Scripts/popper.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script>
+    $(document).ready(function () {
+        const checkbox1 = document.getElementById('defaultRadio1');
+        const div1 = document.querySelector('.D1');
+        const checkbox2 = document.getElementById('defaultRadio2');
+        const div2 = document.querySelector('.D2');
+        const div3 = document.getElementById("D3");
+
+        checkbox1.addEventListener('change', () => {
+            if (checkbox1.checked) {
+                div1.style.display = 'flex';
+            } else {
+                div1.style.display = 'none';
+            }
+        });
+
+        checkbox2.addEventListener('change', () => {
+            if (checkbox2.checked) {
+                div2.style.display = 'flex';
+            } else {
+                div2.style.display = 'none';
+            }
+        });
+    });
+    //----------------------------------------------------------------------------------
+    function toggleD3() {
+        if ($("#defaultRadio1").is(":checked") || $("#defaultRadio2").is(":checked")) {
+            $("#D3").show();
+        } else {
+            $("#D3").hide();
+        }
+    }
+</script>
+<script>
+    // Convert Gregorian date to jaali in the table
+    var inputs = document.querySelectorAll("[cont-date]");
+    var valueD, id, target;
+    var options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    inputs.forEach(input => {
+        valueD = new Date(input.value).toLocaleDateString('fa-IR-u-nu-latn', options).replace(',', '').replace(" ", "");
+        console.log(valueD)
+        valueD = valueD.slice(0, 10) + ' ' + valueD.slice(10, 30)
+        id = input.getAttribute("cont-date");
+        target = document.getElementById(id);
+        target.value = valueD;
+    });
+</script>
+<script>
+
+    //-----------------------------------------------------------------
+    var inputs = document.querySelectorAll("[data-jdp-miladi-input]");
+    for (var i = 0; i < inputs.length; i++) {
+        console.log('data-jdp-miladi-input')
+        inputs[i].addEventListener("jdp:change", function (e) {
+            var miladiInput = document.getElementById(this.getAttribute("data-jdp-miladi-input"));
+            var date = this.value.replace(' ', '').slice(0, 10).split('/');
+            date = jalaali.toGregorian(parseInt(date[0]), parseInt(date[1]), parseInt(date[2]),)
+            // If it was empty
+            if (!this.value) {
+                date = "";
+            }
+            // If it was only history
+            else if (this.value.replace(' ', '').length < 11) {
+                date = date.gy + '-' + date.gm + '-' + date.gd
+            }
+            // If it was the date and time
+            else {
+                date = date.gy + '-' + date.gm + '-' + date.gd + ' ' + this.value.replace(' ', '').slice(10, 30)
+            }
+            miladiInput.value = date
+        });
+    }
+</script>
+@*چک تکراری بودن پسورد به صورت برخط*@
+<script>
+    document.getElementById('Password01_R1').addEventListener('input', function () {
+        var password = document.getElementById('Password011').value;
+        var confirmPassword = this.value;
+
+        var errorMessageElement = document.getElementById('error-message011');
+
+        if (password !== confirmPassword) {
+            errorMessageElement.textContent = 'پسورد و تکرار پسورد با هم مغایرت دارند.';
+        } else {
+            errorMessageElement.textContent = '';
+        }
+    });
+</script>
+<script>
+    var Toast = Swal.mixin({
+        toast: true,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    });
+        function sendAjaxEdit(url2, fd2) {
+
+            fd2.append("UserName", "@item[0].UserName");
+            fd2.append("UserTitle", "@item[0].UserTitle");
+            if (document.getElementById("defaultRadio2").checked) {
+                fd2.append("Password1", $("#Password011").val());
+                fd2.append("Password2", $("#Password021").val());
+            }
+            else {
+                fd2.append("Password1", "@item[0].Password1");
+                fd2.append("Password2", "@item[0].Password2");
+            }
+
+            fd2.append("NameSoftwar", $("#NameSoftwar1").val());
+            fd2.append("VersionSoftwar", $("#VersionSoftwar1").val());
+
+            if (document.getElementById("defaultRadio1").checked) {
+                fd2.append("DateSell", $("#DateSell1").val());
+                fd2.append("DateSuport", $("#DateSuport1").val());
+            }
+            else {
+                fd2.append("DateSell", "@item[0].DateSell");
+                fd2.append("DateSuport", "@item[0].DateSuport");
+            }
+
+            fd2.append("ID", "@item[0].ID");
+
+
+        $.ajax({
+            url: url2,
+            type: 'POST',
+            data: fd2,
+            processData: false,
+            contentType: false,
+            success: function (resp1) {
+                console.log("okeye");
+                console.log(resp1);
+                $("#loading-message").css("display", "none");
+                fd = new FormData();
+                if (resp1 == "True") {
+                    alert("با موفقیت ثبت شد");
+                    location.reload();
+                }
+                else {
+                    $("#loading-message").css("display", "none");
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                    }).then(() => {
+                        $("#loading-message").css("display", "none");
+                    });
+                }
+
+            },
+            error: function (resp1) {
+                console.log(resp1);
+                console.log("Nokeye");
+                $("#loading-message").css("display", "none");
+                Toast.fire({
+                    icon: 'success',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                }).then(() => {
+                    $("#loading-message").css("display", "none");
+                });
+            }
+        });
+    }
+</script>
+
+<script>
+    var fd1 = new FormData();
+    //------------------------------------------------------------
+    //برای نمایش تصویر
+    const imageInput1 = document.getElementById('image-input1');
+    const uploadButton1 = document.getElementById('upload-button1');
+    const imagePreview1 = document.getElementById('image-preview1');
+
+    uploadButton1.addEventListener('click', () => {
+        imageInput1.click();
+    });
+
+    imageInput1.addEventListener('change', () => {
+        if (imageInput1.files.length === 0) {
+            return;
+        }
+
+        const file1 = imageInput1.files[0];
+        const reader1 = new FileReader();
+
+        reader1.onload = () => {
+            imagePreview1.src = reader1.result;
+        };
+        console.log("-----------------------")
+        console.log(file1)
+        console.log("-----------------------")
+        fd1.append("files", file1);
+        reader1.readAsDataURL(file1);
+    });
+    console.log(fd)
+    //-----------------------------------------------------------------
+    $("#btnSave2").click(function () {
+        console.log('111111')
+           check1 = document.getElementById("defaultRadio1").checked
+           check2 = document.getElementById("defaultRadio2").checked
+           if (check2 && ($("#Password011").val() == '' || $("#Password01_R1").val() == '')) {
+                alert("لطفا 'کلمه عبور 1' را وارد کنید");
+            }
+           else if (check2 && ( $("#Password011").val() != $("#Password01_R1").val())) {
+                alert("کلمه عبور 1 و تکرار کلمه عبور 1 با هم تطابق ندارد");
+           }
+           else if (check2 && ($("#Password021").val() == '' || $("#Password02_R1").val() == '')) {
+            alert("لطفا 'کلمه عبور 1' را وارد کنید");
+           }
+           else if (check2 && ($("#Password021").val() != $("#Password02_R1").val())) {
+               alert("کلمه عبور 1 و تکرار کلمه عبور 1 با هم تطابق ندارد");
+           }
+           else if (check1 && ($("#NameSoftwar1").val() == '')){
+                alert("لطفا 'نام نرم افزار' را وارد کنید");
+            }
+           else if (check1 && ($("#VersionSoftwar1").val() == '')) {
+                alert("لطفا 'نسخه نرم افزار' را وارد کنید");
+            }
+           else if (check1 && ($("#DateSell1").val() == '')) {
+                alert("لطفا 'از تاریخ' را وارد کنید");
+            }
+           else if (check1 && ($("#DateSuport1").val() == '')) {
+                alert("لطفا 'تا تاریخ' را وارد کنید");
+            }
+           else {
+               console.log('sendAjax2');
+             sendAjaxEdit('@Url.Action("EditeUploadAttachmentFile", "Sale", new { area = "Setting" })', fd1);
+           };
+    });
+
+</script>

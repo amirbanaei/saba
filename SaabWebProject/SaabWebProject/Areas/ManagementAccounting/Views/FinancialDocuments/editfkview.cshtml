@@ -1,0 +1,308 @@
+﻿@using SaabWebProject.Models.Classes;
+@using SaabWebProject.Models.DomainModels;
+
+@{
+    SaabEntities db = new SaabEntities();
+
+    Layout = null;
+}
+@model SaabWebProject.Models.DomainModels.FinancialDocuments
+
+<style>
+    #datepickerFrom_Eq, #bestankar, #bedehkar, #datepickerTo_Eq {
+        border-image: linear-gradient(to right, #323949, #5FC8CC, #323949) 1 !important;
+    }
+
+    #bestankar {
+        border-image: linear-gradient(to right, #323949, #5FC8CC, #323949) 1 !important;
+    }
+
+    .modal2 {
+        display: none;
+        position: absolute; /* Change this from fixed */
+        z-index: 1000; /* Adjust z-index as needed */
+        left: 0;
+        top: 0;
+        width: 65%;
+        height: auto;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content2 {
+        background-color: black;
+        position: relative; /* Add relative positioning */
+        /*  margin: 15% auto;*/
+        padding: 20px;
+        border: 4px solid aqua;
+        border-radius: 30px;
+        width: 100%;
+        max-height: 100%;
+        overflow-y: auto;
+    }
+
+    .modal3 {
+        display: none;
+        position: absolute; /* Change this from fixed */
+        z-index: 1000; /* Adjust z-index as needed */
+        left: 0;
+        top: 0;
+        width: 65%;
+        height: auto;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content3 {
+        background-color: black;
+        position: relative; /* Add relative positioning */
+        /*  margin: 15% auto;*/
+        padding: 20px;
+        border: 4px solid aqua;
+        border-radius: 30px;
+        width: 100%;
+        max-height: 100%;
+        overflow-y: auto;
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+    .fade-in {
+        animation: fadeIn 1s ease-in-out; /* Adjust duration and timing function as needed */
+    }
+</style>
+
+
+
+<div class="row">
+
+    <div class="col-xl-4">
+        <div class="form-group mb-3">
+
+            @*@if (istruu)
+                {*@
+            @*<label class="form-label"> نام کاربر  </label>*@
+            @if (Model.Peyman_ID == null)
+
+            {
+
+
+                <label class="form-label"> کاربرها </label>
+                <select class="form-select installmentAmountInputManually" id="select">
+                    <option value="@Model.User_ID"> @Model.tbUsers.FullName</option>
+
+                    @foreach (var item in db.tbUsers.ToList())
+                    {
+                        <option value="@item.usr_ID">@item.FullName</option>
+
+                    }
+
+                </select>
+                @*<input class="form-control bestankar-input" id="bestankar1" value="@Model.tbUsers.FullName" />*@
+
+
+            }
+            else
+            {
+                <label class="form-label"> پیمان </label>
+                <select class="form-select installmentAmountInputManually" id="select3">
+                    <option value="@Model.Peyman_ID"> @Model.tbPeymanContracts.pec_Title</option>
+
+                    @foreach (var item in db.tbPeymanContracts.ToList())
+                    {
+                        <option value="@item.pec_ID">@item.pec_Title</option>
+
+                    }
+
+                </select>
+
+            }
+
+
+        </div>
+    </div>   @if (Model.Peyman_ID != null)
+
+    {
+
+        <div class="col-xl-2">
+            @*@if (istruu)
+        {*@
+            <label class="form-label"> ردیف اعتباری </label>
+            <select class="form-select installmentAmountInputManually" id="select666">
+                <option value="@Model.Creditlamdicatros_ID"> @Model.tbCreditIndicators.Title</option>
+
+                @foreach (var item in db.tbCreditIndicators.ToList())
+                {
+                    <option value="@item.ID">@item.Title</option>
+
+                }
+
+            </select>
+        </div>}
+        <div class="col-xl-2">
+            @*@if (istruu)
+                {*@
+            <label class="form-label">  بستانکار (ریال)  </label>
+            @*//}*@
+            <input class="form-control bestankar-input" id="Creditor" value="@Model.Creditor" />
+        </div>
+
+        <div class="col-xl-2">
+            @*@if (istruu)
+                {*@
+            <label class="form-label">  بدهکار (ریال)  </label>
+            @*//    istruu = false;
+                //}*@
+            <input class="form-control bedehkar-input" id="Debtore" value="@Model.Debtore" />
+        </div>
+        <div class="col-xl-2">
+            @*@if (istruu)
+                {*@
+            <label class="form-label">  شرح  </label>
+            @*//    istruu = false;
+                //}*@
+            <input class="form-control bedehkar-input" id="Title2" value="@Model.Title" />
+        </div>
+        @*<div class="col-xl-1">
+                <button class="form-label  click form-control" style="margin-top: 30px; width: 70px; background-image: linear-gradient(#56e0fa, #055ad7); " id="click_@item.ID"> <i class="bi bi-eye-fill"></i>  </button>
+            </div>*@
+        @*<div class="col-xl-1">
+                <button class="form-label click2 form-control" style="margin-top: 30px; width: 70px; background-image: linear-gradient(#56e0fa, #055ad7);" id="click_@item.ID"> <i class="bi bi-pen"></i> </button>
+            </div>
+            <div class="col-xl-1">
+                <button class="form-label click3 form-control" style="margin-top: 30px; width: 70px; background-image: linear-gradient(#56e0fa, #055ad7);" id="click_@item.ID"> <i class="bi bi-trash"></i></button>
+            </div>*@
+    </div>
+
+<div class="row">
+    @*<div class="col-xl-3">
+            <a href="#" class="btn btn-outline-info form-control" id="Show_Etebar">
+                <i class="fa fa-eye"></i>
+                مشاهده اعتبار ردیف ها
+            </a>
+        </div>
+        <div class="col-xl-2">
+            <a href="#" class="btn btn-outline-info form-control">
+                <i class="bi bi-download"></i>
+                دانلود فایل نمونه
+            </a>
+
+        </div>
+        <div class="col-xl-2">
+            <a href="#" class="btn btn-outline-info form-control">
+                <i class="bi bi-upload"></i>
+                بارگذاری اطلاعات
+            </a>
+
+        </div>*@
+    <div class="col-xl-11"></div>
+    <div class="col-xl-1">
+        <div class="form-group mb-3">
+            <button class="btn form-control buttonsabt" id="btnCreate12">
+                <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                <span class="bSabt-text">ثبت</span>
+            </button>
+        </div>
+    </div>
+</div>
+<script>
+        $("#btnCreate12").click(function () {
+            var Filters = [];
+            var obj = new Object();
+
+            //if ($("#bestankar").val() == 0) {
+            //    alert("لطفا عنوان را انتخاب نمائید");
+            //}
+            //if (($("#creditline").val() == 0))
+            //     {
+            //    alert("لطفا عنوان را وارد  نمائید");
+            //}
+            //   if (($("#select_peyman1").val() == null))
+            //     {
+            //    alert("لطفا پیمان را انتخاب نمائید");
+            //   }
+
+            //  if (($("#datepickerFrom_Eq").val() == 0))
+            //     {
+            //    alert("لطفا تاریخ  را انتخاب نمائید");
+            //}
+                obj.User_ID = $("#select").val();
+                console.log($("#select").val());
+           
+                obj.Peyman_ID = $("#select3").val();
+                console.log($("#select3").val());
+
+
+        
+
+
+
+            obj.Title = $("#Title2").val();
+            console.log($("#Title2").val());
+
+            //      var creditorCreditValue = $("#bestankar").val();
+            //      var resultString2 = creditorCreditValue.replace(/,/g, '');
+            //      var debtorCreditValue = $("#bedehkar").val();
+            //      var resultString = debtorCreditValue.replace(/,/g, '');
+
+            //obj.Debtore = resultString2;
+            //      obj.Debtorcredit = resultString;
+            obj.Debtore = $("#Debtore").val();
+            obj.Creditlamdicatros_ID = $("#select666").val();
+
+            console.log($("#Debtore").val());
+
+            obj.Creditor = $("#Creditor").val();
+            console.log($("#Creditor").val());
+
+                /*  obj.Determining_creditline_ID = $("#idd").val();*/
+
+            obj.ID=@Model.ID;
+                  Filters.push(obj);
+                   console.log(Filters);
+                  sendAjax11('@Url.Action("editt", "FinancialDocuments", new { area = "ManagementAccounting" })', Filters);
+
+              ;
+
+        });
+    function sendAjax11(url, data) {
+                console.log(url);
+
+                $.ajax({
+                    beforeSend: function () {
+                        document.getElementById("loading-message").style.display = "block";
+                    },
+                    url: url,
+                    data: { tbfk: data },
+                    type: "POST",
+                    dataType: "html",
+                    success: function (resp) {
+                        console.log(resp);
+                        document.getElementById("loading-message").style.display = "none";
+                        if (resp == "true") {
+                            alert("با موفقیت ثبت شد");
+                            location.reload();
+                        } else {
+                            alert("مبلغ های های بستانکارهای شما بیش از حد مجاز در قرار داد است");
+                        }
+                    },
+                    error: function (resp) {
+                        document.getElementById("loading-message").style.display = "none";
+                        alert("دچار مشکل شده است ");
+                        console.log(resp);
+                    }
+                });
+            }
+</script>

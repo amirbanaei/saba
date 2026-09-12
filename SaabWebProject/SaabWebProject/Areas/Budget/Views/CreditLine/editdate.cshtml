@@ -1,0 +1,194 @@
+﻿
+@{
+    ViewBag.Title = "ویرایش";
+    Layout = null;
+}
+@model SaabWebProject.Models.DomainModels.tbDetermining_creditline
+
+
+<style>
+    .modal-lg, .modal-xl {
+        margin-top: 8px !important;
+        max-width: 80% !important;
+    }
+</style>
+
+<div class="row">
+    <div class="col-xl-4">
+        <div class="form-group mb-3">
+            <label class="form-label"> پیمان  </label>
+
+            <select class="form-select" id="select_peyman1">
+                <option value="@Model.Pyman_ID">@Model.tbPeymanContracts.pec_Title</option>
+
+            </select>
+
+        </div>
+    </div>
+    @*<div class="col-xl-2">
+        <div class="form-group mb-3">
+            <label class="form-label"> ردیف اعتباری  </label>
+            <select class="form-select" id="creditline">
+                <option value="@Model.FK_creditline">@Model.tbCreditIndicators.Title</option>
+                @Html.Action("_ListAllCreditIndicatior", "CreditLine", new { area = "Budget" })
+            </select>
+        </div>
+    </div>*@
+   
+
+
+    <div class="col-xl-2">
+        <label class="form-label">تاریخ ایجاد اعتبار</label>
+
+
+
+        @*------------------------------------------------[1402/09/07]-|KH|-*@
+        <input data-jdp jdp-btn-close data-jdp-miladi-input="datepickerFromEn_Eq" id="datepickerFrom_Eq" class="form-control pdate" name="datepickerFrom_shw1" >
+        <input id="datepickerFromEn_Eq" value="@Model.Starttime.ToString("MM/dd/yyyy hh:mm:ss tt")" type="hidden" />
+        @*-------------------------------------------------------------|KH|-*@
+    </div>
+    <div class="col-xl-2">
+        <label class="form-label">تاریخ اتمام اعتبار</label>
+        @*<input class="form-control" id="datepickerTo_Eq" />
+            <input class="form-control" type="hidden" id="datepickerToEn_Eq" value="@Model.Endtime" />*@
+
+
+        @*------------------------------------------------[1402/09/07]-|KH|-*@
+        <input data-jdp jdp-btn-close data-jdp-miladi-input="datepickerToEn_Eq" id="datepickerTo_Eq" class="form-control pdate" name="datepickerToEn_shw1" >
+        <input id="datepickerToEn_Eq" value="@Model.Endtime.ToString("MM/dd/yyyy hh:mm:ss tt")" type="hidden" />
+        @*-------------------------------------------------------------|KH|-*@
+    </div>
+</div>
+<input style="display:none" value="@Model.Determining_creditline_ID" id="idd" />
+
+<div class="row">
+    
+    <div class="col-xl-11"></div>
+    <div class="col-xl-1">
+        <div class="form-group mb-3">
+            <button class="btn form-control buttonsabt" id="btnCreate12">
+                <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                <span class="bSabt-text">ثبت</span>
+            </button>
+        </div>
+    </div>
+</div>
+<div style="overflow-x: scroll;display: none" id="ShowImage">
+    <img src="~/Areas/Budget/ReportFiles/Tarif_Sabadha .jpg" style="width:1300px;height:400px" />
+</div>
+
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+@*<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>*@
+<script src="~/Scripts/popper.min.js"></script>
+
+@*------------------------------------------------[1402/09/07]-|KH|-*@
+<script type="text/javascript">
+    jalaliDatepicker.startWatch({
+        time: true,
+        days: ["شنبه", "1شنبه", "2شنبه", "3شنبه", "4شنبه", "5شنبه", "جمعه"],
+        persianDigits: true,
+        autoClose: true,
+        autocomplete: true,
+        // showCloseBtn:true,
+        showEmptyBtn: false,
+        showCloseBtn: true,
+        zIndex: 100000,
+    });
+    var valueD
+    var date
+
+    // convert miladi to jalali
+    date = document.getElementById("datepickerFromEn_Eq").value.replace(" ", "")
+    valueD = new Date(date.slice(0, 10)).toLocaleDateString('fa-IR-u-nu-latn', { year: 'numeric', month: '2-digit', day: '2-digit' })
+    valueD = valueD + " " + date.slice(10, 30)
+    document.getElementById("datepickerFrom_Eq").value = valueD
+
+    date = document.getElementById("datepickerToEn_Eq").value.replace(" ", "")
+    valueD = new Date(date.slice(0, 10)).toLocaleDateString('fa-IR-u-nu-latn', { year: 'numeric', month: '2-digit', day: '2-digit' })
+    valueD = valueD + " " + date.slice(10, 30)
+    document.getElementById("datepickerTo_Eq").value = valueD
+
+
+    var inputs = document.querySelectorAll("[data-jdp-miladi-input]");
+    for (var i = 0; i < inputs.length; i++) {
+        inputs[i].addEventListener("jdp:change", function (e) {
+            var miladiInput = document.getElementById(this.getAttribute("data-jdp-miladi-input"));
+            var date = this.value.replace(' ', '').slice(0, 10).split('/');
+            date = jalaali.toGregorian(parseInt(date[0]), parseInt(date[1]), parseInt(date[2]),)
+            // If it was empty
+            if (!this.value) {
+                date = "";
+            }
+            // If it was only history
+            else if (this.value.replace(' ', '').length < 11) {
+                date = date.gy + '-' + date.gm + '-' + date.gd
+            }
+            // If it was the date and time
+            else {
+                date = date.gy + '-' + date.gm + '-' + date.gd + ' ' + this.value.replace(' ', '').slice(10, 30)
+            }
+            miladiInput.value = date
+        });
+    }
+</script>
+@*-------------------------------------------------------------|KH|-*@
+<script>
+
+
+
+
+
+</script>
+
+
+
+
+<script>
+  $("#btnCreate12").click(function () {
+    var Filters = [];
+    var fd2 = new FormData();
+
+    if ($("#bestankar").val() == 0) {
+        alert("لطفا عنوان را انتخاب نمائید");
+    }
+    if ($("#creditline").val() == 0) {
+        alert("لطفا عنوان را وارد  نمائید");
+    }
+    if ($("#select_peyman1").val() == null) {
+        alert("لطفا پیمان را انتخاب نمائید");
+    }
+    if ($("#datepickerFrom_Eq").val() == 0) {
+        alert("لطفا تاریخ  را انتخاب نمائید");
+    } else {
+        console.log("dsfjd;slj");
+
+        $.ajax({
+            beforeSend: function () {
+                document.getElementById("loading-message").style.display = "block";
+            },
+            url: '@Url.Action("tbDetermining_creditline_Edit3", "CreditLine", new { area = "Budget" })?Pyman_ID=' + $("#select_peyman1").val() + '&Determining_creditline_ID=' + $("#idd").val() + '&Starttime=' + $("#datepickerFromEn_Eq").val() + '&Endtime=' + $("#datepickerToEn_Eq").val(),
+            type: 'GET',
+            dataType: 'html',
+            success: function (res) {
+                if (res === "True") {
+                    alert("با موفقیت آپدیت شد");
+                    window.location.reload();
+                    console.log(res);
+                } else {
+                    // Your code here if needed
+                }
+            },
+            error: function (res) {
+                alert("fdslsfdk");
+                console.log(res);
+            }
+        });
+    }
+});
+
+
+
+
+
+</script>

@@ -1,0 +1,277 @@
+﻿@model SaabWebProject.Models.DomainModels.tbBusinessSide
+<style>
+    div.col-md-12 {
+        margin-bottom: 10px !important;
+    }
+
+    div.row {
+        margin-top: 10px !important;
+    }
+
+    span.red-star {
+        margin: 5px;
+        color: red;
+        font-size: 18px;
+    }
+
+    input:-webkit-autofill {
+        transition: background-color 600000s 0s, color 600000s 0s;
+    }
+</style>
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+@using (Html.BeginForm("_EditBusinessSide", "BusinessSide",FormMethod.Post, new { id = "EditForm" }))
+{
+    <input type="hidden" value="@Model.up_Id" name="up_Id" />
+    @*<input type="hidden" value="@Model.up_Status" name="up_Status" />*@
+    @Html.HiddenFor(model => model.up_Status)
+    <div class="row">
+        <div class="col-md-12">
+            <h6>اطلاعات موردنیاز </h6>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-md-12">
+                    <label class="form-label">عنوان سمت<span class="red-star">*</span></label>
+                </div>
+                <div class="col-md-12">
+                    <input value="@Html.DisplayTextFor(m=> m.up_name)" name="up_name" class="form-control" />
+                    <div class="invalid-feedback">پر کردن این فیلد اجباری است !</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-md-12">
+                    <label class="form-label">زیر مجموعه<span class="red-star"></span></label>
+                </div>
+                <div class="col-md-12">
+                    @Html.Action("_GetAllBusinessSide_Select", "BusinessSide")
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <br />
+        <br />
+        <a style="text-decoration:none;" id="Other" href="#">اطلاعات بیشتر<i id="Other_Arrow" class="fa fa-angle-up" style="margin-right:10px;"></i></a>
+    </div>
+    <hr />
+    <div id="Other_div" style="display:none;">
+        <div class="row">
+            <div class="col-md-12">
+                <h6>شرایط احراز </h6>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label class="form-label">شرح وظایف</label>
+                    </div>
+                    <div class="col-md-12">
+                        <textarea name="up_Duties" class="form-control">@Html.DisplayTextFor(m=> m.up_Duties)</textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label class="form-label">زمان کاری</label>
+                    </div>
+                    <div class="col-md-12">
+                        <textarea name="up_workTime" class="form-control">@Html.DisplayTextFor(m=> m.up_workTime)</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label class="form-label">سابقه و تجربه</label>
+                    </div>
+                    <div class="col-md-12">
+                        <textarea name="up_experience" class="form-control">@Html.DisplayTextFor(m=> m.up_experience)</textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label class="form-label">مهارت های ایمنی</label>
+                    </div>
+                    <div class="col-md-12">
+                        <textarea name="up_Safety_Skills" class="form-control">@Html.DisplayTextFor(m=> m.up_Safety_Skills)</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label class="form-label">مهارت های تخصصی</label>
+                    </div>
+                    <div class="col-md-12">
+                        <textarea name="up_Special_Skills" class="form-control">@Html.DisplayTextFor(m=> m.up_Special_Skills)</textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label class="form-label">مهارت های عمومی</label>
+                    </div>
+                    <div class="col-md-12">
+                        <textarea name="up_General_Skills" class="form-control">@Html.DisplayTextFor(m=> m.up_General_Skills)</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label class="form-label">جنسیت شاغل</label>
+                    </div>
+                    <div class="col-md-12">
+                        <select name="up_em_Gender" class="form-control">
+                            <option value="1">زن</option>
+                            <option value="2">مرد</option>
+                            <option value="3">هردو</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label class="form-label">حداقل تحصیلات</label>
+                    </div>
+                    <div class="col-md-12">
+                        <select name="up_minimum_Edu" class="form-control">
+                            <option value="1">سیکل</option>
+                            <option value="2">دیپلم</option>
+                            <option value="3">فوق دیپلم</option>
+                            <option value="4">لیسانس</option>
+                            <option value="5">فوق لیسانس</option>
+                            <option value="6">دکترا</option>
+                            <option value="7">فوق دکترا</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <h6>امکانات مورد نیاز </h6>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label class="form-label">تجهیزات عمومی</label>
+                    </div>
+                    <div class="col-md-12">
+                        <textarea name="up_General_Equipment" class="form-control">@Html.DisplayTextFor(m=> m.up_General_Equipment)</textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label class="form-label">تجهیزات تخصصی</label>
+                    </div>
+                    <div class="col-md-12">
+                        <textarea name="up_Specialized_Equipment" class="form-control">@Html.DisplayTextFor(m=> m.up_Specialized_Equipment)</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <h6>سایر شرایط </h6>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label class="form-label">فضای کاری</label>
+                    </div>
+                    <div class="col-md-12">
+                        <textarea name="up_work_Space" class="form-control">@Html.DisplayTextFor(m=> m.up_work_Space)</textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label class="form-label">مشاغل مرتبط</label>
+                    </div>
+                    <div class="col-md-12">
+                        <textarea name="up_Related_Jobs" class="form-control">@Html.DisplayTextFor(m=> m.up_Related_Jobs)</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label class="form-label">اختیارات</label>
+                    </div>
+                    <div class="col-md-12">
+                        <textarea name="up_Authority" rows="10" class="form-control">@Html.DisplayTextFor(m=> m.up_Authority)</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12" style="text-align:left;margin-top:20px;">
+            <button onclick="EditBusinessSide_Submit()" type="button" class="btn form-control buttonGeneral">
+                <i class="fa fa-edit fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text">ویرایش</span>
+                
+            </button>
+        </div>
+    </div>
+}
+
+<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+<script src="~/Scripts/sweetalert2.js"></script>
+<script src="~/Areas/Users/Scripts/BusinessSide/EditBusinessSide.js" type="text/javascript"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+
+<script>
+
+
+    $("#select_position").removeAttr('multiple');
+    $("select[name='FK_Parent_ID']").picker({ search: true });
+    $("#select_position").picker('set', '@Model.FK_Parent_ID');
+    $("select[name='up_minimum_Edu']").picker();
+    $("select[name='up_minimum_Edu']").picker('set', '@Model.up_minimum_Edu');
+    $("select[name='up_em_Gender']").picker();
+    $("select[name='up_em_Gender']").picker('set', '@Model.up_em_Gender');
+
+    function EditBusinessSide_Submit() {
+
+        console.log("al");
+        var up_name = $("input[name='up_name']");
+        if (up_name.val() == null || up_name.val() == "") {
+            up_name.addClass("is-invalid");
+            return false;
+        }
+        else {
+            up_name.remove("is-invalid");
+            document.getElementById("loading-message").style.display = "block";
+            $('#EditForm').submit();
+        }
+    }
+
+</script>

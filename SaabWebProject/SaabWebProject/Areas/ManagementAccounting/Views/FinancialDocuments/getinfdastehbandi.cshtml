@@ -1,0 +1,109 @@
+﻿@using System.Globalization
+
+
+
+@using SaabWebProject.Models.DomainModels;
+
+@{
+    ViewBag.Title = "تعریف اسناد";
+    Layout = null;
+    SaabEntities db = new SaabEntities();
+
+}
+
+@*@model IEnumerable<SaabWebProject.Models.DomainModels.dbAsnafsherkatsanad>*@
+@model SaabWebProject.Models.ViewModels.Contracts.Function.FunctionModel
+
+
+
+<style>
+    .form-check-input[type="checkbox"] {
+        height: 28px !important;
+    }
+
+    .check7 {
+        margin-top: 4px;
+        padding-right: 0px;
+        width: 70%;
+        margin-right: 5px;
+    }
+</style>
+<div class="row" style="">
+    @foreach (var it in db.dbAsnadDastehband1.ToList())
+    {
+        <div class="col-xl-6">
+            <div class="form-check">
+                <div class="row">
+                    <div class="col-xl-1" style="width: 1%;">
+                        <input class="form-check-input  namesabt" name="radiobutton_1" type="checkbox" id="namesabt_@it.ID">
+                    </div>
+                    <div class="col-xl-10 check7 ">
+                        <label class="form-check-label" for="defaultRadio1">@it.NAME</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+
+
+</div>
+<div class="row">
+    <div class="col-xl-11"></div>
+    <div class="col-xl-1">
+        <button id="Cheeckbtn" type="button" class="form-control btn buttonsabt">
+            <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+            <span class="bSabt-text">ثبت</span>
+        </button>
+    </div>
+</div>
+
+
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/js/jquery3.6.0.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/Harkat.js"></script>
+<script src="~/Scripts/jquery-2.2.2.min.js"></script>
+
+<script>
+
+
+$("#Cheeckbtn").click(function () {
+    var Filters = [];
+
+    $('.form-check-input.namesabt:checked').each(function () {
+        var obj = {};
+        var checkboxId = $(this).attr("id");
+        var parts = checkboxId.split("_");
+        obj.ID = parseInt(parts[1], 10); // تبدیل به عدد صحیح
+        Filters.push(obj.ID); // اضافه کردن ID به آرایه
+    });
+
+    var codValue = '@Model.id.id2'; // مقداردهی به cod از مدل
+    var bindValue = '@Model.id.bindValue'; // مقداردهی به cod از مدل
+
+    console.log(Filters);
+
+    $.ajax({
+        url: '@Url.Action("creatrasnadcodingr", "FinancialDocuments", new { area = "ManagementAccounting" })',
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify({ ID: Filters, cod: codValue, bindValue: bindValue }),
+        success: function (res) {
+            console.log(res);
+            if (res === "True") {
+                alert("با موفقیت ثبت شد");
+                location.reload();
+            } else {
+                alert(res);
+            }
+        },
+        error: function (res) {
+            console.log(res);
+            alert("عملیات با خطا مواجه شد");
+        }
+    });
+});
+
+</script>

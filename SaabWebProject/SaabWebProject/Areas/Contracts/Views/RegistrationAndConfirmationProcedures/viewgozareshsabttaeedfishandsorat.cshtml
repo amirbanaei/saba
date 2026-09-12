@@ -1,0 +1,305 @@
+﻿@using SaabWebProject.Models.DomainModels;
+
+@{
+
+    ViewBag.Title = "پیوست های صورت وضعیت";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    SaabEntities db = new SaabEntities();
+
+}
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+<link href="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.style.css" rel="stylesheet" />
+
+<script src="~/Assets/js/jalalidatepicker.min.js"></script>
+<link href="~/Assets/css/jalalidatepicker.min.css" rel="stylesheet" />
+<script src="~/Assets/js/jalaali.min.js"></script>
+<link href="~/MyStyles/jalalidatepicker.css" rel="stylesheet" />
+<link href="~/MyStyles/MyStyle.css" rel="stylesheet" />
+
+<div class="">
+    <ul class="nav nav-tabs nav-tabs-v2 ps-4 pe-4" id="pills-tab" role="tablist">
+
+        <li class="nav-item me-3" role="presentation">
+            <a class="nav-link active" id="tab-fish" data-bs-toggle="pill" href="#pane-fish" role="tab" aria-controls="pane-fish" aria-selected="true">
+                گزارش فیش
+            </a>
+        </li>
+
+        <li class="nav-item me-3" role="presentation">
+            <a class="nav-link" id="tab-status" data-bs-toggle="pill" href="#pane-status" role="tab" aria-controls="pane-status" aria-selected="false">
+                گزارش صورت
+            </a>
+        </li>
+
+    </ul>
+
+    <div class="tab-content" id="pills-tabContent">
+        <div class="tab-pane fade show active" id="pane-fish" role="tabpanel" aria-labelledby="tab-fish">
+
+            <div class="">
+                <div class="card">
+                    <div class="card-body pb-2">
+                        <div class="row" style="margin-top:10px">
+                            @*<div class="col-xl-5">
+                                <label class="form-label"> پیمان  </label>
+                                <div id="peymans2">
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-xl-3">
+                                <label class="form-label"> نوع تجهیز  </label>
+                                <select class="form-select select_peyman" id="select_peyman40" name="select_peyman">
+                                    <option hidden value="Select">انتخاب مورد</option>
+                                    @foreach (var item in db.tbEquipmentGroup.ToList())
+                                    {
+                                        <option value="@item.Eqpgrp_ID">@item.Eqpgrp_Name</option>
+                                    }
+                                </select>
+
+                            </div>*@
+                            <div class="col-xl-2">
+                                <div class="form-group mb-3">
+                                    <label class="form-label"> ماه </label>
+                                    <select class="form-select my_Select" id="Month2">
+                                        <option value="0">انتخاب کنید..</option>
+                                        <option value="1">فروردین</option>
+                                        <option value="2">اردیبهشت</option>
+                                        <option value="3">خرداد</option>
+                                        <option value="4">تیر</option>
+                                        <option value="5">مرداد</option>
+                                        <option value="6">شهریور</option>
+                                        <option value="7">مهر</option>
+                                        <option value="8">آبان</option>
+                                        <option value="9">آذر</option>
+                                        <option value="10">دی</option>
+                                        <option value="11">بهمن</option>
+                                        <option value="12">اسفند</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-xl-2">
+                                <label class="form-label">سال</label>
+
+                                <select id="Year2" name="year_Eq" class="form-select">
+                                    <option value="0">انتخاب کنید</option>
+
+                                    @{
+                                        System.Globalization.PersianCalendar cs2 = new System.Globalization.PersianCalendar();
+
+                                        for (var i = 4; i >= 0; i--)
+                                        {
+                                            var s = DateTime.Now.AddYears(-i);
+
+                                            <option value="@cs2.GetYear(s)">@cs2.GetYear(s)</option>
+                                        }
+                                    }
+                                </select>
+
+                            </div>
+                            <div class="col-xl-1">
+                                <a href="#" class=" btn form-control buttonGeneral" id="dwn" onclick="DownloadExcel23() ">
+                                    <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                                    <span class="bGeneral-text">مشاهده گزارش فیش </span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="row" style="margin-bottom:10px;">
+                            <div class="col-xl-11"></div>
+
+
+
+                        </div>
+                        <div id="test2">
+
+                        </div>
+                    </div>
+
+                    <div class="card-arrow">
+                        <div class="card-arrow-top-left"></div>
+                        <div class="card-arrow-top-right"></div>
+                        <div class="card-arrow-bottom-left"></div>
+                        <div class="card-arrow-bottom-right"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="tab-pane fade" id="pane-status" role="tabpanel" aria-labelledby="tab-status">
+
+            <div class="">
+                <div class="card">
+                    <div class="card-body pb-2">
+                        <div class="row" style="margin-top:10px">
+                            @*<div class="col-xl-5">
+                                <label class="form-label"> پیمان  </label>
+                                <div id="peymans2">
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-xl-3">
+                                <label class="form-label"> نوع تجهیز  </label>
+                                <select class="form-select select_peyman" id="select_peyman40" name="select_peyman">
+                                    <option hidden value="Select">انتخاب مورد</option>
+                                    @foreach (var item in db.tbEquipmentGroup.ToList())
+                                    {
+                                        <option value="@item.Eqpgrp_ID">@item.Eqpgrp_Name</option>
+                                    }
+                                </select>
+
+                            </div>*@
+                            <div class="col-xl-2">
+                                <div class="form-group mb-3">
+                                    <label class="form-label"> ماه </label>
+                                    <select class="form-select my_Select" id="Month3">
+                                        <option value="0">انتخاب کنید..</option>
+                                        <option value="1">فروردین</option>
+                                        <option value="2">اردیبهشت</option>
+                                        <option value="3">خرداد</option>
+                                        <option value="4">تیر</option>
+                                        <option value="5">مرداد</option>
+                                        <option value="6">شهریور</option>
+                                        <option value="7">مهر</option>
+                                        <option value="8">آبان</option>
+                                        <option value="9">آذر</option>
+                                        <option value="10">دی</option>
+                                        <option value="11">بهمن</option>
+                                        <option value="12">اسفند</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-xl-2">
+                                <label class="form-label">سال</label>
+
+                                <select id="Year3" name="year_Eq" class="form-select">
+                                    <option value="0">انتخاب کنید</option>
+
+                                    @{
+
+                                        for (var i = 4; i >= 0; i--)
+                                        {
+                                            var s = DateTime.Now.AddYears(-i);
+
+                                            <option value="@cs2.GetYear(s)">@cs2.GetYear(s)</option>
+                                        }
+                                    }
+                                </select>
+
+                            </div>
+                            <div class="col-xl-1">
+                                <a href="#" class=" btn form-control buttonGeneral" id="dwn" onclick="DownloadExcel233() ">
+                                    <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                                    <span class="bGeneral-text">مشاهده گزارش صورت وضعیت</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="row" style="margin-bottom:10px;">
+                            <div class="col-xl-11"></div>
+
+
+
+                        </div>
+                        <div id="test20">
+
+                        </div>
+                    </div>
+
+                    <div class="card-arrow">
+                        <div class="card-arrow-top-left"></div>
+                        <div class="card-arrow-top-right"></div>
+                        <div class="card-arrow-bottom-left"></div>
+                        <div class="card-arrow-bottom-right"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+  
+
+@section Scripts{
+    @*    <script src="~/Scripts/jquery-3.3.1.js"></script>*@
+
+    <script src="~/Scripts/jquery-ui.js"></script>
+    <script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="~/Scripts/jquery-ui.js"></script>
+    <script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+    <script>
+    function DownloadExcel23() {
+        //var month = $("#Month2").val();
+        var year = $("#Year2").val();
+        var month = $("#Month2").val();
+
+        if ( year == 0) {
+            alert("لطفاً ماه و سال را انتخاب کنید.");
+            return;
+        }
+        $("#loading-circle .loadingText1").text("لطفا منتظر نمایش اطلاعات بمانید ...");
+        $("#loading-circle").css("display", "flex");
+        $.ajax({
+            url: '@Url.Action("viewgozareshsabttaeed", "RegistrationAndConfirmationProcedures", new { area = "Contracts" })',
+            type: "GET",
+            data: { year: year, month: month },
+            success: function (result) {
+                $("#loading-circle").css("display", "none"); // پنهان کردن لودینگ
+
+                $("#test2").html(result);
+            },
+            error: function () {
+                alert("خطا در بارگذاری اطلاعات.");
+            }
+        });
+            }
+            function DownloadExcel233() {
+        //var month = $("#Month2").val();
+        var year2 = $("#Year3").val();
+        var month2 = $("#Month3").val();
+
+                if (year2 == 0) {
+            alert("لطفاً ماه و سال را انتخاب کنید.");
+            return;
+        }
+                $("#loading-circle .loadingText1").text("لطفا منتظر نمایش اطلاعات بمانید ...");
+                $("#loading-circle").css("display", "flex");
+        $.ajax({
+            url: '@Url.Action("viewgozareshsoat", "RegistrationAndConfirmationProcedures", new { area = "Contracts" })',
+            type: "GET",
+            data: { year: year2, month: month2 },
+            success: function (result) {
+                $("#loading-circle").css("display", "none"); // پنهان کردن لودینگ
+
+                $("#test20").html(result);
+            },
+            error: function () {
+                alert("خطا در بارگذاری اطلاعات.");
+            }
+        });
+    }
+    </script>
+    <script>
+
+
+
+
+
+    @*$("#peymans2").load('@Url.Content("/../Contracts/Peyman/_GetAllListPeymans_Select")', function () {
+    $("#select_peyman").attr("id", "select_peyman2");
+    });*@
+
+    </script>
+    <script>
+
+    </script>
+}
+

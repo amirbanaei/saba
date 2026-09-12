@@ -1,0 +1,615 @@
+﻿
+@model SaabWebProject.Models.ViewModels.Contracts.Function.FunctionModel
+@using SaabWebProject.Models.DomainModels;
+@using System.Globalization
+
+@{
+    SaabEntities db = new SaabEntities();
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row" style="background-color: var(--bs-tab-content-bg); border-radius:8px;padding:10px;border:1px solid white">
+
+    @{
+        long IDID = 0;
+        long FK_us = 0;
+        long vaziat = 0;
+        long vaziat2 = 0;
+    }
+
+    <div class="row" style="display:flex;flex-direction:column;gap:15px">
+
+        <div class="col-xl-3">
+
+            <select class="form-select" id="select_peyman">
+                <option hidden>انتخاب مورد</option>
+
+                @foreach (var item in Model.erja_like_link)
+                {
+                    <option value="@item.erja_like.ID">@item.value</option>
+                }
+
+            </select>
+
+        </div>
+
+
+        @foreach (var item in Model.erja_omomi_edit)
+        {
+
+            var findval = db.erja_sabt_usr
+            .FirstOrDefault(s => s.FK_usr == FK_us && s.FK_omomi == IDID && s.FK_erja_omomi_edit == item.ID && s.vaziat == vaziat2);
+
+            var dependencies = db.erja_omomi_edit_link_link
+            .Where(d => d.FK_erja_omomi_edit == item.ID && d.active == 1)
+            .ToList();
+
+            var hasDependency = dependencies.Any();
+
+            string parentIds = "";
+            string parentValues = "";
+
+            if (hasDependency)
+            {
+                parentIds = string.Join(",", dependencies.Select(d => d.FK_erja_omomi_edit_2));
+                parentValues = string.Join(",", dependencies.Select(d => d.number));
+            }
+
+            var initialStyle = hasDependency ? "display:none" : "";
+
+            <div class="dependency-item"
+                 style="@initialStyle"
+                 data-parent-ids="@parentIds"
+                 data-parent-values="@parentValues">
+
+                @if (item.Type == 0)
+                {
+
+                    bool isChecked = findval != null && findval.value_cheek == true;
+
+                    <div class="form-check">
+
+                        <input type="checkbox"
+                               id="@item.ID"
+                               class="form-check-input dependency-control @(item.asli==1?"required-check":"")"
+                               @(isChecked ? "checked" : "")>
+
+
+                        <label>@item.Nam @(item.asli==1?"*":"")</label>
+
+                    </div>
+
+                }
+
+                @if (item.Type == 1)
+                {
+
+                    <div class="col-xl-4">
+
+                        <label>@item.Nam @(item.asli==1?"*":"")</label>
+
+                        @if (item.Model == 0)
+                        {
+
+                            <input id="@item.ID"
+                                   value="@(findval?.value_str??"")"
+                                   class="form-control dependency-control @(item.asli==1?"required-field":"")">
+
+                        }
+
+                        else if (item.Model == 1)
+                        {
+
+                            <input id="@item.ID"
+                                   value="@(findval?.value_int!=null?string.Format("{0:N0}",findval.value_int):"")"
+                                   class="form-control number dependency-control @(item.asli==1?"required-field":"")">
+
+                        }
+
+                        else if (item.Model == 2)
+                        {
+
+                            string shamsi = "";
+
+                            if (findval?.value_time != null)
+                            {
+                                var pc = new PersianCalendar();
+                                var miladi = Convert.ToDateTime(findval.value_time);
+
+                                shamsi = $"{pc.GetYear(miladi):0000}/{pc.GetMonth(miladi):00}/{pc.GetDayOfMonth(miladi):00}";
+                            }
+
+                            <input data-jdp
+                                   data-jdp-miladi-input="miladi_@item.ID"
+                                   id="@item.ID"
+                                   value="@shamsi"
+                                   class="form-control pdate dependency-control @(item.asli==1?"required-field":"")">
+
+                            <input type="hidden" id="miladi_@item.ID" value="@findval?.value_time">
+
+                        }
+
+                        else
+                        {
+
+                            <select id="@item.ID"
+                                    class="form-select dependency-control select-int @(item.asli==1?"required-field":"")">
+
+                                <option value="-1">انتخاب کنید</option>
+
+                                @foreach (var it in db.erja_omomi_edit_link.Where(s => s.FK_erja_omomi_edit == item.ID))
+                                {
+                                    <option value="@it.numeber" @(findval?.value_int == it.numeber ? "selected" : "")>@it.value</option>
+                                }
+
+                            </select>
+
+                        }
+
+                    </div>
+
+                }
+
+                @if (item.Type == 4)
+                {
+
+                    <div class="col-xl-4">
+
+                        <label>@item.Nam @(item.asli==1?"*":"")</label>
+
+                        <select id="@item.ID"
+                                class="form-select dependency-control select-int @(item.asli==1?"required-field":"")">
+
+                            <option value="-1">انتخاب کنید</option>
+
+                            @foreach (var it in db.erja_omomi_edit_link.Where(s => s.FK_erja_omomi_edit == item.ID))
+                            {
+                                <option value="@it.numeber" @(findval?.value_int == it.numeber ? "selected" : "")>@it.value</option>
+                            }
+
+                        </select>
+
+                    </div>
+
+                }
+
+            </div>
+
+        }
+
+    </div>
+
+</div>
+
+
+@if (vaziat != 3)
+{
+    <button id="btnInsert" class="btn btn-success">ثبت اطلاعات</button>
+}
+
+
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Assets/js/jalalidatepicker.min.js"></script>
+<script src="~/Assets/js/jalaali.min.js"></script>
+<link href="~/Assets/css/jalalidatepicker.min.css" rel="stylesheet" />
+<script src="~/Assets/js/jalalidatepicker.min.js"></script>
+<link href="~/Assets/css/jalalidatepicker.min.css" rel="stylesheet" />
+<script src="~/Assets/js/jalaali.min.js"></script>
+<link href="~/MyStyles/jalalidatepicker.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+
+
+
+<script>
+    $(document).ready(function () {
+        $("#select_peyman").picker({ search: true });
+
+    });
+</script>
+
+<script>
+
+function isVisible(el){
+return el && el.offsetParent!==null;
+}
+
+function getValue(ctrl){
+
+if(ctrl.type==="checkbox") return ctrl.checked?"1":"0";
+
+if(ctrl.classList.contains("number"))
+return ctrl.value.replace(/,/g,'');
+
+return ctrl.value?ctrl.value.trim():"";
+
+}
+
+function clearValues(wrapper){
+
+wrapper.querySelectorAll("input,select").forEach(el=>{
+
+if(el.type==="hidden") return;
+
+if(el.type==="checkbox") el.checked=false;
+else if(el.tagName==="SELECT") el.value="-1";
+else el.value="";
+
+});
+
+}
+
+function setState(wrapper,show,clear){
+
+wrapper.style.display=show?"":"none";
+
+if(!show && clear) clearValues(wrapper);
+
+}
+
+function evaluateDependencies(clear=true){
+
+let changed=true;
+let guard=0;
+
+while(changed && guard<10){
+
+changed=false;
+guard++;
+
+document.querySelectorAll(".dependency-item").forEach(w=>{
+
+const ids=w.dataset.parentIds;
+const vals=w.dataset.parentValues;
+
+let show=true;
+
+if(ids){
+
+let idArr=ids.split(",");
+let valArr=vals.split(",");
+
+for(let i=0;i<idArr.length;i++){
+
+let p=document.getElementById(idArr[i]);
+
+if(!p || !isVisible(p)){
+show=false;
+break;
+}
+
+let v=getValue(p);
+
+if(valArr[i]!=""){
+
+if(v!=valArr[i]){
+show=false;
+break;
+}
+
+}else{
+
+if(p.type==="checkbox" && !p.checked){
+show=false;
+break;
+}
+
+if(!v || v=="-1"){
+show=false;
+break;
+}
+
+}
+
+}
+
+}
+
+let visible=w.style.display!=="none";
+
+if(visible!==show){
+
+setState(w,show,clear);
+changed=true;
+
+}
+
+});
+
+}
+
+}
+
+function validateRequired(){
+
+let ok=true;
+
+document.querySelectorAll(".required-field").forEach(el=>{
+
+if(!isVisible(el)) return;
+
+if(el.tagName==="SELECT"){
+
+if(el.value=="-1"){
+el.style.border="2px solid red";
+ok=false;
+}else el.style.border="";
+}
+
+else{
+
+if(!el.value){
+el.style.border="2px solid red";
+ok=false;
+}else el.style.border="";
+}
+
+});
+
+document.querySelectorAll(".required-check").forEach(el=>{
+
+if(!isVisible(el)) return;
+
+if(!el.checked){
+el.parentElement.style.color="red";
+ok=false;
+}else el.parentElement.style.color="";
+});
+
+return ok;
+
+}
+
+function buildDataList(){
+
+const list=[];
+
+let peyman=$("#select_peyman").val();
+
+if(!peyman){
+alert("لطفا مورد را انتخاب کنید");
+return null;
+}
+
+document.querySelectorAll(".dependency-control").forEach(el=>{
+
+if(el.offsetParent===null) return;
+
+let obj={};
+
+obj.FK_erja_omomi_edit=parseInt(el.id);
+
+if(el.type==="checkbox"){
+
+obj.value_cheek=el.checked;
+
+}
+
+else if(el.classList.contains("pdate")){
+
+let hiddenId=el.getAttribute("data-jdp-miladi-input");
+let miladi=document.getElementById(hiddenId);
+
+obj.value_time=miladi?miladi.value:null;
+
+}
+
+else if(el.classList.contains("number")){
+
+obj.value_int=el.value?parseInt(el.value.replace(/,/g,'')):null;
+
+}
+
+else if(el.classList.contains("select-int")){
+
+obj.value_int=(el.value && el.value!="-1")?parseInt(el.value):null;
+
+}
+
+else{
+
+obj.value_str=el.value?el.value.trim():null;
+
+}
+
+obj.FK_omomi=parseInt(peyman);
+obj.unic="";
+obj.vaziat=@vaziat;
+
+list.push(obj);
+
+});
+
+return list;
+
+}
+
+function saveOffline(data,url){
+
+let p=JSON.parse(localStorage.getItem("pendingErja")||"[]");
+
+p.push({url:url,data:data,time:new Date().toISOString()});
+
+localStorage.setItem("pendingErja",JSON.stringify(p));
+
+}
+    async function syncOffline() {
+
+        let p = JSON.parse(localStorage.getItem("pendingErja") || "[]");
+
+        if (p.length === 0) return;
+
+        let remain = [];
+        let successCount = 0;
+
+        for (let item of p) {
+
+            try {
+
+                let r = await fetch(item.url, {
+                    method: "POST",
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(item.data)
+                });
+
+                if (r.ok) {
+                    successCount++;
+                } else {
+                    remain.push(item);
+                }
+
+            } catch {
+                remain.push(item);
+            }
+
+        }
+
+        localStorage.setItem("pendingErja", JSON.stringify(remain));
+
+        if (successCount > 0) {
+            alert("✅ " + successCount + " مورد آفلاین با موفقیت ارسال و ذخیره شد");
+        }
+
+        if (remain.length > 0) {
+            console.warn(remain.length + " مورد هنوز ارسال نشده است");
+        }
+
+    }
+
+//async function syncOffline(){
+
+//let p=JSON.parse(localStorage.getItem("pendingErja")||"[]");
+
+//let remain=[];
+
+//for(let item of p){
+
+//try{
+
+//let r=await fetch(item.url,{
+//method:"POST",
+//headers:{'Content-Type':'application/json'},
+//body:JSON.stringify(item.data)
+//});
+
+//if(!r.ok) remain.push(item);
+
+//}catch{
+
+//remain.push(item);
+
+//}
+
+//}
+
+//localStorage.setItem("pendingErja",JSON.stringify(remain));
+
+//}
+
+document.getElementById("btnInsert").addEventListener("click",function(){
+
+if(!validateRequired()){
+alert("فیلدهای الزامی را پر کنید");
+return;
+}
+
+let data=buildDataList();
+
+if(!data) return;
+
+if(navigator.onLine){
+
+fetch('/Setting/Orders/InsertErjaSabtUsr1',{
+method:'POST',
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify(data)
+})
+.then(r=>{
+
+if(!r.ok) throw new Error("خطا در ارسال");
+
+return r.json();
+
+})
+.then(res=>{
+
+if(res.success)
+alert("✅ ثبت شد");
+else
+alert(res.error);
+
+})
+.catch(()=>{
+
+saveOffline(data,'/Setting/Orders/InsertErjaSabtUsr1');
+alert("💾 آفلاین ذخیره شد");
+
+});
+
+}
+else{
+
+saveOffline(data,'/Setting/Orders/InsertErjaSabtUsr1');
+alert("💾 آفلاین ذخیره شد");
+
+}
+
+});
+
+window.addEventListener("online",function(){
+syncOffline();
+});
+
+document.addEventListener("change",function(e){
+
+if(e.target.matches(".dependency-control"))
+evaluateDependencies(true);
+
+});
+
+document.addEventListener("DOMContentLoaded",function(){
+
+evaluateDependencies(false);
+
+jalaliDatepicker.startWatch({
+autoClose:true,
+showCloseBtn:true,
+zIndex:100000
+});
+
+document.querySelectorAll("[data-jdp-miladi-input]").forEach(inp=>{
+
+inp.addEventListener("jdp:change",function(){
+
+let miladiInput=document.getElementById(this.getAttribute("data-jdp-miladi-input"));
+
+if(!this.value){
+miladiInput.value="";
+return;
+}
+
+let d=this.value.replace(' ','').slice(0,10).split('/');
+
+let g=jalaali.toGregorian(+d[0],+d[1],+d[2]);
+
+miladiInput.value=g.gy+"-"+g.gm+"-"+g.gd;
+
+});
+
+});
+
+});
+
+document.querySelectorAll(".number").forEach(i=>{
+
+i.addEventListener("input",function(){
+
+let v=this.value.replace(/\D/g,"");
+
+this.value=v?v.replace(/\B(?=(\d{3})+(?!\d))/g,","):"";
+
+});
+
+});
+
+</script>

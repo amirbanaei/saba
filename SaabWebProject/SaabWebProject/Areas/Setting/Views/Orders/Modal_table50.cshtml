@@ -1,0 +1,273 @@
+﻿
+@{
+    Layout = null;
+}
+@using SaabWebProject.Models.Classes;
+
+@model IEnumerable<SaabWebProject.Models.DomainModels.NatigeEshterakBala50>
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Modal_table50</title>
+    <link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+
+</head>
+<body>
+    <div class="tab-content" id="pills-tabContent">
+        <div class="table-responsive tableH_Lock" style="max-height:450px; overflow-y:auto;">
+            <table class="table table-hover text-nowrap">
+                <thead>
+                    <tr style="text-align:center">
+                        <th>
+                            @Html.DisplayName("نام و نام خانوادگی")
+                            <div class="inputWithFilterIcon">
+                                <input type="text" id="filter01-filter" class="inputFilter form-control" placeholder="" />
+                                <span><i class="fas fa-filter"></i></span>
+                            </div>
+                        </th>
+                        <th>
+                            @Html.DisplayName("کد پرسنلی")
+                            <div class="inputWithFilterIcon">
+                                <input type="text" id="filter02-filter" class="inputFilter form-control" placeholder="" />
+                                <span><i class="fas fa-filter"></i></span>
+                            </div>
+                        </th>
+                        <th>
+                            @Html.DisplayName("شهرستان")
+                            <div class="inputWithFilterIcon">
+                                <input type="text" id="filter03-filter" class="inputFilter form-control" placeholder="" />
+                                <span><i class="fas fa-filter"></i></span>
+                            </div>
+                        </th>
+                        <th>
+                            @Html.DisplayName("پیمان")
+                            <div class="inputWithFilterIcon">
+                                <input type="text" id="filter04-filter" class="inputFilter form-control" placeholder="" />
+                                <span><i class="fas fa-filter"></i></span>
+                            </div>
+                        </th>
+                        <th>
+                            @Html.DisplayName("ضریب")
+                            <div class="inputWithFilterIcon">
+                                <input type="text" id="filter05-filter" class="inputFilter form-control" placeholder="" />
+                                <span><i class="fas fa-filter"></i></span>
+                            </div>
+                        </th>
+                        <th>
+                            @Html.DisplayName("پرداختی")
+                            <div class="inputWithFilterIcon">
+                                <input type="text" id="filter06-filter" class="inputFilter form-control" placeholder="" />
+                                <span><i class="fas fa-filter"></i></span>
+                            </div>
+                        </th>
+
+
+
+                    </tr>
+
+
+                    <tr id="sum-row" style="background:#1f2a36;font-weight:bold;text-align:center">
+                        <th colspan="3">جمع فیلتر شده</th>
+                        <th id="sum-erja">0</th>
+                        <th id="sum-beroz">0</th>
+                        <th colspan="4"></th>
+                    </tr>
+
+                </thead>
+                @{
+
+                    var natigeMap = new Dictionary<int, string>
+                                            {
+                        {1, "وصول کامل"},
+                        {2, "تقسیط"},
+                        {3, "قطع"},
+                        {4, "مهلت (پیگیری مجدد)"},
+                        {5, "ادعای قبض اشتباه (پیگیری مجدد)"},
+                        {6, "اصلاح شماره تماس (پیگیری مجدد)"},
+                        {7, "پرونده حقوقی (پیگیری مجدد)"},
+                        {8, "نیاز به پیگیری ستاد"},
+                        {9, "عدم پاسخگویی تلفنی"},
+                        {10, "عدم تماس یا اعلام مسئول پیگیری"}
+                    };
+
+
+                }
+
+                <tbody style="text-align:center">
+                    @foreach (var it in Model)
+                    {
+                        <tr class="task-list-row " data-filter01="@it.NameMoshtarak"
+                            data-filter02="@it.ShenaseGhabz"
+                            data-filter03="@it.city_name"
+                            data-filter04="@it.MandeKolErja"
+                            data-filter05="@it.MandeKolBeroz1"
+                            data-filter06="@(it.NatigePeygiri.HasValue && natigeMap.ContainsKey(it.NatigePeygiri.Value) ? natigeMap[it.NatigePeygiri.Value] : "")"
+                            data-filter07="@it.SharhPeygiri"
+                            data-filter08="@it.value_bi"
+                            data-erja="@it.MandeKolErja"
+                            data-beroz="@it.MandeKolBeroz1">
+                            <td> @it.NameMoshtarak</td>
+                            <td> @it.ShenaseGhabz</td>
+                            <td> @it.city_name</td>
+                            <td> @it.MandeKolErja</td>
+                            <td>
+                                @(decimal.TryParse(it.MandeKolBeroz1, out var v)
+                                ? v.ToString("N0")
+                                : it.MandeKolBeroz1)
+                            </td>
+
+                            <td>
+                                @(it.NatigePeygiri.HasValue && natigeMap.ContainsKey(it.NatigePeygiri.Value)
+                                ? natigeMap[it.NatigePeygiri.Value]
+                                : "")
+                            </td>
+
+                        </tr>
+
+                    }
+
+
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            function updateSums() {
+
+                let sumErja = 0;
+                let sumBeroz = 0;
+
+                $('.task-list-row:visible').each(function () {
+
+                    let erja = $(this).data('erja') || 0;
+                    let beroz = $(this).data('beroz') || 0;
+
+                    erja = parseInt(erja.toString().replace(/,/g, '')) || 0;
+                    beroz = parseInt(beroz.toString().replace(/,/g, '')) || 0;
+
+                    sumErja += erja;
+                    sumBeroz += beroz;
+                });
+
+                // 👇 بدون اعشار + هزارگان
+                $('#sum-erja').text(sumErja.toLocaleString('en-US', { maximumFractionDigits: 0 }));
+                $('#sum-beroz').text(sumBeroz.toLocaleString('en-US', { maximumFractionDigits: 0 }));
+            }
+
+
+
+            filters = {
+                filter01: null,
+                filter02: null,
+                filter03: null,
+                filter04: null, filter05: null,
+                filter06: null,
+                filter07: null,
+                filter08: null,
+
+            };
+            function updateFilters() {
+                $('.task-list-row').hide().filter(function () {
+                    var self = $(this),
+                        result = true;
+
+                    Object.keys(filters).forEach(function (filter) {
+                        var filterData = self.data(filter);
+                        if (filters[filter] && (filters[filter] != 'None') && (filters[filter] != 'همه')) {
+                            // تبدیل داده به رشته و بررسی مقدار
+                            result = result && (filterData && filterData.toString().indexOf(filters[filter]) !== -1);
+                        }
+                    });
+
+                    return result;
+                }).show();
+                updateSums();
+
+            }
+
+
+            function changeFilter(filterName) {
+                filters[filterName] = this.value;
+                updateFilters();
+            }
+
+            $('#filter01-filter').on('input', function () {
+                changeFilter.call(this, 'filter01');
+            });
+            $('#filter02-filter').on('input', function () {
+                changeFilter.call(this, 'filter02');
+            });
+            $('#filter03-filter').on('input', function () {
+                changeFilter.call(this, 'filter03');
+            });
+            $('#filter04-filter').on('input', function () {
+                changeFilter.call(this, 'filter04');
+            });
+            $('#filter05-filter').on('input', function () {
+                changeFilter.call(this, 'filter05');
+            });
+            $('#filter06-filter').on('input', function () {
+                changeFilter.call(this, 'filter06');
+            }); $('#filter07-filter').on('input', function () {
+                changeFilter.call(this, 'filter07');
+            });
+            $('#filter08-filter').on('input', function () {
+                changeFilter.call(this, 'filter08');
+            });
+            document.addEventListener("DOMContentLoaded", function () {
+
+                const maxLength = 30;
+
+                document.querySelectorAll(".limit-cell").forEach(cell => {
+
+                    // فقط یک بار متن کامل رو ذخیره کن
+                    if (!cell.dataset.fullText) {
+                        cell.dataset.fullText = cell.innerText.trim();
+                    }
+
+                    const fullText = cell.dataset.fullText;
+
+                    if (fullText.length > maxLength) {
+                        cell.innerText = fullText.substring(0, maxLength) + "...";
+                    }
+
+                    let tooltip = null;
+
+                    cell.addEventListener("mouseenter", function () {
+
+                        if (fullText.length <= maxLength) return;
+
+                        tooltip = document.createElement("div");
+                        tooltip.className = "limit-tooltip";
+                        tooltip.innerText = fullText;
+                        document.body.appendChild(tooltip);
+
+                        const rect = cell.getBoundingClientRect();
+
+                        tooltip.style.left = rect.left + window.scrollX + "px";
+                        tooltip.style.top =
+                            rect.top + window.scrollY - tooltip.offsetHeight + 30 + "px";
+
+                        tooltip.style.display = "block";
+                    });
+
+                    cell.addEventListener("mouseleave", function () {
+                        if (tooltip) {
+                            tooltip.remove();
+                            tooltip = null;
+                        }
+                    });
+                });
+
+            });
+            updateSums();
+
+        });
+    </script>
+</body>
+</html>

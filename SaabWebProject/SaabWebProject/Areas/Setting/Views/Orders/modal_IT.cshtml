@@ -1,0 +1,353 @@
+﻿@model SaabWebProject.Models.ViewModels.Contracts.Function.FunctionModel
+@{
+    Layout = null;
+}
+
+<style>
+    .btn-delete {
+        background-image: linear-gradient(#cd4646, #631010);
+    }
+
+    .limit-tooltip {
+        position: absolute;
+        max-width: 420px;
+        background: #333;
+        color: #fff;
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-size: 13px;
+        line-height: 1.8;
+        direction: rtl;
+        text-align: right;
+        white-space: normal;
+        z-index: 99999;
+        pointer-events: none;
+    }
+</style>
+<input type="hidden" id="TicketMotaghaziId" value="@Model.Ticket_motaghazi11.ID" />
+
+<div class="tab-content" id="pills-tabContent" style="margin-top:30px; padding-top:20px;">
+
+    <div class="row">
+        <div class="col-xl-3">
+            <label class="form-label">عنوان درخواست</label>
+            <input class="form-control"
+                   id="OnvanDarkhast"
+                   disabled readonly
+                   value="@(Model.Ticket_motaghazi11.OnvanDarkhast == 1 ? "رفع باگ" :
+                    Model.Ticket_motaghazi11.OnvanDarkhast == 2 ? "رفع خطا" :
+                    Model.Ticket_motaghazi11.OnvanDarkhast == 3 ? "بهبود خدمات" :
+                    Model.Ticket_motaghazi11.OnvanDarkhast == 4 ? "تولید گزارش جدید" :
+                    Model.Ticket_motaghazi11.OnvanDarkhast == 5 ? "نیاز به راهنما" :
+                    Model.Ticket_motaghazi11.OnvanDarkhast == 6 ? "سایر" :
+                    "نامشخص")" />
+        </div>
+        <div class="col-xl-9"></div>
+
+        <div class="col-xl-12">
+            <label class="form-label">شرح دلیل آنچه مورد نیاز است</label>
+            <textarea class="form-control limit-input" id="Dalil" type="text" value="" disabled readonly>@Model.Ticket_motaghazi11.Sharh</textarea>
+        </div>
+        <div class="col-xl-12">
+            <label class="form-label">علت بروز مشکل یا ریشه پیشنهاد</label>
+            <textarea class="form-control limit-input" id="Ellat" type="text" value="" disabled readonly>@Model.Ticket_motaghazi11.ElatYaRishe</textarea>
+        </div>
+
+        <div class="col-xl-12">
+            <label class="form-label">فرآیند انجام کار</label>
+            <textarea class="form-control limit-input" type="text" id="Farayand" value="" disabled readonly>@Model.Ticket_motaghazi11.Farayand</textarea>
+        </div>
+        <div class="col-xl-3">
+            <label class="form-label">میزان بهبود کارایی نرم‌افزار ( درصد)</label>
+            <input class="form-control" id="Behbood" value="@Model.Ticket_motaghazi11.BehbodKarayi" disabled readonly />
+        </div>
+        <div class="col-xl-3">
+            <label class="form-label">به چه بخش های دیگری کمک خواهد کرد</label>
+            <input class="form-control" id="Komak" value="@Model.Ticket_motaghazi11.KomakBeSayerBakhshHa" disabled readonly />
+        </div>
+        <div class="col-xl-3">
+            <label class="form-label">اولویت</label>
+            <input class="form-control" id="Olaviyat" value="@(Model.Ticket_motaghazi11.Olaviat == 1 ? "اضطراری" :
+                                           Model.Ticket_motaghazi11.Olaviat == 2 ? "بالا" :
+                                           Model.Ticket_motaghazi11.Olaviat == 3 ? "متوسط" :
+                                           Model.Ticket_motaghazi11.Olaviat == 4 ? "پایین" :
+                                           "نامشخص")" disabled readonly />
+        </div>
+        <div class="col-xl-3">
+            <label class="form-label"> مهلت انجام درخواست (تاریخ)</label>
+            <input class="form-control" id="Mohlat" value="@Model.Ticket_motaghazi11.ZamanAnjam" disabled readonly />
+        </div>
+    </div>
+
+
+    <hr />
+    @{
+        var nahveKar1 = Model.Ticket_IT_2.Select(s => s.Anjamdahande).FirstOrDefault();
+    }
+
+    <div class="row">
+        <div class="col-xl-3">
+            <label class="form-label">نحوه انجام کار</label>
+            <select class="form-select" id="Nahvekar">
+                <option value="0" @(nahveKar1 == 0 ? "selected" : "")>انتخاب کنید..</option>
+                <option value="1" @(nahveKar1 == 1 ? "selected" : "")>برون سپاری</option>
+                <option value="2" @(nahveKar1 == 2 ? "selected" : "")>توسط کارشناسان واحد</option>
+            </select>
+
+        </div>
+    </div>
+
+    <div class="row" id="containerKarshenas" style="max-height: 180px; overflow-y: auto;">
+
+        <!-- ردیف برون سپاری -->
+        <div class="row new-row row-outsource" style="margin-top:10px; display:none;">
+            <div class="col-xl-3 field-outsource">
+                <label class="form-label">تعیین زمان انجام کار</label>
+                <input class="form-control" name="ZamanKar[]" value="@Model.Ticket_IT_2.Select(s=>s.zamanKar).FirstOrDefault()" />
+            </div>
+        </div>
+
+        <!-- ردیف کارشناسان (اگر دیتابیس پر بود) -->
+        @if (Model.Ticket_IT_2 != null)
+        {
+
+            var index = 1;
+            foreach (var item in Model.Ticket_IT_2)
+            {
+                <div class="row new-row row-expert" style="margin-top:10px;">
+                    <div class="col-xl-3 field-expert" style="position:relative">
+                        <label class="form-label" style="position:absolute;">نام کارشناس @index</label>
+                        <input class="form-control" name="NamKarshenas[]" value="@item.AfradAnjamdahande" />
+                    </div>
+                    <div class="col-xl-3 field-expert" style="position:relative">
+                        <label class="form-label" style="position:absolute;">تعیین زمان انجام کار @index</label>
+                        <input class="form-control" name="ZamanKarshenas[]" value="@item.zamanKar" />
+                    </div>
+
+                    @if (index == 1)
+                    {
+                        <div class="col-xl-1 field-expert">
+                            <button id="AfzoodanKarshenas" type="button" class="btn form-control buttonsabt">
+                                <i class="bi bi-plus-circle fa-fw me-1 VecGeneral"></i>
+                                <span class="bSabt-text">افزودن</span>
+                            </button>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-xl-1 field-expert">
+                            <button type="button" class="btn form-control buttonsabt btn-delete">
+                                <i class="bi bi-dash-circle fa-fw me-1 VecGeneral"></i>
+                                <span class="bSabt-text">حذف</span>
+                            </button>
+                        </div>
+                    }
+                </div>
+
+                index++;
+            }
+        }
+        else
+        {
+            <!-- اگر دیتابیس خالی بود، یک ردیف خالی برای کارشناسان -->
+            <div class="row new-row row-expert" style="margin-top:10px; display:none;">
+                <div class="col-xl-3 field-expert" style="position:relative">
+                    <label class="form-label" style="position:absolute;">نام کارشناس 1</label>
+                    <input class="form-control" name="NamKarshenas[]" />
+                </div>
+                <div class="col-xl-3 field-expert" style="position:relative">
+                    <label class="form-label" style="position:absolute;">تعیین زمان انجام کار 1</label>
+                    <input class="form-control" name="ZamanKarshenas[]" />
+                </div>
+                <div class="col-xl-1 field-expert">
+                    <button id="AfzoodanKarshenas" type="button" class="btn form-control buttonsabt">
+                        <i class="bi bi-plus-circle fa-fw me-1 VecGeneral"></i>
+                        <span class="bSabt-text">افزودن</span>
+                    </button>
+                </div>
+            </div>
+        }
+
+    </div>
+
+
+
+
+    <div class="row">
+        <div class="col-xl-3">
+            <label class="form-label">اولویت انجام کار</label>
+            <input class="form-control" id="OlaveatKar" value="@Model.Ticket_IT_2.Select(s=>s.Olaviat).FirstOrDefault()" />
+        </div>
+        <div class="col-xl-3">
+            <label class="form-label">هزینه انجام کار</label>
+            <input class="form-control" id="HazineKar" value="@Model.Ticket_IT_2.Select(s=>s.Hazine).FirstOrDefault()" />
+        </div>
+        <div class="col-xl-3">
+            <label class="form-label">بررسی فرآیند درخواست</label>
+            <input class="form-control" id="BarresiFarayand" value="@Model.Ticket_IT_2.Select(s=>s.BarasiFarayand).FirstOrDefault()" />
+        </div>
+        <div class="col-xl-9">
+            <label class="form-label">سایر توضیحات</label>
+            <textarea class="form-control" id="Sayer-IT" style="height:35px;">@Model.Ticket_IT_2.Select(s=>s.SayerToziihat).FirstOrDefault()</textarea>
+        </div>
+        <div class="col-xl-2"></div>
+        <div class="col-xl-1">
+            <button id="Sabt-IT" type="button" class="btn form-control buttonsabt">
+                <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                <span class="bSabt-text">ثبت</span>
+            </button>
+        </div>
+    </div>
+
+
+
+
+
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        $(document).ready(function () {
+
+            // وقتی select تغییر کرد
+            $(document).ready(function () {
+
+                // وقتی select تغییر کرد
+                $(document).on("change", "#Nahvekar", function () {
+                    var val = $(this).val();
+
+                    // اول همه رو مخفی کن
+                    $(".row-expert, .row-outsource").hide();
+
+                    if (val === "2") {
+                        // کارشناسان
+                        $(".row-expert").fadeIn(200);
+                    } else if (val === "1") {
+                        // برون سپاری
+                        $(".row-outsource").fadeIn(200);
+                    }
+                });
+
+                // یک بار در لود صفحه trigger کن
+                $("#Nahvekar").trigger("change");
+
+            });
+
+        });
+
+
+
+
+
+
+        // افزودن ردیف جدید برای کارشناسان
+        $(document).on("click", "#AfzoodanKarshenas", function () {
+
+            var index = $("#containerKarshenas .row-expert").length + 1;
+
+            var newRow = `
+        <div class="row new-row row-expert">
+            <div class="col-xl-3 field-expert" style="position:relative">
+                <label class="form-label" style="position:absolute;">نام کارشناس ${index}</label>
+                <input class="form-control" name="NamKarshenas[]" />
+            </div>
+            <div class="col-xl-3 field-expert" style="position:relative">
+                <label class="form-label" style="position:absolute;">تعیین زمان انجام کار ${index}</label>
+                <input class="form-control" name="ZamanKarshenas[]" />
+            </div>
+            <div class="col-xl-1 field-expert">
+                <button type="button" class="btn form-control buttonsabt btn-delete">
+                    <i class="bi bi-dash-circle fa-fw me-1 VecGeneral"></i>
+                    <span class="bSabt-text">حذف</span>
+                </button>
+            </div>
+        </div>
+        `;
+
+            $("#containerKarshenas").append(newRow);
+            updateLabels();
+        });
+
+        // حذف ردیف‌ها
+        $(document).on("click", ".btn-delete", function () {
+            $(this).closest(".new-row").remove();
+            updateLabels();
+        });
+
+        function updateLabels() {
+            $("#containerKarshenas .row-expert").each(function (index) {
+                $(this).find("label").eq(0).text("نام کارشناس " + (index + 1));
+                $(this).find("label").eq(1).text("تعیین زمان انجام کار " + (index + 1));
+            });
+        }
+
+    });
+
+
+</script>
+
+
+<script>
+    $(document).on("click", "#Sabt-IT", function () {
+
+        var ticketId = $("#TicketMotaghaziId").val(); // hidden input
+        var nahveKar = $("#Nahvekar").val();
+
+        var items = [];
+
+        // اگر توسط کارشناسان
+        if (nahveKar === "2") {
+
+            $("#containerKarshenas .row-expert").each(function () {
+
+                var name = $(this).find("input[name='NamKarshenas[]']").val();
+                var zaman = $(this).find("input[name='ZamanKarshenas[]']").val();
+
+                if (name && zaman) {
+                    items.push({
+                        AfradAnjamdahande: name,
+                        ZamanKar: zaman
+                    });
+                }
+            });
+        }
+
+        // اگر برون سپاری
+        // اگر برون سپاری
+        if (nahveKar === "1") {
+            var zaman = $(".field-outsource input[name='ZamanKar[]']").val();
+            if (zaman) {
+                items.push({
+                    AfradAnjamdahande: null,
+                    ZamanKar: zaman
+                });
+            }
+        }
+
+        var data = {
+            Fk_Darkhast_Ticket_motaghazi1: ticketId,
+            Anjamdahande: nahveKar,
+            Olaviat: $("#OlaveatKar").val(),
+            Hazine: $("#HazineKar").val(),
+            BarasiFarayand: $("#BarresiFarayand").val(),
+            SayerToziihat: $("#Sayer-IT").val(),
+            Items: items
+        };
+
+        $.ajax({
+            url:  '@Url.Action("SaveIT", "Orders")',
+            type: 'POST',
+            data: JSON.stringify(data),
+            contentType: 'application/json',
+            success: function (res) {
+                if (res.success) {
+                    alert(res.message);
+                } else {
+                    alert(res.message);
+                }
+            }
+        });
+    });
+</script>
+

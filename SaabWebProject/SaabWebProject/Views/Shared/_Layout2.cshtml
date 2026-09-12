@@ -1,0 +1,914 @@
+﻿
+<!DOCTYPE html>
+<html lang="en" dir="rtl">
+
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewBag.Title</title>
+    <link rel="icon" type="image/png" href="~/Assets/img/icons/Logo.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <link href="~/Assets/css/vendor.min.css" rel="stylesheet" />
+    <link href="~/Assets/css/app.min.css" rel="stylesheet" />
+    <link href="~/Assets/plugins/sweetalert/sweetalert.css" rel="stylesheet" />
+    <link href="~/MyStyles/MyStyle.css" rel="stylesheet" />
+
+    @RenderSection("Styles", false)
+    <style type="text/css">
+        #loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #000;
+            opacity: 0.5;
+        }
+
+        #loading-message {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            line-height: 100px;
+            background-color: #1a1a1a;
+            vertical-align: central;
+            text-align: center;
+            font-size: 1.2em;
+            left: 0;
+            top: 0;
+            opacity: 0.7;
+            margin-left: 0;
+            margin-top: 0;
+            z-index: 100000000000;
+        }
+    </style>
+    <style>
+        .page {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: white;
+            z-index: 9999;
+            overflow: hidden;
+            animation-duration: 1s;
+        }
+
+        .show-page {
+            display: block;
+            animation-name: slide-in;
+        }
+
+        @@keyframes slide-in {
+            from {
+                opacity: 0;
+                transform: translateX(-100%);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body class="body">
+    <div id="loading-overlay"></div>
+    <div id="loading-message" style="        display: none;">
+        <div style="        vertical-align: central;
+        margin: 20%;" class="spinner-border text-primary"></div>
+    </div>
+
+
+
+
+
+    <div id="app" class="app app-footer-fixed">
+
+        <div id="header" class="app-header">
+
+            <div class="desktop-toggler">
+                <button type="button" class="menu-toggler" data-toggle-class="app-sidebar-collapsed"
+                        data-dismiss-class="app-sidebar-toggled" data-toggle-target=".app">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </button>
+            </div>
+
+
+            <div class="mobile-toggler">
+                <button type="button" class="menu-toggler" data-toggle-class="app-sidebar-mobile-toggled"
+                        data-toggle-target=".app">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </button>
+            </div>
+
+
+            <div class="brand">
+                @*<a href="#" class="brand-logo">
+                    <span class="brand-img">
+                        <span class="brand-img-text text-theme">*@
+                <img src="~/Assets/img/icons/Logo.png" style="padding:0;margin:0;height:40px;" />
+                @*</span>
+                    </span>
+                    <span class="brand-text">SAAB</span>*@
+                </a>
+            </div>
+
+
+            <div class="menu">
+                <div class="menu-item dropdown">
+                    <a href="#" data-toggle-class="app-header-menu-search-toggled" data-toggle-target=".app"
+                       class="menu-link">
+                        <div class="menu-icon">
+                            <div style="        display: -ms-flexbox; /* IE10 */
+        display: flex;
+        width: 100%;"></div>
+                            <i class="bi bi-search nav-icon" style="        padding: 10px;
+        font-size: 15px;
+        color: white;
+        min-width: 50px;
+        text-align: center;
+        margin-left: -50px;"></i>
+                            <input placeholder="search" style="        padding: 5px;
+        ;
+        width: 160px;
+        text-align: left;
+        background-color: #123;
+        border-radius: 5px;
+        height: 25px;
+        font-size: 15px;
+        border: 1px solid white;" />
+
+                        </div>
+                    </a>
+                </div>
+
+                @*<div class="menu-item dropdown">
+                                <a href="@Url.Action("Dashboard2", "Dashboard", new { area = "Reporter" })" data-toggle-class="" data-toggle-target="">
+                                    <div class="menu-icon"><i class="bi bi-bell-fill nav-icon" style="        font-size: 20px;
+                    color: red"></i></div>
+                                </a>
+                            </div>*@
+                @*<div class="menu-item dropdown dropdown-mobile-full">
+
+
+                        @Html.Action("ReffrenceSaveWarningToUser", "RegistrationAndConfirmationProcedures", new { area = "Contracts" })
+
+
+                        <a href="#" data-bs-toggle="dropdown" data-bs-display="static" class="menu-link">
+                            <div class="menu-icon"><i class="bi bi-person nav-icon"></i></div>
+                            <div class="menu-badge bg-theme"></div>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end mt-1 w-300px fs-11px pt-1">
+                            <h6 class="dropdown-header fs-10px mb-1">آلارم کاربر حقوقی (پیمانکار)</h6>
+                            <div class="dropdown-divider mt-1"></div>
+                            <a href="#" class="d-flex align-items-center py-10px dropdown-item text-wrap" data-bs-toggle="modal" data-bs-target="#modalLg" id="enheraf_az_meyar">
+                                <div class="fs-20px">
+                                    <i class="bi bi-bullseye text-theme"></i>
+                                </div>
+                                <div class="flex-1 flex-wrap ps-3">
+                                    <div class="mb-1 text-white">انحراف از شاخص</div>
+                                    <div class="small">اکنون</div>
+                                </div>
+                                <div class="ps-2 fs-16px">
+                                    <i class="bi bi-chevron-left"></i>
+                                </div>
+                            </a>
+                            <a href="#" class="d-flex align-items-center py-10px dropdown-item text-wrap" data-bs-toggle="modal" data-bs-target="#modalLg" id="zaman_gharardad_khateme_yafte">
+                                <div class="fs-20px w-20px">
+                                    <i class="bi bi-person-circle text-theme"></i>
+                                </div>
+                                <div class="flex-1 flex-wrap ps-3">
+                                    <div class="mb-1 text-white">زمان قرارداد خاتمه یافته</div>
+                                    <div class="small">2 دقیقه قبل</div>
+                                </div>
+                                <div class="ps-2 fs-16px">
+                                    <i class="bi bi-chevron-left"></i>
+                                </div>
+                            </a>
+                            <a href="#" class="d-flex align-items-center py-10px dropdown-item text-wrap" data-bs-toggle="modal" data-bs-target="#modalLg" id="sorat_Vaziyat_Sabt_Nashode">
+                                <div class="fs-20px w-20px">
+                                    <i class="bi bi-gear text-theme"></i>
+                                </div>
+                                <div class="flex-1 flex-wrap ps-3">
+                                    <div class="mb-1 text-white">صورت وضعیت ثبت نشده</div>
+                                    <div class="small">3 دقیقه قبل</div>
+                                </div>
+                                <div class="ps-2 fs-16px">
+                                    <i class="bi bi-chevron-left"></i>
+                                </div>
+                            </a>
+                            <a href="#" class="d-flex align-items-center py-10px dropdown-item text-wrap" data-bs-toggle="modal" data-bs-target="#modalLg" id="sorat_Vaziyat_Taed_Nashode">
+                                <div class="fs-20px w-20px">
+                                    <i class="bi bi-grid text-theme"></i>
+                                </div>
+                                <div class="flex-1 flex-wrap ps-3">
+                                    <div class="mb-1 text-white">صورت وضعیت تایید نشده</div>
+                                    <div class="small">5 دقیقه قبل</div>
+                                </div>
+                                <div class="ps-2 fs-16px">
+                                    <i class="bi bi-chevron-left"></i>
+                                </div>
+                            </a>
+                            <a href="#" class="d-flex align-items-center py-10px dropdown-item text-wrap" data-bs-toggle="modal" data-bs-target="#modalLg" id="Navaghes_lebas_va_Kafsh_Kar">
+                                <div class="fs-20px w-20px">
+                                    <i class="bi bi-credit-card text-theme"></i>
+                                </div>
+                                <div class="flex-1 flex-wrap ps-3">
+                                    <div class="mb-1 text-white">نواقص لباس و کفش کار</div>
+                                    <div class="small">10 دقیقه قبل</div>
+                                </div>
+                                <div class="ps-2 fs-16px">
+                                    <i class="bi bi-chevron-left"></i>
+                                </div>
+                            </a>
+                            <a href="#" class="d-flex align-items-center py-10px dropdown-item text-wrap" data-bs-toggle="modal" data-bs-target="#modalLg" id="Navaghes_Vasile_Naghliye">
+                                <div class="fs-20px w-20px">
+                                    <i class="bi bi-credit-card text-theme"></i>
+                                </div>
+                                <div class="flex-1 flex-wrap ps-3">
+                                    <div class="mb-1 text-white">نواقص وسیله نقلیه</div>
+                                    <div class="small">10 دقیقه قبل</div>
+                                </div>
+                                <div class="ps-2 fs-16px">
+                                    <i class="bi bi-chevron-left"></i>
+                                </div>
+                            </a>
+                            <a href="#" class="d-flex align-items-center py-10px dropdown-item text-wrap" data-bs-toggle="modal" data-bs-target="#modalLg" id="Karkard_Kamtar_Az_Estandard">
+                                <div class="fs-20px w-20px">
+                                    <i class="bi bi-credit-card text-theme"></i>
+                                </div>
+                                <div class="flex-1 flex-wrap ps-3">
+                                    <div class="mb-1 text-white">کارکرد کمتر از استاندارد</div>
+                                    <div class="small">15 دقیقه قبل</div>
+                                </div>
+                                <div class="ps-2 fs-16px">
+                                    <i class="bi bi-chevron-left"></i>
+                                </div>
+                            </a>
+                            <a href="#" class="d-flex align-items-center py-10px dropdown-item text-wrap" data-bs-toggle="modal" data-bs-target="#modalLg" id="Project_Kalaye_Baz">
+                                <div class="fs-20px w-20px">
+                                    <i class="bi bi-credit-card text-theme"></i>
+                                </div>
+                                <div class="flex-1 flex-wrap ps-3">
+                                    <div class="mb-1 text-white">پروژه کالایی باز</div>
+                                    <div class="small">20 دقیقه قبل</div>
+                                </div>
+                                <div class="ps-2 fs-16px">
+                                    <i class="bi bi-chevron-left"></i>
+                                </div>
+                            </a>
+
+                            <hr class="bg-white-transparent-5 mb-0 mt-2" />
+                            <div class="py-10px mb-n2 text-center">
+                                <a href="#" class="text-decoration-none fw-bold">دیدن همه</a>
+                            </div>
+                        </div>
+
+                        <a href="#" data-bs-toggle="dropdown" data-bs-display="static" class="menu-link">
+                            <div class="menu-icon"><i class="bi bi-text-indent-right nav-icon"></i></div>
+                            <div class="menu-badge bg-theme"></div>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end mt-1 w-300px fs-11px pt-1">
+                            <h6 class="dropdown-header fs-10px mb-1">راندمان ها</h6>
+                            <div class="dropdown-divider mt-1"></div>
+                            <a href="#" class="d-flex align-items-center py-10px dropdown-item text-wrap" data-bs-toggle="modal" data-bs-target="#modalLg" id="randeman">
+                                <div class="fs-20px">
+                                    <i class="bi bi-bullseye text-theme"></i>
+                                </div>
+                                <div class="flex-1 flex-wrap ps-3">
+                                    <div class="mb-1 text-white">راندمان</div>
+                                    <div class="small"></div>
+                                </div>
+                                <div class="ps-2 fs-16px">
+                                    <i class="bi bi-chevron-left"></i>
+                                </div>
+                            </a>
+
+                        </div>
+
+                        <a href="#" data-bs-toggle="dropdown" data-bs-display="static" class="menu-link">
+                            <div class="menu-icon"><i class="bi bi-book nav-icon"></i></div>
+                            <div class="menu-badge bg-theme"></div>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end mt-1 w-300px fs-11px pt-1">
+                            <h6 class="dropdown-header fs-10px mb-1">آلارم پیمان ها (قراردادها)</h6>
+                            <div class="dropdown-divider mt-1"></div>
+                            <a href="#" class="d-flex align-items-center py-10px dropdown-item text-wrap" data-bs-toggle="modal" data-bs-target="#modalLg" id="Enheraf_Az_Bodje">
+                                <div class="fs-20px">
+                                    <i class="bi bi-bag text-theme"></i>
+                                </div>
+                                <div class="flex-1 flex-wrap ps-3">
+                                    <div class="mb-1 text-white">انحراف از بودجه</div>
+                                    <div class="small">اکنون</div>
+                                </div>
+                                <div class="ps-2 fs-16px">
+                                    <i class="bi bi-chevron-left"></i>
+                                </div>
+                            </a>
+                            <a href="#" class="d-flex align-items-center py-10px dropdown-item text-wrap">
+                                <div class="fs-20px w-20px">
+                                    <i class="bi bi-person-circle text-theme"></i>
+                                </div>
+                                <div class="flex-1 flex-wrap ps-3">
+                                    <div class="mb-1 text-white">اتمام زمان قرارداد</div>
+                                    <div class="small">2 دقیقه قبل</div>
+                                </div>
+                                <div class="ps-2 fs-16px">
+                                    <i class="bi bi-chevron-left"></i>
+                                </div>
+                            </a>
+                            <a href="#" class="d-flex align-items-center py-10px dropdown-item text-wrap" data-bs-toggle="modal" data-bs-target="#modalLg" id="Etmama_Mablaq_Qarardad">
+                                <div class="fs-20px w-20px">
+                                    <i class="bi bi-gear text-theme"></i>
+                                </div>
+                                <div class="flex-1 flex-wrap ps-3">
+                                    <div class="mb-1 text-white">اتمام مبلغ قرارداد</div>
+                                    <div class="small">3 دقیقه قبل</div>
+                                </div>
+                                <div class="ps-2 fs-16px">
+                                    <i class="bi bi-chevron-left"></i>
+                                </div>
+                            </a>
+                            <a href="#" class="d-flex align-items-center py-10px dropdown-item text-wrap" data-bs-toggle="modal" data-bs-target="#modalLg" id="Navaghes_Sorat_Vaiyat">
+                                <div class="fs-20px w-20px">
+                                    <i class="bi bi-grid text-theme"></i>
+                                </div>
+                                <div class="flex-1 flex-wrap ps-3">
+                                    <div class="mb-1 text-white">نواقص صورت وضعیت</div>
+                                    <div class="small">5 دقیقه قبل</div>
+                                </div>
+                                <div class="ps-2 fs-16px">
+                                    <i class="bi bi-chevron-left"></i>
+                                </div>
+                            </a>
+                            <a href="#" class="d-flex align-items-center py-10px dropdown-item text-wrap" data-bs-toggle="modal" data-bs-target="#modalLg" id="Kasri_Madarek">
+                                <div class="fs-20px w-20px">
+                                    <i class="bi bi-credit-card text-theme"></i>
+                                </div>
+                                <div class="flex-1 flex-wrap ps-3">
+                                    <div class="mb-1 text-white">کسری مدارک و مجوزها</div>
+                                    <div class="small">10 دقیقه قبل</div>
+                                </div>
+                                <div class="ps-2 fs-16px">
+                                    <i class="bi bi-chevron-left"></i>
+                                </div>
+                            </a>
+                            <hr class="bg-white-transparent-5 mb-0 mt-2" />
+                            <div class="py-10px mb-n2 text-center">
+                                <a href="#" class="text-decoration-none fw-bold">دیدن همه</a>
+                            </div>
+                        </div>
+                    </div>*@
+                <div class="menu-item dropdown dropdown-mobile-full">
+                    <a href="#" data-bs-toggle="dropdown" data-bs-display="static" class="menu-link">
+                        @Html.Action("_Show_UserProfile", "Users", new { area = "Users" })
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-end me-lg-3 fs-11px mt-1">
+                        <a class="dropdown-item d-flex align-items-center" style="cursor: pointer" onclick="UploadProfile()">
+                            ویرایش تصویر<i class="bi bi-image ms-auto text-theme fs-16px my-n1"></i>
+                        </a>
+                        <form action="@Url.Action("EditPicProfile", "Users", new { area = "Users" })" method="post" enctype="multipart/form-data" id="pic_form">
+                            <input type="file" name="usr_Picture" id="usr_Picture" style=" display: none" />
+                        </form>
+                        <a data-bs-toggle="modal" data-bs-target="#modalLg" class="dropdown-item d-flex align-items-center" style="cursor: pointer" onclick="NewPassword()">
+                            رمز جدید<i class="bi bi-image ms-auto text-theme fs-16px my-n1"></i>
+                        </a>
+                        <a class="dropdown-item d-flex align-items-center" href="@Url.Action("LogOff", "Login", new { area = "Users" })">
+                            خروج<i class="bi bi-toggle-off ms-auto text-theme fs-16px my-n1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+
+            <form class="menu-search" method="POST" name="header_search_form">
+                <div class="menu-search-container">
+                    <div class="menu-search-icon">
+                        <i class="bi bi-search"></i>
+                    </div>
+                    <div class="menu-search-input">
+                        <input type="text" class="form-control form-control-lg" placeholder="جستجو..." />
+                    </div>
+                    <div class="menu-search-icon">
+                        <a href="#" data-toggle-class="app-header-menu-search-toggled" data-toggle-target=".app">
+                            <i class="bi bi-x-lg"></i>
+                        </a>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+
+
+        @if (User.Identity.IsAuthenticated)
+        {
+            //SaabWebProject.Models.Repositories.Ussers.tbUsersRepository tbUsersRepository = new SaabWebProject.Models.Repositories.Ussers.tbUsersRepository();
+
+
+            // var userid = Request.Cookies["cGhvbmU:"];
+            // var posid = Request.Cookies["dXNlcmlk"];
+            //
+            // var decod = SaabWebProject.Utility.Base64.Base64Decode(userid.Value);
+            // var decod1 = SaabWebProject.Utility.Base64.Base64Decode(posid.Value);
+            //
+            // var user_number = Convert.ToInt64(decod);
+            // var pos_number = Convert.ToInt32(decod1);
+            //
+            //
+            // var acc1 = tbUsersRepository.CheckHasAccess(user_number, pos_number, "Index", "BusinessSide");
+            // var acc2 = tbUsersRepository.CheckHasAccess(user_number, pos_number, "Index", "Users");
+            // var acc3 = tbUsersRepository.CheckHasAccess(user_number, pos_number, "ManageComanies", "Company");
+
+
+            <div id="sidebar" class="app-sidebar">
+
+                <div class="app-sidebar-content" data-scrollbar="true" data-height="100%">
+                    <div class="menu">
+                        <Div class="row" style="        text-align: center">
+                            <div class="menu-img online">
+                                <div style="        margin-top: 30px;">
+                                    @Html.Action("_Show_UserProfile_bigger", "Users", new { area = "Users" })
+
+                                </div>
+                                @*<br />
+                                    <Span style="font-size:20px;font-weight:bolder">پویا عباسی </Span>
+                                    <br />
+                                    <Span> مامور قرائت</Span>*@
+                                @*<br />*@
+                                <br />
+                                <i class="bi bi-envelope" style="        margin: 10px;
+        font-weight: bolder;
+        color: aqua;
+        font-size: 25px;"></i>
+                                <i class="bi bi-pen" style="        margin: 10px;
+        font-weight: bolder;
+        color: aqua;
+        font-size: 25px;"></i>
+                                <a href='@Url.Action("Login","Login",new {area="Users" })'class="bi bi-power" style=" margin: 10px; font-weight: bolder; color: red;font-size: 25px;"></a>
+
+
+                            </div>
+                        </Div>
+                        <div class="menu-header">@*ناوبری*@</div>
+                        <div class="menu-item has-sub">
+                            @* گزارشات *@
+                            <a href="#" class="menu-link">
+                                <span class="menu-icon">
+                                    <i class="bi bi-pie-chart"></i>
+                                </span>
+                                <span class="menu-text">پیشخوان</span>
+                                <span class="menu-caret">
+                                    <b class="caret"></b>
+                                </span>
+                            </a>
+                            <div class="menu-submenu">
+
+                                @*<div class="menu-item">
+                                        <a href="@Url.Action("Index", "Dashboard", new { area = "Reporter" })" class="menu-link">
+                                            <span class="menu-text">پیش خوان</span>
+                                        </a>
+                                    </div>*@
+                                <div class="menu-item">
+                                    <a href="@Url.Action("MaMoorin_Dashboard", "Dashboard", new { area = "Reporter" })" class="menu-link">
+                                        <span class="menu-text">پیشخوان مامورین </span>
+                                    </a>
+                                </div>
+                                @*<div class="menu-item">
+                                        <a href="@Url.Action("Peyman_Dashboard", "Dashboard", new { area = "Reporter" })" class="menu-link">
+                                            <span class="menu-text">داشبورد پیمان </span>
+                                        </a>
+                                    </div>*@
+
+                                @*<div class="menu-item">
+                                        <a href="@Url.Action("KPI_Dashboard", "Dashboard", new { area = "Reporter" })" class="menu-link">
+                                            <span class="menu-text">نگاه کلی بر شاخص ها</span>
+                                        </a>
+                                    </div>*@
+                            </div>
+
+
+
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+        }
+
+
+        <button class="app-sidebar-mobile-backdrop" data-toggle-target=".app"
+                data-toggle-class="app-sidebar-mobile-toggled"></button>
+
+
+        <div id="content" class="app-content">
+            <div class="card">
+
+                <div class="d-flex align-items-center mb-3">
+                    <div style="        margin-top: 2%;
+        margin-right: 2%;">
+                        @*<ul class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="#">صفحات</a></li>
+                                <li class="breadcrumb-item active">محصولات</li>
+                            </ul>*@
+                        <h1 class="page-header mb-0">@ViewBag.Title</h1>
+                    </div>
+                </div>
+
+                <hr class="mb-4" />
+                <div class="hljs-container border-0">
+                    @RenderBody()
+
+                </div>
+                <div class="card-arrow">
+                    <div class="card-arrow-top-left"></div>
+                    <div class="card-arrow-top-right"></div>
+                    <div class="card-arrow-bottom-left"></div>
+                    <div class="card-arrow-bottom-right"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="footer" class="app-footer">
+            &copy; تمامی حقوق این سایت متعلق به شرکت گلشن می باشد
+        </div>
+
+        <a href="#" data-toggle="scroll-to-top" class="btn-scroll-top fade">
+            <i class="fa fa-arrow-up"></i>
+        </a>
+
+
+        <div class="app-theme-panel">
+            <div class="app-theme-panel-container">
+                <a href="javascript:;" data-toggle="theme-panel-expand" class="app-theme-toggle-btn">
+                    <i class="bi bi-sliders"></i>
+                </a>
+                <div class="app-theme-panel-content">
+                    <div class="small fw-bold text-white mb-1">رنگ قالب</div>
+                    <div class="card mb-3">
+
+                        <div class="card-body p-2">
+
+                            <div class="app-theme-list">
+                                <div class="app-theme-list-item">
+                                    <a href="javascript:;"
+                                       class="app-theme-list-link bg-pink" data-theme-class="theme-pink"
+                                       data-toggle="theme-selector" data-bs-toggle="tooltip" data-bs-trigger="hover"
+                                       data-bs-container="body" data-bs-title="صورتی">
+                                        &nbsp;
+                                    </a>
+                                </div>
+                                <div class="app-theme-list-item">
+                                    <a href="javascript:;"
+                                       class="app-theme-list-link bg-red" data-theme-class="theme-red"
+                                       data-toggle="theme-selector" data-bs-toggle="tooltip" data-bs-trigger="hover"
+                                       data-bs-container="body" data-bs-title="قرمز">
+                                        &nbsp;
+                                    </a>
+                                </div>
+                                <div class="app-theme-list-item">
+                                    <a href="javascript:;"
+                                       class="app-theme-list-link bg-warning" data-theme-class="theme-warning"
+                                       data-toggle="theme-selector" data-bs-toggle="tooltip" data-bs-trigger="hover"
+                                       data-bs-container="body" data-bs-title="نارنجی">
+                                        &nbsp;
+                                    </a>
+                                </div>
+                                <div class="app-theme-list-item">
+                                    <a href="javascript:;"
+                                       class="app-theme-list-link bg-yellow" data-theme-class="theme-yellow"
+                                       data-toggle="theme-selector" data-bs-toggle="tooltip" data-bs-trigger="hover"
+                                       data-bs-container="body" data-bs-title="زرد">
+                                        &nbsp;
+                                    </a>
+                                </div>
+                                <div class="app-theme-list-item">
+                                    <a href="javascript:;"
+                                       class="app-theme-list-link bg-lime" data-theme-class="theme-lime"
+                                       data-toggle="theme-selector" data-bs-toggle="tooltip" data-bs-trigger="hover"
+                                       data-bs-container="body" data-bs-title="لیمویی">
+                                        &nbsp;
+                                    </a>
+                                </div>
+                                <div class="app-theme-list-item">
+                                    <a href="javascript:;"
+                                       class="app-theme-list-link bg-green" data-theme-class="theme-green"
+                                       data-toggle="theme-selector" data-bs-toggle="tooltip" data-bs-trigger="hover"
+                                       data-bs-container="body" data-bs-title="سبز">
+                                        &nbsp;
+                                    </a>
+                                </div>
+                                <div class="app-theme-list-item active">
+                                    <a href="javascript:;"
+                                       class="app-theme-list-link bg-teal" data-theme-class=""
+                                       data-toggle="theme-selector" data-bs-toggle="tooltip" data-bs-trigger="hover"
+                                       data-bs-container="body" data-bs-title="پیشفرض">
+                                        &nbsp;
+                                    </a>
+                                </div>
+                                <div class="app-theme-list-item">
+                                    <a href="javascript:;"
+                                       class="app-theme-list-link bg-info" data-theme-class="theme-info"
+                                       data-toggle="theme-selector" data-bs-toggle="tooltip" data-bs-trigger="hover"
+                                       data-bs-container="body" data-bs-title="سبزآبی">
+                                        &nbsp;
+                                    </a>
+                                </div>
+                                <div class="app-theme-list-item">
+                                    <a href="javascript:;"
+                                       class="app-theme-list-link bg-primary" data-theme-class="theme-primary"
+                                       data-toggle="theme-selector" data-bs-toggle="tooltip" data-bs-trigger="hover"
+                                       data-bs-container="body" data-bs-title="آبی">
+                                        &nbsp;
+                                    </a>
+                                </div>
+                                <div class="app-theme-list-item">
+                                    <a href="javascript:;"
+                                       class="app-theme-list-link bg-purple" data-theme-class="theme-purple"
+                                       data-toggle="theme-selector" data-bs-toggle="tooltip" data-bs-trigger="hover"
+                                       data-bs-container="body" data-bs-title="بنفش">
+                                        &nbsp;
+                                    </a>
+                                </div>
+                                <div class="app-theme-list-item">
+                                    <a href="javascript:;"
+                                       class="app-theme-list-link bg-indigo" data-theme-class="theme-indigo"
+                                       data-toggle="theme-selector" data-bs-toggle="tooltip" data-bs-trigger="hover"
+                                       data-bs-container="body" data-bs-title="یاسی">
+                                        &nbsp;
+                                    </a>
+                                </div>
+                                <div class="app-theme-list-item">
+                                    <a href="javascript:;"
+                                       class="app-theme-list-link bg-gray-100" data-theme-class="theme-gray-200"
+                                       data-toggle="theme-selector" data-bs-toggle="tooltip" data-bs-trigger="hover"
+                                       data-bs-container="body" data-bs-title="خاکستری">
+                                        &nbsp;
+                                    </a>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <div class="card-arrow">
+                            <div class="card-arrow-top-left"></div>
+                            <div class="card-arrow-top-right"></div>
+                            <div class="card-arrow-bottom-left"></div>
+                            <div class="card-arrow-bottom-right"></div>
+                        </div>
+
+                    </div>
+                    <div class="small fw-bold text-white mb-1">کاور تم</div>
+                    <div class="card">
+
+                        <div class="card-body p-2">
+
+                            <div class="app-theme-cover">
+                                <div class="app-theme-cover-item active">
+                                    <a href="javascript:;" class="app-theme-cover-link"
+                                       style="        background-image: url(../../assets/img/cover/cover-thumb-1.jpg);"
+                                       data-theme-cover-class="" data-toggle="theme-cover-selector"
+                                       data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-container="body"
+                                       data-bs-title="پیشفرض">
+                                        &nbsp;
+                                    </a>
+                                </div>
+                                <div class="app-theme-cover-item">
+                                    <a href="javascript:;" class="app-theme-cover-link"
+                                       style="        background-image: url(../../assets/img/cover/cover-thumb-2.jpg);"
+                                       data-theme-cover-class="bg-cover-2" data-toggle="theme-cover-selector"
+                                       data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-container="body"
+                                       data-bs-title="کاور 2">
+                                        &nbsp;
+                                    </a>
+                                </div>
+                                <div class="app-theme-cover-item">
+                                    <a href="javascript:;" class="app-theme-cover-link"
+                                       style="        background-image: url(../../assets/img/cover/cover-thumb-3.jpg);"
+                                       data-theme-cover-class="bg-cover-3" data-toggle="theme-cover-selector"
+                                       data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-container="body"
+                                       data-bs-title="کاور 3">
+                                        &nbsp;
+                                    </a>
+                                </div>
+                                <div class="app-theme-cover-item">
+                                    <a href="javascript:;" class="app-theme-cover-link"
+                                       style="        background-image: url(../../assets/img/cover/cover-thumb-4.jpg);"
+                                       data-theme-cover-class="bg-cover-4" data-toggle="theme-cover-selector"
+                                       data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-container="body"
+                                       data-bs-title="کاور 4">
+                                        &nbsp;
+                                    </a>
+                                </div>
+                                <div class="app-theme-cover-item">
+                                    <a href="javascript:;" class="app-theme-cover-link"
+                                       style="        background-image: url(../../assets/img/cover/cover-thumb-5.jpg);"
+                                       data-theme-cover-class="bg-cover-5" data-toggle="theme-cover-selector"
+                                       data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-container="body"
+                                       data-bs-title="کاور 5">
+                                        &nbsp;
+                                    </a>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <div class="card-arrow">
+                            <div class="card-arrow-top-left"></div>
+                            <div class="card-arrow-top-right"></div>
+                            <div class="card-arrow-bottom-left"></div>
+                            <div class="card-arrow-bottom-right"></div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+
+
+    <div class="modal fade" id="modalLg">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-body" id="big_modal_body">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modalLg1">
+        <div class="modal-dialog modal-lg" style="        max-width: 2000px;">
+            <div class="modal-content">
+                @*<div class="modal-header">
+                        <h5 class="modal-title">@Model.StaticClasses.BreadCrumb.LargModalTitle</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>*@
+                <div class="modal-body" id="big_modal_body1">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modalLgDetail">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                @*<div class="modal-header">
+                        <h5 class="modal-title">@Model.StaticClasses.BreadCrumb.LargModalTitle</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>*@
+                <div class="modal-body" id="DetailModal">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modalXl">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-title-xl"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="content-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-default" data-bs-dismiss="modal">بستن</button>
+                    <button type="button" class="btn btn-outline-theme" id="Save">ذخیره</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    @*@Html.Action("slidshoe","Dashboard",new { area="Reporter"})*@
+
+
+    <script data-cfasync="false" src="@Href("~/assets/plugins/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js")"></script>
+    <script src="@Href("~/assets/js/vendor.min.js")" type="8efcda331abc7d41981a6245-text/javascript"></script>
+    <script src="@Href("~/assets/js/app.min.js")" type="8efcda331abc7d41981a6245-text/javascript"></script>
+
+
+    <script src="@Href("~/assets/plugins/highlight.js/highlight.min.js")" type="8efcda331abc7d41981a6245-text/javascript"></script>
+    <script src="@Href("~/assets/js/demo/highlightjs.demo.js")" type="8efcda331abc7d41981a6245-text/javascript"></script>
+
+
+    <script src="@Href("~/assets/plugins/cdn-cgi/scripts/7d0fa10a/cloudflare-static/rocket-loader.min.js")"
+            data-cf-settings="8efcda331abc7d41981a6245-|49" defer=""></script>
+    <script defer
+            src="https://static.cloudflareinsights.com/beacon.min.js/v652eace1692a40cfa3763df669d7439c1639079717194"
+            integrity="sha512-Gi7xpJR8tSkrpF7aordPZQlW2DLtzUlZcumS8dMQjwDHEnw9I7ZLyiOj/6tZStRBGtGgN6ceN6cMH8z7etPGlw=="
+            data-cf-beacon='{"rayId":"6e58f8d7387e8ec2","version":"2021.12.0","r":1,"token":"4db8c6ef997743fda032d4f73cfeff63","si":100}'
+            crossorigin="anonymous"></script>
+    <script src="~/Scripts/sweetalert2.js"></script>
+    <script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+    <script src="~/Scripts/popper.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    @RenderSection("Scripts", false)
+
+    <script>
+        // Select Excel File And Submit Form
+        $("input[name='usr_Picture']").change(function () {
+
+            var file = this.files[0];
+            var ext = file.name.split('.')[1];
+            if (ext == "png" || ext == "jpg" || ext == "jpeg") {
+                $("#pic_form").submit();
+            }
+            else {
+
+                Swal.fire({
+                    icon: 'warning',
+                    background: 'rgb(29,40,52)',
+                    color: 'white',
+                    confirmButtonText: 'باشه',
+                    title: 'نوع فایل',
+                    text: 'لطفا فایلی با پسوند تصویر وارد کنید',
+                });
+                return false;
+            }
+
+        });
+        /// Open Dialog File
+        function UploadProfile() {
+            $("input[name='usr_Picture']").click();
+        }
+    </script>
+    @* آلارم ها *@
+    <script>
+    $("#enheraf_az_meyar").click(function () {
+        console.log("enherafazshakhes");
+        $("#big_modal_body").load('@Url.Content("../../AlarmsAndLog/PeymanKar/EnherafAzShakhes")');
+    });
+
+    $("#zaman_gharardad_khateme_yafte").click(function () {
+        console.log("enherafazshakhes");
+        $("#big_modal_body").load('@Url.Content("../../AlarmsAndLog/PeymanKar/zaman_gharardad_khateme_yafte")');
+    });
+    $("#sorat_Vaziyat_Sabt_Nashode").click(function () {
+        console.log("enherafazshakhes");
+        $("#big_modal_body").load('@Url.Content("../../AlarmsAndLog/PeymanKar/sorat_Vaziyat_Sabt_Nashode")');
+    });
+       $("#sorat_Vaziyat_Taed_Nashode").click(function () {
+
+        $("#big_modal_body").load('@Url.Content("../../AlarmsAndLog/PeymanKar/sorat_Vaziyat_Taed_Nashode")');
+       });
+    $("#Navaghes_lebas_va_Kafsh_Kar").click(function () {
+
+        $("#big_modal_body").load('@Url.Content("../../AlarmsAndLog/PeymanKar/Navaghes_lebas_va_Kafsh_Kar")');
+    });
+    $("#Navaghes_Vasile_Naghliye").click(function () {
+
+        $("#big_modal_body").load('@Url.Content("../../AlarmsAndLog/PeymanKar/Navaghes_Vasile_Naghliye")');
+    });
+    $("#Karkard_Kamtar_Az_Estandard").click(function () {
+
+        $("#big_modal_body").load('@Url.Content("../../AlarmsAndLog/PeymanKar/Karkard_Kamtar_Az_Estandard")');
+    });
+    $("#Project_Kalaye_Baz").click(function () {
+
+        $("#big_modal_body").load('@Url.Content("../../AlarmsAndLog/PeymanKar/Project_Kalaye_Baz")');
+    });
+    $("#Enheraf_Az_Bodje").click(function () {
+
+        $("#big_modal_body").load('@Url.Content("../../AlarmsAndLog/PeymanAlarm/Enheraf_Az_Bodje")');
+    });
+     $("#randeman").click(function () {
+        console.log("salam");
+        $("#big_modal_body").load('@Url.Content("../../AlarmsAndLog/PeymanKar/randeman")');
+    });
+    $("#Etmama_Mablaq_Qarardad").click(function () {
+
+        $("#big_modal_body").load('@Url.Content("../../AlarmsAndLog/PeymanAlarm/Etmama_Mablaq_Qarardad")');
+    });
+    $("#Navaghes_Sorat_Vaiyat").click(function () {
+
+        $("#big_modal_body").load('@Url.Content("../../AlarmsAndLog/PeymanAlarm/Navaghes_Sorat_Vaiyat")');
+    });
+    $("#Kasri_Madarek").click(function () {
+
+        $("#big_modal_body").load('@Url.Content("../../AlarmsAndLog/PeymanAlarm/Kasri_Madarek")');
+    });
+    </script>
+
+
+
+
+</body>
+
+</html>

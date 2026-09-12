@@ -1,0 +1,336 @@
+﻿
+@{
+
+    ViewBag.Title = "اجرا محاسبات قطعی";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/MyStyles/MyStyle.css" rel="stylesheet" />
+
+<div class="tab-content">
+
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="row">
+                <div class="col-xl-2">
+                    <input class="form-check-input" name="radiobutton_1" checked type="radio" value="" id="Total" />
+                </div>
+                <div class="col-xl-8">
+                    <label class="form-check-label" for="defaultRadio1">تمام کارمندان</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-5">
+            <div class="row">
+                <div class="col-xl-2">
+                    <input class="form-check-input" name="radiobutton_1" type="radio" value="" id="Customize" />
+                </div>
+                <div class="col-xl-10">
+                    <label class="form-check-label" for="defaultRadio1">از کد پرسنلی تا کد پرسنلی</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr />
+    <div class="row" style="margin-top:20px">
+        <div class="col-xl-2">
+            <label class="form-label"> ماه مورد نظر  </label>
+            <select class="form-select" id="MonthSelect">
+                <option value="0">انتخاب مورد</option>
+                <option value="1">فروردین</option>
+                <option value="2">اردیبهشت</option>
+                <option value="3">خرداد</option>
+                <option value="4">تیر</option>
+                <option value="5">مرداد</option>
+                <option value="6">شهریور</option>
+                <option value="7">مهر</option>
+                <option value="8">آبان</option>
+                <option value="9">آذر</option>
+                <option value="10">دی</option>
+                <option value="11">بهمن</option>
+                <option value="12">اسفند</option>
+            </select>
+        </div>
+        <div class="col-xl-2">
+            <label class="form-label"> سال مورد نظر  </label>
+            <div class="col-xl-12">
+                <div class="col-xl-12">
+                    <select class="form-select" id="YearSelect">
+                        <option value="0">انتخاب کنید</option>
+
+                        @{
+                            System.Globalization.PersianCalendar cs2 = new System.Globalization.PersianCalendar();
+                            int currentYear = cs2.GetYear(DateTime.Now);
+
+                            for (var i = 4; i >= 0; i--)
+                            {
+                                var s = DateTime.Now.AddYears(-i);
+
+                                <option value="@cs2.GetYear(s)">@cs2.GetYear(s)</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+            @*<select class="form-select" id="YearSelect">
+                <option>انتخاب مورد</option>
+                <option>1400</option>
+                <option>1401</option>
+                <option>1402</option>
+                <option>1403</option>
+                <option>1404</option>
+            </select>*@
+        </div>
+
+
+
+        <div class="col-xl-2" id="frompersonaldiv" style="display:none">
+            <label class="form-label"> از کد پرسنلی  </label>
+            <input class="form-control" type="number" id="FromPersonalcode" />
+        </div>
+        <div class="col-xl-2" id="topersonaldiv" style="display:none">
+            <label class="form-label"> تا کد پرسنلی  </label>
+            <input class="form-control" type="number" id="ToPersonalCode" />
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-xl-11"></div>
+        <div class="col-xl-1">
+            <button id="btnCalculateFishQatee" type="button" class="btn form-control buttonGeneral">
+                <i class="fa fa-calculator fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text">اجرای محاسبات قطعی</span>
+            </button>
+        </div>
+    </div>
+
+    @*<hr class="hr-bg" />
+        <h5>نتایج بررسی ملزومات ماه گذشته</h5>
+        <div class="row">
+            <div class="col-xl-4">
+                <div class="row">
+                    <div class="col-xl-2">
+                        <input class="form-check-input" name="radiobutton_1" type="checkbox" value="" id="defaultRadio1" />
+                    </div>
+                    <div class="col-xl-10" style="padding-right: 0;">
+                        <label class="form-check-label" for="defaultRadio1" style="padding-top:4px;">عملکرد برای ماه گذشته ثبت شده </label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3">
+                <button class="btn  btn-outline-info form-control csss">
+                    ماه انتخابی،ماه اول فعالیت است
+                </button>
+            </div>
+            <div class="col-xl-3">
+                <button class="btn  btn-outline-info form-control csss"
+                        data-bs-toggle="modal" data-bs-target="#modalCoverExample3">
+                    متوجه شدم ، ادامه بده
+                </button>
+            </div>
+            <div class="col-xl-2">
+                <button class="btn btn-outline-warning csss2">
+                    <i class="fa fa-sign-out fa-fw me-1"></i>
+                    کنسل
+                </button>
+            </div>
+        </div>
+        <div class="row" style="margin-top:20px;">
+            <div class="col-xl-4">
+                <div class="row">
+                    <div class="col-xl-2">
+                        <input class="form-check-input" name="radiobutton_1" type="checkbox" value="" id="defaultRadio1" />
+                    </div>
+                    <div class="col-xl-10" style="padding-right: 0;">
+                        <label class="form-check-label" for="defaultRadio1" style="padding-top:4px;">عملکرد برای ماه گذشته تایید شده </label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3">
+                <button class="btn btn-outline-info form-control csss">ماه انتخابی،دوره اول فعالیت است</button>
+            </div>
+            <div class="col-xl-3">
+                <button class="btn btn-outline-info form-control csss" data-bs-toggle="modal" data-bs-target="#modalCoverExample3">
+                    متوجه شدم ، ادامه بده
+                </button>
+            </div>
+            <div class="col-xl-2">
+                <button class="btn btn-outline-warning csss2">
+                    <i class="fa fa-sign-out fa-fw me-1"></i>کنسل
+                </button>
+            </div>
+        </div>
+        <div class="row" style="margin-top:20px;">
+            <div class="col-xl-4">
+                <div class="form-group mb-2">
+                    <div class="row">
+                        <div class="col-xl-2">
+                            <input class="form-check-input" name="radiobutton_1" type="checkbox" value="" id="defaultRadio1" />
+                        </div>
+                        <div class="col-xl-10" style="padding-right: 0;">
+                            <label class="form-check-label" for="defaultRadio1" style="padding-top:4px;">اجرا محاسبات ماه گذشته انجام شده </label>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-xl-3">
+            </div>
+            <div class="col-xl-3">
+                <button class="btn btn-outline-info form-control csss">محاسبات انجام شود</button>
+            </div>
+            <div class="col-xl-2">
+                <button class="btn btn-outline-warning csss2">
+                    <i class="fa fa-sign-out fa-fw me-1"></i>
+                    کنسل
+                </button>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 20px;">
+            <div class="col-xl-4">
+                <div class="row">
+                    <div class="col-xl-2">
+                        <input class="form-check-input" name="radiobutton_1" type="checkbox" value="" id="defaultRadio1" />
+                    </div>
+                    <div class="col-xl-10" style="padding-right: 0;">
+                        <label class="form-check-label" for="defaultRadio1" style="padding-top:4px;">نتایج ماه گذشته، تثبیت شده </label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3">
+            </div>
+            <div class="col-xl-3">
+                <button class="btn btn-outline-info form-control csss" data-bs-toggle="modal" data-bs-target="#modalCoverExample3">
+                    ثبت عملیات ماه گذشته
+                </button>
+            </div>
+            <div class="col-xl-2">
+                <button class="btn btn-outline-warning csss2">
+                    <i class="fa fa-sign-out fa-fw me-1"></i>
+                    کنسل
+                </button>
+            </div>
+        </div>
+
+
+
+        <hr class="hr-bg" />
+        <h5>نتایج بررسی ملزومات ماه جاری</h5>
+        <div class="row">
+            <div class="col-xl-4">
+                <div class="row">
+                    <div class="col-xl-2">
+                        <input class="form-check-input" name="radiobutton_1" type="checkbox" value="" id="defaultRadio1" />
+                    </div>
+                    <div class="col-xl-10" style="padding-right: 0;">
+                        <label class="form-check-label" for="defaultRadio1" style="padding-top:4px;">عملکرد برای ماه جاری ثبت شده است</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3">
+            </div>
+            <div class="col-xl-3">
+            </div>
+            <div class="col-xl-2">
+            </div>
+        </div>
+        <div class="row" style="margin-top:20px;">
+            <div class="col-xl-4">
+                <div class="row">
+                    <div class="col-xl-2">
+                        <input class="form-check-input" name="radiobutton_1" type="checkbox" value="" id="defaultRadio1" />
+                    </div>
+                    <div class="col-xl-10" style="padding-right: 0;">
+                        <label class="form-check-label" for="defaultRadio1" style="padding-top:4px; width:110%">عملکرد ثبت شده برای ماه جاری،تاییدشده </label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-2">
+            </div>
+            <div class="col-xl-4">
+                <button class="btn btn-outline-info form-control csss">عملکرد مورد تایید،محاسبات انجام شود</button>
+            </div>
+
+            <div class="col-xl-2">
+                <button class="btn btn-outline-warning csss2">
+                    <i class="fa fa-sign-out fa-fw me-1"></i>
+                    کنسل
+                </button>
+            </div>
+        </div>*@
+
+
+
+</div>
+
+@section Scripts{
+
+    <script>
+
+        $("#btnCalculateFishQatee").click(function () {
+
+
+            var year = $("#YearSelect").val();
+            var month = $("#MonthSelect").val();
+
+
+
+          $.ajax({
+                url: "@Url.Action("CalculateFormula", "Formula",new {area="Salaries"})",
+                type: "Post",
+                dataType: "html",
+              data: { Month: month, Year: year },
+                success: function (res) {
+                    document.getElementById("loading-message").style.display = "none";
+
+
+                    $("#big_modal_body").html(res)
+                    $("#modalLg").modal('show')
+
+                },
+                error: function (res) {
+                    console.log(res);
+
+                    document.getElementById("loading-message").style.display = "none";
+                    Toast.fire({
+                        icon: 'error',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "عملیات  با خطا مواجه شد"
+                    });
+                    return false;
+                }
+            })
+    })
+
+    </script>
+
+    <script>
+        $('#Total').click(function () {
+            if ($('#Total').is(':checked')) {
+
+                $("#ToPersonalCode").css('display', 'none');
+                $("#FromPersonalcode").css('display', 'none');
+                $("#topersonaldiv").css('display', 'none');
+                $("#frompersonaldiv").css('display', 'none');
+
+            }
+        });
+        $('#Customize').click(function () {
+            if ($('#Customize').is(':checked')) {
+
+                $("#FromPersonalcode").css('display', 'block');
+                $("#ToPersonalCode").css('display', 'block');
+                $("#topersonaldiv").css('display', 'block');
+                $("#frompersonaldiv").css('display', 'block');
+
+
+
+            }
+        });
+    </script>
+
+}
+

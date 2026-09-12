@@ -1,0 +1,114 @@
+﻿@{
+    Layout = null;
+}
+@model SaabWebProject.Models.DomainModels.tbReffrenceAccept
+
+
+<div class="mb-5">
+    <div class="card">
+        <div class="card-body pb-2">
+            <div class="row" style="margin-top:20px">
+                <div class="col-xl-6">
+                    <label class="form-label"> پیمان </label>            @if (Model != null && Model.tbPeymanContracts != null && Model.tbPeymanContracts.pec_Title != null)
+                    {
+                        <inputDiv class="form-control">@Model.tbPeymanContracts.pec_Title</inputDiv>
+                    }
+                  
+                    else
+                    {
+                    <inputDiv class="form-control"></inputDiv>
+                    }
+
+                </div>
+                <div class="col-xl-3">
+                    <label class="form-label"> بسته </label>
+                    <inputDiv class="form-control">@Model.tbReffrenceSaveLevel.Title</inputDiv>
+                </div>
+                <div class="col-xl-3">
+                    <label class="form-label"> حداکثرتعداد روزتایید </label>
+                    <inputDiv class="form-control">@Model.MaxDaysForAccept</inputDiv>
+                </div>
+
+            </div>
+            @{ var counter = 0;}
+            @foreach (var lvl in Model.tbReffrenceAcceptLevel.ToList())
+            {
+                counter++;
+                <hr class="hr-bg" />
+                <h6>مرحله @counter</h6>
+                <div class="row">
+                    <div class="col-xl-11">                        </div>
+
+
+                    <div class="col-xl-1">
+                        <a data-bs-toggle="modal" data-bs-target="#modalLg1" class="edit3453445  btn btn-outline-info form-control buttonGeneral" id="Edit_@lvl.ID">ویرایش</a>
+
+                    </div>
+                </div>
+                    <div class="row" style="margin-top:20px;">
+
+                        <div class="col-xl-2">
+                            <label class="form-label"> شروع </label>
+                            <inputDiv class="form-control">@lvl.StartDayInMonth</inputDiv>
+                        </div>
+                        <div class="col-xl-2">
+                            <label class="form-label"> مهلت(روز) </label>
+                            <inputDiv class="form-control">@lvl.Duration</inputDiv>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top:20px">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table table-hover text-nowrap">
+                                    <thead>
+                                        <tr style="text-align:center">
+
+                                            <th>
+                                                @Html.DisplayName("نام تایید کنندگان")
+                                            </th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in lvl.tbReffrenceAcceptLevelUsers.ToList())
+                                        {
+                                            <tr style="text-align:center;">
+
+                                                <td>
+                                                    @item.tbUsers.FullName
+                                                </td>
+
+                                            </tr>
+
+                                        }
+
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                    }
+
+
+                </div>
+
+        <div class="card-arrow">
+            <div class="card-arrow-top-left"></div>
+            <div class="card-arrow-top-right"></div>
+            <div class="card-arrow-bottom-left"></div>
+            <div class="card-arrow-bottom-right"></div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+      $(".edit3453445").click(function () {
+          var idd = $(this).attr("id").split("_")[1];
+          console.log(idd);
+        $("#big_modal_body1").load('@Url.Content("/RegistrationAndConfirmationProcedures/editaccept")?ID='+idd);
+    });
+</script>

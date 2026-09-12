@@ -1,0 +1,174 @@
+﻿@{ Layout = null;}
+@model IEnumerable<SaabWebProject.Models.DomainModels.tbSavedFunctions>
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+
+
+<div class="card">
+    <div class="table-content p-4" id="TaedKarkardKarbaran">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="form-group mb-12">
+                    <div class="table-responsive">
+                        <table class="table table-hover text-nowrap">
+                            <thead>
+                                <tr style="text-align:center;margin:auto">
+                                    <th>
+                                        @Html.DisplayName("عملیات")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("ردیف")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("پیمان")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("بسته")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("از تاریخ")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("تا تاریخ")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName(" کاربر")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName(" نقش بارگزاری کننده ")
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+                            <tbody>
+                                @{ int cont = 0;}
+                                @foreach (var item in Model)
+                                {
+                                    cont++;
+
+                                    <tr style="text-align:center;">
+                                        <td>
+                                            <div class="ms-sm-4 mt-sm-0 mt-2 dropdown-toggle">
+                                                <a href="#" data-bs-toggle="dropdown" class="text-white text-opacity-75 text-decoration-none">
+                                                    <i class="fa fa-edit"></i>
+                                                </a>
+                                                <div class="dropdown-menu">
+                                                    <a style="cursor:pointer" data-bs-toggle="modal" data-bs-target="#modalLg" class="dropdown-item showFunction" id="showFunction_@item.svdfunc_ID">
+                                                        مشاهده
+                                                    </a>
+                                                </div>
+
+                                            </div>
+                                        </td>
+
+
+                                        <td>@cont</td>
+                                        <td>@item.tbPeymanContracts.pec_Title</td>
+                                        <td>@item.tbReffrenceSaveLevel.Title</td>
+                                        @if (item.svdfunc_FromDate.HasValue)
+                                        {
+                                            @*<td>@item.svdfunc_FromDate.Value.ToString("yyyy/MM/dd")</td>*@
+
+
+                                            @*------------------------------------------------[1402/09/20]-|KH|-*@
+                                            <td cont-date="dateS_@cont" hidden>@item.svdfunc_FromDate.Value.ToString("MM/dd/yyyy")</td>
+                                            <td id="dateS_@cont"></td>
+                                            @*-------------------------------------------------------------|KH|-*@
+                                        }
+                                        else
+                                        {
+                                            <td>تاریخ موجود نیست</td>
+                                        }
+
+
+
+
+                                        @if (item.svdfunc_ToDate.HasValue)
+                                        {
+                                            @*<td>@item.svdfunc_ToDate.Value.ToString("yyyy/MM/dd")</td>*@
+
+
+                                            @*------------------------------------------------[1402/09/20]-|KH|-*@
+                                            <td cont-date="dateE_@cont" hidden>@item.svdfunc_ToDate.Value.ToString("MM/dd/yyyy")</td>
+                                            <td id="dateE_@cont"></td>
+                                            @*-------------------------------------------------------------|KH|-*@
+                                        }
+                                        else
+                                        {
+                                            <td>تاریخ موجود نیست</td>
+                                        }
+
+                                        <td>@item.tbUsers.FullName</td>
+                                        @if (item.Final_Accept == true)
+                                        {
+
+                                            <td>تایید کننده نهایی</td>
+                                        }
+                                        else if (item.For_Accept == true)
+                                        {
+                                            <td>تایید کننده </td>
+
+                                        }
+                                        else
+                                        {
+                                            <td>ثبت کننده </td>
+
+                                        }
+
+
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+@*<div class="modal fade" id="modalLg">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-body" id="ModalFunction">
+
+                </div>
+            </div>
+        </div>
+    </div>*@
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+@*------------------------------------------------[1402/09/07]-|KH|-*@
+<script>
+    // Convert Gregorian date to jaali in the table
+    var tds = document.querySelectorAll("[cont-date]");
+    var valueD, id, target;
+    var options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    tds.forEach(td => {
+        valueD = new Date(td.textContent).toLocaleDateString('fa-IR-u-nu-latn', options).replace(',', '').replace(" ", "");
+        console.log(valueD + '--')
+        valueD = valueD.slice(0, 10) + " " + td.textContent.slice(10, 30)
+        id = td.getAttribute("cont-date");
+        target = document.getElementById(id);
+        target.textContent = valueD;
+    });
+</script>
+@*-------------------------------------------------------------|KH|-*@
+<script>
+        @*$("#ShowFunctionDetail").click(function () {
+            alert("salam");
+
+        $("#ModalFunction").load('@Url.Content("../../Contracts/Functions/_SubmitFunction")');
+        });*@
+        $(".showFunction").click(function () {
+            var idd = $(this).attr("id").split("_")[1];
+            console.log(idd);
+             $("#big_modal_body").load('@Url.Content("../../Contracts/Functions/_SubmitFunctioninsabtandedit")?idd='+idd);
+          });
+</script>

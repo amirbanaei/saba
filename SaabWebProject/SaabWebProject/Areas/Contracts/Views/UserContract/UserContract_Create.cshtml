@@ -1,0 +1,611 @@
+﻿@{
+    Layout = null;
+}
+@model SaabWebProject.Models.DomainModels.tbUserContracts
+
+<link href="~/Areas/Users/Styles/ShareStyle.css" rel="stylesheet" />
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+<link href="~/Assets/plugins/BootstrapPersianDateTimePicker/src/jquery.md.bootstrap.datetimepicker.style.css" rel="stylesheet" />
+<style>
+    .modal-lg, .modal-xl {
+        margin-top: 8px !important;
+        max-width: 90% !important;
+    }
+</style>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div id="formControls" >
+
+        <div class="card">
+            <div class="card-body p-4">
+                <form>
+                    <div class="row">
+                        <div class="col-xl-4">
+                            <label class="form-label"> سمت </label>
+                            @Html.Action("_GetAllBusinessSide_Select", "BusinessSide", new { area = "Users" })
+                        </div>
+                        <div class="col-xl-8">
+                            <label class="form-label"> کاربران  </label>
+                            <span id="div_users1"></span>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-2">
+                            <div class="form-group mb-3">
+                                <label class="form-label">نوع قرارداد</label>
+                                <select class="form-select my_Select" id="usc_TypeOfContract">
+                                    <option value="-1">انتخاب کنید..</option>
+                                    <option value="0">وقت مزدی</option>
+                                    <option value="1">کارمزدی</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-xl-5">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> کارفرما </label>
+                                <span id="span_karfarmayan"></span>
+                            </div>
+                        </div>
+                        <div class="col-xl-5">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> کارفرما اصلی</label>
+                                <span id="span_karfarmayan_Asli"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-2">
+                            <div class="form-group mb-3">
+                                <label class="form-label">گروه شغلی</label>
+                                <select class="form-select my_Select" id="FK_JobGroup">
+                                    <option value="0">انتخاب کنید..</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                    <option value="11">11</option>
+                                    <option value="12">12</option>
+                                    <option value="13">13</option>
+                                    <option value="14">14</option>
+                                    <option value="15">15</option>
+                                    <option value="16">16</option>
+                                    <option value="17">17</option>
+                                    <option value="18">18</option>
+                                    <option value="19">19</option>
+                                    <option value="20">20</option>
+                                    <option value="21">21</option>
+                                    <option value="22">22</option>
+                                    <option value="23">23</option>
+                                    <option value="24">24</option>
+                                    <option value="25">25</option>
+                                    <option value="26">26</option>
+                                    <option value="27">27</option>
+                                    <option value="28">28</option>
+                                    <option value="29">29</option>
+                                    <option value="30">30</option>
+                                    <option value="31">31</option>
+                                    <option value="32">32</option>
+                                    <option value="33">33</option>
+                                    <option value="34">34</option>
+                                    <option value="35">35</option>
+                                    <option value="36">36</option>
+                                    <option value="37">37</option>
+                                    <option value="38">38</option>
+                                    <option value="39">39</option>
+                                    <option value="40">40</option>
+                                </select>
+
+                            </div>
+                        </div>
+                        <div class="col-xl-2">
+                            <div class="form-group mb-3">
+                                <label class="form-label">تعداد سال سنوات</label>
+                                @Html.EditorFor(model => model.usc_TedadSalSanavat, new { htmlAttributes = new { @class = "form-control", @id = "usc_TedadSalSanavat", @type = "number" } })
+
+                            </div>
+                        </div>
+                        @*<div class="col-xl-2">
+                <div class="form-group mb-3">
+                    <label class="form-label"> کد شغل </label>
+                    @Html.EditorFor(model => model.usc_JobCode, new { htmlAttributes = new { @class = "form-control", @id = "usc_JobCode" } })
+                </div>
+            </div>
+            <div class="col-xl-2">
+                <div class="form-group mb-3">
+                    <label class="form-label">عنوان شغل</label>
+                    @Html.EditorFor(model => model.usc_Jobtitle, new { htmlAttributes = new { @class = "form-control", @id = "usc_Jobtitle" } })
+                </div>
+            </div>
+            <div class="col-xl-2">
+                <div class="form-group mb-3">
+                    <label class="form-label"> شغل  </label>
+                    @Html.Action("listjob", "BusinessSide", new { area = "Users" })
+                </div>
+            </div>*@
+
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-2">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> شروع  (روز) </label>
+                                <select class="form-select my_Select" id="ShamsiStartTime_day">
+                                    <option value="0">انتخاب کنید..</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                    <option value="11">11</option>
+                                    <option value="12">12</option>
+                                    <option value="13">13</option>
+                                    <option value="14">14</option>
+                                    <option value="15">15</option>
+                                    <option value="16">16</option>
+                                    <option value="17">17</option>
+                                    <option value="18">18</option>
+                                    <option value="19">19</option>
+                                    <option value="20">20</option>
+                                    <option value="21">21</option>
+                                    <option value="22">22</option>
+                                    <option value="23">23</option>
+                                    <option value="24">24</option>
+                                    <option value="25">25</option>
+                                    <option value="26">26</option>
+                                    <option value="27">27</option>
+                                    <option value="28">28</option>
+                                    <option value="29">29</option>
+                                    <option value="30">30</option>
+                                    <option value="31">31</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-xl-2">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> ماه </label>
+                                <select class="form-select my_Select" id="ShamsiStartTime_month">
+                                    <option value="0">انتخاب کنید..</option>
+                                    <option value="1">فروردین</option>
+                                    <option value="2">اردیبهشت</option>
+                                    <option value="3">خرداد</option>
+                                    <option value="4">تیر</option>
+                                    <option value="5">مرداد</option>
+                                    <option value="6">شهریور</option>
+                                    <option value="7">مهر</option>
+                                    <option value="8">آبان</option>
+                                    <option value="9">آذر</option>
+                                    <option value="10">دی</option>
+                                    <option value="11">بهمن</option>
+                                    <option value="12">اسفند</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-xl-2">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> سال </label>
+                                <select class="form-select my_Select" id="ShamsiStartTime_year">
+                                    <option value="0">انتخاب کنید..</option>
+                                    <option value="1400">1400</option>
+                                    <option value="1401">1401</option>
+                                    <option value="1402">1402</option>
+                                    <option value="1403">1403</option>
+                                    <option value="1404">1404</option>
+                                    <option value="1405">1405</option>
+                                    <option value="1406">1406</option>
+                                    <option value="1407">1407</option>
+                                    <option value="1408">1408</option>
+                                    <option value="1409">1409</option>
+                                    <option value="1410">1410</option>
+
+                                </select>
+
+                            </div>
+                        </div>
+
+                        <div class="col-xl-2">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> پایان (روز) </label>
+                                <select class="form-select my_Select" id="ShamsiENDTime_day">
+                                    <option value="0">انتخاب کنید..</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                    <option value="11">11</option>
+                                    <option value="12">12</option>
+                                    <option value="13">13</option>
+                                    <option value="14">14</option>
+                                    <option value="15">15</option>
+                                    <option value="16">16</option>
+                                    <option value="17">17</option>
+                                    <option value="18">18</option>
+                                    <option value="19">19</option>
+                                    <option value="20">20</option>
+                                    <option value="21">21</option>
+                                    <option value="22">22</option>
+                                    <option value="23">23</option>
+                                    <option value="24">24</option>
+                                    <option value="25">25</option>
+                                    <option value="26">26</option>
+                                    <option value="27">27</option>
+                                    <option value="28">28</option>
+                                    <option value="29">29</option>
+                                    <option value="30">30</option>
+                                    <option value="31">31</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-xl-2">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> ماه </label>
+                                <select class="form-select my_Select" id="ShamsiENDTime_month">
+                                    <option value="0">انتخاب کنید..</option>
+                                    <option value="1">فروردین</option>
+                                    <option value="2">اردیبهشت</option>
+                                    <option value="3">خرداد</option>
+                                    <option value="4">تیر</option>
+                                    <option value="5">مرداد</option>
+                                    <option value="6">شهریور</option>
+                                    <option value="7">مهر</option>
+                                    <option value="8">آبان</option>
+                                    <option value="9">آذر</option>
+                                    <option value="10">دی</option>
+                                    <option value="11">بهمن</option>
+                                    <option value="12">اسفند</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-xl-2">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> سال </label>
+                                <select class="form-select my_Select" id="ShamsiENDTime_year">
+                                    <option value="0">انتخاب کنید..</option>
+                                    <option value="1400">1400</option>
+                                    <option value="1401">1401</option>
+                                    <option value="1402">1402</option>
+                                    <option value="1403">1403</option>
+                                    <option value="1404">1404</option>
+                                    <option value="1405">1405</option>
+                                    <option value="1406">1406</option>
+                                    <option value="1407">1407</option>
+                                    <option value="1408">1408</option>
+                                    <option value="1409">1409</option>
+                                    <option value="1410">1410</option>
+                                </select>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-4">
+                            <label class="form-label">توضیحات</label>
+                            <textarea class="form-control" id="sharh" style="height: 35px;"></textarea>
+                        </div>
+                        <div class="col-xl-4">
+                            <label class="form-label">شرح وظیفه</label>
+                            <textarea class="form-control" id="Sharhvazayf" style="height: 35px;"></textarea>
+                        </div>     <div class="col-xl-4">
+                            <label class="form-label">شرح فسخ قرارداد</label>
+                            <textarea class="form-control" id="shraytfasgh" style="height: 35px;"></textarea>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row">
+                    </div>
+                    <span id="FromJobGroups"></span>
+
+                    <div class="row" style="margin-bottom:10px">
+                        <div class="col-xl-1">
+                            <div class="form-group mb-1">
+                                <label class="form-label" id="plus">  </label>
+                                <button type="button" class="btn form-control buttonGeneralPlus" id="Plus">
+                                    <i class="fa fa-plus VecGeneral"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <span id="FromMoalefe"> </span>
+                    <hr class="mb-4" />
+                    <div class="row">
+                        <div class="col-xl-11" style="margin-top:4.5%">
+                        </div>
+                        <div class="col-xl-1">
+
+                            <button id="btnSaveContract" type="button" class="btn form-control buttonsabt">
+                                <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                                <span class="bSabt-text">ثبت</span>
+                            </button>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="card-arrow">
+                <div class="card-arrow-top-left"></div>
+                <div class="card-arrow-top-right"></div>
+                <div class="card-arrow-bottom-left"></div>
+                <div class="card-arrow-bottom-right"></div>
+            </div>
+        </div>
+    </div>
+}
+<script src="~/Scripts/sweetalert2.js" type="text/javascript"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/src/jquery.md.bootstrap.datetimepicker.js"></script>
+
+<script>
+    var i = 1;
+    $(function () {
+
+            $("#FromMoalefe").load('@Url.Content("/../Contracts/MoalefeDastMozdi/_PartialViewGetGhararDadiMoalefeForGharardadProject")',
+                function () {
+                    $("#roww").attr("id", "roww_1");
+                    $("#minu").attr("id", "minu_1");
+                    $("#moalefe").attr("id", "moalefe_1");
+                    $("#valueMoalefe").attr("id", "valueMoalefe_1");
+                    $("#NextRow").attr("id", "NextRow_2");
+                    $(".minus_class").on("click", function () {
+                        var id = $(this).attr("id").split("_")[1];
+                        $("#roww_" + id).remove();
+                    });
+                });
+
+        $("#div_users1").load('@Url.Content("/../Users/Users/_PartialViewUsersListWithSearchAndMultiple")', function () {
+            $("#select_users1").attr("id", "users");
+            $("#users").picker({ search: true });
+            $("#users").picker();
+            $('#users').picker({ search: true });
+        });
+
+        $("#span_karfarmayan").load('@Url.Content("/../Users/Company/_PartialListCompaniesInDropDown")', function () {
+            $("#companies").attr("id", "FK_KarfarmaID");
+            $('#FK_KarfarmaID').removeAttr("multiple");
+            $("#FK_KarfarmaID").picker();
+            $('#FK_KarfarmaID').picker({ search: true });
+        });
+       $("#span_karfarmayan_Asli").load('@Url.Content("/../Users/Company/_PartialListCompaniesInDropDown")', function () {
+            $("#companies").attr("id", "FK_KarfarmaAsli");
+            $('#FK_KarfarmaAsli').removeAttr("multiple");
+            $("#FK_KarfarmaAsli").picker();
+            $('#FK_KarfarmaAsli').picker({ search: true });
+        });
+    });
+    $("#select_position").removeAttr("multiple");
+    $('#select_position').change(function () {
+         var x = $("#select_position").val();
+         $("#div_users1").load('@Url.Content("/../Users/Users/_PartialViewUsersListWithSearchAndMultiple")' , { positions: x }  , function () {
+            $("#select_users1").attr("id", "users");
+            $("#users").picker({ search: true });
+            $("#users").picker();
+            $('#users').picker({ search: true });
+
+          //$('#select_users1 option').attr("selected","selected");
+          //$('#select_users1').picker('refresh');
+        });
+    });
+    $("#listjob").removeAttr("multiple");
+    $("#FK_JobGroup").on("change",function () {
+        upload_formula_and_jobgroup_information();
+    });
+
+    $("#usc_TedadSalSanavat").on("change", function () {
+        upload_formula_and_jobgroup_information();
+    });
+
+    function upload_formula_and_jobgroup_information() {
+        if ($("#FK_JobGroup").val() != 0 && $("#usc_TedadSalSanavat").val().trim().length != 0) {
+                   $("#loading-message").css("display", "block");
+                       $.ajax({
+                           url: '@Url.Action("_PartialGetJobGroupMoalefeForContracts", "JobGroups", new { area = "Contracts" })',
+                           data: { groupNumber: $("#FK_JobGroup").val(), sanavatYear: $("#usc_TedadSalSanavat").val()},
+                            type: "Post",
+                            dataType: "html",
+                           success: function (resp) {
+                               $("#loading-message").css("display", "none");
+                               $("#FromJobGroups").html(resp);
+                            },
+                            error: function (resp) {
+                                console.log(resp);
+                                console.log("nashod");
+                                Toast.fire({
+                                    icon: 'success',
+                                    background: '#35434A',
+                                    color: 'white',
+                                    title: "عملیات با خطا مواجه شده است"
+                                }).then(() => {
+                                });
+                             $("#loading-message").css("display", "none");
+
+                            }
+                       });
+
+
+        }
+    }
+
+    $("#Plus").click(function () {
+            i++;
+            console.log("hello");
+           $("#NextRow_" + i).load('@Url.Content("/../Contracts/MoalefeDastMozdi/_PartialViewGetGhararDadiMoalefeForGharardadProject")', function () {
+               $("#roww").attr("id", "roww_"+i);
+               $("#minu").attr("id", "minu_"+i);
+               $("#moalefe").attr("id", "moalefe_"+i);
+               $("#valueMoalefe").attr("id", "valueMoalefe_"+i);
+               $("#NextRow").attr("id", "NextRow_" + (i + 1));
+               $(".minus_class").on("click", function () {
+                   var id = $(this).attr("id").split("_")[1];
+                   $("#roww_" + id).remove();
+               });
+           });
+    });
+
+    $("#btnSaveContract").click(function () {
+        if ($("#users").val().toString().split(',').length == 0) {
+            alert("کاربران را انتخاب نمایید");
+        } else if ($("#users").val().length == 0) {
+            alert("نام را درست وارد نمایید  ");  }
+        else if ($("#usc_TypeOfContract").val() == -1) {
+            alert("نوع قرارداد را انتخاب نمایید");
+        } else if ($("#FK_KarfarmaID").val() == -1) {
+            alert("کارفرما را انتخاب نمایید");
+        }  else if ($("#FK_KarfarmaAsli").val() == -1) {
+            alert("کارفرما اصلی را انتخاب نمایید");
+        } else if ($("#FK_JobGroup").val() == 0) {
+            alert("گروه شغلی را انتخاب نمایید");
+        } else if ($("#usc_TedadSalSanavat").val() > 40 || $("#usc_TedadSalSanavat").val() < 0 || $("#usc_TedadSalSanavat").val().trim().length == 0) {
+            alert("تعداد سال سنوات را صحیح پر نمایید");
+        } else if ($("#ShamsiStartTime_day").val() == 0) {
+            alert("روز شروع را انتخاب نمایید");
+        } else if ($("#ShamsiStartTime_month").val() == 0) {
+            alert("ماه شروع را انتخاب نمایید");
+        } else if ($("#ShamsiStartTime_year").val() == 0) {
+            alert("سال شروع را انتخاب نمایید");
+        } else if ($("#ShamsiENDTime_day").val() == 0) {
+
+            alert("روز پایان را انتخاب نمایید");
+        } else if ($("#ShamsiENDTime_month").val() == 0) {
+            alert("ماه پایان را انتخاب نمایید");
+        } else if ($("#ShamsiENDTime_year").val() == 0) {
+            alert("سال پایان را انتخاب نمایید");
+        } else if ($("#ValueMozdGroup").val() == 0) {
+            alert("مزد گروه را وارد نمایید");
+        } else if ($("#ValueSanavat").val().trim().length == 0) {
+            alert("مقدار سنوات را وارد نمایید");
+        } else if ($("#jg_HagheOlad").val().trim().length == 0) {
+            alert("حق اولاد را وارد نمایید");
+        } else if ($("#jg_HagheMaskan").val().trim().length == 0) {
+            alert("حق مسکن را وارد نمایید");
+        } else if ($("#jg_KharoBar").val().trim().length == 0) {
+            alert("خوار و بار را وارد نمایید");
+        } else {
+            console.log($("#ShamsiENDTime_month").val());
+            var Filters = new Object();
+        var Total = new Object();
+            Total.list_usersIDs = $("#users").val();
+            console.log(Total.list_usersIDs);
+            console.log($("#users").val());
+            if ($("#usc_TypeOfContract").val() == 0) {
+                Filters.usc_TypeOfContract = false
+                    ;
+            }
+            else {
+                Filters.usc_TypeOfContract = true;
+
+
+            }
+        Filters.FK_KarfarmaID = $("#FK_KarfarmaID").val();
+        Filters.FK_KarfarmaAsli = $("#FK_KarfarmaAsli").val();
+        Filters.FK_JobGroup = $("#FK_JobGroup").val();
+        Filters.usc_TedadSalSanavat = $("#usc_TedadSalSanavat").val();
+            Filters.usc_JobCode = 0;
+            Filters.sharh = $("#sharh").val();
+            Filters.shraytfasgh = $("#shraytfasgh").val();
+            Filters.Sharhvazayf = $("#Sharhvazayf").val();
+
+        Filters.usc_Jobtitle = null;
+        Filters.ShamsiStartTime_day = $("#ShamsiStartTime_day").val();
+        Filters.ShamsiStartTime_month = $("#ShamsiStartTime_month").val();
+        Filters.ShamsiStartTime_year = $("#ShamsiStartTime_year").val();
+        Filters.ShamsiENDTime_day = $("#ShamsiENDTime_day").val();
+        Filters.ShamsiENDTime_month = $("#ShamsiENDTime_month").val();
+        Filters.ShamsiENDTime_year = $("#ShamsiENDTime_year").val();
+        Filters.jobgroup_ValueMozdGroup = $("#ValueMozdGroup").val();
+        Filters.jobgroup_ValueSanavat = $("#ValueSanavat").val();
+        Filters.jobgroup_HagheOlad = $("#jg_HagheOlad").val();
+            Filters.jobgroup_HagheMaskan = $("#jg_HagheMaskan").val();
+            //Filters.FK_job = $("#FK_job").val();
+
+            Filters.jobgroup_KharoBar = $("#jg_KharoBar").val();
+            console.log(Filters.ShamsiENDTime_month);
+        let barArray = [];
+        var flag = true;
+        var counter = 0;
+        $('.Contract_row_class').each(function (i, obj) {
+            counter++;
+            var id = $(this).attr("id").split("_")[1];
+            var obj = new Object();
+            if ($("#moalefe_" + id).val() != 0 && $("#valueMoalefe_" + id).val().trim().length == 0) {
+                alert("مولفه" + counter + "را انتخاب نمایید");
+                flag = false;
+
+            } else if ($("#moalefe_" + id).val() != 0 && $("#valueMoalefe_" + id).val().trim().length != 0) {
+                console.log($("#valueMoalefe_" + id).val().trim().length);
+                console.log($("#moalefe_" + id).val());
+                obj.Value = $("#valueMoalefe_" + id).val();
+                obj.FKMoalefeGhararDadi = $("#moalefe_" + id).val();
+                barArray.push(obj);
+            }
+
+        });
+        Filters.tbUserContractsAndMoalefeGhararDadi = barArray;
+        Total.obj_tbuserContracts = Filters;
+            console.log(Total);
+
+        if (flag == false) {
+            return false;
+        }
+
+        sendAjax('@Url.Action("UserContract_Save", "UserContract", new { area = "Contracts" })', Total);
+        }
+
+    });
+
+    function sendAjax(url, data) {
+
+        $.ajax({
+            beforeSend: function () {
+                document.getElementById("loading-message").style.display = "block";
+            },
+            url: url,
+            data: { obj_ContractsListViewModel: data },
+            type: "Post",
+            dataType: "html",
+            success: function (resp) {
+                document.getElementById("loading-message").style.display = "none";
+                console.log(resp);
+                if (resp.split("_")[0] == "Falsee") {
+                    alert("یکی از کاربران انتخاب شده این تاریخ قرارداد دیگری دارد");
+                } else if (resp == "Falsee_WithoutUser") {
+                    alert("کاربری انتخاب نشده است");
+                } else if (resp == "False") {
+                    alert("دچار مشکل شده است ");
+                } else {
+                    alert("با موفقیت ثبت شد");
+                    location.reload();
+
+                }
+            },
+            error: function (resp) {
+                document.getElementById("loading-message").style.display = "none";
+                alert("دچار مشکل شده است ");
+                console.log(resp);
+            }
+        });
+
+    }
+
+</script>
+
+<script>
+
+</script>

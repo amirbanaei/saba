@@ -1,0 +1,33 @@
+﻿@model List<SaabWebProject.Models.DomainModels.tbEquipmentMoalefeValueReffrenceSave>
+    @using SaabWebProject.Models.DomainModels;
+
+@{
+    Layout = null;
+    SaabEntities db = new SaabEntities();
+
+}
+
+<select class="form-select" id="baste_peyman_ACCEpt3">
+    <option value="0">انتخاب نمایید..</option>
+    @{ int? previousFK_Baste = null;
+        //int? previousFK_pec_ID = null;
+        //int? previousFK_Eqpgrp_ID = null;
+
+
+    }                    @foreach (var item in Model)
+    {
+        if (item.FK_Baste != previousFK_Baste)
+        {
+            var t = db.tbEquipmentMoalefeValue.Where(p => p.FK_tbEquipmentMoalefeValueReffrenceSave == item.ID).FirstOrDefault();
+            var tt = db.tbEquipments.Where(p => p.ID == t.FK_Equipment).FirstOrDefault();
+            var ttt = db.tbEquipmentBunch.Where(p => p.Eqpbnch_ID == tt.FK_Bunch).FirstOrDefault();
+            var tttt = db.tbEquipmentGroup.Where(p => p.Eqpgrp_ID == ttt.FK_EqpgrpID).FirstOrDefault();
+
+            <option value="@(item.FK_Baste)_@(t.Fk_pymn)_@(tttt.Eqpgrp_ID)">                                @t.tbPeymanContracts.pec_Title نوع تجهیز:( @tttt.Eqpgrp_Name)                            </option>
+        }
+        previousFK_Baste = item.FK_Baste;
+        //previousFK_pec_ID = item.tbEquipmentMoalefeValue.FirstOrDefault().tbEquipments.tbPeymanContracts.pec_ID;
+        //previousFK_Eqpgrp_ID = item.tbEquipmentMoalefeValue.FirstOrDefault().tbEquipments.tbEquipmentBunch.tbEquipmentGroup.Eqpgrp_ID;
+    }
+
+</select>

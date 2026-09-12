@@ -1,0 +1,1282 @@
+﻿
+@{
+    ViewBag.Title = "گزارش دسته بندی";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using SaabWebProject.Models.DomainModels
+@{ SaabEntities db = new SaabEntities();
+}
+
+<link href="~/MyStyles/MyStyle.css" rel="stylesheet" />
+
+<style>
+    ul {
+        list-style-type: none;
+        padding-left: 0;
+    }
+
+    .menu-itemTree {
+        display: flex;
+        align-items: flex-start;
+        margin: 5px 0;
+    }
+
+    .submenu {
+        display: block;
+        margin-bottom: 20px;
+        margin-right: -13px;
+        position: relative;
+        right: 28px;
+    }
+
+        /* زیرمنو در حالت پیش‌فرض مخفی */
+        .submenu.open {
+            display: none;
+            padding-left: 20px;
+        }
+
+    /* زیرمنو در حالت باز */
+    .menu-1 {
+        display: none;
+    }
+
+    input {
+        margin-bottom: 0px !important;
+        padding: .375rem .75rem;
+    }
+
+    .buttonGeneralTree {
+        width: 25px !important;
+        height: 25px;
+        border-radius: 5px;
+        background: linear-gradient(129deg, rgba(29, 29, 27, 1) 0%, rgba(29, 113, 184, 1) 53%, rgba(54, 169, 225, 1) 100%);
+        border: none;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition-duration: .5s;
+        overflow: hidden;
+        position: relative;
+        padding: 9px;
+        font-size: 26px;
+        z-index: 10;
+        border: 1px solid var(--bs-border-input-color);
+        background: var(--bs-tab-content-bg);
+        color: var(--bs-border-input-color);
+        position: absolute;
+        top: 4px;
+        right: 197px;
+    }
+
+    li .buttonGeneralPlus {
+        position: relative !important;
+        z-index: 10 !important;
+        width: 25px;
+        height: 25px;
+        /* width: max-content; */
+        border-radius: 50%;
+        background-color: #ffffff00 !important;
+        background-image: unset;
+        border: none;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.164);
+        cursor: pointer;
+        transition-duration: .5s;
+        overflow: hidden;
+        position: relative;
+        margin-top: -1px;
+        padding: 16px;
+        box-shadow: unset;
+    }
+
+    li .VecGeneral {
+        font-size: 23px;
+        color: var(--bs-border-input-color);
+        backdrop-filter: blur(9px);
+    }
+
+    .tab-Tree {
+        overflow: auto;
+        max-height: 71vh;
+        height: 71vh;
+    }
+
+    .menu-itemTree {
+        position: relative;
+        height: 100%
+    }
+
+    .Lin1 {
+        width: 37px;
+        height: 0;
+        border-bottom: 1px dotted var(--bs-border-input-color);
+        position: absolute;
+        top: 15px;
+        right: -33px;
+        z-index: 0;
+    }
+
+    .Lin2 {
+        width: 0;
+        height: 100%;
+        border-right: 1px dotted var(--bs-border-input-color);
+        position: absolute;
+        top: 18px;
+        right: -33px;
+        z-index: 0;
+    }
+
+    .menu-itemTree:last-of-type > div > .Lin2 {
+        display: none;
+    }
+
+    .menu-itemTree:last-of-type > div > .Lin1 {
+        width: 37px;
+        height: 0;
+        position: absolute;
+        top: 15px;
+        right: -33px;
+        z-index: 0;
+    }
+</style>
+<style>
+    .menue3 {
+        position: relative;
+    }
+
+    .dot3 {
+        position: absolute;
+        z-index: 10;
+        left: 4px;
+        top: 6px;
+        cursor: pointer;
+        border-right: 1px solid #44797c;
+        backdrop-filter: blur(6px);
+    }
+
+    .alert-box {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: var(--bs-tab-content-bg);
+        box-shadow: 0rem 0rem 1rem rgba(var(--bs-inverse-rgb), .35);
+        padding: 23px;
+        border-radius: 10px;
+        z-index: 9999;
+        max-width: 440px;
+    }
+
+    .btnFaktor {
+        border-radius: 20px;
+        background-image: linear-gradient(#46b8cd, #10635b);
+        border-color: #ffffff00;
+        width: 97px;
+        height: 40px;
+        margin: 0 6px;
+    }
+
+    .btnFaktor {
+        border-radius: 20px;
+        background-image: linear-gradient(#46b8cd, #10635b);
+        border-color: #ffffff00;
+        color: #fff !important;
+        height: 37px;
+    }
+
+    .check7 {
+        margin-top: 4px;
+        padding-right: 0px;
+        width: 70%;
+        margin-right: 5px;
+    }
+
+    .form-check-input[type="checkbox"] {
+        ;
+        height: 28px !important;
+    }
+</style>
+
+<div class="tab-content">
+    <div class="tab-Tree">
+        <ul id="menu">
+            <li class="menu-itemTree" id="L" data-limit="0">
+                <!-- محدودیت مرحله اول -->
+                <button class="buttonGeneralPlus" onclick="addSubmenu('L')" title="افزودن شماره حساب">
+                    <i class="fa fa-plus-circle fa-fw me-1 VecGeneral"></i>
+                </button>
+                <div class="menue3">
+                    <input type="text" placeholder="آیتم">
+                    <i class="bi bi-three-dots-vertical dot3"></i>
+                </div>
+
+                <button class="buttonGeneralTree" onclick="toggleSubmenu('L')">-</button>
+
+
+
+                <ul class="submenu"></ul> <!-- زیرمنوی داخلی پیش‌فرض -->
+
+            </li>
+        </ul>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-xl-11"></div>
+        <div class="col-xl-1">
+            <button id="btnSaveContract222" type="button" class="btn form-control buttonsabt">
+                <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                <span class="bSabt-text">ثبت</span>
+            </button>
+        </div>
+    </div>
+</div>
+<div id="alertBox01" class="alert-box" style="display:none;">
+    <div class="" style=" color: #07c9cc !important; font-weight: bold; padding: 20px 20px; border: 1px solid #07c9cc; border-radius: 10px;">
+        <h4 class="mb-0" id="alertMessage01" style="color: #ff6c31;display:none "></h4>
+        <div class="row" style="">
+            <div class="col-xl-6">
+                <div class="form-check">
+                    <div class="row">
+                        <div class="col-xl-1" style="width: 1%;">
+                            <input class="form-check-input" name="radiobutton_1" type="checkbox" id="defaultRadio8">
+                        </div>
+                        <div class="col-xl-10 check7 ">
+                            <label class="form-check-label" for="defaultRadio1">روز</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6">
+                <div class="form-check">
+                    <div class="row">
+                        <div class="col-xl-1" style="width: 1%;">
+                            <input class="form-check-input" name="radiobutton_1" type="checkbox" id="defaultRadio1">
+                        </div>
+                        <div class="col-xl-10 check7 ">
+                            <label class="form-check-label" for="defaultRadio1">ماه</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6">
+                <div class="form-check">
+                    <div class="row">
+                        <div class="col-xl-1" style="width: 1%;">
+                            <input class="form-check-input" name="radiobutton_1" type="checkbox" id="defaultRadio2">
+                        </div>
+                        <div class="col-xl-10 check7 ">
+                            <label class="form-check-label" for="defaultRadio1">سال</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6">
+                <div class="form-check">
+                    <div class="row">
+                        <div class="col-xl-1" style="width: 1%;">
+                            <input class="form-check-input" name="radiobutton_1" type="checkbox" id="defaultRadio3">
+                        </div>
+                        <div class="col-xl-10 check7 ">
+                            <label class="form-check-label" for="defaultRadio1">حقوقی</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6">
+                <div class="form-check">
+                    <div class="row">
+                        <div class="col-xl-1" style="width: 1%;">
+                            <input class="form-check-input" name="radiobutton_1" type="checkbox" id="defaultRadio4">
+                        </div>
+                        <div class="col-xl-10 check7 ">
+                            <label class="form-check-label" for="defaultRadio1">حقیقی</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6">
+                <div class="form-check">
+                    <div class="row">
+                        <div class="col-xl-1" style="width: 1%;">
+                            <input class="form-check-input" name="radiobutton_1" type="checkbox" id="defaultRadio5">
+                        </div>
+                        <div class="col-xl-10 check7 ">
+                            <label class="form-check-label" for="defaultRadio1">شرح</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6">
+                <div class="form-check">
+                    <div class="row">
+                        <div class="col-xl-1" style="width: 1%;">
+                            <input class="form-check-input" name="radiobutton_1" type="checkbox" id="defaultRadio6">
+                        </div>
+                        <div class="col-xl-10 check7 ">
+                            <label class="form-check-label" for="defaultRadio1">واحد</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6">
+                <div class="form-check">
+                    <div class="row">
+                        <div class="col-xl-1" style="width: 1%;">
+                            <input class="form-check-input" name="radiobutton_1" type="checkbox" id="defaultRadio7">
+                        </div>
+                        <div class="col-xl-10 check7 ">
+                            <label class="form-check-label" for="defaultRadio1">پروژه</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6">
+                <div class="form-check">
+                    <div class="row">
+                        <div class="col-xl-1" style="width: 1%;">
+                            <input class="form-check-input" name="radiobutton_1" type="checkbox" id="defaultRadio9">
+                        </div>
+                        <div class="col-xl-10 check7 ">
+                            <label class="form-check-label" for="defaultRadio1">شماره نامه</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6">
+                <div class="form-check">
+                    <div class="row">
+                        <div class="col-xl-1" style="width: 1%;">
+                            <input class="form-check-input" name="radiobutton_1" type="checkbox" id="defaultRadio10">
+                        </div>
+                        <div class="col-xl-10 check7 ">
+                            <label class="form-check-label" for="defaultRadio1">تاریخ شروع</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6">
+                <div class="form-check">
+                    <div class="row">
+                        <div class="col-xl-1" style="width: 1%;">
+                            <input class="form-check-input" name="radiobutton_1" type="checkbox" id="defaultRadio11">
+                        </div>
+                        <div class="col-xl-10 check7 ">
+                            <label class="form-check-label" for="defaultRadio1">تاریخ خاتمه</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6">
+                <div class="form-check">
+                    <div class="row">
+                        <div class="col-xl-1" style="width: 1%;">
+                            <input class="form-check-input" name="radiobutton_1" type="checkbox" id="defaultRadio12">
+                        </div>
+                        <div class="col-xl-10 check7 ">
+                            <label class="form-check-label" for="defaultRadio1">تاریخ یادآور</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6">
+                <div class="form-check">
+                    <div class="row">
+                        <div class="col-xl-1" style="width: 1%;">
+                            <input class="form-check-input" name="radiobutton_1" type="checkbox" id="defaultRadio13">
+                        </div>
+                        <div class="col-xl-10 check7 ">
+                            <label class="form-check-label" for="defaultRadio1">تاریخ تمدید</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6">
+                <div class="form-check">
+                    <div class="row">
+                        <div class="col-xl-1" style="width: 1%;">
+                            <input class="form-check-input" name="radiobutton_1" type="checkbox" id="defaultRadio14">
+                        </div>
+                        <div class="col-xl-10 check7 ">
+                            <label class="form-check-label" for="defaultRadio1">مبلغ</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6">
+                <div class="form-check">
+                    <div class="row">
+                        <div class="col-xl-1" style="width: 1%;">
+                            <input class="form-check-input" name="radiobutton_1" type="checkbox" id="defaultRadio15">
+                        </div>
+                        <div class="col-xl-10 check7 ">
+                            <label class="form-check-label" for="defaultRadio1">موضوعات خاص</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+
+        <hr />
+        <div class="rowFaktor mt-1" style="display: flex; justify-content: center;">
+            <button id="" onclick="submitData()" class="form-control btnFaktor">
+                ثبت
+            </button>
+            <button id="" onclick="closeAlert()" class="form-control btnFaktor">
+                بستن
+            </button>
+        </div>
+
+
+    </div>
+</div>
+
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script>
+    function submitData() {
+        // نمایش پیام لودینگ
+        $("#loading-circle .loadingText1").text('لطفا منتظر ثبت  اطلاعات بمانید ...');
+        $("#loading-circle").css("display", "flex");
+
+        // جمع‌آوری داده‌ها به صورت جداگانه
+        var dataToSend = {};
+
+        // گرفتن وضعیت هر چک‌باکس به طور جداگانه
+        var monthChecked = $("#defaultRadio1").prop("checked");
+        var yearChecked = $("#defaultRadio2").prop("checked");
+        var legalChecked = $("#defaultRadio3").prop("checked");
+        var realChecked = $("#defaultRadio4").prop("checked");
+        var descriptionChecked = $("#defaultRadio5").prop("checked");
+        var unitChecked = $("#defaultRadio6").prop("checked");
+        var projectChecked = $("#defaultRadio7").prop("checked");
+        var DAyChecked = $("#defaultRadio8").prop("checked");
+        var shomarehnameh = $("#defaultRadio9").prop("checked");
+
+        var timestartChecked = $("#defaultRadio10").prop("checked");
+        var timeendChecked = $("#defaultRadio11").prop("checked");
+        var timerepetChecked = $("#defaultRadio12").prop("checked");
+        var timetamdidChecked = $("#defaultRadio13").prop("checked");
+        var mablaghChecked = $("#defaultRadio10").prop("checked");
+        var mozohChecked = $("#defaultRadio10").prop("checked");
+
+        // گرفتن مقدار alertMessage01
+        var alertMessage = $("#alertMessage01").text(); // مقدار متن داخل h4
+
+        // ارسال داده‌ها برای هر چک‌باکس و alertMessage به صورت مجزا
+        $.ajax({
+            url: '/Contracts/DefFacilitiesEquipment/creatnew', // آدرس اکشن کنترلر
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                "monthChecked": monthChecked,
+                "yearChecked": yearChecked,
+                "legalChecked": legalChecked,
+                "realChecked": realChecked,
+                "descriptionChecked": descriptionChecked,
+                "unitChecked": unitChecked,
+                "projectChecked": projectChecked,
+                "alertMessage": alertMessage,
+                "DAyChecked": DAyChecked,
+                "shomarehnameh": shomarehnameh,
+                "timestartChecked": timestartChecked,
+                "timeendChecked": timeendChecked,
+                "timerepetChecked": timerepetChecked,
+                "timetamdidChecked": timetamdidChecked,
+                "mablaghChecked": mablaghChecked,
+                "mozohChecked": mozohChecked
+
+
+
+
+                // ارسال مقدار alertMessage01
+            }), // ارسال به صورت JSON
+            success: function (response) {
+                if (response === "true") {
+                    $("#loading-circle").css("display", "none"); // پنهان کردن لودینگ
+                    alert("با موفقیت ثبت شد");
+                    location.reload();
+                } else {
+                    $("#loading-circle").css("display", "none"); // پنهان کردن لودینگ
+                    alert("خطا در ثبت داده‌ها");
+                }
+            },
+            error: function (error) {
+                console.error("Error updating record:", error);
+            }
+        });
+    }
+
+
+    $(".dot3").on('click', function () {
+        console.log("11111111");
+        // نمایش prompt برای گرفتن شماره سند در div
+        showAlert("");
+
+        // ذخیره کردن شناسه سند برای استفاده بعدی
+        $("#alertBox01").data('id', 'btnSave01');
+    });
+
+    function showAlert(message) {
+        $("#alertMessage01").text(message); // پیام را تنظیم می‌کنیم
+        $("#alertBox01").fadeIn(); // نمایش پیام
+    }
+
+    // تابع برای بستن پیام
+    function closeAlert() {
+        $(".alert-box").fadeOut(); // مخفی کردن پیام
+    }
+</script>
+<script>
+    // تبدیل لیست‌های C# به جاوااسکریپت
+    let raghamList = [@string.Join(",", db.dbAsnadtress1.Select(x => x.ragham))];
+    let startList = [@string.Join(",", db.dbAsnadtress1.Select(x => x.start))];
+
+    // نمایش در کنسول
+    console.log("raghamList:", raghamList);
+    console.log("marhalehList:", marhalehList);
+</script>
+<script>
+
+function addSubmenu(parentId) {
+    function generateZeros(count) {
+        return '0'.repeat(count);
+    }
+
+    // دریافت محدودیت‌ها
+    const limitList = [@string.Join(",", db.dbAsnadtress1.Select(x => x.ragham))]; // محدودیت هر سطح
+    const limitNum = [@string.Join(",", db.dbAsnadtress1.Select(x => x.start))]; // شروع شماره‌گذاری
+
+    const parentElement = document.getElementById(parentId);
+    const submenuContainer = parentElement.querySelector('.submenu');
+    const currentLevel = parentId === "L" ? 0 : (parentId.split('-').length - 1); // سطح جاری
+
+    const limit = ((10 ** limitList[currentLevel]) - 1) - limitNum[currentLevel] + 1; // محدودیت تعداد زیرآیتم‌ها
+    const startNumber = limitNum[currentLevel]; // شروع شماره‌گذاری
+
+    const submenuCount = submenuContainer.children.length; // تعداد زیرمنوهای فعلی
+
+    if (submenuCount < limit) {
+        // تعیین شماره بعدی برای زیرآیتم
+        const paddedIndex = (startNumber + submenuCount).toString().padStart(`${limit}`.length, '0'); // شماره‌گذاری با صفر
+        const newItemId = `${parentId}-${paddedIndex}`; // آیدی جدید
+
+        // ساخت شناسه برای زیرآیتم
+        let code = '';
+        let outId = '';
+        for (let i of limitList.slice(currentLevel + 1)) {
+            code += "-" + generateZeros(i);
+        }
+        outId = `${newItemId}${code}`;
+
+        // پردازش شناسه والد
+        const parentElementId = parentElement.id;  // والد (parent) کنونی
+        let outId2 = `${parentElementId}${code}`;
+
+        const parentElementId2 = parentElementId.replace('L-', '').replace(/-/g, '');
+        const SD = outId2.replace('L-', '').replace(/-/g, '');
+        const SD1 = outId.replace('L-', '').replace(/-/g, '');
+
+        const lengthDifference = SD1.length - SD.length;
+        let outId2Updated = outId2;
+        let outId2Updated2 = SD;
+
+        if (lengthDifference > 0) {
+            outId2Updated += '0'.repeat(lengthDifference);
+        }
+
+        if (lengthDifference > 0) {
+            outId2Updated2 += '0'.repeat(lengthDifference);
+        }
+
+        const newSubmenuItem = document.createElement('li');
+        newSubmenuItem.className = 'menu-itemTree';
+        newSubmenuItem.classList.add('menu-itemTree', 'class2', 'class3');
+        newSubmenuItem.id = newItemId;
+
+        var item = outId.replace('L-', '').replace(/-/g, '');
+        console.log(item);
+
+        // ارسال درخواست AJAX برای دریافت نام از سرور
+        $.ajax({
+            url: '/ManagementAccounting/FinancialDocuments/viewasnadmaly454yuplad', // آدرس اکشن کنترلر شما
+            method: 'POST',
+            data: JSON.stringify({ name: item }), // ارسال داده به صورت JSON
+            contentType: 'application/json',  // تنظیم contentType به صورت JSON
+            success: function (response) {
+                console.log("Record updated successfully.");
+                // پس از دریافت پاسخ، فیلد ورودی را با مقدار جدید پر کنید
+                const namee = response.nam; // مقدار نام دریافتی از سرور
+                const id = response.idd;
+                console.log(id);
+
+                if (id == 1) {
+                    newSubmenuItem.innerHTML = `
+      <div>
+          <div class="Lin1"></div>
+          <div class="Lin2"></div>
+          <button class="buttonGeneralPlus" onclick="clickmeno('${newItemId}')" title="افزودن شماره حساب">
+              <i class="fa fa-plus-circle fa-fw me-1 VecGeneral"></i>
+          </button>
+      </div>
+      <div class="menue3">
+          <input type="text" id="${outId.replace(/-/g, '')}" data-bind="${outId2Updated2}"
+             value="${namee}" data-container="${outId.replace('L-', '').replace(/-/g, '')}"
+              class="trssse2" placeholder="آیتم ${outId.replace('L-', '').replace(/-/g, '')}"title="${outId.replace('L-', '').replace(/-/g, '')}_${namee}">
+                      <i class="bi bi-three-dots-vertical Details2 dot3" data-bs-toggle="modal" style="color:green" data-bs-target="#modalLg1" data-container="${outId.replace('L-', '').replace(/-/g, '')}" id="Detail_${outId.replace('L-', '').replace(/-/g, '')}"></i>
+
+
+      </div>
+      <button class="buttonGeneralTree" onclick="toggleSubmenu('${newItemId}')">-</button>
+      <ul class="submenu"></ul>
+
+
+  `;
+                }
+                else {
+                    newSubmenuItem.innerHTML = `
+      <div>
+          <div class="Lin1"></div>
+          <div class="Lin2"></div>
+          <button class="buttonGeneralPlus" onclick="clickmeno('${newItemId}')" title="افزودن شماره حساب">
+              <i class="fa fa-plus-circle fa-fw me-1 VecGeneral"></i>
+          </button>
+      </div>
+      <div class="menue3">
+          <input type="text" id="${outId.replace(/-/g, '')}" data-bind="${outId2Updated2}"
+             value="${namee}" data-container="${outId.replace('L-', '').replace(/-/g, '')}"
+              class="trssse2" placeholder="آیتم ${outId.replace('L-', '').replace(/-/g, '')}"title="${outId.replace('L-', '').replace(/-/g, '')}_${namee}">
+              
+
+        <i class="bi bi-three-dots-vertical Details2 dot3" data-bs-toggle="modal" data-bs-target="#modalLg1" data-container="${outId.replace('L-', '').replace(/-/g, '')}"  id="Detail_${outId.replace('L-', '').replace(/-/g, '')}"></i>
+      </div>
+      <button class="buttonGeneralTree" onclick="toggleSubmenu('${newItemId}')">-</button>
+      <ul class="submenu"></ul>
+
+
+  `;
+                }
+                // مقدار id دریافتی از سرور
+              
+
+                //===============================================
+                submenuContainer.appendChild(newSubmenuItem);
+                                         $(".Details2").click(function () {
+    var idd = $(this).attr("id").split("_")[1];
+    console.log(idd);
+    $("#big_modal_body1").load('@Url.Content("/ManagementAccounting/FinancialDocuments/getinformatinuolaid")?id='+idd);
+});
+                //================================================
+                return newItemId; // بازگشت newItemId برای استفاده در فراخوانی بعدی
+
+            },
+
+            error: function (error) {
+                console.error("Error updating record:", error);
+                alert("مشکلی در ارسال درخواست به سرور پیش آمده است.");
+            }
+        });
+    } else {
+        if (isNaN(limit)) {
+            alert(`تعداد سقف سطوح انتخابی پر شده است`);
+        } else {
+            alert(`حداکثر تعداد آیتم‌ها در این سطح (${limit}) است.`);
+        }
+    }
+}
+
+
+
+
+function addSubmenu33344(parentId,countt) {
+    function generateZeros(count) {
+        return '0'.repeat(count);
+    }
+
+    // دریافت محدودیت‌ها
+    const limitList = [@string.Join(",", db.dbAsnadtress1.Select(x => x.ragham))]; // محدودیت هر سطح
+    const limitNum = [@string.Join(",", db.dbAsnadtress1.Select(x => x.start))]; // شروع شماره‌گذاری
+
+    const parentElement = document.getElementById(parentId);
+    const submenuContainer = parentElement.querySelector('.submenu');
+    const currentLevel = parentId === "L" ? 0 : (parentId.split('-').length - 1); // سطح جاری
+
+    const limit = ((10 ** limitList[currentLevel]) - 1) - limitNum[currentLevel] + 1; // محدودیت تعداد زیرآیتم‌ها
+    const startNumber = limitNum[currentLevel]; // شروع شماره‌گذاری
+
+    const submenuCount = submenuContainer.children.length; // تعداد زیرمنوهای فعلی
+
+    if (submenuCount < limit) {
+        // تعیین شماره بعدی برای زیرآیتم
+        const paddedIndex = (startNumber + submenuCount).toString().padStart(`${limit}`.length, '0'); // شماره‌گذاری با صفر
+        const newItemId = `${parentId}-${paddedIndex}`; // آیدی جدید
+
+        // ساخت شناسه برای زیرآیتم
+        let code = '';
+        let outId = '';
+        for (let i of limitList.slice(currentLevel + 1)) {
+            code += "-" + generateZeros(i);
+        }
+        outId = `${newItemId}${code}`;
+
+        // پردازش شناسه والد
+        const parentElementId = parentElement.id;  // والد (parent) کنونی
+        let outId2 = `${parentElementId}${code}`;
+
+        const parentElementId2 = parentElementId.replace('L-', '').replace(/-/g, '');
+        const SD = outId2.replace('L-', '').replace(/-/g, '');
+        const SD1 = outId.replace('L-', '').replace(/-/g, '');
+
+        const lengthDifference = SD1.length - SD.length;
+        let outId2Updated = outId2;
+        let outId2Updated2 = SD;
+
+        if (lengthDifference > 0) {
+            outId2Updated += '0'.repeat(lengthDifference);
+        }
+
+        if (lengthDifference > 0) {
+            outId2Updated2 += '0'.repeat(lengthDifference);
+        }
+
+        const newSubmenuItem = document.createElement('li');
+        newSubmenuItem.className = 'menu-itemTree';
+        newSubmenuItem.classList.add('menu-itemTree', 'class2', 'class3');
+        newSubmenuItem.id = newItemId;
+
+        var item = outId.replace('L-', '').replace(/-/g, '');
+        console.log(item);
+
+        // ارسال درخواست AJAX برای دریافت نام از سرور
+        $.ajax({
+            url: '/ManagementAccounting/FinancialDocuments/viewasnadmaly454yuplad', // آدرس اکشن کنترلر شما
+            method: 'POST',
+            data: JSON.stringify({ name: item }), // ارسال داده به صورت JSON
+            contentType: 'application/json',  // تنظیم contentType به صورت JSON
+            success: function (response) {
+                console.log("Record updated successfully.");
+                const namee = response.nam; // مقدار نام دریافتی از سرور
+                const id = response.idd;
+                console.log(id);
+
+                if (id == 1) {
+                    newSubmenuItem.innerHTML = `
+    <div>
+        <div class="Lin1"></div>
+        <div class="Lin2"></div>
+        <button class="buttonGeneralPlus" onclick="clickmeno('${newItemId}')" title="افزودن شماره حساب">
+            <i class="fa fa-plus-circle fa-fw me-1 VecGeneral"></i>
+        </button>
+    </div>
+    <div class="menue3">
+        <input type="text" id="${outId.replace(/-/g, '')}" data-bind="${outId2Updated2}"
+           value="${namee}" data-container="${outId.replace('L-', '').replace(/-/g, '')}"
+            class="trssse2" placeholder="آیتم ${outId.replace('L-', '').replace(/-/g, '')}"title="${outId.replace('L-', '').replace(/-/g, '')}_${namee}">
+                    <i class="bi bi-three-dots-vertical Details2 dot3" data-bs-toggle="modal" style="color:green" data-bs-target="#modalLg1" data-container="${outId.replace('L-', '').replace(/-/g, '')}" id="Detail_${outId.replace('L-', '').replace(/-/g, '')}"></i>
+
+
+    </div>
+    <button class="buttonGeneralTree" onclick="toggleSubmenu('${newItemId}')">-</button>
+    <ul class="submenu"></ul>
+
+
+`;
+                }
+                else {
+                    newSubmenuItem.innerHTML = `
+    <div>
+        <div class="Lin1"></div>
+        <div class="Lin2"></div>
+        <button class="buttonGeneralPlus" onclick="clickmeno('${newItemId}')" title="افزودن شماره حساب">
+            <i class="fa fa-plus-circle fa-fw me-1 VecGeneral"></i>
+        </button>
+    </div>
+    <div class="menue3">
+        <input type="text" id="${outId.replace(/-/g, '')}" data-bind="${outId2Updated2}"
+           value="${namee}" data-container="${outId.replace('L-', '').replace(/-/g, '')}"
+            class="trssse2" placeholder="آیتم ${outId.replace('L-', '').replace(/-/g, '')}"title="${outId.replace('L-', '').replace(/-/g, '')}_${namee}">
+            
+
+      <i class="bi bi-three-dots-vertical Details2 dot3" data-bs-toggle="modal" data-bs-target="#modalLg1" data-container="${outId.replace('L-', '').replace(/-/g, '')}"  id="Detail_${outId.replace('L-', '').replace(/-/g, '')}"></i>
+    </div>
+    <button class="buttonGeneralTree" onclick="toggleSubmenu('${newItemId}')">-</button>
+    <ul class="submenu"></ul>
+
+
+`;
+                }
+                submenuContainer.appendChild(newSubmenuItem);
+                //===============================================
+                submenuContainer.appendChild(newSubmenuItem);
+                                 $(".Details2").click(function () {
+    var idd = $(this).attr("id").split("_")[1];
+    console.log(idd);
+    $("#big_modal_body1").load('@Url.Content("/ManagementAccounting/FinancialDocuments/getinformatinuolaid")?id='+idd);
+});
+
+                //================================================
+                // برگشت مقدار newItemId برای فراخوانی بعدی
+                return newItemId; // بازگشت newItemId برای استفاده در فراخوانی بعدی
+            },
+            error: function (error) {
+                console.error("Error updating record:", error);
+                alert("مشکلی در ارسال درخواست به سرور پیش آمده است.");
+            }
+        });
+    } else {
+        if (isNaN(limit)) {
+            alert(`تعداد سقف سطوح انتخابی پر شده است`);
+        } else {
+            alert(`حداکثر تعداد آیتم‌ها در این سطح (${limit}) است.`);
+        }
+    }
+}
+async function addSubmenu333(parentId, countt) {
+    function generateZeros(count) {
+        return '0'.repeat(count);
+    }
+
+    const limitList = [@string.Join(",", db.dbAsnadtress1.Select(x => x.ragham))];
+    const limitNum = [@string.Join(",", db.dbAsnadtress1.Select(x => x.start))];
+
+    const parentElement = document.getElementById(parentId);
+    const submenuContainer = parentElement.querySelector('.submenu');
+    const currentLevel = parentId === "L" ? 0 : (parentId.split('-').length - 1);
+
+    const limit = ((10 ** limitList[currentLevel]) - 1) - limitNum[currentLevel] + 1;
+    const startNumber = limitNum[currentLevel];
+    const submenuCount = countt;
+
+    if (submenuCount < limit) {
+        const paddedIndex = (startNumber + submenuCount).toString().padStart(`${limit}`.length, '0');
+        const newItemId = `${parentId}-${paddedIndex}`;
+
+        let code = '';
+        let outId = '';
+        for (let i of limitList.slice(currentLevel + 1)) {
+            code += "-" + generateZeros(i);
+        }
+        outId = `${newItemId}${code}`;
+
+        const parentElementId = parentElement.id;
+        let outId2 = `${parentElementId}${code}`;
+        const parentElementId2 = parentElementId.replace('L-', '').replace(/-/g, '');
+        const SD = outId2.replace('L-', '').replace(/-/g, '');
+        const SD1 = outId.replace('L-', '').replace(/-/g, '');
+
+        const lengthDifference = SD1.length - SD.length;
+        let outId2Updated = outId2;
+        let outId2Updated2 = SD;
+
+        if (lengthDifference > 0) {
+            outId2Updated += '0'.repeat(lengthDifference);
+            outId2Updated2 += '0'.repeat(lengthDifference);
+        }
+
+        const newSubmenuItem = document.createElement('li');
+        newSubmenuItem.className = 'menu-itemTree';
+        newSubmenuItem.classList.add('menu-itemTree', 'class2', 'class3');
+        newSubmenuItem.id = newItemId;
+
+        var item = outId.replace('L-', '').replace(/-/g, '');
+        console.log("item" + item);
+
+        try {
+            const response = await $.ajax({
+                url: '/ManagementAccounting/FinancialDocuments/viewasnadmaly454yuplad',
+                method: 'POST',
+                data: JSON.stringify({ name: item }),
+                contentType: 'application/json',
+            });
+
+            const namee = response.nam; // مقدار نام دریافتی از سرور
+            const id = response.idd;
+            console.log(id);
+            if (id == 1) {
+                newSubmenuItem.innerHTML = `
+    <div>
+        <div class="Lin1"></div>
+        <div class="Lin2"></div>
+        <button class="buttonGeneralPlus" onclick="clickmeno('${newItemId}')" title="افزودن شماره حساب">
+            <i class="fa fa-plus-circle fa-fw me-1 VecGeneral"></i>
+        </button>
+    </div>
+    <div class="menue3">
+        <input type="text" id="${outId.replace(/-/g, '')}" data-bind="${outId2Updated2}"
+           value="${namee}" data-container="${outId.replace('L-', '').replace(/-/g, '')}"
+            class="trssse2" placeholder="آیتم ${outId.replace('L-', '').replace(/-/g, '')}"title="${outId.replace('L-', '').replace(/-/g, '')}_${namee}">
+            
+                    <i class="bi bi-three-dots-vertical Details2 dot3" data-bs-toggle="modal" style="color:green" data-bs-target="#modalLg1" data-container="${outId.replace('L-', '').replace(/-/g, '')}" id="Detail_${outId.replace('L-', '').replace(/-/g, '')}"></i>
+
+    </div>
+    <button class="buttonGeneralTree" onclick="toggleSubmenu('${newItemId}')">-</button>
+    <ul class="submenu"></ul>
+
+
+`;
+            }
+            else {
+                newSubmenuItem.innerHTML = `
+    <div>
+        <div class="Lin1"></div>
+        <div class="Lin2"></div>
+        <button class="buttonGeneralPlus" onclick="clickmeno('${newItemId}')" title="افزودن شماره حساب">
+            <i class="fa fa-plus-circle fa-fw me-1 VecGeneral"></i>
+        </button>
+    </div>
+    <div class="menue3">
+        <input type="text" id="${outId.replace(/-/g, '')}" data-bind="${outId2Updated2}"
+           value="${namee}" data-container="${outId.replace('L-', '').replace(/-/g, '')}"
+            class="trssse2" placeholder="آیتم ${outId.replace('L-', '').replace(/-/g, '')}"title="${outId.replace('L-', '').replace(/-/g, '')}_${namee}">
+            
+
+      <i class="bi bi-three-dots-vertical Details2 dot3" data-bs-toggle="modal" data-bs-target="#modalLg1" data-container="${outId.replace('L-', '').replace(/-/g, '')}"  id="Detail_${outId.replace('L-', '').replace(/-/g, '')}"></i>
+    </div>
+    <button class="buttonGeneralTree" onclick="toggleSubmenu('${newItemId}')">-</button>
+    <ul class="submenu"></ul>
+
+
+`;
+            }
+            submenuContainer.appendChild(newSubmenuItem);
+            //===============================================
+            submenuContainer.appendChild(newSubmenuItem);
+                            $(".Details2").click(function () {
+    var idd = $(this).attr("id").split("_")[1];
+    console.log(idd);
+    $("#big_modal_body1").load('@Url.Content("/ManagementAccounting/FinancialDocuments/getinformatinuolaid")?id='+idd);
+});
+
+
+
+
+                //================================================
+            return newItemId;
+
+        } catch (error) {
+            console.error("Error updating record:", error);
+            alert("مشکلی در ارسال درخواست به سرور پیش آمده است.");
+        }
+    } else {
+        if (isNaN(limit)) {
+            alert(`تعداد سقف سطوح انتخابی پر شده است`);
+        } else {
+            alert(`حداکثر تعداد آیتم‌ها در این سطح (${limit}) است.`);
+        }
+    }
+}
+
+
+    async function addSubmenu222(parentId) {
+        function generateZeros(count) {
+            return '0'.repeat(count);
+        }
+    const limitList = [@string.Join(",", db.dbAsnadtress1.Select(x => x.ragham))];
+    const limitNum = [@string.Join(",", db.dbAsnadtress1.Select(x => x.start))];
+
+    const parentElement = document.getElementById(parentId);
+    const submenuContainer = parentElement.querySelector('.submenu');
+    const currentLevel = parentId === "L" ? 0 : (parentId.split('-').length - 1);
+
+    const limit = ((10 ** limitList[currentLevel]) - 1) - limitNum[currentLevel] + 1;
+    const startNumber = limitNum[currentLevel];
+    const submenuCount = submenuContainer.children.length;
+
+    if (submenuCount < limit) {
+        const paddedIndex = (startNumber + submenuCount).toString().padStart(`${limit}`.length, '0');
+        const newItemId = `${parentId}-${paddedIndex}`;
+
+        let code = '';
+        let outId = '';
+        for (let i of limitList.slice(currentLevel + 1)) {
+            code += "-" + generateZeros(i);
+        }
+        outId = `${newItemId}${code}`;
+
+        const parentElementId = parentElement.id;
+        let outId2 = `${parentElementId}${code}`;
+        const parentElementId2 = parentElementId.replace('L-', '').replace(/-/g, '');
+        const SD = outId2.replace('L-', '').replace(/-/g, '');
+        const SD1 = outId.replace('L-', '').replace(/-/g, '');
+
+        const lengthDifference = SD1.length - SD.length;
+        let outId2Updated = outId2;
+        let outId2Updated2 = SD;
+
+        if (lengthDifference > 0) {
+            outId2Updated += '0'.repeat(lengthDifference);
+            outId2Updated2 += '0'.repeat(lengthDifference);
+        }
+
+        try {
+            const response = await $.ajax({
+                url: '/ManagementAccounting/FinancialDocuments/viewasnadmaly454y22uplad',
+                method: 'POST',
+                data: JSON.stringify({ name: outId2Updated2 }),
+                contentType: 'application/json',
+            });
+
+            const count = response;
+
+            if (count == 0) {
+                addSubmenu33344(parentId, 0);
+            } else {
+                for (let i = 0; i <= count; i++) {
+                    await addSubmenu333(parentId, i);
+                }
+            }
+        } catch (error) {
+            console.error("Error updating record:", error);
+            alert("مشکلی در ارسال درخواست به سرور پیش آمده است.");
+        }
+    } else {
+        if (isNaN(limit)) {
+            alert(`تعداد سقف سطوح انتخابی پر شده است`);
+        } else {
+            alert(`حداکثر تعداد آیتم‌ها در این سطح (${limit}) است.`);
+        }
+    }
+}
+
+    var dataList11 = []; // ایجاد یک آرایه برای ذخیره تمام داده‌ها
+
+    function clickmeno(parentId) {
+        const exists = dataList11.some(item => item.parentId === parentId);
+
+        if (!exists) {
+            dataList11.push({ parentId: parentId });
+            addSubmenu222(parentId);
+        } else {
+            addSubmenu(parentId);
+        }
+    }
+
+
+function addSubmenu26622(parentId) {
+    function generateZeros(count) {
+        return '0'.repeat(count);
+    }
+
+    // دریافت محدودیت‌ها
+    const limitList = [@string.Join(",", db.dbAsnadtress1.Select(x => x.ragham))]; // محدودیت هر سطح
+    const limitNum = [@string.Join(",", db.dbAsnadtress1.Select(x => x.start))]; // شروع شماره‌گذاری
+
+    const parentElement = document.getElementById(parentId);
+    const submenuContainer = parentElement.querySelector('.submenu');
+    const currentLevel = parentId === "L" ? 0 : (parentId.split('-').length - 1); // سطح جاری
+
+    const limit = ((10 ** limitList[currentLevel]) - 1) - limitNum[currentLevel] + 1; // محدودیت تعداد زیرآیتم‌ها
+    const startNumber = limitNum[currentLevel]; // شروع شماره‌گذاری
+
+    const submenuCount = submenuContainer.children.length; // تعداد زیرمنوهای فعلی
+
+    if (submenuCount < limit) {
+        // تعیین شماره بعدی برای زیرآیتم
+        const paddedIndex = (startNumber + submenuCount).toString().padStart(`${limit}`.length, '0'); // شماره‌گذاری با صفر
+        const newItemId = `${parentId}-${paddedIndex}`; // آیدی جدید
+
+        // ساخت شناسه برای زیرآیتم
+        let code = '';
+        let outId = '';
+        for (let i of limitList.slice(currentLevel + 1)) {
+            code += "-" + generateZeros(i);
+        }
+        outId = `${newItemId}${code}`;
+
+        // پردازش شناسه والد
+        const parentElementId = parentElement.id;  // والد (parent) کنونی
+        let outId2 = `${parentElementId}${code}`;
+
+        const parentElementId2 = parentElementId.replace('L-', '').replace(/-/g, '');
+        const SD = outId2.replace('L-', '').replace(/-/g, '');
+        const SD1 = outId.replace('L-', '').replace(/-/g, '');
+
+        const lengthDifference = SD1.length - SD.length;
+        let outId2Updated = outId2;
+        let outId2Updated2 = SD;
+
+        if (lengthDifference > 0) {
+            outId2Updated += '0'.repeat(lengthDifference);
+        }
+
+        if (lengthDifference > 0) {
+            outId2Updated2 += '0'.repeat(lengthDifference);
+        }
+
+        const newSubmenuItem = document.createElement('li');
+        newSubmenuItem.className = 'menu-itemTree';
+        newSubmenuItem.classList.add('menu-itemTree', 'class2', 'class3');
+        newSubmenuItem.id = newItemId;
+
+        var item = outId.replace('L-', '').replace(/-/g, '');
+        console.log(item);
+
+        // ارسال درخواست AJAX برای دریافت نام از سرور
+        $.ajax({
+            url: '/ManagementAccounting/FinancialDocuments/viewasnadmaly454yuplad', // آدرس اکشن کنترلر شما
+            method: 'POST',
+            data: JSON.stringify({ name: item }), // ارسال داده به صورت JSON
+            contentType: 'application/json',  // تنظیم contentType به صورت JSON
+            success: function (response) {
+                console.log("Record updated successfully.");
+                // پس از دریافت پاسخ، فیلد ورودی را با مقدار جدید پر کنید
+                const namee = response.nam; // مقدار نام دریافتی از سرور
+                const id = response.idd;
+                console.log(id);
+
+                if (id == 1) {
+                    newSubmenuItem.innerHTML = `
+    <div>
+        <div class="Lin1"></div>
+        <div class="Lin2"></div>
+        <button class="buttonGeneralPlus" onclick="clickmeno('${newItemId}')" title="افزودن شماره حساب">
+            <i class="fa fa-plus-circle fa-fw me-1 VecGeneral"></i>
+        </button>
+    </div>
+    <div class="menue3">
+        <input type="text" id="${outId.replace(/-/g, '')}" data-bind="${outId2Updated2}"
+           value="${namee}" data-container="${outId.replace('L-', '').replace(/-/g, '')}"
+            class="trssse2" placeholder="آیتم ${outId.replace('L-', '').replace(/-/g, '')}"title="${outId.replace('L-', '').replace(/-/g, '')}_${namee}">
+                    <i class="bi bi-three-dots-vertical Details2 dot3" data-bs-toggle="modal" style="color:green" data-bs-target="#modalLg1" data-container="${outId.replace('L-', '').replace(/-/g, '')}" id="Detail_${outId.replace('L-', '').replace(/-/g, '')}"></i>
+
+
+    </div>
+    <button class="buttonGeneralTree" onclick="toggleSubmenu('${newItemId}')">-</button>
+    <ul class="submenu"></ul>
+
+
+`;
+                }
+                else {
+                    newSubmenuItem.innerHTML = `
+    <div>
+        <div class="Lin1"></div>
+        <div class="Lin2"></div>
+        <button class="buttonGeneralPlus" onclick="clickmeno('${newItemId}')" title="افزودن شماره حساب">
+            <i class="fa fa-plus-circle fa-fw me-1 VecGeneral"></i>
+        </button>
+    </div>
+    <div class="menue3">
+        <input type="text" id="${outId.replace(/-/g, '')}" data-bind="${outId2Updated2}"
+           value="${namee}" data-container="${outId.replace('L-', '').replace(/-/g, '')}"
+            class="trssse2" placeholder="آیتم ${outId.replace('L-', '').replace(/-/g, '')}"title="${outId.replace('L-', '').replace(/-/g, '')}_${namee}">
+            
+
+      <i class="bi bi-three-dots-vertical Details2 dot3" data-bs-toggle="modal" data-bs-target="#modalLg1" data-container="${outId.replace('L-', '').replace(/-/g, '')}"  id="Detail_${outId.replace('L-', '').replace(/-/g, '')}"></i>
+    </div>
+    <button class="buttonGeneralTree" onclick="toggleSubmenu('${newItemId}')">-</button>
+    <ul class="submenu"></ul>
+
+
+`;
+                }
+                submenuContainer.appendChild(newSubmenuItem);
+                //===============================================
+                submenuContainer.appendChild(newSubmenuItem);
+                $(".dot3").on('click', function () {
+                    console.log("11111111");
+                    // نمایش prompt برای گرفتن شماره سند در div
+                    var containerValue = $(this).data("container"); // مقدار data-container
+
+                    showAlert(containerValue);
+
+                    // ذخیره کردن شناسه سند برای استفاده بعدی
+                    $("#alertBox01").data('id', containerValue);
+                });
+
+                function showAlert(message) {
+                    $("#alertMessage01").text(message); // پیام را تنظیم می‌کنیم
+                    $("#alertBox01").fadeIn(); // نمایش پیام
+                }
+
+                // تابع برای بستن پیام
+                function closeAlert() {
+                    $(".alert-box").fadeOut(); // مخفی کردن پیام
+                }
+                //================================================
+            },
+            error: function (error) {
+                console.error("Error updating record:", error);
+                alert("مشکلی در ارسال درخواست به سرور پیش آمده است.");
+            }
+        });
+    } else {
+        if (isNaN(limit)) {
+            alert(`تعداد سقف سطوح انتخابی پر شده است`);
+        } else {
+            alert(`حداکثر تعداد آیتم‌ها در این سطح (${limit}) است.`);
+        }
+    }
+}
+
+    // تابع باز و بسته کردن زیرمنو
+    function toggleSubmenu(itemId) {
+        const item = document.getElementById(itemId);
+        const submenu = item.querySelector('.submenu');
+        submenu.classList.toggle('open');
+        const toggleButton = item.querySelector('.buttonGeneralTree');
+        toggleButton.textContent = submenu.classList.contains('open') ? '+' : '-';
+    }
+
+    $("#btnSaveContract222").click(function () {
+        // جمع‌آوری داده‌ها
+        var dataList = []; // ایجاد یک آرایه برای ذخیره تمام داده‌ها
+        $("input.trssse2").each(function () {
+            var bindValue = $(this).data("bind"); // مقدار data-bind
+            var containerValue = $(this).data("container"); // مقدار data-container
+            var inputValue = $(this).val(); // مقدار ورودی
+            console.log(inputValue); // برای بررسی داده‌ها در کنسول
+            console.log(containerValue); // برای بررسی داده‌ها در کنسول
+            console.log(bindValue); // برای بررسی داده‌ها در کنسول
+
+            if (inputValue) { // اگر ورودی پر شده است
+                dataList.push({
+                    bind: bindValue,
+                    container: containerValue,
+                    name: inputValue
+                });
+            }
+        });
+
+        if (dataList.length > 0) {
+            updateDatabase3(dataList);
+            console.log(dataList); // برای بررسی داده‌ها در کنسول
+        }
+    });
+
+    function updateDatabase3(dataList) {
+        $.ajax({
+            url: '/ManagementAccounting/FinancialDocuments/viewasnadduplad', // آدرس اکشن کنترلر شما
+            method: 'POST',
+            data: JSON.stringify(dataList), // ارسال آرایه به سرور
+            contentType: 'application/json',
+            success: function (response) {
+                console.log("Record updated successfully.");
+                if (response == "true") {
+                    alert("با موفقیت ثبت شد");
+                    location.reload();
+                }
+            },
+            error: function (error) {
+                console.error("Error updating record:", error);
+            }
+        });
+    }
+
+</script>
+
+

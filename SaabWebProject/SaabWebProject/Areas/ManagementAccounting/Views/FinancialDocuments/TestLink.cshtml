@@ -1,0 +1,219 @@
+﻿@{
+    ViewBag.Title = "TestLink";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+
+
+
+@model SaabWebProject.Models.ViewModels.Contracts.Function.FunctionModel
+
+
+<style>
+    .table1 {
+        display: none;
+    }
+
+    .table2 {
+        display: block;
+    }
+
+    @@media print {
+
+        .table2 {
+            display: none;
+        }
+
+        .table1 {
+            display: block;
+        }
+
+        * {
+            margin-top: 1px !important;
+            margin-bottom: 0px !important;
+            font-size: 10px !important;
+            color: #000000 !important;
+            background-color: #fff !important;
+            /*            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact; */
+        }
+
+        .TableDiv {
+            padding: 6px 10px 6px 10px !important
+        }
+
+        .buttonGeneral, #header, #sidebar, .app-footer, .headerTh, #loading-overlay, .app-theme-panel, #printPageButton, .pace.pace-active {
+            display: none !important;
+        }
+
+
+        td, th {
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            border: 1px solid #000;
+        }
+
+        .modal-body, .card-body {
+            padding: 0 !important;
+        }
+
+        .hiddenC {
+            border: 1px solid #fff;
+        }
+
+        @@page:first {
+            margin-top: -30px;
+        }
+
+        @@page {
+            size: A4 landscape;
+            margin: 30px 20px;
+        }
+    }
+</style>
+<style>
+    table {
+        margin-bottom: 1px !important;
+        width: 100% !important;
+        /*        page-break-before: always;*/
+        page-break-after: always;
+    }
+</style>
+@{
+    int AV = 0; int AH = 0; int Wt = 0; int coPeTa = 10; int toCo = 0; List<string> TV = new List<string>(); List<string> TH = new List<string>(); int NT = 0;
+    if (Model.UsersMoalefe != null && Model.UsersMoalefe.Any())
+    {
+        AV = Model.UsersMoalefe.Count;
+        AH = Model.UsersMoalefe[0].listMoalefe.Count;
+        Wt = (100 * Model.UsersMoalefe[0].listMoalefe.Count) / ((AV + 1) * Model.UsersMoalefe[0].listMoalefe.Count);
+        TH = Model.UsersMoalefe.SelectMany(u => u.listMoalefe).Select(m => m.MoalefeTitle).Distinct().ToList(); //
+        TV = Model.UsersMoalefe.Select(u => u.FullName).Distinct().ToList(); //
+        toCo = TH.Count;
+        NT = (int)Math.Ceiling((double)TH.Count / coPeTa); //1
+    }
+
+}
+<style>
+    th,td {
+        width: @($"{Wt}%");
+    }
+</style>
+
+
+
+<div class="table1 TableDiv">
+    @for (int tableIndex = 0; tableIndex < NT; tableIndex++)
+    {
+        <table class="TableP" border="1" style="margin-bottom: 20px;" id="my-table_@tableIndex">
+            <thead>
+                <tr>
+                    <th>عنوان</th>
+                    @for (int columnIndex = tableIndex * coPeTa; columnIndex < Math.Min((tableIndex + 1) * coPeTa, toCo); columnIndex++)
+                    {
+                        if (TH[columnIndex] != "")
+                        {
+                            <th>@TH[columnIndex]</th>
+                        }
+                        else
+                        {
+                            <th class="hiddenC">@TH[columnIndex]</th>
+                        }
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model.UsersMoalefe)
+                {
+                    <tr>
+                        <td>@user.FullName</td>
+                        @for (int columnIndex = tableIndex * coPeTa; columnIndex < Math.Min((tableIndex + 1) * coPeTa, toCo); columnIndex++)
+                        {
+                            var columnTitle = TH[columnIndex];
+                            var moalefe = user.listMoalefe.FirstOrDefault(m => m.MoalefeTitle == columnTitle);
+
+                            if (moalefe != null)
+                            {
+                                <td>@moalefe.MoalefeValue</td>
+                                <!-- مقدار مرتبط با ستون -->
+                            }
+                            else
+                            {
+                                <td class="hiddenC">---</td>
+                            }
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
+
+<div class="tab-content table2" style="overflow-x: auto; white-space: nowrap;">
+    <table class="table ">
+        <thead>
+            <tr>
+                <th>Full Name</th>
+                <th>Personal Code</th>
+                @if (Model.UsersMoalefe != null && Model.UsersMoalefe.Any())
+                {
+                    // استخراج همه MoalefeTitle‌ها از لیست کاربران
+                    var moalefeTitles = Model.UsersMoalefe
+                        .SelectMany(u => u.listMoalefe)
+                        .Select(m => m.MoalefeTitle)
+                        .Distinct()
+                        .ToList();
+
+                    // نمایش MoalefeTitle به عنوان ستون (th)
+                    foreach (var title in moalefeTitles)
+                    {
+                        <th>@title</th>
+                    }
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.UsersMoalefe != null && Model.UsersMoalefe.Any())
+            {
+                foreach (var user in Model.UsersMoalefe)
+                {
+                    <tr>
+                        <td>@user.FullName</td>
+                        <td>@user.PersonalCode</td>
+
+                        @if (user.listMoalefe != null && user.listMoalefe.Any())
+                        {
+                            // استخراج همه MoalefeTitle‌ها از لیست کاربران
+                            var moalefeTitles = Model.UsersMoalefe
+                                .SelectMany(u => u.listMoalefe)
+                                .Select(m => m.MoalefeTitle)
+                                .Distinct()
+                                .ToList();
+
+                            // نمایش مقدار (MoalefeValue) برای هر ستون
+                            foreach (var title in moalefeTitles)
+                            {
+                                var value = user.listMoalefe.FirstOrDefault(m => m.MoalefeTitle == title)?.MoalefeValue;
+                                <td>@(value ?? "N/A")</td>
+                            }
+                        }
+                        else
+                        {
+                            <td colspan="3" class="text-center">No data available</td>
+                        }
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="4" class="text-center">No users available.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+

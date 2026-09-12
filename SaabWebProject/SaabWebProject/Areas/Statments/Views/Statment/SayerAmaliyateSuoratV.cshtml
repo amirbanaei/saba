@@ -1,0 +1,152 @@
+﻿@{
+    ViewBag.Title = "";
+    Layout = null;
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="card">
+    <div class="card-body">
+        <div class="row" style="margin-top:10px">
+            <div class="col-xl-6">
+                <div class="form-group ">
+                    <label class="form-label"> پیمان </label>
+                    @Html.Action("GetAllCompaniespardaghtsayeer", "Peyman", new { area = "Contracts" })
+                </div>
+            </div>
+            <div class="col-xl-4">
+                <div class="form-group ">
+                    <label class="form-label"> ردیف اعتباری  </label>
+                    <select class="form-select" id="value_radif">
+                        @Html.Action("_ListAllCreditIndicatior", "CreditLine", new { area = "Budget" })
+
+                    </select>
+                </div>
+            </div>
+            <div class="col-xl-2">
+                <label class="form-label">صورت وضعیت</label>
+
+                <select class="form-select" id="Sorat">
+                    <option value="0">انتخاب مورد</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+
+                    <option value="13">13</option>
+                    <option value="14">14</option>
+                    <option value="15">15</option>
+                    <option value="16">16</option>
+                    <option value="17">17</option>
+                    <option value="18">18</option>
+                    <option value="19">19</option>
+                    <option value="20">20</option>
+
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xl-11"></div>
+            <div class="col-xl-1">
+                <button class="btn form-control buttonGeneral" id="btnSave_1">
+                    <i class="fa fa-eye fa-fw me-1 VecGeneral"></i>
+                    <span class="bGeneral-text">نمایش</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+
+
+<div id="table">
+
+</div>
+@*<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>*@
+
+
+<script>
+    $("#btnSave").click(function () {
+        console.log("ldaskd;ask;");
+        $("#big_modal_body1").load('/Formula/view');
+    });
+    $("#btnSave_1").click(function () {
+        var idd = $('#value_radif').val();
+        var idd2 = $('#select_peyman2').val();
+
+        console.log(idd2);
+
+        $("#table").load('@Url.Content("/Statments/Statment/SharheSayerAmaliyateSuoratV")?id=' + idd + '&fkpymn=' + idd2);
+
+    });
+    $("#sabt").click(function () {
+    var idd = $('#value_radif').val();
+    var idd2 = $('#select_peyman2').val();
+    var idd3 = $('#totalInput').val();
+    var idd4 = $('#des').val();
+
+    console.log(idd2);
+
+    var fd2 = new FormData(); // Assuming you have fd2 defined somewhere else
+
+    $.ajax({
+        url: '@Url.Action("createdes", "Statment", new { area = "Statments" })?FK_Radif=' + idd + '&FK_Pymn=' + idd2 + '&value' + idd3 +'&Description'+idd4,
+        type: 'POST',
+        processData: false,
+        contentType: false,
+        success: function (resp1) {
+            console.log("okeye");
+            console.log(resp1);
+            $("#loading-message").css("display", "none");
+            fd2 = new FormData();
+            if (resp1 == "True") {
+                alert("با موفقیت ثبت شد");
+                location.reload();
+            }
+            else {
+                $("#loading-message").css("display", "none");
+                Toast.fire({
+                    icon: 'success',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                }).then(() => {
+                    $("#loading-message").css("display", "none");
+                });
+            }
+        },
+        error: function (resp1) {
+            console.log(resp1);
+            console.log("Nokeye");
+            $("#loading-message").css("display", "none");
+            Toast.fire({
+                icon: 'success',
+                background: '#35434A',
+                color: 'white',
+                title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+            }).then(() => {
+                $("#loading-message").css("display", "none");
+            });
+        }
+    });
+});
+
+
+
+
+</script>
+<script>
+</script>
+

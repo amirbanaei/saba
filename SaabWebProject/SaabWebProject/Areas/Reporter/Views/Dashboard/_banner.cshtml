@@ -1,0 +1,360 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "صفحه اصلی";
+
+}
+@using SaabWebProject.Models.Classes;
+@using SaabWebProject.Models.DomainModels; 
+@{
+    SaabEntities db = new SaabEntities();
+}
+
+
+
+<style>
+    .app-footer {
+        display: none;
+    }
+
+    .hljs-container {
+        padding: 0;
+    }
+
+    .card {
+        --bs-border-color-rgb: #ffffff03;
+    }
+
+    .notShow {
+        display: none !important;
+    }
+
+    .bodyDashbord {
+        background: none !important;
+        backdrop-filter: none !important;
+        border-radius: unset !important;
+    }
+</style>
+<style>
+    .card .card-arrow-bottom-left:before, .card .card-arrow-bottom-right:before, .card .card-arrow-top-left:before, .card .card-arrow-top-right:before {
+        content: "";
+        position: absolute;
+        width: 2px;
+        height: 8px;
+        background: aqua;
+        opacity: .75;
+    }
+
+    .card .card-arrow-bottom-left:after, .card .card-arrow-bottom-right:after, .card .card-arrow-top-left:after, .card .card-arrow-top-right:after {
+        content: "";
+        position: absolute;
+        width: 10px;
+        height: 2px;
+        background: aqua;
+    }
+</style>
+<style>
+    p {
+        margin: 0;
+        padding: 0;
+    }
+
+    #clock {
+        font-family: monospace;
+        text-align: center;
+        position: absolute;
+        left: 0px;
+        right: 0px;
+        top: 35px;
+        color: var(--bs-app-sidebar-menu-link-color);
+        text-shadow: 0 0 20px rgb(135 135 135), 0 0 20px rgba(10, 175, 230, 0);
+        border-radius: 15px;
+        /*border: solid 2px #ffffff50;*/
+        /*background: linear-gradient(#199b9400, #033f3300) padding-box, linear-gradient(to bottom, #7bf1f529, #3cd0a500) border-box;*/
+        margin-top: -35px;
+        background: var(--bs-app-theme-panel-bg);
+        backdrop-filter: blur(5px);
+    }
+
+    .time {
+        letter-spacing: 0.05em;
+        font-size: 37px;
+        /*padding: 5px 0;*/
+    }
+
+    .date, .dateJ {
+        letter-spacing: 0.1em;
+        font-size: 20px;
+        margin-top: 14px;
+    }
+
+    .text {
+        letter-spacing: 0.1em;
+        font-size: 12px;
+        padding: 20px 0 0;
+    }
+
+    .ClockCover {
+        height: 83%;
+        position: absolute;
+        width: 99%;
+        /* background: var(--bs-app-theme-panel-bg); */
+        backdrop-filter: blur(0px);
+        border-radius: 12px;
+        margin-right: .7%;
+        top: 9%;
+        right: -0.2%;
+    }
+</style> <!--clock-->
+<style>
+    .imgBanner {
+        width: 100%;
+        border-radius: 21px;
+        stop-color: aqua;
+        opacity: .85;
+        padding: 7px;
+        height: 81vH;
+    }
+
+    #large-header {
+        margin-top: 60px;
+        margin-bottom: -10px;
+        background: var(--bs-app-theme-panel-bg);
+        backdrop-filter: blur(1px);
+        border-radius: 15px;
+    }
+
+    @@media screen and (min-width: 100px) and (max-width: 800px) {
+        .time {
+            letter-spacing: 0.05em;
+            font-size: 10px;
+            /*padding: 5px 0;*/
+        }
+
+        .date, .dateJ {
+            letter-spacing: 0.1em;
+            font-size: 6px;
+            margin-top: 3px;
+        }
+
+        .part1 {
+            width: 33%
+        }
+
+        #clock {
+            left: 0px;
+            right: 0px;
+            top: 24px;
+            border-radius: 15px;
+        }
+
+        #large-header {
+            margin-top: 8px;
+            margin-bottom: -10px;
+        }
+    }
+
+    @@media screen and (min-width: 801px) and (max-width: 1200px) {
+
+
+        .time {
+            letter-spacing: 0.05em;
+            font-size: 23px;
+            /*padding: 5px 0;*/
+        }
+
+        .date, .dateJ {
+            letter-spacing: 0.1em;
+            font-size: 12px;
+            margin-top: 7px;
+        }
+
+        .part1 {
+            width: 33%
+        }
+
+        #clock {
+            left: 0px;
+            right: 0px;
+            /*top: 20px;*/
+            border-radius: 15px;
+        }
+
+        #large-header {
+            margin-top: 48px;
+            margin-bottom: -10px;
+        }
+    }
+</style>
+<style>
+
+    #txtUp {
+        font-size: 2.2vw;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        margin-top: 0px;
+        font-family: 'A EntezareZohoor B3';
+        margin-right: 4.7%;
+        width: 91%;
+        height: 33.3333%;
+    }
+
+    #txtMi {
+        font-size: 3.7vw;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        transform: translateY(100%);
+        font-family: 'A EntezareZohoor B3';
+        width: 76.5%;
+        margin-right: 12.5%;
+        height: 33.3333%;
+    }
+
+    #txtDo {
+        font-size: 2.2vw;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        margin-top: 4px;
+        font-family: 'A EntezareZohoor B3';
+        margin-right: 4.7%;
+        width: 91%;
+        transform: translateY(194%);
+        height: 33.3333%;
+    }
+    /*========================================================================*/
+    swiper-slide img {
+        opacity: 1 !important;
+    }
+
+    .swiper, swiper-container {
+        opacity: .89;
+    }
+
+    .swiper-horizontal > .swiper-pagination-bullets, .swiper-pagination-bullets.swiper-pagination-horizontal, .swiper-pagination-custom, .swiper-pagination-fraction {
+        display: none !important;
+    }
+</style>
+
+
+
+<div id="clock">
+    <div class="row" style="">
+        <div class="row ClockCover" style=""></div>
+
+        <div class="col-xl-4 part1" style="border-left: solid 1px rgb(135 135 135 / 56%)">
+            <p id="date" class="dateJ">{{ dateJ }}</p>
+        </div>
+        <div class="col-xl-4 part1">
+            <p class="time">{{ time }}</p>
+        </div>
+        <div class="col-xl-4 part1" style="border-right: solid 1px rgb(135 135 135 / 56%)">
+            <p cont-date1="date" class="date">{{ date }}</p>
+        </div>
+    </div>
+</div>
+
+<div id="large-header" class="large-header">
+    @{
+        var items = db.tbBannerSlider.ToList();
+    }
+
+    @if (db.tbBannerSlider.ToList() != null) // This line is correct with `@`
+    {
+        var i = 0;
+        <swiper-container class="mySwiper" dir="rtl" loop="true" navigation="true" centered-slides="true" autoplay-delay="5000" autoplay-disable-on-interaction="false" pagination="true"
+                          pagination-clickable="true" space-between="30" effect="fade">
+            @foreach (var item in items) // No `@` needed here, it's C# code
+            {
+                DateTime targetDate = DateTime.Now;
+                if (targetDate.Date >= item.StartDate && targetDate.Date <= item.EndDate && item.IsActive == true) // Here, remove the `@`
+                {
+                    i++;
+
+                    if (item.ColorCenter != "null")
+                    {
+
+                        <swiper-slide style="position:relative;">
+                            <div class="card" style=" position: absolute; color: #8c9098; width: 100%;height:100%; margin-right: -8px;">
+
+                                <div id="txtUp" style="position:absolute; color:@item.ColorTop">@item.TextTop</div>
+
+                                <div id="txtMi" style="position: absolute; color: @item.ColorCenter">@item.TextCenter</div>
+
+                                <div id="txtDo" style="position: absolute; color: @item.ColorDown">@item.TextDown</div>
+                            </div>
+                            <img class="imgBanner" src="/Areas/Reporter/Content/BannerImages/@item.ImgDir" alt="img" />
+                        </swiper-slide>
+
+
+                    }
+                    else
+                    {
+
+
+                        <swiper-slide style="position:relative;">
+                            <img class="imgBanner" src="/Areas/Reporter/Content/BannerImages/@item.ImgDir" />
+                        </swiper-slide>
+                    }
+                }
+            }
+        </swiper-container>
+        if (i == 0)
+        {
+            <img class="imgBanner" style="" src="~/Areas/Reporter/Content/BannerImages/pic8.jpg" />
+        }
+    }
+    else
+    {
+        <img class="imgBanner" style="" src="~/Areas/Reporter/Content/pic8.jpg" />
+    }
+
+</div>
+
+
+
+
+
+
+<script src="~/Scripts/Swiper.js"></script>
+<script src="~/Assets/js/vueTime.min.js"></script>
+<script>
+    var clock = new Vue({
+        el: '#clock',
+        data: {
+            time: '',
+            date: '',
+            dateJ: '',
+        }
+    });
+
+    var week = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+    var week1 = ['یک‌شنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه', 'شنبه'];
+
+    var timerID = setInterval(updateTime, 1000);
+    updateTime();
+    function updateTime() {
+        var cd = new Date();
+        clock.time = zeroPadding(cd.getHours(), 2) + ':' + zeroPadding(cd.getMinutes(), 2) + ':' + zeroPadding(cd.getSeconds(), 2);
+        clock.date = zeroPadding(cd.getFullYear(), 4) + '/' + zeroPadding(cd.getMonth() + 1, 2) + '/' + zeroPadding(cd.getDate(), 2) + ' ' + week[cd.getDay()];
+        //---------------------------------------------
+        var tds = document.querySelectorAll("[cont-date1]");
+        var valueD
+        var options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+        valueD = new Date(tds[0].textContent.replace(' ', '').slice(0, 10)).toLocaleDateString('fa-IR-u-nu-latn', options)
+        clock.dateJ = week1[cd.getDay()] + ' ' + valueD.slice(0, 10)
+        //---------------------------------------------
+    };
+    function zeroPadding(num, digit) {
+        var zero = '';
+        for (var i = 0; i < digit; i++) {
+            zero += '0';
+        }
+        return (zero + num).slice(-digit);
+    }
+</script>
+@*-------------------------------------------------------------|KH|-*@

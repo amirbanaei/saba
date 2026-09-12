@@ -1,0 +1,607 @@
+﻿@{
+    Layout = null;
+}
+<link href="~/MyStyles/jalalidatepicker.css" rel="stylesheet" />
+<link href="~/MyStyles/inputstyleandformstyle.css" rel="stylesheet" />
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+
+
+
+<div class="row">
+
+    <div class="col-xl-4">
+        <label class="form-label">انتخاب نوع تجهیز</label>
+        @Html.Action("viewnew", "DefFacilitiesEquipment")
+    </div>
+
+
+    <div class="col-xl-4">
+        <div class="row">
+            <div class="col-xl-12">
+                <label class="form-label"> پیمان ها </label>
+
+                <div id="pymn5"> </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-2">
+        <div class="row">
+            <div class="col-xl-12">
+                <label class="form-label">سال</label>
+
+            </div>
+            <div class="col-xl-12">
+                <select id="year_pY1" class="form-select">
+                    <option value="0">انتخاب کنید</option>
+                    @{
+                        System.Globalization.PersianCalendar cs2 = new System.Globalization.PersianCalendar();
+                        int currentYear = cs2.GetYear(DateTime.Now);
+
+                        for (var i = 4; i >= 0; i--)
+                        {
+                            var s = DateTime.Now.AddYears(-i);
+
+                            <option value="@cs2.GetYear(s)">@cs2.GetYear(s)</option>
+                        }
+                    }
+                </select>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-2">
+        <div class="row">
+            <div class="col-xl-12">
+                <label class="form-label">ماه</label>
+
+            </div>
+            <div class="col-xl-12">
+                <select id="month_pY1" class="form-select">
+                    <option value="0">انتخاب کنید  </option>
+
+                    <option value="1">فروردین</option>
+                    <option value="2">اردیبهشت</option>
+                    <option value="3">خرداد</option>
+                    <option value="4">تیر</option>
+                    <option value="5">مرداد</option>
+                    <option value="6">شهریور</option>
+                    <option value="7">مهر</option>
+                    <option value="8">آبان</option>
+                    <option value="9">آذر</option>
+                    <option value="10">دی</option>
+                    <option value="11">بهمن</option>
+                    <option value="12">اسفند</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+<div class="row" style="margin-bottom:10px;font-size:14px">
+    <div class="col-xl-8">
+
+    </div>
+    <div class="col-xl-1">
+        <button class="btn form-control buttonGeneral responsive" onclick="downloadAjax()">
+            <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+            <span class="bGeneral-text">دانلود فایل نمونه</span>
+        </button>
+    </div>
+    <div class="col-xl-1">
+        <button class="btn form-control buttonGeneral responsive" onclick="downloadAjax2344()">
+            <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+            <span class="bGeneral-text"> دانلود فایل نمونه با جمع کل </span>
+        </button>
+    </div>
+
+
+    @*<div class="col-xl-1">
+        <button class="btn form-control buttonGeneral responsive" onclick="down23()">
+            <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+            <span class="bGeneral-text">  دانلود فایل نمونه با جمع کل برای تست  </span>
+        </button>
+    </div>*@
+    <div class="col-xl-1">
+        <a class="btn form-control buttonGeneral responsive" id="upload20990">
+            <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+            <span class="bGeneral-text">بارگزاری اطلاعات</span>
+        </a>
+    </div>
+    <div class="col-xl-1">
+        <button class="btn form-control buttonGeneral" id="showdet55">
+            <i class="fa fa-eye fa-fw me-1 VecGeneral"></i>
+            <span class="bGeneral-text">مشاهده جزئیات</span>
+        </button>
+    </div>
+
+</div>
+<hr />
+
+<div class="row" style="margin-top:10px">
+    <div id="myTable13">
+
+    </div>
+</div>
+<div class="Equment_list"></div>
+<input id="summery_file1iuuouou1" style="display:none" type="file" class="form-control" value="" />
+
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+
+<script src="~/Scripts/popper.min.js"></script>
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Scripts/sweetalert2.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script>
+
+    $("#month_pY1").picker({ search: false });
+    $("#year_pY1").picker({ search: false });
+    $("#baste_peyman_ACCEpt3").picker({ search: false });
+
+</script>
+<script>
+
+
+
+        $("#showdet55").click(function () {
+
+
+
+            var selectedValue = $("#baste_peyman_ACCEpt3").val();
+
+            if (selectedValue) {
+                var parts = selectedValue.split('_');
+
+                if (parts.length >= 2) {
+                    var svdfunc_ID = parts[0];
+                    var pymnID = parts[1];
+                    var Type = parts[2];
+
+                    // Your further code logic here
+                } else {
+                    console.error("Invalid format: " + selectedValue);
+                }
+            } else {
+                console.error("Selected value is undefined or null");
+            }
+
+
+
+            var url = '@Url.Content("~/Contracts/DefFacilitiesEquipment/_ListEquipmentMoalefeValueForAcceper")?IsFor=' + $("#select_EquipmentGroup").val() + '&year_pY1=' + $("#year_pY1").val() + '&month_pY1=' + $("#month_pY1").val() + '&pymnID=' + svdfunc_ID ;
+
+
+
+            $("#myTable13").load(url);
+});
+
+
+
+
+
+    var monthSelect = document.getElementById("month_pY1");
+
+
+    monthSelect.addEventListener("change", function () {
+
+                       sendAjax7('@Url.Action("_ListEquipmenForAcceper", "DefFacilitiesEquipment",new { area = "Contracts" })');
+
+
+    });
+
+    $("#select_EquipmentGroup").change(function () {
+
+
+        console.log($(this).val());
+       if ($(this).val() != "Select") {
+           console.log($(this).val());
+          $("#pymn5").load('@Url.Content("/DefFacilitiesEquipment/viewsayet")?IsFor='+$(this).val(), function () {
+
+
+           });
+        }else{
+            $("#pymn5").html("");
+        }
+
+    });
+    $(document).ready(function() {
+    console.log("aaa");
+    $("#pymn5").load('@Url.Content("/RegistrationAndConfirmationProcedures/ReffrenceSaveGetPeymans3")?isSabt=True&IsFor=0', function () {
+        // This function is executed after the content is successfully loaded
+    });
+});
+
+
+    function sendAjax7(url2 ) {
+
+
+
+
+
+
+
+        var selectedValue = $("#baste_peyman_ACCEpt3").val();
+        var parts = selectedValue.split('_');
+        var FK_Baste = parts[0];
+        var pymnID = parts[1];
+        var Type = parts[2];
+        console.log("svdfunc_ID: " + FK_Baste);
+        console.log("pec_Title: " + pymnID);
+        console.log("reffrence_Title: " + Type);
+
+        var year_pY2 = $("#year_pY1").val()
+        var month_pY3 = $("#month_pY1").val()
+        $.ajax({
+            url: url2, // آدرس سرور
+            type: "GET", // یا "POST" بسته به نیاز شما
+            data: {
+                Year: year_pY2,
+                Month: month_pY3,
+                peyman_ID: pymnID,
+                type: Type
+            },
+            success: function (data) {
+                // در صورت موفقیت، محتوای دریافتی را در المان مورد نظر قرار دهید
+                $(".Equment_list").html(data);
+
+            },
+            error: function (error) {
+                // در صورت خطا، می‌توانید اقدامات مناسبی انجام دهید
+                console.error("خطا در درخواست AJAX: ", error);
+            }
+        });
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+</script>
+
+
+
+<script>
+    var fd = new FormData();
+    function downloadAjax() {
+        var selectedValue = $("#baste_peyman_ACCEpt3").val();
+
+        if (selectedValue) {
+            var parts = selectedValue.split('_');
+
+            if (parts.length >= 2) {
+                var svdfunc_ID = parts[0];
+                var pymnID = parts[1];
+                var Type = parts[2];
+
+                // Your further code logic here
+            } else {
+                console.error("Invalid format: " + selectedValue);
+            }
+        } else {
+            console.error("Selected value is undefined or null");
+        }
+        console.log(pymnID)
+        if (pymnID == undefined) {
+            alert("پیمان مورد نظر را انتخاب نمایید")
+        }
+        else if ($("#year_pY1").val() == 0) {
+            alert("سال مورد نظر را انتخاب نمایید")
+
+        } else if ($("#month_pY1").val() == 0) {
+            console.log($("#month_pY").val())
+            alert("ماه مورد نظر را انتخاب نمایید")
+
+        } else {
+
+
+
+
+
+
+
+
+        var selectedValue = $("#baste_peyman_ACCEpt3").val();
+        var parts = selectedValue.split('_');
+
+        console.log("svdfunc_ID: " + svdfunc_ID);
+        console.log("pec_Title: " + pymnID);
+        console.log("reffrence_Title: " + Type);
+        console.log("svdfunc_ID: " + year_pY1);
+        console.log("svdfunc_ID: " + month_pY1);
+          $("#loading-message").css("display", "block");
+          var svdfunc_ID = parts[0];
+          var pymnID = parts[1];
+          var Type = parts[2];
+          var year_pY1 = $("#year_pY1").val()
+          var month_pY1 = $("#month_pY1").val()
+          window.location = '@Url.Action("ExportExcel_MachinsOrTools", "DefFacilitiesEquipment",new { area = "Contracts" })?Peyman_ID=' + pymnID + '&type=' + Type + '&Month=' + month_pY1 + '&Year=' + year_pY1;
+        $("#loading-message").css("display", "none");
+        }
+    }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+    var fd2 = new FormData();
+    function downloadAjax2344() {
+        var selectedValue = $("#baste_peyman_ACCEpt3").val();
+
+        if (selectedValue) {
+            var parts = selectedValue.split('_');
+
+            if (parts.length >= 2) {
+                var svdfunc_ID = parts[0];
+                var pymnID = parts[1];
+                var Type = parts[2];
+
+                // Your further code logic here
+            } else {
+                console.error("Invalid format: " + selectedValue);
+            }
+        } else {
+            console.error("Selected value is undefined or null");
+        }
+        console.log(pymnID)
+        if (pymnID == undefined) {
+            alert("پیمان مورد نظر را انتخاب نمایید")
+        }
+        else if ($("#year_pY1").val() == 0) {
+            alert("سال مورد نظر را انتخاب نمایید")
+
+        } else if ($("#month_pY1").val() == 0) {
+            console.log($("#month_pY").val())
+            alert("ماه مورد نظر را انتخاب نمایید")
+
+        } else {
+
+
+
+
+
+
+
+
+        var selectedValue = $("#baste_peyman_ACCEpt3").val();
+        var parts = selectedValue.split('_');
+
+        console.log("svdfunc_ID: " + svdfunc_ID);
+        console.log("pec_Title: " + pymnID);
+        console.log("reffrence_Title: " + Type);
+        console.log("svdfunc_ID: " + year_pY1);
+        console.log("svdfunc_ID: " + month_pY1);
+          $("#loading-message").css("display", "block");
+          var svdfunc_ID = parts[0];
+          var pymnID = parts[1];
+          var Type = parts[2];
+          var year_pY1 = $("#year_pY1").val()
+          var month_pY1 = $("#month_pY1").val()
+          window.location = '@Url.Action("ExportExcel_MachinsOrTools222", "DefFacilitiesEquipment",new { area = "Contracts" })?Peyman_ID=' + pymnID + '&type=' + Type + '&Month=' + month_pY1 + '&Year=' + year_pY1;
+        $("#loading-message").css("display", "none");
+        }
+    }
+</script>
+
+<script>
+    //var fd2 = new FormData();
+    function down23() {
+        var selectedValue = $("#baste_peyman_ACCEpt3").val();
+
+        if (selectedValue) {
+            var parts = selectedValue.split('_');
+
+            if (parts.length >= 2) {
+                var svdfunc_ID = parts[0];
+                var pymnID = parts[1];
+                var Type = parts[2];
+
+                // Your further code logic here
+            } else {
+                console.error("Invalid format: " + selectedValue);
+            }
+        } else {
+            console.error("Selected value is undefined or null");
+        }
+        console.log(pymnID)
+        if (pymnID == undefined) {
+            alert("پیمان مورد نظر را انتخاب نمایید")
+        }
+        else if ($("#year_pY1").val() == 0) {
+            alert("سال مورد نظر را انتخاب نمایید")
+
+        } else if ($("#month_pY1").val() == 0) {
+            console.log($("#month_pY").val())
+            alert("ماه مورد نظر را انتخاب نمایید")
+
+        } else {
+
+
+
+
+
+
+
+
+        var selectedValue = $("#baste_peyman_ACCEpt3").val();
+        var parts = selectedValue.split('_');
+
+        console.log("svdfunc_ID: " + svdfunc_ID);
+        console.log("pec_Title: " + pymnID);
+        console.log("reffrence_Title: " + Type);
+        console.log("svdfunc_ID: " + year_pY1);
+        console.log("svdfunc_ID: " + month_pY1);
+          $("#loading-message").css("display", "block");
+          var svdfunc_ID = parts[0];
+          var pymnID = parts[1];
+          var Type = parts[2];
+          var year_pY1 = $("#year_pY1").val()
+          var month_pY1 = $("#month_pY1").val()
+          window.location = '@Url.Action("ExportExcel_MachinsOrTools222tst", "DefFacilitiesEquipment",new { area = "Contracts" })?Peyman_ID=' + pymnID + '&type=' + Type + '&Month=' + month_pY1 + '&Year=' + year_pY1;
+        $("#loading-message").css("display", "none");
+        }
+    }
+</script>
+
+
+<script>
+    $("#upload20990").click(function () {
+
+
+        var selectedValue = $("#baste_peyman_ACCEpt3").val();
+
+        if (selectedValue) {
+            var parts = selectedValue.split('_');
+
+            if (parts.length >= 2) {
+                var svdfunc_ID = parts[0];
+                var pymnID = parts[1];
+                var Type = parts[2];
+
+                // Your further code logic here
+            } else {
+                console.error("Invalid format: " + selectedValue);
+            }
+        } else {
+            console.error("Selected value is undefined or null");
+        }
+        console.log(pymnID)
+        if (pymnID == undefined) {
+            alert("پیمان مورد نظر را انتخاب نمایید")
+        }
+        else if ($("#year_pY1").val() == 0) {
+            alert("سال مورد نظر را انتخاب نمایید")
+
+        } else if ($("#month_pY1").val() == 0) {
+            console.log($("#month_pY").val())
+            alert("ماه مورد نظر را انتخاب نمایید")
+
+        } else {
+
+
+            $("#summery_file1iuuouou1").click();  }
+       });
+    $("#summery_file1iuuouou1").change(function (e) {
+            $.each(e.target.files, function (index, file) {
+                fd.append("files", file);
+            });
+            sendAjax450('@Url.Action("UploadAttachmentFile", "DefFacilitiesEquipment",new { area = "Contracts" })', fd);
+
+       });
+</script>
+<script>
+
+
+    function sendAjax450(url2, fd2) {
+
+        var selectedValue = $("#baste_peyman_ACCEpt3").val();
+
+        // Split the value into three parts based on the underscore
+        var parts = selectedValue.split('_');
+
+        // Extract the three values
+        var FK_Baste = parts[0];
+        var pymnID = parts[1];
+        var Type = parts[2];
+        var year_pY1 = $("#year_pY1").val()
+        var month_pY1 = $("#month_pY1").val()
+
+        console.log("svdfunc_ID: " + FK_Baste);
+        console.log("pec_Title: " + pymnID);
+        console.log("reffrence_Title: " + Type);
+        console.log("svdfunc_ID: " + year_pY1);
+        console.log("svdfunc_ID: " + month_pY1);
+
+
+
+
+
+
+
+
+
+
+        $("#loading-message").css("display", "block");
+        fd2.append("peymanID", pymnID);
+        fd2.append("Year", year_pY1);
+        fd2.append("Month", month_pY1);
+        fd2.append("Type", Type);
+        fd2.append("FK_Baste", FK_Baste);
+
+        $.ajax({
+            url: url2,
+            type: 'POST',
+            data: fd2,
+            processData: false,
+            contentType: false,
+            success: function (resp1) {
+                $("#loading-message").css("display", "none");
+                fd = new FormData();
+                if (resp1 == "True") {
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "اطلاعات با موفقیت ذخیره شد"
+                    });
+                    location.reload();
+
+
+                } else {
+                    $("#loading-message").css("display", "none");
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: resp1,
+                    }).then(() => {
+                        $("#loading-message").css("display", "none"); location.reload();
+
+                    });
+
+
+                }
+
+            },
+            error: function (resp1) {
+                $("#loading-message").css("display", "none");
+                Toast.fire({
+                    icon: 'success',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                }).then(() => {
+                    $("#loading-message").css("display", "none");
+                });
+            }
+        });
+    }
+</script>

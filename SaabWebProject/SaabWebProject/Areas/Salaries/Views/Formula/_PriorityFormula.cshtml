@@ -1,0 +1,37 @@
+﻿@model List<SaabWebProject.Models.DomainModels.tbFormula>
+<div class="border" style="width:100%;margin-top:21px;padding:10px;height:564px">
+    <label class="text-primary" style="margin-top: 10px;margin-top: 10px;padding: 12px;width: 100%;">الویت بندی فرمول ها</label>
+
+    <table class="table table-hover" style="width:100%;height:421px;" data-toggle="table" data-sort-class="table-active" data-sortable="true" data-search="true" data-pagination="true" data-show-refresh="true" data-show-columns="true" data-show-fullscreen="true" data-height="460">
+        <tbody style="overflow-y: scroll;
+      display: block;
+      height: 421px;" id="PriorityBody">
+            @foreach (var item in Model.OrderBy(p => p.Frml_Priority).ToList())
+            {
+                <tr class="tr-formula" id="formul_@item.FrmI_ID" title="@item.Frml_Formula">
+                    <td class="td-formula">
+                        @if (item.Frml_Formula.Length >= 20)
+                        {
+                            @item.Frml_Formula.Split('=')[0];
+                        }
+                        else
+                        {
+                            @item.Frml_Formula;
+                        }
+                    </td>
+                    <td style="font-size:17px;">
+                        <a class="text-success up"><i class="fa fa-arrow-circle-up"></i></a>
+                        <a class="text-danger down"><i class="fa fa-arrow-circle-down"></i></a>
+                        <a class="text-danger delete" id="frmdel_@item.FrmI_ID"><i class="fa fa-trash"></i></a>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+    <div class="row">
+        <div class="col-md-12" id="SavePrioritys">
+            <input class="btn btn-outline-success" value="ذخیره کردن فرمول ها" />
+        </div>
+    </div>
+</div>

@@ -1,0 +1,468 @@
+﻿@*@{
+        Layout = null;
+    }
+    <style>
+        .xcccc {
+            height: 352px;
+        }
+
+        @@media (min-width: 992px) {
+            .xc {
+                width: 100% !important;
+            }
+
+            @@media only screen and (max-width : 992px) {
+                .xcccc {
+                    height: 100% !important;
+                }
+            }
+
+            @@media only screen and (max-width : 1199px) {
+                .xcccc {
+                    height: 100% !important;
+                }
+            }
+        }
+
+
+    </style>
+    <div class="col-xl-7 col-12" style="z-index: 4" id="pp">
+        <div class="card xc" style="backdrop-filter:blur(10px);background: rgba(0,0,0,0.3);/*margin-right: -18px;*/
+
+    }">
+            <div class="card-body xcccc" style="height: 352px">
+                <div class="cardTitle d-flex" style="direction:rtl;border-radius:5px;border-right:2px solid #00a6fc ;background:linear-gradient(to right ,transparent 70%,#294c68 80%);padding-right:5px;">
+                    گزارش کارکنان @Model.Where(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-تاریخ بروزرسانی").Select(p => p.mlfval_Value).FirstOrDefault()
+                </div>
+                <div class="d-flex flex-column mt-2">
+                    <div class="col-xl-10" id="usrpymn">
+
+                        <label class="form-label"> کاربر مورد نظر  </label>
+                        <select class="form-control">
+                            <option value="Select">انتخاب کنید</option>
+                        </select>
+
+                    </div>
+
+                    <div class="d-flex">
+                        <span>تخصص اصلی : </span>
+                        <span>@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-تخصص اصلی").mlfval_Value</span>
+                    </div>
+
+                    <div class="d-flex">
+                        <div class="col-xl-6 d-flex flex-column xy ">
+                            <div class="d-flex">
+                                @if (Model.Where(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-وضعیت قرارداد").Select(p => p.mlfval_Value).FirstOrDefault() == "0")
+                                {
+                                    <svg class="w-6 h-6 NotAcceptedSvg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <span>وضعیت قرارداد: </span>
+                                }
+                                else
+                                {
+                                    <svg class="w-6 h-6 AcceptedSvg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <span>وضعیت قرارداد: </span>
+
+                                }
+
+                            </div>
+                            <div class="d-flex">
+                                <span>تاریخ اتمام: </span>
+                                <span id="test">@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-تاریخ خاتمه قرارداد2").mlfval_Value</span>
+                            </div>
+                            <div class="d-flex justify-content-center">
+                                <a href="#" style="cursor:pointer">
+                                    <img style="width:50px" src="~/Areas/Reporter/Content/peymanDash/download (8).svg" />
+                                </a>
+                            </div>
+                            <span>ماه و سال را انتخاب کنید</span>
+                            <div class="d-flex">
+                                <select id="selectMonth" class="form-select">
+                                    <option value="" selected disabled>ماه</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                    <option value="11">11</option>
+                                    <option value="12">12</option>
+                                </select>
+                                <select id="selectYear" class="form-select">
+                                    <option value="" selected disabled>سال</option>
+                                    <option value="1402">1402</option>
+                                    <option value="1401">1401</option>
+                                    <option value="1400">1400</option>
+                                    <option value="1399">1399</option>
+                                    <option value="1398">1398</option>
+                                </select>
+                            </div>
+                            <div class="col-xl-5" style="margin-top:10px">
+                                <button class="btn btn-outline-theme float-start" id="downfish" title="دریافت">
+                                    <svg style="width:50px;height:20px" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 13.5l3 3m0 0l3-3m-3 3v-6m1.06-4.19l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-xl-6">
+                            <div class="d-flex flex-column" style="font-size:12px">
+                                <div class="d-flex justify-content-between ">
+                                    <div>مانده مطالبات: </div>
+                                    <div class="number">@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-مانده مطالبات").mlfval_Value</div>
+                                </div>
+                                <div class="d-flex justify-content-between ">
+                                    <div>مانده ذخایر: </div>
+                                    <div class="number">@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-مانده ذخایر").mlfval_Value</div>
+                                </div>
+                                <div class="d-flex justify-content-between ">
+                                    <div>مانده اقساط: </div>
+                                    <div class="number">@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-مانده اقساط").mlfval_Value</div>
+                                </div>
+                                <div class="d-flex justify-content-between ">
+                                    <div>مانده مشارکت: </div>
+                                    <div class="number">@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-مانده مشارکت").mlfval_Value</div>
+                                </div>
+                                <div class="d-flex justify-content-between ">
+                                    <div>ذخیره پاداش/جریمه: </div>
+                                    <div class="number">@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-مانده پاداش و جرایم").mlfval_Value</div>
+                                </div>
+                                <div class="d-flex justify-content-between ">
+                                    <div>جمع تراز: </div>
+                                    <div>
+
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+    <script>
+        $(function () {
+            //لیست کاربران
+                 $.ajax({
+                     url: '@Url.Action("_UserPeyman", "Dashboard", new { area = "Reporter" })',
+                     data: { idPeyman: $("#select_peyman").val() },
+                    type: "Post",
+                    dataType: "html",
+                    success: function (resp) {
+                        $("#usrpymn").html(resp);
+                            $("#UserOfPeyman").on('change', function () {
+
+                            var per = $("#usrpymn").find(":selected").val();
+
+                            $.ajax({
+                                     url: '@Url.Action("_KarkonanDetail", "Dashboard", new { area = "Reporter" })',
+                                      data: { UsrID: per },
+                                         type: "Post",
+
+                            success: function (resp) {
+
+                                   $("#KarkonanDetail").html(resp)
+                                           },
+                                           error: function (resp2) {
+
+                                           }
+                                   });
+
+            });
+
+                    },
+                    error: function (resp2) {}
+                 });
+        });
+
+
+                                            </div>
+                                        }
+
+
+
+
+
+
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between ">
+                                    <div>حداکثر :</div>
+                                    <div class="number">@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-حداکثر").mlfval_Value </div>
+                                </div>
+                                <div class="d-flex justify-content-between ">
+                                    <div>متوسط :</div>
+                                    <div class="number">@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-متوسط").mlfval_Value </div>
+                                </div>
+                                <div class="d-flex justify-content-between ">
+                                    <div>حداقل :</div>
+                                    <div class="number">@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-حداقل").mlfval_Value </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="card-arrow">
+                <div class="card-arrow-top-left"></div>
+                <div class="card-arrow-top-right"></div>
+                <div class="card-arrow-bottom-left"></div>
+                <div class="card-arrow-bottom-right"></div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+    <script>
+
+        $("#downfish").on('click', function () {
+
+            var yr = $("#selectYear").find(":selected").val();
+            var month = $("#selectMonth").find(":selected").val();
+            var personal = $("#usrpymn").find(":selected").val();
+            var peyman = $("#select_peyman").val();
+
+               $.ajax({
+                url: '@Url.Action("DownloadFish", "Salary", new { area = "Salaries" })',
+                data: { year: yr, month: month, personelCode: personal, peyman: peyman },
+                    type: "Post",
+                    dataType: "html",
+                success: function (resp) {
+
+
+
+
+                         if (resp == "0") {
+
+                            Toast.fire({
+                                icon: 'error',
+                                background: '#35434A',
+                                color: 'white',
+                                title: "فیشی برای این ماه وجود ندارد"
+                            }).then(() => {
+
+                            });
+                    }
+                         else {
+                               var link = '@Url.Action("DownloadFish", "Salary", new { area = "Salaries", year = "7", month = "8", personelCode = "13", peyman = "15" })'
+
+
+                             link = link.replace("7", yr);
+                            link = link.replace("8", month);
+                            link = link.replace("13", personal);
+                            link = link.replace("15", peyman);
+                            link = link.replace("amp;", "");
+                            link = link.replace("amp;", "");
+                            link = link.replace("amp;", "");
+                            link = link.replace("amp;", "");
+
+                            window.location = link;
+
+                         }
+                       },
+                       error: function (resp2) {
+
+                       }
+         });
+
+        })
+
+    </script>
+
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+
+    <script>
+        $("#UserOfPeyman").picker({ search: true });
+    </script>*@
+
+
+
+
+
+
+
+@{
+    Layout = null;
+}
+<style>
+    @@media (min-width: 992px) {
+        .xc {
+            width: 580px !important;
+        }
+    }
+</style>
+<div class="col-xl-7" style="z-index: 4" id="pp">
+    <div class="card xc" style="backdrop-filter:blur(10px);background: rgba(0,0,0,0.3);/*margin-right: -18px;*/
+    width: 100% !important;
+}">
+        <div class="card-body" style="height: 410px">
+            <div class="cardTitle d-flex" style="margin:-10px;border-radius:5px;border-right:2px solid #00a6fc ;background:linear-gradient(to right ,transparent 40%,#294c68 91%);padding:5px; ">
+                گزارش کارکنان
+            </div>
+            <div class="d-flex flex-column mt-2">
+                <div class="col-xl-10" id="usrpymn">
+
+                    <label class="form-label"> کاربر مورد نظر  </label>
+                    <select class="form-control">
+                        <option value="Select">انتخاب کنید</option>
+                    </select>
+
+                </div>
+
+
+                <div id="KarkonanDetail">
+                    @Html.Action("_KarkonanDetail", "Dashboard", new { area = "Reporter" })
+
+                </div>
+                <span>انتخاب ماه و سال </span>
+                <div class="d-flex">
+                    <select id="selectMonth" class="form-select" style="width:30%">
+                        <option value="" selected disabled>ماه</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                    </select>
+                    <select id="selectYear" class="form-select" style="width:30%">
+                        <option value="" selected disabled>سال</option>
+                        <option value="1404">1404</option>
+                        <option value="1403">1403</option>
+                        <option value="1402">1402</option>
+                        <option value="1401">1401</option>
+                        <option value="1400">1400</option>
+                        <option value="1399">1399</option>
+                        <option value="1398">1398</option>
+                    </select>
+                    <button class="btn btn-outline-theme float-start fshdwn" id="downfish" title="دریافت" style="width:30%">
+                        <svg style="width:50px;height:20px" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 13.5l3 3m0 0l3-3m-3 3v-6m1.06-4.19l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-arrow">
+            <div class="card-arrow-top-left"></div>
+            <div class="card-arrow-top-right"></div>
+            <div class="card-arrow-bottom-left"></div>
+            <div class="card-arrow-bottom-right"></div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script>
+    $(function () {
+        //لیست کاربران
+             $.ajax({
+                 url: '@Url.Action("_UserPeyman", "Dashboard", new { area = "Reporter" })',
+                 data: { idPeyman: $("#select_peyman1").val() },
+                type: "Post",
+                dataType: "html",
+                 success: function (resp) {
+              
+                    $("#usrpymn").html(resp);
+                        $("#UserOfPeyman").on('change', function () {
+                        var per = $("#usrpymn").find(":selected").val();
+
+                        $.ajax({
+                                 url: '@Url.Action("_KarkonanDetail", "Dashboard", new { area = "Reporter" })',
+                                  data: { UsrID: per },
+                                     type: "Post",
+
+                        success: function (resp) {
+
+                            $("#KarkonanDetail").html(resp)
+                           
+                                       },
+                                       error: function (resp2) {
+                                           
+
+                                       }
+                               });
+
+        });
+
+                },
+                 error: function (resp2) {
+                    
+                     
+
+                 }
+             });
+    });
+
+
+    $("#downfish").on('click', function () {
+       // debugger;
+       // alert("salam");
+        var yr = $("#selectYear").find(":selected").val();
+        var month = $("#selectMonth").find(":selected").val();
+        var personal = $("#UserOfPeyman").find(":selected").val();
+        var peyman = $("#select_peyman1").val();
+
+           $.ajax({
+            url: '@Url.Action("DownloadFish", "Salary", new { area = "Salaries" })',
+            data: { year: yr, month: month, personelCode: personal, peyman: peyman },
+                type: "Post",
+                dataType: "html",
+            success: function (resp) {
+
+
+
+
+                     if (resp == "0") {
+
+                        //Toast.fire({
+                        //    icon: 'error',
+                        //    background: '#35434A',
+                        //    color: 'white',
+                        //    title: "فیشی برای این ماه وجود ندارد"
+                        //}).then(() => {
+
+                        //});
+                }
+                     else {
+                           var link = '@Url.Action("DownloadFish", "Salary", new { area = "Salaries", year = "7", month = "8", personelCode = "13", peyman = "15" })'
+
+
+                         link = link.replace("7", yr);
+                        link = link.replace("8", month);
+                        link = link.replace("13", personal);
+                        link = link.replace("15", peyman);
+                        link = link.replace("amp;", "");
+                        link = link.replace("amp;", "");
+                        link = link.replace("amp;", "");
+                        link = link.replace("amp;", "");
+
+                        window.location = link;
+                     }
+                   },
+                   error: function (resp2) {
+
+                   }
+     });
+
+    })
+
+</script>
+
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+
+<script>
+    $("#UserOfPeyman").picker({ search: true });
+</script>

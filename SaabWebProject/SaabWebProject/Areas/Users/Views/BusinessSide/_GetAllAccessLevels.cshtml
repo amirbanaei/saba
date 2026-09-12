@@ -1,0 +1,63 @@
+﻿
+@model SaabWebProject.Models.ViewModels.Users.ActionViewModel
+@{
+    Layout = null;
+}
+
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+<div class="row">
+    <div class="col-md-12">
+        <label class="form-control">دسترسی مورد نظر را انتخاب کنید</label>
+        <form action="/Users/BusinessSide/_SetAccessLevel" id="AccessForm" method="post">
+            <select class="form-control access" id="AccessLevel" multiple name="ControllerLevel">
+                <option value="0">همه</option>
+                @foreach (var item in Model.AllActions.OrderBy(p => p.Controller).ToList())
+                {
+                    <option value="@item.Action_ID">@item.ActionName</option>
+                }
+
+            </select>
+            <input type="hidden" id="PosId" name="PosId" value="@ViewBag.PosId" />
+            <hr />
+            <button id="btnSave" type="submit" class="btn form-control buttonsabt">
+                <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                <span class="bSabt-text">ثبت</span>
+            </button>
+        </form>
+    </div>
+    @*<div class="col-md-6">
+            <div id="actions">
+                @Html.Action("_ActionAccessLevel", "Users", new { area = "Users" })
+            </div>
+        </div>*@
+</div>
+<script src="~/Assets/js/jquery3.6.0.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+
+<script>
+
+    $('#AccessLevel').picker({ search: true });
+    $('#AccessLevel').picker();
+    $('#ActionAccess').picker({ search: true });
+    $('#ActionAccess').picker();
+
+    @foreach(var item in Model.ActiveActions.ToList())
+            {
+               @: $('.access').picker('set', '@item.Action_ID');
+            }
+
+    @*$('#AccessLevel').change(function () {
+        console.log("Change Shod");
+        var val = $("#AccessLevel").val();
+        $.ajax({
+            url: "@Url.Action("ChangeActionsParent","Users",new {area="Users"})",
+            type: "Get",
+            dataType: "html",
+            data: { id: val },
+            success: function (res) {
+                console.log(res);
+                $("#actions").html(res);
+            }
+        });
+    });*@
+</script>

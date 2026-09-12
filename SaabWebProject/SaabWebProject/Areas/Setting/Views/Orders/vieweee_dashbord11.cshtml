@@ -1,0 +1,4507 @@
+﻿
+@model SaabWebProject.Models.ViewModels.Contracts.Function.FunctionModel
+
+@{
+    ViewBag.Title = "داشبورد وصول با کسر خاص";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}@using SaabWebProject.Models.DomainModels;
+@{
+    string unicc = Model.unicc;
+}
+@{
+    SaabEntities db = new SaabEntities();
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+
+    <title>DashbordModirAmel2</title>
+
+    <style>
+
+        @@media (max-width: 768px) {
+            .title-chart {
+                background-color: var(--color-tr);
+                height: 25px !important;
+                width: 100%;
+                border-bottom: 1px solid #00ffff2e;
+                display: flex;
+            }
+
+            .Onvan-title {
+                width: 50%;
+                height: 100%;
+                text-align: start;
+                padding-right: 20px;
+                align-content: center;
+                color: aqua;
+                font-size: 6px !important;
+                font-weight: bold;
+            }
+
+            .Bazeh-title {
+                width: 50%;
+                height: 100%;
+                text-align: end;
+                align-content: center;
+                padding-left: 20px;
+                color: aqua;
+                font-size: 6px !important;
+                font-weight: bold;
+            }
+
+            .title-vosool {
+                display: flex;
+                flex-direction: column;
+                width: 20%;
+                height: 100%;
+            }
+
+                .title-vosool div {
+                    height: 50%;
+                    width: 100%;
+                    display: flex;
+                    justify-content: center;
+                }
+
+            .meghdar {
+                padding: 40px;
+                font-size: 20px !important;
+            }
+
+            .meghdar1 {
+                padding-top: 40px !important;
+                font-size: 18px !important;
+            }
+
+            .onvan {
+                padding-top: 25px !important;
+                font-size: 8px !important;
+            }
+
+            th {
+                font-size: 6px !important;
+                padding: 10px 10px !important;
+            }
+
+                th.th-bazeh {
+                    text-align: end;
+                    padding-left: 20px !important;
+                    font-size: 6px !important;
+                }
+
+                th.th-Onvan {
+                    font-size: 6px !important;
+                    text-align: start;
+                    padding-right: 20px !important;
+                }
+
+            td {
+                font-size: 6px !important;
+            }
+
+            .txt-Taghsim {
+                width: 100%;
+                height: 30px;
+                display: flex;
+                flex-direction: row;
+                font-size: 8px !important;
+                gap: 10px;
+                padding: 10px 20px;
+                align-content: center;
+            }
+        }
+
+
+        .chart-custom-legend .apexcharts-legend-series {
+            width: 200px !important;
+            border-radius: 8px;
+            height: fit-content;
+            padding: 5px;
+            border: 1px dashed aqua;
+            transition: .2s !important;
+        }
+
+            .chart-custom-legend .apexcharts-legend-series:hover {
+                text-shadow: 0 0px 5px aqua;
+                border: 1px solid aqua;
+            }
+
+        .chart-custom-legend .apexcharts-legend-series {
+            /*            background:var(--color-tr) !important;*/
+            margin: 2px !important;
+        }
+
+        .chart-custom-legend .apexcharts-legend-marker {
+            background: rgb(2, 62, 138) !important;
+            color: rgb(2, 62, 138);
+            height: 12px !important;
+            width: 12px !important;
+            left: 0px;
+            top: 0px;
+            border-width: 0px;
+            border-color: rgb(255, 255, 255);
+            border-radius: 12px;
+            margin: 5px 0px 0px 5px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 10px;
+        }
+
+        .field {
+            grid-column: span 12;
+            grid-row: span 3;
+            height: fit-content;
+            /* background-color: #ffffff; */
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #ffffff;
+            border: 1px solid #009595cc;
+            overflow: hidden;
+        }
+
+        /*        استایل جدول*/
+
+        :root {
+            --color-tr: #0b2934;
+        }
+
+        th {
+            color: aqua !important;
+            font-weight: bold !important;
+            padding: 10px 0px;
+            font-size: 12px;
+            width: calc(100%/8) !important;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #00ffff2e !important;
+            border-radius: 0px !important;
+        }
+
+        td {
+            transition: .3s;
+        }
+
+            td:hover {
+                color: aqua;
+                cursor: pointer;
+                text-shadow: 0 0 5px white;
+            }
+
+        .table > :not(:first-child) {
+            border-top: 2px solid aqua;
+        }
+
+        th.Bb, td.Bb {
+            border-bottom: 1px solid #00ffff2e !important;
+        }
+
+        th.Bt, td.Bt {
+            border-top: 1px dashed aqua !important;
+        }
+
+        th.Br, td.Br {
+            border-right: 1px dashed aqua !important;
+        }
+
+        th.Bl {
+            border-left: 1px solid #00ffff2e !important;
+        }
+
+        td.Bl {
+            border-left: 1px dashed #00ffff7a !important;
+        }
+
+        th.th-bazeh {
+            text-align: end;
+            padding-left: 20px !important;
+        }
+
+        th.th-Onvan {
+            text-align: start;
+            padding-right: 20px !important;
+        }
+
+        .title-chart {
+            background-color: var(--color-tr);
+            height: 40px;
+            width: 100%;
+            border-bottom: 1px solid #00ffff2e;
+            display: flex;
+        }
+
+        .Onvan-title {
+            width: 50%;
+            height: 100%;
+            text-align: start;
+            padding-right: 20px;
+            align-content: center;
+            color: aqua;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .Bazeh-title {
+            width: 50%;
+            height: 100%;
+            text-align: end;
+            align-content: center;
+            padding-left: 20px;
+            color: aqua;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .part-Pie-Bar {
+            width: 100%;
+            height: 300px;
+            display: flex;
+            flex-direction: row;
+            gap: 1px;
+        }
+
+            .part-Pie-Bar div {
+                width: 50%;
+                height: 100%;
+                display: flex;
+            }
+
+
+        .title-vosool {
+            display: flex;
+            flex-direction: column;
+            width: 20%;
+            height: 100%;
+        }
+
+            .title-vosool div {
+                height: 50%;
+                width: 100%;
+                display: flex;
+                justify-content: center;
+            }
+
+        .meghdar {
+            font-size: 40px;
+        }
+
+        .meghdar1 {
+            font-size: 30px;
+            padding-top: 5px;
+        }
+
+        .onvan {
+            padding-top: 25px;
+        }
+
+        .txt-Taghsim {
+            width: 100%;
+            height: 30px;
+            display: flex;
+            flex-direction: row;
+            font-size: 12px;
+            gap: 10px;
+            padding: 10px 20px;
+            align-content: center;
+        }
+
+        .form-select {
+            margin-bottom: 10px !important;
+        }
+    </style>
+    @{
+        var dbdashbord1 = Model.dbdashbord1.ToList();
+    }
+</head>
+<body>
+    <div class="tab-content" id="pills-tabContent">
+        <div class="dashboard">
+            <div id="" class="field" style="padding-top: 15px; padding-right:20px; align-items: flex-start;justify-content:flex-start;gap:10px; flex-direction:row;">
+                <div class="col-xl-2">
+                    <input style="text-align: center; font-weight: bold; color: aqua !important;" class="form-control" id="" value="وصول با کسر خاص" readonly disabled />
+                </div>
+                <div class="col-xl-2">
+                    <label class="form-label">نام شهرستان</label>
+                    <select name="color" class="form-select" id="sharestan">
+                        <option value="" selected>@unicc</option>
+                        @foreach (var it in Model.dbergapilike.ToList())
+                        {
+                            <option value="@it.unic">@it.unic</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-xl-2" style="display:none">
+
+                    <label class="form-label">از تاریخ</label>
+                    <input data-jdp jdp-btn-close data-jdp-miladi-input="astime" id="datepickerFrom_shw2" class="form-control pdate" name="datepickerFrom_shw2">
+                    <input id="astime" type="hidden" />
+                </div>
+                <div class="col-xl-2" style="display:none">
+
+                    <label class="form-label">تا تاریخ</label>
+                    <input data-jdp jdp-btn-close data-jdp-miladi-input="tatime" id="datepickerFrom_shw3" class="form-control pdate" name="datepickerFrom_shw3">
+                    <input id="tatime" type="hidden" />
+                </div>
+                <div class="col-xl-1">
+                    <button id="person-sabt" class="form-control buttonGeneral">
+                        <i class="bi bi-eye fa-fw me-1 VecGeneral"></i>
+                        <span class="bGeneral-text">مشاهده</span>
+                    </button>
+                </div>
+            </div>
+            <div id="" class="field">
+                <div class="title-chart">
+                    <div class="Onvan-title">جدول فروش و وصول (گزارش 1218)</div>
+                    <div class="Bazeh-title">(بازه زمانی از ابتدای ۱۴۰5)</div>
+                </div>
+                @{
+                    var dataSaleExpected11 = dbdashbord1.OrderByDescending(s => s.ID).FirstOrDefault(s => s.name_city == Model.unicc && s.valu_big == 3 && s.tatarigh_shams.Contains("کل هفته"));
+                    double saleExpectedAmount11 = dataSaleExpected11?.avrage.GetValueOrDefault() ?? 0;
+                    var dataSaleExpected114 = dbdashbord1.OrderByDescending(s => s.ID).FirstOrDefault(s => s.name_city == Model.unicc && s.valu_big == 4 && s.tatarigh_shams.Contains("کل هفته"));
+                    double saleExpectedAmount114 = dataSaleExpected114?.avrage.GetValueOrDefault() ?? 0;
+                    var dataSaleExpected_darsad = dbdashbord1.Where(s => s.name_city == Model.unicc && s.valu_big == 89).OrderByDescending(s => s.ID).FirstOrDefault();
+                    var dataSaleExpected_darsad_94 = dbdashbord1.OrderByDescending(s => s.ID).FirstOrDefault(s => s.name_city == Model.unicc && s.valu_big == 94);
+                    var dataSaleExpected_darsad_95 = dbdashbord1.OrderByDescending(s => s.ID).FirstOrDefault(s => s.name_city == Model.unicc && s.valu_big == 95);
+                    var dataSaleExpected_darsad_97 = dbdashbord1.OrderByDescending(s => s.ID).FirstOrDefault(s => s.name_city == Model.unicc && s.valu_big == 97);
+                    var dataSaleExpected_darsad_98 = dbdashbord1.OrderByDescending(s => s.ID).FirstOrDefault(s => s.name_city == Model.unicc && s.valu_big == 98);
+                    var dataSaleExpected_darsad_99 = dbdashbord1.OrderByDescending(s => s.ID).FirstOrDefault(s => s.name_city == Model.unicc && s.valu_big == 99);
+                    var dataSaleExpected_darsad_100 = dbdashbord1.OrderByDescending(s => s.ID).FirstOrDefault(s => s.name_city == Model.unicc && s.valu_big == 100);
+                    var dataSaleExpected_darsad_101 = dbdashbord1.OrderByDescending(s => s.ID).FirstOrDefault(s => s.name_city == Model.unicc && s.valu_big == 101);
+                    var dataSaleExpected_darsad_127 = dbdashbord1.OrderByDescending(s => s.ID).FirstOrDefault(s => s.name_city == Model.unicc && s.valu_big == 127);
+                    var dataSaleExpected_darsad_128 = dbdashbord1.OrderByDescending(s => s.ID).FirstOrDefault(s => s.name_city == Model.unicc && s.valu_big == 128);
+                    var dataSaleExpected_darsad_139 = dbdashbord1.OrderByDescending(s => s.ID).FirstOrDefault(s => s.name_city == Model.unicc && s.valu_big == 139);
+                    var dataSaleExpected_darsad_140 = dbdashbord1.OrderByDescending(s => s.ID).FirstOrDefault(s => s.name_city == Model.unicc && s.valu_big == 140);
+                    var dataSaleExpected_darsad_141 = dbdashbord1.OrderByDescending(s => s.ID).FirstOrDefault(s => s.name_city == Model.unicc && s.valu_big == 141);
+                    var dataSaleExpected_darsad_142 = dbdashbord1.OrderByDescending(s => s.ID).FirstOrDefault(s => s.name_city == Model.unicc && s.valu_big == 142);
+                    var saleExpectedAmount11_107 = dbdashbord1
+                                .Where(s => s.name_city == Model.unicc && s.valu_big == 107)
+                                .OrderByDescending(s => s.ID)
+                                .Select(s => (double?)s.avrage)
+                                .FirstOrDefault();
+
+                    var saleExpectedAmount11_131 = dbdashbord1
+                    .Where(s => s.name_city == Model.unicc && s.valu_big == 131)
+                    .OrderByDescending(s => s.ID)
+                    .Select(s => (double?)s.avrage)
+                    .FirstOrDefault();
+                    var saleExpectedAmount11_137 = dbdashbord1
+                    .Where(s => s.name_city == Model.unicc && s.valu_big == 137)
+                    .OrderByDescending(s => s.ID)
+                    .Select(s => (double?)s.avrage)
+                    .FirstOrDefault(); var saleExpectedAmount11_138 = dbdashbord1
+                    .Where(s => s.name_city == Model.unicc && s.valu_big == 138)
+                    .OrderByDescending(s => s.ID)
+                    .Select(s => (double?)s.avrage)
+                    .FirstOrDefault();
+                    var saleExpectedAmount11_143 = dbdashbord1
+                    .Where(s => s.name_city == Model.unicc && s.valu_big == 143)
+                    .OrderByDescending(s => s.ID)
+                    .Select(s => (double?)s.avrage)
+                    .FirstOrDefault(); var saleExpectedAmount11_144 = dbdashbord1
+                    .Where(s => s.name_city == Model.unicc && s.valu_big == 144)
+                    .OrderByDescending(s => s.ID)
+                    .Select(s => (double?)s.avrage)
+                    .FirstOrDefault();
+
+
+
+                    var saleExpectedAmount11_149 = dbdashbord1
+                    .Where(s => s.name_city == Model.unicc && s.valu_big == 149)
+                    .OrderByDescending(s => s.ID)
+                    .Select(s => (double?)s.avrage)
+                    .FirstOrDefault(); var saleExpectedAmount11_150 = dbdashbord1
+                    .Where(s => s.name_city == Model.unicc && s.valu_big == 150)
+                    .OrderByDescending(s => s.ID)
+                    .Select(s => (double?)s.avrage)
+                    .FirstOrDefault();
+                    var saleExpectedAmount11_132 = dbdashbord1
+                                        .Where(s => s.name_city == Model.unicc && s.valu_big == 132)
+                                        .OrderByDescending(s => s.ID)
+                                        .Select(s => (double?)s.avrage)
+                                        .FirstOrDefault();
+
+                    var saleExpectedAmount11_108 = dbdashbord1
+                                        .Where(s => s.name_city == Model.unicc && s.valu_big == 108)
+                                        .OrderByDescending(s => s.ID)
+                                        .Select(s => (double?)s.avrage)
+                                        .FirstOrDefault();
+
+                    var saleExpectedAmount11_109 = dbdashbord1
+                        .Where(s => s.name_city == Model.unicc && s.valu_big == 109)
+                        .OrderByDescending(s => s.ID)
+                        .Select(s => (double?)s.avrage)
+                        .FirstOrDefault();
+
+                    var saleExpectedAmount11_110 = dbdashbord1
+                        .Where(s => s.name_city == Model.unicc && s.valu_big == 110)
+                        .OrderByDescending(s => s.ID)
+                        .Select(s => (double?)s.avrage)
+                        .FirstOrDefault();
+
+                    var saleExpectedAmount11_111 = dbdashbord1
+                        .Where(s => s.name_city == Model.unicc && s.valu_big == 111)
+                        .OrderByDescending(s => s.ID)
+                        .Select(s => (double?)s.avrage)
+                        .FirstOrDefault();
+
+
+                    var saleExpectedAmount11_122 = dbdashbord1
+                    .Where(s => s.name_city == Model.unicc && s.valu_big == 122)
+                    .OrderByDescending(s => s.ID)
+                    .Select(s => (double?)s.avrage)
+                    .FirstOrDefault();
+
+                    var saleExpectedAmount11_123 = dbdashbord1
+                        .Where(s => s.name_city == Model.unicc && s.valu_big == 123)
+                        .OrderByDescending(s => s.ID)
+                        .Select(s => (double?)s.avrage)
+                        .FirstOrDefault();
+
+                    var saleExpectedAmount11_124 = dbdashbord1
+                        .Where(s => s.name_city == Model.unicc && s.valu_big == 124)
+                        .OrderByDescending(s => s.ID)
+                        .Select(s => (double?)s.avrage)
+                        .FirstOrDefault();
+
+                    var saleExpectedAmount11_125 = dbdashbord1
+                        .Where(s => s.name_city == Model.unicc && s.valu_big == 125)
+                        .OrderByDescending(s => s.ID)
+                        .Select(s => (double?)s.avrage)
+                        .FirstOrDefault();
+
+                    var saleExpectedAmount11_126 = dbdashbord1
+                        .Where(s => s.name_city == Model.unicc && s.valu_big == 126)
+                        .OrderByDescending(s => s.ID)
+                        .Select(s => (double?)s.avrage)
+                        .FirstOrDefault();
+                    var saleExpectedAmount11_87 = dbdashbord1
+                    .Where(s => s.name_city == Model.unicc && s.valu_big == 87)
+                    .OrderByDescending(s => s.ID)
+                    .Select(s => (double?)s.avrage)
+                    .FirstOrDefault();
+                    var v87 = Math.Round(saleExpectedAmount11_87 ?? 0, 1);
+
+                    // ذخیره مقدار sumkol در long با مقدار پیش‌فرض 0
+                    long saleExpectedAmount11_94 = dataSaleExpected_darsad_94?.sumkol.GetValueOrDefault() ?? 0;
+                    long saleExpectedAmount11_95 = dataSaleExpected_darsad_95?.sumkol.GetValueOrDefault() ?? 0;
+                    long saleExpectedAmount11_97 = dataSaleExpected_darsad_97?.sumkol.GetValueOrDefault() ?? 0;
+                    long saleExpectedAmount11_98 = dataSaleExpected_darsad_98?.sumkol.GetValueOrDefault() ?? 0;
+                    long saleExpectedAmount11_99 = dataSaleExpected_darsad_99?.sumkol.GetValueOrDefault() ?? 0;
+                    long saleExpectedAmount11_100 = dataSaleExpected_darsad_100?.sumkol.GetValueOrDefault() ?? 0;
+                    long saleExpectedAmount11_101 = dataSaleExpected_darsad_101?.sumkol.GetValueOrDefault() ?? 0;
+                    long saleExpectedAmount11_127 = dataSaleExpected_darsad_127?.sumkol.GetValueOrDefault() ?? 0;
+                    long saleExpectedAmount11_128 = dataSaleExpected_darsad_128?.sumkol.GetValueOrDefault() ?? 0;
+
+                    long saleExpectedAmount11_139 = dataSaleExpected_darsad_139?.sumkol.GetValueOrDefault() ?? 0;
+                    long saleExpectedAmount11_140 = dataSaleExpected_darsad_140?.sumkol.GetValueOrDefault() ?? 0;
+                    long saleExpectedAmount11_141 = dataSaleExpected_darsad_141?.sumkol.GetValueOrDefault() ?? 0;
+                    long saleExpectedAmount11_142 = dataSaleExpected_darsad_142?.sumkol.GetValueOrDefault() ?? 0;
+
+                    var dataSaleExpected_darsad_102 = dbdashbord1.OrderByDescending(s => s.ID).FirstOrDefault(s => s.name_city == Model.unicc && s.valu_big == 102);
+                    var dataSaleExpected_darsad_103 = dbdashbord1.OrderByDescending(s => s.ID).FirstOrDefault(s => s.name_city == Model.unicc && s.valu_big == 103);
+                    var dataSaleExpected_darsad_104 = dbdashbord1.OrderByDescending(s => s.ID).FirstOrDefault(s => s.name_city == Model.unicc && s.valu_big == 104);
+                    var dataSaleExpected_darsad_105 = dbdashbord1.OrderByDescending(s => s.ID).FirstOrDefault(s => s.name_city == Model.unicc && s.valu_big == 105);
+                    var dataSaleExpected_darsad_106 = dbdashbord1.OrderByDescending(s => s.ID).FirstOrDefault(s => s.name_city == Model.unicc && s.valu_big == 106);
+
+                    var dataSaleExpected_darsad_129 = dbdashbord1.OrderByDescending(s => s.ID).FirstOrDefault(s => s.name_city == Model.unicc && s.valu_big == 129);
+                    var dataSaleExpected_darsad_130 = dbdashbord1.OrderByDescending(s => s.ID).FirstOrDefault(s => s.name_city == Model.unicc && s.valu_big == 130);
+
+                    long saleExpectedAmount11_102 = dataSaleExpected_darsad_102?.sumkol.GetValueOrDefault() ?? 0;
+                    long saleExpectedAmount11_103 = dataSaleExpected_darsad_103?.sumkol.GetValueOrDefault() ?? 0;
+                    long saleExpectedAmount11_104 = dataSaleExpected_darsad_104?.sumkol.GetValueOrDefault() ?? 0;
+                    long saleExpectedAmount11_105 = dataSaleExpected_darsad_105?.sumkol.GetValueOrDefault() ?? 0;
+                    long saleExpectedAmount11_106 = dataSaleExpected_darsad_106?.sumkol.GetValueOrDefault() ?? 0;
+                    long saleExpectedAmount11_129 = dataSaleExpected_darsad_129?.sumkol.GetValueOrDefault() ?? 0;
+                    long saleExpectedAmount11_130 = dataSaleExpected_darsad_130?.sumkol.GetValueOrDefault() ?? 0;
+
+                    long saleExpectedAmount11_89 = dataSaleExpected_darsad?.sumkol.GetValueOrDefault() ?? 0;
+                    long sum94_89 = (long)(saleExpectedAmount11_89 + saleExpectedAmount11_94);
+                    double sum95_sum94_89 = 0;
+
+                    if (sum94_89 > 0)
+                    {
+                        sum95_sum94_89 = (double)saleExpectedAmount11_95 / sum94_89 * 100;
+                    }
+
+
+                    //s============================================================================m14041218
+
+
+                    //var data11 = dbdashbord1
+                    //    .Where(r => r.name_city == Model.unicc && r.valu_big == 11)
+                    //    .Select(r => r.astargh_shams)
+                    //    .ToList();
+                    //var data8 = dbdashbord1
+                    //    .Where(r => r.name_city == Model.unicc && r.valu_big == 8)
+                    //    .Select(r => r.astargh_shams)
+                    //    .ToList();
+                    //var data13 = dbdashbord1
+                    //    .Where(r => r.name_city == Model.unicc && r.valu_big == 13)
+                    //    .Select(r => r.astargh_shams)
+                    //    .ToList();
+                    var data11 = dbdashbord1
+                        .Where(r => r.name_city == Model.unicc && r.valu_big == 11 && r.tatarigh_shams.Contains("کل هفته"))
+                        .Select(r => r.astargh_shams).Take(27)
+                        .ToList();
+                    var data8 = dbdashbord1
+                        .Where(r => r.name_city == Model.unicc && r.valu_big == 8 && r.tatarigh_shams.Contains("کل هفته"))
+                        .Select(r => r.astargh_shams).Take(27)
+                        .ToList();
+                    var data13 = dbdashbord1
+                        .Where(r => r.name_city == Model.unicc && r.valu_big == 13 && r.tatarigh_shams.Contains("کل هفته"))
+
+                        .Select(r => r.astargh_shams).Take(27)
+                        .ToList();
+                    var datatarikh = dbdashbord1
+                        .Where(r => r.name_city == Model.unicc && r.valu_big == 13 && r.tatarigh_shams.Contains("کل هفته"))
+                        .Select(r => r.tatarigh_shams).Take(27)
+                        .ToList();
+
+
+
+
+
+
+                    //var datatarikh = dbdashbord1
+                    //    .Where(r => r.name_city == Model.unicc && r.valu_big == 13)
+                    //    .Select(r => r.tatarigh_shams)
+                    //    .ToList();
+
+
+                    //    var selectedSeriesJson8 = new[]
+                    //    {
+                    //    new { data = data8 }
+                    //};
+                    //    var selectedSeriesJs8 = Newtonsoft.Json.JsonConvert.SerializeObject(selectedSeriesJson8);
+
+                    //    var selectedSeriesJson11 = new[]
+                    //    {
+                    //    new { data = data11 }
+                    //};
+                    //    var selectedSeriesJs11 = Newtonsoft.Json.JsonConvert.SerializeObject(selectedSeriesJson11);
+
+                    //    var selectedSeriesJson13 = new[]
+                    //    {
+                    //    new { data = data13 }
+                    //};
+                    //    var selectedSeriesJs13 = Newtonsoft.Json.JsonConvert.SerializeObject(selectedSeriesJson13);
+
+
+                    var selectedSeriesJs8 = Newtonsoft.Json.JsonConvert.SerializeObject(data8);
+                    var selectedSeriesJs11 = Newtonsoft.Json.JsonConvert.SerializeObject(data11);
+                    var selectedSeriesJs13 = Newtonsoft.Json.JsonConvert.SerializeObject(data13);
+                    var selectedSeriesJstarikh = Newtonsoft.Json.JsonConvert.SerializeObject(datatarikh);
+
+
+
+                    //e============================================================================m14041218
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                }
+                <div style="width:100%;height:200px;display:flex; flex-direction:row;">
+                    <div class="title-vosool">
+                        <div class="onvan">وصول جاری درصد</div>
+                        <div class="meghdar">@saleExpectedAmount11.ToString("0.0")</div>
+                    </div>
+                    <div class="title-vosool">
+                        <div class="onvan">وصول کل درصد</div>
+                        <div class="meghdar1">@saleExpectedAmount114.ToString("0.0")</div>
+                    </div>
+                    <div style="width:60%; height:100%;">
+                        <div id="chart2" style="height:100%; width:100%;"></div>
+                    </div>
+
+
+                </div>
+            </div>
+            @{
+                // مقادیر نمودار قبلی (اگر هنوز نیاز دارید)
+                // ... کدهای قبلی ...
+
+                // مقادیر برای نمودار جدید (تحقق فروش و حد انتظار)
+                var dataSaleReal1 = dbdashbord1.OrderByDescending(s => s.ID).FirstOrDefault(s => s.name_city == Model.unicc && s.valu_big == 90);
+                //var dataSaleExpected1 = dbdashbord1.OrderByDescending(s => s.ID).FirstOrDefault(s => s.name_city == Model.unicc && s.valu_big == 88);
+                //var dataSaleReal12 = dbdashbord1.OrderByDescending(s => s.ID).FirstOrDefault(s => s.name_city == Model.unicc && s.valu_big == 151);
+                var dataSaleExpected12 = dbdashbord1.OrderByDescending(s => s.ID).FirstOrDefault(s => s.name_city == Model.unicc && s.valu_big == 88 && s.tatarigh_shams == "کل هفته12 -1404/10/26");
+
+                //var dataSaleReal12 = dbdashbord1.OrderByDescending(s => s.ID).FirstOrDefault(s => s.name_city == Model.unicc && s.valu_big == 151);
+                var dataSaleReal12 = dbdashbord1.OrderByDescending(s => s.ID).FirstOrDefault(s => s.name_city == Model.unicc && s.valu_big == 90 /*&& s.tatarigh_shams == "کل هفته13 -1404/11/03"*/);
+                var dataSaleExpected1 = dbdashbord1.OrderByDescending(s => s.ID).FirstOrDefault(s => s.name_city == Model.unicc && s.valu_big == 88 && s.tatarigh_shams == "کل هفته15 -1404/11/17");
+
+                var dataSaleExpected1dasrsad = dbdashbord1.OrderByDescending(s => s.ID).FirstOrDefault(s => s.name_city == Model.unicc && s.valu_big == 81 /*&& s.tatarigh_shams.Contains("جمع کل")*/);
+                double saleRealAmount1o = dataSaleExpected1dasrsad?.avrage.GetValueOrDefault() ?? 0;
+
+                double saleRealAmount1 = dataSaleReal1?.avrage.GetValueOrDefault() ?? 0;
+                long saleExpectedAmount1 = dataSaleReal1?.sumkol.GetValueOrDefault() ?? 0;
+                double saleRealAmount12 = dataSaleReal12?.avrage.GetValueOrDefault() ?? 0;
+                double saleExpectedAmount12 = dataSaleExpected12?.avrage.GetValueOrDefault() ?? 0;
+
+                double saleRealAmount111 = dataSaleExpected1?.avrage.GetValueOrDefault() ?? 0;
+                long saleExpectedAmount111 = dataSaleExpected1?.sumkol.GetValueOrDefault() ?? 0;
+                long divisionResult1 = 0;
+                if (saleRealAmount12 > 0)
+                {
+                    // محاسبه: (Real / Expected) * 100 و گرد کردن آن
+                    divisionResult1 = (long)Math.Round((double)saleRealAmount1 / saleRealAmount12 * 100);
+                }
+            }
+            <div id="" class="field">
+                <div class="table-responsive tableH_Lock" style="width:100%; height:100%;">
+                    <table class="table table-hover text-nowrap" style="margin:0;">
+                        <tr style="text-align: center; background-color: var(--color-tr) !important; ">
+                            <th class="Bb th-Onvan" colspan="5">
+                                جدول عملکرد وصول جاری و انحراف از انتظار (گزارش ۱۲۱۸)
+                            </th>
+                            <th class="Bb th-bazeh" colspan="1">
+                                (بازه زمانی از ابتدای  ۱۴۰5)
+                            </th>
+                        </tr>
+
+                        <tr style="background-color: var(--color-tr) !important;">
+                            <th class="Bb">آخرین بروزرسانی</th>
+                            <th class=" Bb">وزن از کل درصد</th>
+                            <th class=" Bb">رتبه در شهرستان ها</th>
+                            <th class=" Bb">وصول جاری درصد</th>
+                            <th class=" Bb">حد انتظار درصد</th>
+                            <th class=" Bb">انحراف درصد</th>
+
+                            @{
+                                double xxx = (double)(saleExpectedAmount11 - saleRealAmount12);
+                            }
+                        </tr>
+                        <tbody>
+                            <tr>
+                                <td>آخرین بروز رسانی</td>
+                                <td>۱۰۰</td>
+                                <td>@saleRealAmount1o</td>
+                                <td>@saleExpectedAmount11.ToString("0.0")</td>
+                                <td>@saleRealAmount12.ToString("0.0")</td>
+                                <td>@xxx.ToString("0.0;0.0-;0.0")</td>
+                            </tr>
+
+                            @{
+                                double xxx2 = (double)(saleExpectedAmount12 - saleRealAmount1);
+                            }
+                            <tr>
+                                <td>پیش بینی انتهای ۱۴۰۴</td>
+                                <td>۱۰۰</td>
+                                <td>@saleRealAmount1o</td>
+                                <td>@saleExpectedAmount12.ToString("0.0")</td>
+                                <td>@saleRealAmount1.ToString("0.0")</td>
+                                <td>@xxx2.ToString("0.0;0.0-;0.0")</td>
+                            </tr>
+                            @{
+                                double xxx3 = (double)(saleRealAmount111 - saleRealAmount1);
+                            }
+                            <tr>
+                                <td>پیش بینی انتهای ۱۴۰۵</td>
+                                <td>۱۰۰</td>
+                                <td>@saleRealAmount1o</td>
+                                <td>@saleRealAmount111.ToString("0.0")</td>
+                                <td>@saleRealAmount1.ToString("0.0")</td>
+                                <td>@xxx3.ToString("0.0;0.0-;0.0")</td>
+                            </tr>
+                        </tbody>
+
+
+                    </table>
+                </div>
+            </div>
+            @{
+                // مقادیر نمودار قبلی (اگر هنوز نیاز دارید)
+                // ... کدهای قبلی ...
+
+                // مقادیر برای نمودار جدید (تحقق فروش و حد انتظار)
+                var dataSaleReal = dbdashbord1.OrderByDescending(s => s.ID).FirstOrDefault(s => s.name_city == Model.unicc && s.valu_big == 10);
+                var dataSaleExpected = dbdashbord1.OrderByDescending(s => s.ID).FirstOrDefault(s => s.name_city == Model.unicc && s.valu_big == 11);
+                var dataSaleExpecteddarsad = dbdashbord1.OrderByDescending(s => s.ID).FirstOrDefault(s => s.name_city == Model.unicc && s.valu_big == 13);
+                var dataSaleReal10 = dbdashbord1.Where(s => s.name_city == Model.unicc && s.valu_big == 10 && s.tatarigh_shams.Contains("کل هفته")).Sum(s => s.sumkol);
+                //var dataSaleReal11 = dbdashbord1.Where(s => s.name_city == Model.unicc && s.valu_big == 11).Take(21).Sum(s => s.sumkol);
+                var dataSaleReal11 = dbdashbord1
+                .Where(s => s.name_city == Model.unicc
+                && s.valu_big == 11
+                && s.tatarigh_shams.Contains("کل هفته"))
+                .Sum(s => s.sumkol);
+
+                long saleRealAmount = dataSaleReal?.sumkol.GetValueOrDefault() ?? 0;
+                long saleExpectedAmount = dataSaleExpected?.sumkol.GetValueOrDefault() ?? 0;
+                //double saleExpectedAmount_dar = dataSaleExpecteddarsad?.avrage.GetValueOrDefault() ?? 0;
+                double saleExpectedAmount_dar = ((double)dataSaleReal11 / (double)dataSaleReal10) * 100;
+
+            }
+            <div id="" class="field">
+                <div class="title-chart">
+                    <div class="Onvan-title">جدول عملکرد وصول جاری و  انحراف از انتظار (گزارش 1218)</div>
+                    <div class="Bazeh-title">(بازه زمانی از ابتدای آبان ۱۴۰۴)</div>
+                </div>
+                <div class="txt-Taghsim" style="">
+                    <p>درصد تحقق انتظار</p>
+                    <p>:</p>
+                    <p style="font-size:15px">@saleExpectedAmount_dar.ToString("0.0")</p>
+                </div>
+                <div id="horizontalBarChart" style="width:100%; height:100%;"></div>
+            </div>
+            @if (Model.unicc == "استان")
+            {
+                <div id="" class="field">
+                    <div class="title-chart">
+                        <div class="Onvan-title">درصد وصول جاری شهرستانها (صدف)</div>
+                        <div class="Bazeh-title">(بازه زمانی از ابتدای 1404 و 1403 تا آخرین ماه)</div>
+                    </div>
+                    <div id="chart1" style="height:100%; width:100%;"></div>
+                </div>
+            }
+
+            <div id="" class="field">
+                <div class="title-chart">
+                    <div class="Onvan-title">نمودار درصد وصول جاری (صدف)</div>
+                    <div class="Bazeh-title">(بازه زمانی از ابتدای ۱۴۰۳ و 1404و۱۴۰5)</div>
+                </div>
+                <div id="chart3" style="width:100%; height:100%;"></div>
+            </div>
+            <div id="" class="field">
+                <div class="title-chart">
+                    <div class="Onvan-title">نمودار درصد وصول جاری (صدف)(بدون کسر خاص)</div>
+                    <div class="Bazeh-title">(بازه زمانی از ابتدای ۱۴۰۳ و 1404و۱۴۰5)</div>
+                </div>
+                <div id="chart30" style="width:100%; height:100%;"></div>
+            </div>
+            @*@if (Model.unicc == "استان")
+                {*@
+
+
+            <div id="" class="field">
+                <div class="title-chart">
+                    <div class="Onvan-title">نمودار درصد وصول جاری (گزارش 1218)</div>
+                    <div class="Bazeh-title">(بازه از ابتدای آبان 1404))</div>
+                </div>
+                <div id="chartSingleBarTwoLine" style="width:100%; height:100%;"></div>
+
+
+            </div>
+
+            @*//}*@
+            <div id="" class="field">
+                <div class="title-chart">
+                    <div class="Onvan-title">بررسی وصول جاری براساس نوع تعرفه (گزارش 1218)</div>
+                    <div class="Bazeh-title">(بازه زمانی از ابتدای   ۱۴۰۴)</div>
+                </div>
+                <div class="part-Pie-Bar">
+                    <div id="">
+                        <div id="chart4" style="width:100%; height:100%;"></div>
+                    </div>
+
+                    <div id="">
+                        <div class="chart-custom-legend" id="chart" style="width:100%; height:100%;"></div>
+                    </div>
+
+                </div>
+                <div class="part-Pie-Bar" style="margin-top: 1px; border-top: 1px dashed aqua;">
+                    <div id="">
+                        <div id="chart6" style="width:100%; height:100%;"></div>
+                    </div>
+
+                    <div id="">
+                        <div class="chart-custom-legend" id="chart7" style="width:100%; height:100%;"></div>
+                    </div>
+                </div>
+
+
+            </div>
+            <div id="" class="field">
+                <div class="title-chart">
+                    <div class="Onvan-title">بررسی وصول جاری براساس نوع اشتراک (گزارش 1218)</div>
+                    <div class="Bazeh-title">(بازه زمانی از ابتدای   ۱۴۰۴)</div>
+                </div>
+                <div class="part-Pie-Bar">
+                    <div id="">
+                        <div id="chart8" style="width:100%; height:100%;"></div>
+                    </div>
+
+                    <div id="">
+                        <div class="chart-custom-legend" id="char9" style="width:100%; height:100%;"></div>
+                    </div>
+
+                </div>
+                <div class="part-Pie-Bar" style="margin-top: 1px; border-top: 1px dashed aqua;">
+                    <div id="">
+                        <div id="chart10" style="width:100%; height:100%;"></div>
+                    </div>
+
+                    <div id="">
+                        <div class="chart-custom-legend" id="chart11" style="width:100%; height:100%;"></div>
+                    </div>
+                </div>
+
+
+            </div>
+
+
+            <div id="" class="field">
+                <div class="title-chart">
+                    <div class="Onvan-title">بررسی وصول جاری براساس نوع کنترل پذیری (گزارش 1218)</div>
+                    <div class="Bazeh-title">(بازه زمانی از ابتدای   ۱۴۰۴)</div>
+                </div>
+                <div class="part-Pie-Bar">
+                    <div id="">
+                        <div id="chart12" style="width:100%; height:100%;"></div>
+                    </div>
+
+                    <div id="">
+                        <div class="chart-custom-legend" id="char13" style="width:100%; height:100%;"></div>
+                    </div>
+
+                </div>
+                <div class="part-Pie-Bar" style="margin-top: 1px; border-top: 1px dashed aqua;">
+                    <div id="">
+                        <div id="chart14" style="width:100%; height:100%;"></div>
+                    </div>
+
+                    <div id="">
+                        <div class="chart-custom-legend" id="chart15" style="width:100%; height:100%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="~/Assets/plugins/apexcharts/dist/apexcharts.min.js"></script>
+    @*لود نمودار *@
+    @{
+        var val1 = dbdashbord1.Where(s => s.name_city == Model.unicc && s.valu_big == 95).OrderByDescending(s => s.ID).FirstOrDefault();
+        var val2 = dbdashbord1.Where(s => s.name_city == Model.unicc && s.valu_big == 94).OrderByDescending(s => s.ID).FirstOrDefault();
+        var val3 = dbdashbord1.Where(s => s.name_city == Model.unicc && s.valu_big == 89).OrderByDescending(s => s.ID).FirstOrDefault();
+
+        long amount1 = 0;
+        long amount2 = 0;
+        long amount3 = 0;
+
+        // چون sumkol خودش عدد است، فقط کافیست آن را به long تبدیل کنید (Cast)
+        // استفاده از .GetValueOrDefault() باعث می‌شود اگر نال بود، مقدار 0 جایگزین شود
+
+        if (val3 != null)
+        {
+            amount2 = val3.sumkol.GetValueOrDefault();
+        }
+
+        if (val2 != null)
+        {
+            amount1 = val2.sumkol.GetValueOrDefault();
+        }
+
+        if (val1 != null)
+        {
+            amount3 = val1.sumkol.GetValueOrDefault();
+        }
+    }
+    <script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+    <script src="~/Scripts/jquery-ui.js"></script>
+    <script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+    <script>
+        var options = {
+            series: [44, 55, 13, 33],
+            labels: ['تیم الف', 'تیم ب', 'تیم ج', 'تیم د'],
+            chart: {
+                type: 'donut',
+                width: '100%',
+                height: '100%', // ارتفاع رو ۱۰۰٪ می‌گیره
+                fontFamily: 'Tahoma, Arial',
+            },
+            // حذف بردر (بدون هیچ خط جداسازی)
+            stroke: {
+                show: false
+            },
+            colors: ['#00E396', '#00a6ff', '#FEB019', '#FF4560'],
+            plotOptions: {
+                pie: {
+                    expandOnClick: true,
+                    donut: {
+                        size: '70%',
+                        labels: {
+                            show: true,
+                            name: { show: true, fontSize: '14px', color: '#aaa', offsetY: -5 },
+                            value: {
+                                show: true,
+                                fontSize: '20px',
+                                color: '#fff',
+                                offsetY: 5,
+                                formatter: (val) => val + "%"
+                            },
+                            total: { show: false } // برای خلوت شدن مرکز
+                        }
+                    }
+                }
+            },
+            // لجند در سمت راست
+            legend: {
+                position: 'right',
+                fontSize: '12px',
+                labels: { colors: '#fff' },
+                markers: { width: 8, height: 8 },
+                itemMargin: { vertical: 5 }
+            },
+            // تول‌تیپ کوچیک و ظریف
+            tooltip: {
+                theme: 'dark',
+                style: {
+                    fontSize: '10px', // فونت ریز برای تول‌تیپ
+                },
+                y: {
+                    formatter: (val) => val + " واحد",
+                    title: { formatter: (name) => name }
+                },
+                marker: { show: false } // حذف نقطه رنگی داخل تول‌تیپ برای کوچیکتر شدن
+            },
+            dataLabels: {
+                enabled: false // حذف اعداد روی خودِ دایره برای شیک‌تر شدن
+            },
+            responsive: [{
+                breakpoint: 480,
+                options: {
+                    legend: {
+                        position: 'bottom' // در گوشی بهتره بیاد پایین که فضا حفظ بشه
+                    }
+                }
+            }]
+        };
+
+        var chart = new ApexCharts(document.querySelector("#perfect-donut"), options);
+        chart.render();
+    </script>
+
+
+
+
+    <script>
+        var options = {
+            series: [{
+                name: 'مبلغ',
+                // استفاده از متغیرهای Razor
+                data: [@dataSaleReal11, @dataSaleReal10]
+            }],
+            chart: {
+                type: 'bar',
+                height: '70%',
+                width: '100%',
+                fontFamily: 'inherit',
+                toolbar: { show: false }
+            },
+            plotOptions: {
+                bar: {
+                    horizontal: true,
+                    distributed: true,
+                    barHeight: '80%',
+                    borderRadius: 4
+                }
+            },
+
+            colors: ['#00a6ff', '#11d67a'],
+            xaxis: {
+                categories: ['مبلغ تحقق', 'مبلغ انتظار'],
+                labels: {
+                    style: { colors: '#fff', fontSize: '12px' },
+                    // اضافه شده برای جداکننده سه رقم در محور X
+                    formatter: val => val ? val.toLocaleString() : val
+                },
+                axisTicks: { show: false }
+            },
+            yaxis: {
+                labels: {
+                    style: { colors: '#fff', fontSize: '13px' },
+                    offsetX: -50
+                },
+                axisBorder: { show: true, color: '#fff' }
+            },
+            grid: {
+                borderColor: '#1b7a7a66',
+                strokeDashArray: 2,
+                padding: { left: 20, right: 20 }
+            },
+            dataLabels: {
+                enabled: true,
+                style: { colors: ['#fff'], fontSize: '12px' },
+                // اضافه شده برای جداکننده سه رقم روی میله‌ها
+                formatter: val => val ? val.toLocaleString() : val,
+                offsetY: -20,
+                textAnchor: 'start'
+            },
+            legend: {
+                labels: { colors: '#fff' }
+            },
+            tooltip: {
+                theme: 'dark',
+                // اضافه شده برای جداکننده سه رقم در تولتیپ
+                y: {
+                    formatter: val => val ? val.toLocaleString() : val
+                }
+            },
+            //colors: ['#00a6ff','#22a6ff'],
+
+            responsive: [{
+                breakpoint: 500, // برای گوشی‌های معمولی
+                options: {
+                    chart: {
+                        height: '60%'
+                    },
+                    yaxis: {
+                        labels: {
+                            show: true,
+                            offsetX: -40, // توی موبایل آفست رو صفر کن که متن بیرون نره
+                            style: {
+                                colors: ['#fff'], fontSize: '10px'
+                            }
+                        }
+                    },
+                    xaxis: {
+                        labels: {
+                            rotateAlways: true,
+                            rotate: 45,
+                            offsetX: 10,
+                            offsetY:-15,
+                            style: { fontSize: '5px' }
+                        }
+                    },
+                    legend: {
+                        show: false,
+                        labels: { colors: '#fff' }
+                    },
+                    dataLabels: {
+                        enabled: true,
+                        style: { fontSize: '9px' },
+                        textAnchor: 'center',
+                        // عددها رو بیار داخل میله که بیرون نزنن
+                    }
+                }
+            }]
+        };
+
+        var chart = new ApexCharts(document.querySelector("#horizontalBarChart"), options);
+        chart.render();
+    </script>
+
+    <script>
+        var options = {
+            series: [76, 67, 61, 90, 20],
+            chart: {
+                height: '100%',
+                type: 'radialBar',
+                fontFamily: 'inherit'
+            },
+            plotOptions: {
+                radialBar: {
+                    startAngle: 0,
+                    endAngle: 270,
+                    hollow: {
+                        size: '35%',
+                        background: 'transparent'
+                    },
+                    track: {
+                        background: '#1d2734', // ← رنگ زیر حلقه
+                        strokeWidth: '100%',   // ضخامت حلقه پس‌زمینه
+                        margin: 5              // فاصله حلقه‌ها
+                    },
+                    stroke: {
+                        lineCap: 'round'       // لبه‌های گرد
+                    },
+                    dataLabels: {
+                        name: {
+                            show: true,
+                            offsetY: -200,   // فاصله بالاتر
+                            color: '#fff',
+                            fontSize: '16px'
+                        },
+                        value: {
+                            show: true,
+                            offsetY: 10,    // فاصله پایین‌تر
+                            color: '#fff',
+                            fontSize: '14px'
+                        }
+                    },
+                    barLabels: { // لیبل روی حلقه
+                        enabled: true,
+                        useSeriesColors: true,
+                        fontSize: '16px',
+                        formatter: function (seriesName, opts) {
+                            return seriesName + ": " + opts.w.globals.series[opts.seriesIndex];
+                        }
+                    }
+                }
+            },
+            colors: ['#00b2ca', '#04a6c2', '#0899ba', '#16679a', '#1a5b92'],
+            labels: ['تعداد خانگی', 'تعداد سایر مصارف', 'تعداد عمومی', 'تعداد صنعتی', 'تعداد کشاورزی'],
+            responsive: [{
+                breakpoint: 480,
+                options: {
+                    legend: { show: false }
+                }
+            }]
+        };
+
+        var chart = new ApexCharts(document.querySelector("#customRadial"), options);
+        chart.render();
+    </script>
+
+
+    <script>
+        var options = {
+            chart: {
+                height: 300,
+                width: '100%',
+                type: 'line',
+                toolbar: { show: false },
+                fontFamily: 'inherit',
+                zoom: {
+                    enabled: false // کلاً زوم و کش اومدن رو تعطیل می‌کنه
+                },
+            },
+
+            plotOptions: {
+                bar: {
+                    borderRadius: 4,
+                    borderRadiusApplication: 'end',
+                    borderRadiusWhenStacked: 'last',
+                    columnWidth: '60%'
+                }
+            },
+
+            colors: ['#0979E8', '#52d6ff', '#00ef88'],
+
+            series: [
+                {
+                    name: 'درصد تحقق انتظار',
+                    type: 'column',
+                    /* data: [72, 73, 71, 70, 80, 69, 66, 61, 70, 65, 62, 61, 66, 69, 65, 64]*/
+                    data: @Html.Raw(selectedSeriesJs13)
+
+                },
+                {
+                    name: 'مبلغ فروش',
+                    type: 'line',
+                    /* data: [869265, 676095, 676095, 676095, 676095, 1073345, 843551, 569142, 498846, 863200, 1047746, 404909, 870346, 511294, 685238, 599707]*/
+                    data: @Html.Raw(selectedSeriesJs8)
+
+                },
+                {
+                    name: 'مبلغ وصول',
+                    type: 'line',
+                    /* data: [564276, 564276, 564276, 564276, 879898, 497417, 571639, 140926, 1129541, 384284, 791040, 244331, 1162334, 642397, 211553, 336068]*/
+                    data: @Html.Raw(selectedSeriesJs11)
+                }
+            ],
+
+            stroke: {
+                width: [0, 4, 4],
+                curve: 'smooth'
+            },
+
+            dataLabels: {
+                enabled: false
+            },
+
+            xaxis: {
+                categories: [
+@*@Html.Raw(selectedSeriesJstarikh)*@
+                    '1404/08/09', '1404/08/16', '1404/08/23', '1404/08/30', '1404/09/07', '1404/09/14', '1404/09/21', '1404/09/28',
+                    '1404/10/05', '1404/10/12', '1404/10/19', '1404/10/26', '1404/11/03', '1404/11/10', '1404/11/17', '1404/11/24',
+                    '1404/12/01', '1404/12/08', '1404/12/15', '1404/12/17', '1404/12/29', '1405/01/07', '1405/01/14', '1405/01/21', '1405/01/28', '1405/02/4', '1405/02/11'
+                ],
+                labels: {
+                    style: { colors: '#fff' },
+                    offsetY: 10,
+                    rotate: 45,
+                    rotateAlways: true
+                },
+                axisTicks: { show: false }
+            },
+
+            yaxis: [
+                {
+                    seriesName: 'درصد تحقق انتظار',
+                    forceNiceScale: true,
+                    labels: {
+                        offsetX: -10,
+                        style: { colors: '#fff' },
+                        formatter: function (val) {
+                            return val + '%';
+                        }
+                    }
+                },
+                {
+                    seriesName: ['مبلغ فروش', 'مبلغ وصول'],
+                    opposite: true,
+                    forceNiceScale: true,
+                    decimalsInFloat: 0,
+                    labels: {
+                        offsetX: -20,
+                        style: { colors: '#fff' },
+                        formatter: function (val) {
+                            return val.toLocaleString('fa-IR'); // سه رقم سه رقم
+                        }
+                    }
+                }
+            ],
+
+            legend: {
+                labels: { colors: '#fff' }
+            },
+
+            tooltip: {
+                theme: 'dark',
+                shared: true,
+                intersect: false,
+                y: {
+                    formatter: function (val, { seriesIndex }) {
+                        if (seriesIndex === 0) return val + '%';
+                        return val.toLocaleString('fa-IR'); // سه رقم سه رقم
+                    }
+                }
+            },
+            markers: {
+                size: [0, 5, 5], // فقط برای سری سوم (اندیس ۲) سایز ۶ بده، بقیه (ستون‌ها) صفر باشن
+                strokeWidth: 1,
+                color: ['#F54927'],
+                hover: {
+                    size: 3
+                }
+            },
+            grid: {
+                borderColor: '#1b7a7a66',
+                strokeDashArray: 2
+            },
+
+        };
+
+        var chart = new ApexCharts(
+            document.querySelector("#chartSingleBarTwoLine"),
+            options
+        );
+        chart.render();
+    </script>
+
+    @*<script>
+            var options = {
+                chart: {
+                    height: 300,
+                    width: '100%',
+                    type: 'line',
+                    toolbar: { show: false },
+                    fontFamily: 'inherit'
+                },
+
+                plotOptions: {
+                    bar: {
+                        borderRadius: 4,
+                        borderRadiusApplication: 'end',
+                        borderRadiusWhenStacked: 'last',
+                        columnWidth: '60%'
+                    }
+                },
+
+                colors: ['#0979E8', '#52d6ff', '#00ef88'],
+
+                series: [
+                    {
+                        name: 'درصد تحقق انتظار',
+                        type: 'column',
+                        data: [72, 73, 71, 70, 80, 69, 66, 61, 70, 65, 62, 61, 66, 69, 65, 64]
+
+                    },
+                    {
+                        name: 'مبلغ فروش',
+                        type: 'line',
+                        data: [869265, 676095, 676095, 676095, 676095, 1073345, 843551, 569142, 498846, 863200, 1047746, 404909, 870346, 511294, 685238, 599707]
+
+                    },
+                    {
+                        name: 'مبلغ وصول',
+                        type: 'line',
+                        data: [564276, 564276, 564276, 564276, 879898, 497417, 571639, 140926, 1129541, 384284, 791040, 244331, 1162334, 642397, 211553, 336068]
+
+                    }
+                ],
+
+                stroke: {
+                    width: [0, 4, 4],
+                    curve: 'smooth'
+                },
+
+                dataLabels: {
+                    enabled: false
+                },
+
+                xaxis: {
+                    categories: [
+                        '1404/08/09',
+                        '1404/08/16',
+                        '1404/08/23',
+                        '1404/08/30',
+                        '1404/09/07',
+                        '1404/09/14',
+                        '1404/09/21',
+                        '1404/09/28',
+                        '1404/10/05',
+                        '1404/10/12',
+                        '1404/10/19',
+                        '1404/10/26',
+                        '1404/11/03',
+                        '1404/11/10',
+                        '1404/11/17',
+                        '1404/11/24'
+
+                    ],
+
+                    labels: {
+                        style: { colors: '#fff' },
+                        offsetY: 10,
+                        rotate: 45,
+                        rotateAlways: true
+                    },
+                    axisTicks: { show: false }
+                },
+
+                yaxis: [
+                    {
+                        seriesName: 'درصد تحقق انتظار',
+                        forceNiceScale: true,
+                        labels: {
+                            offsetX: -10,
+                            style: { colors: '#fff' }
+                        }
+                    },
+                    {
+                        seriesName: ['مبلغ فروش', 'مبلغ وصول'],
+                        opposite: true,
+                        forceNiceScale: true,
+                        decimalsInFloat: 0,
+                        labels: {
+                            offsetX: -20,
+                            style: { colors: '#fff' }
+                        }
+                    }
+                ],
+
+                legend: {
+                    labels: { colors: '#fff' }
+                },
+
+                tooltip: {
+                    theme: 'dark',
+                    shared: true,
+                    intersect: false
+                },
+
+                grid: {
+                    borderColor: '#1b7a7a66',
+                    strokeDashArray: 2
+                }
+            };
+
+            var chart = new ApexCharts(document.querySelector("#chartSingleBarTwoLine"), options);
+            chart.render();
+        </script>*@
+    @*<script>
+            var options = {
+                chart: {
+                    height: 350,
+                    width: '100%',
+                    type: 'line',
+                    toolbar: { show: false },
+                    fontFamily: 'Tahoma, Arial'
+                },
+
+                plotOptions: {
+                    bar: {
+                        borderRadius: 4,
+                        columnWidth: '70%'
+                    }
+                },
+
+                // رنگ‌ها: سبز برای 1403، آبی برای 1404، فیروزه‌ای برای خط وزن
+                colors: ['#00E396', '#00a6ff', '#feb019'],
+
+                series: [
+                    {
+                        name: 'درصد وصول جاری ۱۴۰۳',
+                        type: 'column',
+                        // داده‌ها بر اساس رتبه وزن (زاهدان 1، زاهدان 2، زابل و ...)
+                        data: [83, 87, 76, 66, 83, 90, 76, 68, 69, 84, 79, 55, 79, 63, 80, 83, 78, 77, 88, 83, 77, 59, 43, 66]
+                    },
+                    {
+                        name: 'درصد وصول جاری ۱۴۰۴',
+                        type: 'column',
+                        data: [84, 83, 84, 69, 80, 93, 70, 62, 90, 87, 73, 41, 85, 61, 79, 72, 69, 83, 80, 92, 81, 62, 45, 71]
+                    },
+                    {
+                        name: 'وزن وصول (اهمیت)',
+                        type: 'line',
+                        data: [16, 14, 12, 12, 9, 7, 4, 4, 3, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 0]
+                    }
+                ],
+
+                stroke: {
+                    width: [0, 0, 3],
+                    curve: 'smooth'
+                },
+
+                markers: {
+                    size: [0, 0, 5],
+                    hover: { size: 7 }
+                },
+
+                xaxis: {
+                    categories: [
+                        'زاهدان ۱', 'زاهدان ۲', 'زابل', 'ایرانشهر', 'سراوان', 'چابهار', 'خاش', 'سوران',
+                        'نیکشهر', 'زهک', 'جالق', 'مهرستان', 'بمپور', 'دلگان', 'نگور', 'کنارک',
+                        'میرجاوه', 'هیرمند', 'قصرقند', 'فنوج', 'اسپکه', 'راسک', 'سرباز', 'کورین'
+                    ],
+                    labels: {
+                        style: { colors: '#fff', fontSize: '12px' },
+                        rotate: -45,
+                        rotateAlways: true
+                    }
+                },
+
+                yaxis: [
+                    {
+                        seriesName: 'درصد وصول',
+                        title: { text: "درصد وصول جاری", style: { color: '#fff' } },
+                        labels: { style: { colors: '#fff' } }
+                    },
+                    {
+                        seriesName: 'وزن وصول',
+                        opposite: true,
+                        title: { text: "وزن (سهم از استان)", style: { color: '#feb019' } },
+                        labels: { style: { colors: '#feb019' } }
+                    }
+                ],
+
+                legend: {
+                    position: 'top',
+                    labels: { colors: '#fff' }
+                },
+
+                tooltip: { theme: 'dark', shared: true },
+
+                grid: {
+                    borderColor: '#1b7a7a66',
+                    strokeDashArray: 2
+                }
+            };
+
+            var chart = new ApexCharts(document.querySelector("#chart1"), options);
+            chart.render();
+        </script>*@
+    <script>
+        const data1405 = [
+            308.076474, 114.4149738, 113.1400102, 491.6195586, 216.152407,
+            137.1899798, 326.2502131, 60.23873203, 75.12493566, 103.5609081,
+            146.240809, 87.95275121, 130.4005622, 75.75142826, 94.16659952,
+            14.79046109, 66.68217384, 99.93409475, 80.27372917, 127.9801341,
+            63.36294095, 100.5344509, 127.6085488, 149.4592145, 135.6832134
+        ];
+
+
+        const data1403 = [
+            158.7776546, 153.6999548, 99.74586482, 199.7541858, 641.273382,
+            219.2090671, 217.4058851, 1475.135111, 153.1955079, 82.80986207,
+            171.1887443, 114.460685, 204.6873135, 145.6742718, 2153.462612,
+            550.366025, 66.29987842, 224.2697542, 142.980914, 123.3161573,
+            274.114542, 88.12475914, 106.2555782, 384.6692459, 201.2191932
+        ];
+
+
+        const data1404 = [
+            48.62217178, 54.40190547, 65.5532597, 158.2158361, 101.3166449,
+            41.12980604, 79.20000119, 80.14322594, -17.17157417, 71.5564755,
+            66.91766153, 91.11945844, 68.32087704, 33.88313029, 82.54130842,
+            60.84031829, 37.84547407, 119.4527336, 109.77538, 88.30974916,
+            78.66927442, 46.30673374, 121.6723731, 43.49522061, 75.81367482
+        ];
+
+
+        const weightData = [
+            100, 90.49, 72.87, 72.65, 57.30,
+            42.90, 27.90, 23.43, 16.84, 11.21,
+            11.18, 11.01, 10.40, 10.29, 9.70,
+            9.68, 9.00, 8.85, 8.60, 7.50,
+            4.20, 3.52, 3.43, 2.94, 0
+        ];
+
+
+        // مرتب سازی هر شهرستان (بزرگ به کوچک)
+        const sorted1403 = [];
+        const sorted1404 = [];
+        const sorted1405 = [];
+
+        for (let i = 0; i < data1405.length; i++) {
+
+            const arr = [
+                { year: '1404', value: data1404[i] },
+                { year: '1403', value: data1403[i] },
+                { year: '1405', value: data1405[i] }
+            ];
+
+
+            arr.sort((a, b) => b.value - a.value);
+
+            sorted1403[i] = arr.find(x => x.year === '1403').value;
+            sorted1404[i] = arr.find(x => x.year === '1404').value;
+            sorted1405[i] = arr.find(x => x.year === '1405').value;
+        }
+
+
+        // بیشترین مقدار فقط بین ستون‌ها
+        const allColumnValues = [...sorted1405, ...sorted1403, ...sorted1404];
+        const maxColumnValue = Math.max(...allColumnValues);
+        const yMax = Math.ceil(maxColumnValue * 1.7);
+
+        var options = {
+            chart: {
+                height: 300,
+                width: '100%',
+                type: 'line',
+                stacked: false,
+                zoom: { enabled: false },
+                toolbar: { show: false },
+                fontFamily: 'inherit'
+            },
+
+            plotOptions: {
+                bar: {
+                    horizontal: false,
+                    columnWidth: '55%',
+                    endingShape: 'rounded',
+                    borderRadius: 4,
+                    borderRadiusApplication: 'end',
+                    borderRadiusWhenStacked: 'last'
+                }
+            },
+
+            colors: ['#9e9e9e', '#00E396', '#00a6ff', '#F54927'],
+
+            series: [
+                {
+                    name: 'درصد وصول جاری ۱۴۰۴',
+                    type: 'column',
+                    yAxisIndex: 0,
+                    data: sorted1404,
+                    fill: { opacity: 0.4 }
+                },
+                {
+                    name: 'درصد وصول جاری ۱۴۰۳',
+                    type: 'column',
+                    yAxisIndex: 0,
+                    data: sorted1403,
+                    fill: { opacity: 0.4 }
+                },
+                {
+                    name: 'درصد وصول جاری ۱۴۰۵',
+                    type: 'column',
+                    yAxisIndex: 2,
+                    data: sorted1405,
+                    fill: { opacity: 1 }
+                },
+                {
+                    name: 'وزن وصول (نرمال ۱۰۰)',
+                    type: 'line',
+                    yAxisIndex: 1,
+                    data: weightData
+                }
+            ]
+,
+
+            stroke: {
+                width: [0, 0, 0, 3],
+                curve: 'smooth'
+            },
+
+            markers: {
+                size: [0, 0, 0, 5],
+                strokeWidth: 2,
+                colors: ['#F54927'],
+                hover: { size: 7 }
+            },
+
+            dataLabels: {
+                enabled: false
+            },
+
+            xaxis: {
+                categories: [
+                    'زاهدان 1', 'زاهدان 2', 'ایرانشهر', 'زابل', 'سراوان', 'چابهار',
+                    'خاش', 'سوران', 'نیکشهر', 'بمپور', 'زهک', 'کنارک', 'دلگان',
+                    'نگور', 'جالق', 'مهرستان', 'میرجاوه', 'راسک', 'سرباز',
+                    'هیرمند', 'فنوج', 'قصرقند', 'اسپکه', 'کورین', 'استان'
+                ],
+                labels: {
+                    style: { colors: '#fff' },
+                    rotate: 45,
+                    rotateAlways: true
+                },
+                axisTicks: { show: false }
+            },
+
+            yaxis: [
+                {
+                    min: 0,
+                    max: yMax,
+                    tickAmount: 6,
+                    labels: {
+                        style: { colors: '#fff' },
+                        formatter: val => Math.round(val)
+                    }
+                },
+                {
+                    opposite: true,
+                    min: 0,
+                    max: 700,
+                    tickAmount: 5,
+                    labels: {
+                        style: { colors: '#fff' },
+                        formatter: val => Math.round(val)
+                    }
+                },
+                {
+                    opposite: true,
+                    min: 0,
+                    max: 100,
+                    tickAmount: 5,
+                    show: false
+                }
+            ]
+,
+
+            legend: {
+                labels: { colors: '#fff' }
+            },
+
+            tooltip: {
+                theme: 'dark',
+                shared: true,
+                intersect: false
+            },
+
+            grid: {
+                borderColor: '#1b7a7a66',
+                strokeDashArray: 2
+            },
+
+            responsive: [
+                {
+                    breakpoint: 768,
+                    options: {
+                        chart: {
+                            height: 200,
+                            width: '100%'
+                        },
+                        plotOptions: {
+                            bar: {
+                                columnWidth: '70%',
+                                borderRadius: 2
+                            }
+                        },
+                        xaxis: {
+                            labels: {
+                                rotate: 90,
+                                style: { fontSize: '5px' }
+                            }
+                        },
+                        yaxis: [
+                            {
+                                min: 0,
+                                max: yMax,
+                                labels: {
+                                    offsetX: -10,
+                                    style: {
+                                        colors: ['#fff'],
+                                        fontSize: '8px'
+                                    },
+                                    formatter: function (val) {
+                                        return Math.round(val);
+                                    }
+                                }
+                            },
+                            {
+                                show: false
+                            }
+                        ],
+                        legend: {
+                            show: false
+                        },
+                        markers: {
+                            size: [0, 0, 0, 2]
+                        }
+                    }
+                }
+            ]
+        };
+
+        var chartElement = document.querySelector("#chart1");
+        if (chartElement) {
+            var chart = new ApexCharts(chartElement, options);
+            chart.render();
+        }
+    </script>
+
+
+
+
+
+
+
+    @*<script>
+                 var options = {
+                     chart: {
+                         height: 300,
+                         width: '100%',
+                         type: 'line',
+                         toolbar: { show: false },
+                         fontFamily: 'inherit'
+                     },
+
+                     plotOptions: {
+                         bar: {
+                             borderRadius: 4,
+                             borderRadiusApplication: 'end',
+                             borderRadiusWhenStacked: 'last',
+                             columnWidth: '80%'
+                         }
+                     },
+
+                     colors: ['#00E396', '#00a6ff', '#75fff0'],
+
+                    series: [
+           {
+               name: 'درصد وصول جاری ۱۴۰۳',
+               type: 'column',
+               // داده‌ها بر اساس رتبه وزن (زاهدان 1، زاهدان 2، زابل و ...)
+               data: [83, 87, 76, 66, 83, 90, 76, 68, 69, 84, 79, 55, 79, 63, 80, 83, 78, 77, 88, 83, 77, 59, 43, 66]
+           },
+           {
+               name: 'درصد وصول جاری ۱۴۰۴',
+               type: 'column',
+               data: [84, 83, 84, 69, 80, 93, 70, 62, 90, 87, 73, 41, 85, 61, 79, 72, 69, 83, 80, 92, 81, 62, 45, 71]
+           },
+           {
+               name: 'وزن وصول (اهمیت)',
+               type: 'line',
+               data: [16, 14, 12, 12, 9, 7, 4, 4, 3, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 0]
+           }
+                     ],
+
+                     stroke: {
+                         width: [0, 0, 0],
+                         curve: 'smooth'
+                     },
+                     markers: {
+                         size: [0, 0, 6], // فقط برای سری سوم (اندیس ۲) سایز ۶ بده، بقیه (ستون‌ها) صفر باشن
+                         strokeWidth: 2,
+                         hover: {
+                             size: 8
+                         }
+                     },
+                     dataLabels: {
+                         enabled: false
+                     },
+
+                     xaxis: {
+                             categories: [
+            'زاهدان ۱', 'زاهدان ۲', 'زابل', 'ایرانشهر', 'سراوان', 'چابهار', 'خاش', 'سوران',
+            'نیکشهر', 'زهک', 'جالق', 'مهرستان', 'بمپور', 'دلگان', 'نگور', 'کنارک',
+            'میرجاوه', 'هیرمند', 'قصرقند', 'فنوج', 'اسپکه', 'راسک', 'سرباز', 'کورین'
+        ],
+                         labels: {
+                             style: {
+                                 colors: '#fff'
+                             },
+                             offsetY: 0,
+                             rotate: 45,
+                             rotateAlways: true   // <-- اینجا
+                         },
+                         axisTicks: {
+                             show: false
+                         }
+                     },
+
+                     yaxis: [
+                         {
+                             seriesName: ['درصد وصول جاری ۱۴۰۳', 'درصد وصول جاری ۱۴۰۴'],
+                             forceNiceScale: true,
+                             labels: {
+                                 offsetX: -10,
+                                 style: { colors: '#fff' }
+                             }
+                         },
+                         {
+                             seriesName: 'وزن وصول',
+                             opposite: true,
+                             forceNiceScale: true,
+                             decimalsInFloat: 0,
+                             labels: {
+                                 offsetX: -20,
+                                 style: { colors: '#fff' },
+                                 formatter: v => v
+                             }
+                         }
+                     ],
+
+                     legend: {
+                         //show: false,
+                         labels: {
+                             colors: '#fff'
+                         }
+                     },
+
+                     tooltip: {
+                         theme: 'dark',
+                         shared: true,
+                         intersect: false
+                     },
+
+                     grid: {
+                         borderColor: '#1b7a7a66',
+                         strokeDashArray: 2
+                     },
+                     responsive: [
+                         {
+                             breakpoint: 768,
+                             options: {
+                                 chart: {
+                                     height: 200,
+                                     width: '100%'
+                                 },
+                                 plotOptions: {
+                                     bar: {
+                                         borderRadius: 2,
+                                         borderRadiusApplication: 'end',
+                                         borderRadiusWhenStacked: 'last',
+                                         columnWidth: '90%'
+                                     }
+                                 },
+                                 xaxis: {
+                                     // فقط ۸ تا لیبل رو نشون بده تا همپوشانی نداشته باشن
+                                     labels: {
+                                         rotate: 90,
+                                         style: { fontSize: '8px' }
+                                     }
+                                 },
+                                 yaxis: [
+                                     {
+                                         labels: {
+                                             offsetX: -10,
+                                             style: {
+                                                 colors: ['#fff'],
+                                                 fontSize: '8px'
+                                             }
+                                         }
+                                     },
+                                     {
+                                         show: false // محور سمت راست رو تو موبایل حذف کردم که جا باز بشه
+                                     }
+                                 ],
+                                 markers: {
+                                     size: [0, 0, 2], // فقط برای سری سوم (اندیس ۲) سایز ۶ بده، بقیه (ستون‌ها) صفر باشن
+                                     strokeWidth: 2,
+                                     hover: {
+                                         size: 8
+                                     }
+                                 },
+                                 legend: {
+                                     show: false,
+                                     position: 'right',
+                                     offsetY: 0
+                                 }
+                             }
+                         }
+                     ]
+                 };
+                 var chart = new ApexCharts(document.querySelector("#chart1"), options);
+                 chart.render();
+             </script>*@
+
+    <script>
+    var options = {
+        series: [
+            {
+                name: 'مبلغ وصول',
+                data: [@amount3, 0],
+                borderRadius: 4
+            },
+            {
+                name: 'مبلغ فروش',
+                data: [0, @amount1]
+            },
+            {
+                name: 'بدهی اولیه',
+                data: [0, @amount2]
+            }
+        ],
+        chart: {
+            type: 'bar',
+            height: '100%',
+            stacked: true,
+            fontFamily: 'inherit',
+            toolbar: { show: false }
+        },
+
+        plotOptions: {
+            bar: {
+                horizontal: true,
+                barHeight: '50%',
+                borderRadiusApplication: 'end',
+                dataLabels: {
+                    position: 'start'
+                }
+            }
+        },
+
+        xaxis: {
+            categories: ['مقدار وصول', 'مقدار فروش'],
+            labels: {
+                style: { colors: '#fff', fontSize: '12px' },
+                // --- بخش اضافه شده برای جداکننده سه رقم در محور زیر نمودار ---
+                formatter: val => val ? val.toLocaleString() : val
+            },
+            axisBorder: { show: true, color: '#fff' },
+            axisTicks: { show: false },
+        },
+
+        yaxis: {
+            labels: {
+                style: { colors: '#fff', fontSize: '14px' },
+                offsetX: -60,
+            },
+            axisBorder: { show: true, color: '#fff' },
+            axisTicks: { show: false },
+        },
+
+        grid: { borderColor: '#1b7a7a66', strokeDashArray: 2 },
+
+        dataLabels: {
+            enabled: true,
+            style: { colors: ['#fff'], fontSize: '12px' },
+            formatter: val => val ? val.toLocaleString() : '',
+            offsetY: -25,
+            textAnchor: 'start'
+        },
+
+        tooltip: {
+            theme: 'dark',
+            // برای نمایش سه رقم در حباب راهنما (تولتیپ)
+            y: {
+                formatter: val => val ? val.toLocaleString() : val
+            }
+        },
+
+        fill: { opacity: 1 },
+
+        colors: ['#00a6ff', '#00a6ff', '#75fff0'],
+
+        legend: {
+            position: 'right',
+            horizontalAlign: 'left',
+            offsetX: 10,
+            labels: { colors: '#fff' },
+        },
+
+        responsive: [
+            {
+                breakpoint: 600,
+                options: {
+                    chart: { height: '100%' },
+                    plotOptions: {
+                        bar: {
+                            horizontal: false,
+                            columnWidth: '55%'
+                        }
+                    },
+                    dataLabels: {
+                        style: { colors: ['#fff'], fontSize: '8px' },
+                        formatter: val => val ? val.toLocaleString() : '',
+                        offsetY: 50,
+                        offsetX: -15,
+                        textAnchor: ''
+                    },
+                    legend: { show: false },
+                    yaxis: {
+                        labels: {
+                            offsetX: -20,
+                            tickAmount:4,
+                            style: { colors: ['transparent'], fontSize: '10px' },
+                            // حفظ فرمت سه رقم در محور عمودی موبایل
+                            formatter: val => val ? val.toLocaleString() : val
+                        }
+                    },
+                    xaxis: {
+                        labels: {
+                            rotate: -45,
+                            style: { fontSize: '8px' },
+                            offsetY: -5,
+                            // حفظ فرمت سه رقم در محور افقی موبایل
+                            formatter: val => val ? val.toLocaleString() : val
+                        }
+                    }
+                }
+            }
+        ]
+    };
+
+    var chart = new ApexCharts(document.querySelector("#chart2"), options);
+    chart.render();
+    </script>
+
+    @*<script>
+                var options = {
+                    //series: [
+                    //    { name: 'مبلغ وصول', data: [35000, 0], borderRadius: 4 },
+                    //    { name: 'مبلغ فروش', data: [0, 40000] },
+                    //    { name: 'بدهی اولیه', data: [0, 10000] }
+                    //],
+                    series: [
+            {
+                name: 'مبلغ وصول',
+                data: [@amount3, 0], // val3 جایگزین ۳۵۰۰۰
+                borderRadius: 4
+            },
+            {
+                name: 'مبلغ فروش',
+                data: [0, @amount1]  // val1 جایگزین ۴۰۰۰۰
+            },
+            {
+                name: 'بدهی اولیه',
+                data: [0, @amount2]  // val2 جایگزین ۱۰۰۰۰
+            }
+        ],
+                    chart: {
+                        type: 'bar',
+                        height: '100%', // بهتره عدد ثابت بدی یا تو ریسپانسیو عوضش کنی
+                        stacked: true,
+                        fontFamily: 'inherit',
+                        toolbar: { show: false }
+                    },
+
+                    plotOptions: {
+                        bar: {
+                            horizontal: true,
+                            barHeight: '50%',
+                            borderRadiusApplication: 'end',
+                            dataLabels: {
+                                position: 'start'
+                            }
+                        }
+                    },
+
+                    xaxis: {
+                        categories: ['مقدار وصول', 'مقدار فروش'],
+                        labels: {
+                            style: { colors: '#fff', fontSize: '12px' }
+                        },
+                        axisBorder: { show: true, color: '#fff' },
+                        axisTicks: { show: false },
+                    },
+
+                    yaxis: {
+                        labels: {
+                            style: { colors: '#fff', fontSize: '14px' },
+                            offsetX: -60, // مقدار منفی زیاد توی موبایل اذیت می‌کرد، کمش کردم
+                        },
+                        axisBorder: { show: true, color: '#fff' },
+                        axisTicks: { show: false },
+                    },
+
+                    grid: { borderColor: '#1b7a7a66', strokeDashArray: 2 },
+
+                    dataLabels: {
+                        enabled: true,
+                        style: { colors: ['#fff'], fontSize: '12px' },
+                        formatter: val => val ? val.toLocaleString() : '', // سه رقم سه رقم جدا می‌کنه
+                        offsetY: -25,
+
+                        textAnchor: 'start'
+                    },
+
+                    tooltip: { theme: 'dark' },
+
+                    fill: { opacity: 1 },
+
+                    colors: ['#00E396', '#00a6ff', '#75fff0'],
+
+                    legend: {
+                        position: 'right',
+                        horizontalAlign: 'left',
+                        offsetX: 10,
+                        labels: { colors: '#fff' },
+                    },
+
+                    // --- بخش جادویی ریسپانسیو ---
+                    responsive: [
+                        {
+                            breakpoint: 600,
+                            options: {
+                                chart: {
+                                    height: '100%'
+                                },
+                                plotOptions: {
+                                    bar: {
+                                        horizontal: false, // توی موبایل عمودی بشه که فضا باز بشه
+                                        columnWidth: '55%'
+                                    }
+                                },
+                                dataLabels: {
+
+                                    style: { colors: ['#fff'], fontSize: '8px' },
+                                    formatter: val => val ? val.toLocaleString() : '', // سه رقم سه رقم جدا می‌کنه
+                                    offsetY: 10,
+                                    offsetX: 14,
+
+                                    textAnchor: 'center'
+                                },
+                                legend: {
+                                    position: 'bottom',
+                                    offsetX: 0,
+                                    offsetY: 5,
+                                    show: false,
+                                },
+                                yaxis: {
+                                    labels: {
+                                        offsetX: -20,
+                                        style: { colors: ['#fff'], fontSize: '10px' }
+                                    }
+                                },
+                                xaxis: {
+                                    labels: {
+
+                                        rotate: -45, // کج کردن متن برای جا شدن بیشتر
+                                        style: { fontSize: '8px' },
+                                        offsetY: -5
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                };
+
+                var chart = new ApexCharts(document.querySelector("#chart2"), options);
+                chart.render();
+            </script>*@
+    @{
+        // نام شهرستان را از مدل یا ورودی دریافت کنید
+        // مثال: string name = Model.CityName;
+        string name = Model.unicc;
+    }
+
+    @{
+
+        var data1403 = dbdashbord1
+            .Where(r => r.name_city == Model.unicc && r.valu_big == 84 && r.tatarigh_shams.Contains("کل هفته"))
+            .Select(r => r.astargh_shams)
+            .ToList();
+
+        var data1404 = dbdashbord1
+            .Where(r => r.name_city == Model.unicc && r.valu_big == 87 && r.tatarigh_shams.Contains("کل هفته"))
+            .Select(r => r.astargh_shams)
+            .ToList();
+        var data1405 = dbdashbord1
+    .Where(r => r.name_city == Model.unicc && r.valu_big == 162 && r.tatarigh_shams.Contains("کل هفته"))
+    .Select(r => r.astargh_shams)
+    .ToList();
+        var data1403153 = dbdashbord1
+.Where(r => r.name_city == Model.unicc && r.valu_big == 153 && r.tatarigh_shams.Contains("کل هفته"))
+.Select(r => r.astargh_shams)
+.ToList(); var data1405153 = dbdashbord1
+.Where(r => r.name_city == Model.unicc && r.valu_big == 159 && r.tatarigh_shams.Contains("کل هفته"))
+.Select(r => r.astargh_shams)
+.ToList();
+
+        var data1404156 = dbdashbord1
+        .Where(r => r.name_city == Model.unicc && r.valu_big == 156 && r.tatarigh_shams.Contains("کل هفته"))
+        .Select(r => r.astargh_shams)
+        .ToList();
+        // آماده سازی selectedSeries برای استفاده در JS
+        var selectedSeriesJson = new[]
+    { new { name = "1405", data = data1405 },
+        new { name = "1403", data = data1403 },
+        new { name = "1404", data = data1404 }
+    };
+        var selectedSeriesJs = Newtonsoft.Json.JsonConvert.SerializeObject(selectedSeriesJson);
+    }
+
+    <script>
+        @{   var selectedSeriesJson2 = new[]
+{ new { name = "1405", data = data1405153 },
+      new { name = "1403", data = data1403153 },
+          new { name = "1404", data = data1404156 }
+  };
+            var selectedSeriesJs2 = Newtonsoft.Json.JsonConvert.SerializeObject(selectedSeriesJson2);}
+
+    var selectedSeries2 = [];
+    @switch (name)
+{
+      @*case "زاهدان 1":
+        <text>
+        selectedSeries = [
+            { name: '1403', data: [59.7, 67.0, 79.9, 86.5, 86.8, 83.5, 86.5, 86.0, 82.7, 85.1, 86.1] },
+            { name: '1404', data: [58.6, 67.2, 64.8, 59.8, 72.9, 74.1, 76.1, 78.0, 84.1, 83.5, @v87] }
+        ];
+        </text>
+        break;*@
+
+        //s ====================================================================== m14041207
+
+
+
+
+
+
+
+
+
+        case "زاهدان 1":
+            <text>
+        selectedSeries2 = @Html.Raw(selectedSeriesJs2);
+            </text>
+            break;
+
+
+
+
+
+
+        //e======================================================================m14041207
+
+        case "زاهدان 2":
+        <text>
+        selectedSeries2 = @Html.Raw(selectedSeriesJs2);
+        </text>
+        break;
+
+    case "کورین":
+        <text>
+        selectedSeries2 = @Html.Raw(selectedSeriesJs2);
+        </text>
+        break;
+
+    case "میرجاوه":
+        <text>
+        selectedSeries2 = @Html.Raw(selectedSeriesJs2);
+        </text>
+        break;
+
+    case "زابل":
+        <text>
+        selectedSeries2 = @Html.Raw(selectedSeriesJs2);
+        </text>
+        break;
+
+    case "هیرمند":
+        <text>
+        selectedSeries2 = @Html.Raw(selectedSeriesJs2);
+        </text>
+        break;
+
+    case "زهک":
+        <text>
+        selectedSeries2 = @Html.Raw(selectedSeriesJs2);
+        </text>
+        break;
+
+    case "خاش":
+        <text>
+        selectedSeries2 = @Html.Raw(selectedSeriesJs2);
+        </text>
+        break;
+
+    case "سراوان":
+        <text>
+        selectedSeries2 = @Html.Raw(selectedSeriesJs2);
+        </text>
+        break;
+
+    case "جالق":
+        <text>
+        selectedSeries2 = @Html.Raw(selectedSeriesJs2);
+        </text>
+        break;
+
+    case "سوران":
+        <text>
+        selectedSeries2 = @Html.Raw(selectedSeriesJs2);
+        </text>
+        break;
+
+    case "مهرستان":
+        <text>
+         selectedSeries = @Html.Raw(selectedSeriesJs2);
+        </text>
+        break;
+
+    case "ایرانشهر":
+        <text>
+        selectedSeries2 = @Html.Raw(selectedSeriesJs2);
+        </text>
+        break;
+
+    case "بمپور":
+        <text>
+        selectedSeries2 = @Html.Raw(selectedSeriesJs2);
+        </text>
+        break;
+
+    case "دلگان":
+        <text>
+        selectedSeries2 = @Html.Raw(selectedSeriesJs2);
+        </text>
+        break;
+
+    case "قصرقند":
+        <text>
+        selectedSeries2 = @Html.Raw(selectedSeriesJs2);
+        </text>
+        break;
+
+    case "نیکشهر":
+        <text>
+        selectedSeries2 = @Html.Raw(selectedSeriesJs2);
+        </text>
+        break;
+
+    case "فنوج":
+        <text>
+        selectedSeries2 = @Html.Raw(selectedSeriesJs2);
+        </text>
+        break;
+
+    case "اسپکه":
+        <text>
+        selectedSeries2 = @Html.Raw(selectedSeriesJs2);
+        </text>
+        break;
+
+    case "چابهار":
+        <text>
+        selectedSeries2 = @Html.Raw(selectedSeriesJs2);
+        </text>
+        break;
+
+    case "نگور":
+        <text>
+        selectedSeries2 = @Html.Raw(selectedSeriesJs2);
+        </text>
+        break;
+
+    case "کنارک":
+        <text>
+        selectedSeries2 = @Html.Raw(selectedSeriesJs2);
+        </text>
+        break;
+
+    case "راسک":
+        <text>
+        selectedSeries2 = @Html.Raw(selectedSeriesJs2);
+        </text>
+        break;
+
+    case "سرباز":
+        <text>
+        selectedSeries2 = @Html.Raw(selectedSeriesJs2);
+        </text>
+        break;
+
+    default: // استان
+        <text>
+        selectedSeries2 = @Html.Raw(selectedSeriesJs2);
+        </text>
+        break;
+}
+
+
+    var options = {
+        chart: {
+            height: 200,
+            width: '100%',
+            type: 'line',
+            toolbar: { show: false },
+            zoom: {
+        enabled: false // کلاً زوم و کش اومدن رو تعطیل می‌کنه
+    },
+            fontFamily: 'inherit'
+        },
+        colors: ['#cccccc', '#00E396', '#00a6ff'],
+        stroke: {
+            width: 4,
+            curve: 'smooth'
+        },
+        markers: {
+            size: 4,
+            strokeColors: '#fff',
+            strokeWidth: 2,
+            hover: { size: 7 }
+        },
+        series: selectedSeries2,
+        xaxis: {
+            categories: ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن','اسفند'],
+            labels: { style: { colors: '#fff' } },
+            axisTicks: false,
+        },
+        yaxis: {
+            forceNiceScale: true,
+            labels: {
+                offsetX: -20,
+                style: { colors: '#fff' }
+            }
+        },
+        grid: {
+            borderColor: '#1b7a7a66',
+            strokeDashArray: 2
+        },
+        tooltip: {
+            theme: 'dark',
+            shared: true
+        },
+        legend: {
+            labels: { colors: '#fff' }
+        },
+        responsive: [
+            {
+                breakpoint: 576,
+                options: {
+                    xaxis: {
+                        labels: {
+                            offsetY: 0,
+                            rotate: 90,
+                            rotateAlways: true,
+                            style: { fontSize: '8px' }
+                        },
+
+                        axisTicks: false,
+                    },
+                    yaxis: {
+                        tickAmount: 3,
+                        labels: {
+                            offsetX: -20,
+                            style: { colors: ['#fff'], fontSize: '8px' }
+                        }
+                    },
+                    legend: {
+                        show: false,
+                        labels: { colors: '#fff' }
+                    },
+                    markers: {
+                        size: 3
+                    }
+                }
+            }
+        ]
+    };
+
+    var chart = new ApexCharts(document.querySelector("#chart30"), options);
+    chart.render();
+    </script>
+    <script>
+    var selectedSeries = [];
+    @switch (name)
+{
+      @*case "زاهدان 1":
+        <text>
+        selectedSeries = [
+            { name: '1403', data: [59.7, 67.0, 79.9, 86.5, 86.8, 83.5, 86.5, 86.0, 82.7, 85.1, 86.1] },
+            { name: '1404', data: [58.6, 67.2, 64.8, 59.8, 72.9, 74.1, 76.1, 78.0, 84.1, 83.5, @v87] }
+        ];
+        </text>
+        break;*@
+
+        //s ====================================================================== m14041207
+
+
+
+
+
+
+
+
+
+        case "زاهدان 1":
+            <text>
+            selectedSeries = @Html.Raw(selectedSeriesJs);
+            </text>
+            break;
+
+
+
+
+
+
+        //e======================================================================m14041207
+
+        case "زاهدان 2":
+        <text>
+         selectedSeries = @Html.Raw(selectedSeriesJs);
+        </text>
+        break;
+
+    case "کورین":
+        <text>
+         selectedSeries = @Html.Raw(selectedSeriesJs);
+        </text>
+        break;
+
+    case "میرجاوه":
+        <text>
+         selectedSeries = @Html.Raw(selectedSeriesJs);
+        </text>
+        break;
+
+    case "زابل":
+        <text>
+         selectedSeries = @Html.Raw(selectedSeriesJs);
+        </text>
+        break;
+
+    case "هیرمند":
+        <text>
+         selectedSeries = @Html.Raw(selectedSeriesJs);
+        </text>
+        break;
+
+    case "زهک":
+        <text>
+         selectedSeries = @Html.Raw(selectedSeriesJs);
+        </text>
+        break;
+
+    case "خاش":
+        <text>
+           selectedSeries = @Html.Raw(selectedSeriesJs);
+        </text>
+        break;
+
+    case "سراوان":
+        <text>
+         selectedSeries = @Html.Raw(selectedSeriesJs);
+        </text>
+        break;
+
+    case "جالق":
+        <text>
+         selectedSeries = @Html.Raw(selectedSeriesJs);
+        </text>
+        break;
+
+    case "سوران":
+        <text>
+         selectedSeries = @Html.Raw(selectedSeriesJs);
+        </text>
+        break;
+
+    case "مهرستان":
+        <text>
+         selectedSeries = @Html.Raw(selectedSeriesJs);
+        </text>
+        break;
+
+    case "ایرانشهر":
+        <text>
+         selectedSeries = @Html.Raw(selectedSeriesJs);
+        </text>
+        break;
+
+    case "بمپور":
+        <text>
+         selectedSeries = @Html.Raw(selectedSeriesJs);
+        </text>
+        break;
+
+    case "دلگان":
+        <text>
+         selectedSeries = @Html.Raw(selectedSeriesJs);
+        </text>
+        break;
+
+    case "قصرقند":
+        <text>
+         selectedSeries = @Html.Raw(selectedSeriesJs);
+        </text>
+        break;
+
+    case "نیکشهر":
+        <text>
+         selectedSeries = @Html.Raw(selectedSeriesJs);
+        </text>
+        break;
+
+    case "فنوج":
+        <text>
+         selectedSeries = @Html.Raw(selectedSeriesJs);
+        </text>
+        break;
+
+    case "اسپکه":
+        <text>
+         selectedSeries = @Html.Raw(selectedSeriesJs);
+        </text>
+        break;
+
+    case "چابهار":
+        <text>
+         selectedSeries = @Html.Raw(selectedSeriesJs);
+        </text>
+        break;
+
+    case "نگور":
+        <text>
+         selectedSeries = @Html.Raw(selectedSeriesJs);
+        </text>
+        break;
+
+    case "کنارک":
+        <text>
+         selectedSeries = @Html.Raw(selectedSeriesJs);
+        </text>
+        break;
+
+    case "راسک":
+        <text>
+         selectedSeries = @Html.Raw(selectedSeriesJs);
+        </text>
+        break;
+
+    case "سرباز":
+        <text>
+         selectedSeries = @Html.Raw(selectedSeriesJs);
+        </text>
+        break;
+
+    default: // استان
+        <text>
+         selectedSeries = @Html.Raw(selectedSeriesJs);
+        </text>
+        break;
+}
+
+
+    var options = {
+        chart: {
+            height: 200,
+            width: '100%',
+            type: 'line',
+            toolbar: { show: false },
+            zoom: {
+        enabled: false // کلاً زوم و کش اومدن رو تعطیل می‌کنه
+    },
+            fontFamily: 'inherit'
+        },
+        colors: ['#cccccc','#00E396', '#00a6ff'],
+        stroke: {
+            width: 4,
+            curve: 'smooth'
+        },
+        markers: {
+            size: 4,
+            strokeColors: '#fff',
+            strokeWidth: 2,
+            hover: { size: 7 }
+        },
+        series: selectedSeries,
+        xaxis: {
+            categories: ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن','اسفند'],
+            labels: { style: { colors: '#fff' } },
+            axisTicks: false,
+        },
+        yaxis: {
+            forceNiceScale: true,
+            labels: {
+                offsetX: -20,
+                style: { colors: '#fff' }
+            }
+        },
+        grid: {
+            borderColor: '#1b7a7a66',
+            strokeDashArray: 2
+        },
+        tooltip: {
+            theme: 'dark',
+            shared: true
+        },
+        legend: {
+            labels: { colors: '#fff' }
+        },
+        responsive: [
+            {
+                breakpoint: 576,
+                options: {
+                    xaxis: {
+                        labels: {
+                            offsetY: 0,
+                            rotate: 90,
+                            rotateAlways: true,
+                            style: { fontSize: '8px' }
+                        },
+
+                        axisTicks: false,
+                    },
+                    yaxis: {
+                        tickAmount: 3,
+                        labels: {
+                            offsetX: -20,
+                            style: { colors: ['#fff'], fontSize: '8px' }
+                        }
+                    },
+                    legend: {
+                        show: false,
+                        labels: { colors: '#fff' }
+                    },
+                    markers: {
+                        size: 3
+                    }
+                }
+            }
+        ]
+    };
+
+    var chart = new ApexCharts(document.querySelector("#chart3"), options);
+    chart.render();
+    </script>
+    @*<script>
+            var options = {
+                chart: {
+                    height: 200,
+                    width: '100%',
+                    type: 'line',
+                    toolbar: { show: false },
+                    fontFamily: 'inherit'
+                },
+
+                colors: ['#00E396', '#00a6ff'],
+
+                // ۱. نرم کردن خط‌ها
+                stroke: {
+                    width: 4,
+                    curve: 'smooth' // اینجا خط‌ها از حالت شکسته به نرم تبدیل میشن
+                },
+
+                // ۲. نمایش مارکرها (نقاط روی خط)
+                markers: {
+                    size: 4,
+                    strokeColors: '#fff',
+                    strokeWidth: 2,
+                    hover: { size: 7 }
+                },
+
+                series: [
+                    { name: '1403 ', data: [73, 71, 84, 90, 89, 91, 89, 87, 80, 79, 80] },
+                    { name: '1404', data: [76, 79, 75, 70, 73, 75, 76, 77, 81, 78, 79] }
+                ],
+
+                xaxis: {
+                    categories: ['ماه ۱', 'ماه ۲', 'ماه ۳', 'ماه ۴', 'ماه ۵', 'ماه ۶', 'ماه ۷', 'ماه ۸', 'ماه ۹', 'ماه ۱۰', 'ماه ۱۱'],
+                    labels: { style: { colors: '#fff' } },
+                    axisTicks: false,
+
+                },
+
+                yaxis: {
+                    forceNiceScale: true,
+                    labels: {
+                        offsetX: -20,
+                        style: { colors: '#fff' }
+                    }
+                },
+
+                // ۳. برگرداندن استایل خط‌های افقی (Grid)
+                grid: {
+                    borderColor: '#1b7a7a66',
+                    strokeDashArray: 2 // این باعث میشه خط‌ها به صورت خط‌چین (Dash) باشن
+                },
+
+                tooltip: {
+                    theme: 'dark',
+                    shared: true
+                },
+
+                legend: {
+                    labels: { colors: '#fff' }
+                },
+
+                responsive: [
+                    {
+                        breakpoint: 576,
+                        options: {
+                            xaxis: {
+                                labels: {
+                                    offsetY: 0,
+                                    rotate: 90,
+                                    rotateAlways: true,
+                                    style: { fontSize: '8px' }
+                                },
+
+                                axisTicks: false,
+                            },
+                            yaxis: {
+                                tickAmount: 3,
+                                labels: {
+                                    offsetX: -10,
+                                    style: { colors: ['#fff'], fontSize: '8px' }
+                                }
+                            },
+                            legend: {
+                                show: false,
+                                labels: { colors: '#fff' }
+                            },
+                            markers: {
+                                size: 3
+                            }
+                        }
+                    }
+                ]
+            };
+
+            var chart = new ApexCharts(document.querySelector("#chart3"), options);
+            chart.render();
+        </script>*@
+    <script>
+  $("#person-sabt").click(function () {
+      var sharestan = $("#sharestan").val();
+
+      if (sharestan === "") {
+          alert("لطفاً یک شهرستان انتخاب کنید");
+          return;
+      }
+
+      // ریدایرکت به صفحه createps با پارامتر id
+      window.location.href = '@Url.Action("vieweee_dashbord11", "Orders", new { area = "Setting" })' + "?id=" + sharestan;
+  });
+  //      $(document).ready(function () {
+  //    $("#sharestan").picker({ search: true });
+
+  //});
+    </script>
+
+    <script>
+        var options = {
+            series: [{
+                name: 'آمار فروش',
+data: [
+    @(saleExpectedAmount11_137.GetValueOrDefault().ToString("0.0")),
+    @(saleExpectedAmount11_138.GetValueOrDefault().ToString("0.0"))
+
+]
+           }],
+            chart: {
+                type: 'bar',
+                height: '100%',
+                background: 'transparent',
+                fontFamily: 'inherit',
+                foreColor: '#fff',
+                toolbar: { show: false }
+            },
+            plotOptions: {
+                bar: {
+                    borderRadius: 8,
+                    columnWidth: '45%',
+                    distributed: true,
+                    dataLabels: {
+                        position: 'top', // عددها بالای ستون نمایش داده بشن
+                    },
+                }
+            },
+            // فعال کردن نمایش عدد بالای هر ستون (چون تول‌تیپ نداری)
+            dataLabels: {
+                enabled: true,
+                offsetY: 0,
+                style: {
+                    fontSize: '12px',
+                    colors: ["#fff"]
+                }
+            },
+            colors: ['#023E8A', '#0077B6'],
+            grid: {
+                borderColor: '#1b7a7a66',
+                strokeDashArray: 2, // خط ممتد (اگر خط‌چین نخواستی)
+                xaxis: {
+                    lines: { show: false } // ۱. خطوط گرید عمودی حذف شد
+                },
+                yaxis: {
+                    lines: { show: true } // فقط خطوط گرید افقی نمایش داده بشه
+                }
+            },
+            xaxis: {
+                categories: ['درصد وصول عادی', 'درصد وصول دیماندی'],
+                axisBorder: {
+                    show: true,
+                    color: '#fff' // ۲. خط محور افقی سفید شد
+                },
+                axisTicks: { show: false }
+            },
+            yaxis: {
+                axisBorder: {
+                    show: false // ۳. خط محور عمودی کلاً حذف شد
+                },
+                labels: {
+                    offsetX: -10,
+                    style: { colors: '#fff' }
+                }
+            },
+            tooltip: {
+                enabled: false
+            },
+            legend: {
+                show: false
+            },
+            responsive: [{
+                breakpoint: 480,
+                options: {
+                    chart: {
+                        height: 300
+                    },
+                    plotOptions: {
+                        bar: {
+                            borderRadius: 2,
+                            columnWidth: '70%', // میله‌ها رو کمی پهن‌تر کن که بهتر دیده بشن
+                        }
+                    },
+                    yaxis: {
+                        labels: {
+                            offsetX: -10,
+                            style: {
+                                fontSize: '8px'
+                            }
+                        }
+                    },
+                    xaxis: {
+                        labels: {
+                            rotate: 90, // لیبل‌ها رو بچرخون که جا بشن
+                            style: {
+                                fontSize: '8px'
+                            }
+                        }
+                    },
+                    dataLabels: {
+                        style: {
+                            fontSize: '8px' // عددهای روی ستون هم کوچیکتر بشن
+                        }
+                    }
+                }
+            }]
+        };
+
+        var chart = new ApexCharts(document.querySelector("#chart10"), options);
+        chart.render();
+    </script>
+    <script>
+        var options = {
+            series: [{
+                name: 'آمار فروش',
+data: [
+    @(saleExpectedAmount11_149.GetValueOrDefault().ToString("0.0")),
+    @(saleExpectedAmount11_150.GetValueOrDefault().ToString("0.0"))
+
+]
+           }],
+            chart: {
+                type: 'bar',
+                height: '100%',
+                background: 'transparent',
+                fontFamily: 'inherit',
+                foreColor: '#fff',
+                toolbar: { show: false }
+            },
+            plotOptions: {
+                bar: {
+                    borderRadius: 8,
+                    columnWidth: '45%',
+                    distributed: true,
+                    dataLabels: {
+                        position: 'top', // عددها بالای ستون نمایش داده بشن
+                    },
+                }
+            },
+            // فعال کردن نمایش عدد بالای هر ستون (چون تول‌تیپ نداری)
+            dataLabels: {
+                enabled: true,
+                offsetY: 0,
+                style: {
+                    fontSize: '12px',
+                    colors: ["#fff"]
+                }
+            },
+            colors: ['#023E8A', '#0077B6'],
+            grid: {
+                borderColor: '#1b7a7a66',
+                strokeDashArray: 2, // خط ممتد (اگر خط‌چین نخواستی)
+                xaxis: {
+                    lines: { show: false } // ۱. خطوط گرید عمودی حذف شد
+                },
+                yaxis: {
+                    lines: { show: true } // فقط خطوط گرید افقی نمایش داده بشه
+                }
+            },
+            xaxis: {
+                categories: ['درصد وصول کنترل پذیر', 'درصد وصول کنترل ناپذیر'],
+                axisBorder: {
+                    show: true,
+                    color: '#fff' // ۲. خط محور افقی سفید شد
+                },
+                axisTicks: { show: false }
+            },
+            yaxis: {
+                axisBorder: {
+                    show: false // ۳. خط محور عمودی کلاً حذف شد
+                },
+                labels: {
+                    offsetX: -10,
+                    style: { colors: '#fff' }
+                }
+            },
+            tooltip: {
+                enabled: false
+            },
+            legend: {
+                show: false
+            },
+            responsive: [{
+                breakpoint: 480,
+                options: {
+                    chart: {
+                        height: 300
+                    },
+                    plotOptions: {
+                        bar: {
+                            borderRadius: 2,
+                            columnWidth: '70%', // میله‌ها رو کمی پهن‌تر کن که بهتر دیده بشن
+                        }
+                    },
+                    yaxis: {
+                        labels: {
+                            offsetX: -10,
+                            style: {
+                                fontSize: '8px'
+                            }
+                        }
+                    },
+                    xaxis: {
+                        labels: {
+                            rotate: 90, // لیبل‌ها رو بچرخون که جا بشن
+                            style: {
+                                fontSize: '8px'
+                            }
+                        }
+                    },
+                    dataLabels: {
+                        style: {
+                            fontSize: '8px' // عددهای روی ستون هم کوچیکتر بشن
+                        }
+                    }
+                }
+            }]
+        };
+
+        var chart = new ApexCharts(document.querySelector("#chart14"), options);
+        chart.render();
+    </script>
+    <script>
+        var options = {
+            series: [{
+                name: 'آمار فروش',
+data: [
+    @(saleExpectedAmount11_143.GetValueOrDefault().ToString("0.0")),
+    @(saleExpectedAmount11_144.GetValueOrDefault().ToString("0.0"))
+
+]
+           }],
+            chart: {
+                type: 'bar',
+                height: '100%',
+                background: 'transparent',
+                fontFamily: 'inherit',
+                foreColor: '#fff',
+                toolbar: { show: false }
+            },
+            plotOptions: {
+                bar: {
+                    borderRadius: 8,
+                    columnWidth: '45%',
+                    distributed: true,
+                    dataLabels: {
+                        position: 'top', // عددها بالای ستون نمایش داده بشن
+                    },
+                }
+            },
+            // فعال کردن نمایش عدد بالای هر ستون (چون تول‌تیپ نداری)
+            dataLabels: {
+                enabled: true,
+                offsetY: 0,
+                style: {
+                    fontSize: '12px',
+                    colors: ["#fff"]
+                }
+            },
+            colors: ['#023E8A', '#0077B6'],
+            grid: {
+                borderColor: '#1b7a7a66',
+                strokeDashArray: 2, // خط ممتد (اگر خط‌چین نخواستی)
+                xaxis: {
+                    lines: { show: false } // ۱. خطوط گرید عمودی حذف شد
+                },
+                yaxis: {
+                    lines: { show: true } // فقط خطوط گرید افقی نمایش داده بشه
+                }
+            },
+            xaxis: {
+                categories: ['سرانه بدهی کنترل پذیر', 'سرانه بدهی کنترل ناپذیر'],
+                axisBorder: {
+                    show: true,
+                    color: '#fff' // ۲. خط محور افقی سفید شد
+                },
+                axisTicks: { show: false }
+            },
+            yaxis: {
+                axisBorder: {
+                    show: false // ۳. خط محور عمودی کلاً حذف شد
+                },
+                labels: {
+                    offsetX: -10,
+                    style: { colors: '#fff' }
+                }
+            },
+            tooltip: {
+                enabled: false
+            },
+            legend: {
+                show: false
+            },
+            responsive: [{
+                breakpoint: 480,
+                options: {
+                    chart: {
+                        height: 300
+                    },
+                    plotOptions: {
+                        bar: {
+                            borderRadius: 2,
+                            columnWidth: '70%', // میله‌ها رو کمی پهن‌تر کن که بهتر دیده بشن
+                        }
+                    },
+                    yaxis: {
+                        labels: {
+                            offsetX: -10,
+                            style: {
+                                fontSize: '8px'
+                            }
+                        }
+                    },
+                    xaxis: {
+                        labels: {
+                            rotate: 90, // لیبل‌ها رو بچرخون که جا بشن
+                            style: {
+                                fontSize: '8px'
+                            }
+                        }
+                    },
+                    dataLabels: {
+                        style: {
+                            fontSize: '8px' // عددهای روی ستون هم کوچیکتر بشن
+                        }
+                    }
+                }
+            }]
+        };
+
+        var chart = new ApexCharts(document.querySelector("#chart12"), options);
+        chart.render();
+    </script>
+
+
+    <script>
+        var options = {
+            series: [{
+                name: 'آمار فروش',
+data: [
+    @(saleExpectedAmount11_131.GetValueOrDefault().ToString("0.0")),
+    @(saleExpectedAmount11_132.GetValueOrDefault().ToString("0.0"))
+
+]
+           }],
+            chart: {
+                type: 'bar',
+                height: '100%',
+                background: 'transparent',
+                fontFamily: 'inherit',
+                foreColor: '#fff',
+                toolbar: { show: false }
+            },
+            plotOptions: {
+                bar: {
+                    borderRadius: 8,
+                    columnWidth: '45%',
+                    distributed: true,
+                    dataLabels: {
+                        position: 'top', // عددها بالای ستون نمایش داده بشن
+                    },
+                }
+            },
+            // فعال کردن نمایش عدد بالای هر ستون (چون تول‌تیپ نداری)
+            dataLabels: {
+                enabled: true,
+                offsetY: 0,
+                style: {
+                    fontSize: '12px',
+                    colors: ["#fff"]
+                }
+            },
+            colors: ['#023E8A', '#0077B6'],
+            grid: {
+                borderColor: '#1b7a7a66',
+                strokeDashArray: 2, // خط ممتد (اگر خط‌چین نخواستی)
+                xaxis: {
+                    lines: { show: false } // ۱. خطوط گرید عمودی حذف شد
+                },
+                yaxis: {
+                    lines: { show: true } // فقط خطوط گرید افقی نمایش داده بشه
+                }
+            },
+            xaxis: {
+                categories: ['سرانه بدهی عادی', 'سرانه بدهی دیماندی'],
+                axisBorder: {
+                    show: true,
+                    color: '#fff' // ۲. خط محور افقی سفید شد
+                },
+                axisTicks: { show: false }
+            },
+            yaxis: {
+                axisBorder: {
+                    show: false // ۳. خط محور عمودی کلاً حذف شد
+                },
+                labels: {
+                    offsetX: -10,
+                    style: { colors: '#fff' }
+                }
+            },
+            tooltip: {
+                enabled: false
+            },
+            legend: {
+                show: false
+            },
+            responsive: [{
+                breakpoint: 480,
+                options: {
+                    chart: {
+                        height: 300
+                    },
+                    plotOptions: {
+                        bar: {
+                            borderRadius: 2,
+                            columnWidth: '70%', // میله‌ها رو کمی پهن‌تر کن که بهتر دیده بشن
+                        }
+                    },
+                    yaxis: {
+                        labels: {
+                            offsetX: -10,
+                            style: {
+                                fontSize: '8px'
+                            }
+                        }
+                    },
+                    xaxis: {
+                        labels: {
+                            rotate: 90, // لیبل‌ها رو بچرخون که جا بشن
+                            style: {
+                                fontSize: '8px'
+                            }
+                        }
+                    },
+                    dataLabels: {
+                        style: {
+                            fontSize: '8px' // عددهای روی ستون هم کوچیکتر بشن
+                        }
+                    }
+                }
+            }]
+        };
+
+        var chart = new ApexCharts(document.querySelector("#chart8"), options);
+        chart.render();
+    </script>
+
+    <script>
+        var options = {
+            series: [{
+                name: 'آمار فروش',
+data: [
+    @(saleExpectedAmount11_107.GetValueOrDefault().ToString("0.0")),
+    @(saleExpectedAmount11_108.GetValueOrDefault().ToString("0.0")),
+    @(saleExpectedAmount11_109.GetValueOrDefault().ToString("0.0")),
+    @(saleExpectedAmount11_110.GetValueOrDefault().ToString("0.0")),
+    @(saleExpectedAmount11_111.GetValueOrDefault().ToString("0.0"))
+]
+           }],
+            chart: {
+                type: 'bar',
+                height: '100%',
+                background: 'transparent',
+                fontFamily: 'inherit',
+                foreColor: '#fff',
+                toolbar: { show: false }
+            },
+            plotOptions: {
+                bar: {
+                    borderRadius: 8,
+                    columnWidth: '45%',
+                    distributed: true,
+                    dataLabels: {
+                        position: 'top', // عددها بالای ستون نمایش داده بشن
+                    },
+                }
+            },
+            // فعال کردن نمایش عدد بالای هر ستون (چون تول‌تیپ نداری)
+            dataLabels: {
+                enabled: true,
+                offsetY: 0,
+                style: {
+                    fontSize: '12px',
+                    colors: ["#fff"]
+                }
+            },
+            colors: ['#023E8A', '#0077B6', '#0096C7', '#00B4D8', '#48CAE4'],
+            grid: {
+                borderColor: '#1b7a7a66',
+                strokeDashArray: 2, // خط ممتد (اگر خط‌چین نخواستی)
+                xaxis: {
+                    lines: { show: false } // ۱. خطوط گرید عمودی حذف شد
+                },
+                yaxis: {
+                    lines: { show: true } // فقط خطوط گرید افقی نمایش داده بشه
+                }
+            },
+            xaxis: {
+                categories: ['سرانه خانگی', 'سرانه سایر مصارف', 'سرانه عمومی', 'سرانه صنعتی', 'سرانه کشاورزی'],
+                axisBorder: {
+                    show: true,
+                    color: '#fff' // ۲. خط محور افقی سفید شد
+                },
+                labels: {
+                    offsetY: -5,
+                    style: {
+                        fontSize: '8px',
+                        colors: '#fff'
+                    },
+                },
+                axisTicks: { show: false }
+            },
+            yaxis: {
+                axisBorder: {
+                    show: false // ۳. خط محور عمودی کلاً حذف شد
+                },
+                labels: {
+                    offsetX: -10,
+                    style: {
+                        fontSize: '10px',   // 👈 اندازه فونت دلخواه
+ colors: '#fff' }
+                }
+            },
+            tooltip: {
+                enabled: false
+            },
+            legend: {
+                show: false
+            },
+            responsive: [{
+                breakpoint: 480,
+                options: {
+                    chart: {
+                        height: 300
+                    },
+                    plotOptions: {
+                        bar: {
+                            borderRadius: 2,
+                            columnWidth: '70%', // میله‌ها رو کمی پهن‌تر کن که بهتر دیده بشن
+                        }
+                    },
+                    yaxis: {
+                        labels: {
+                            offsetX: -10,
+                            style: {
+                                fontSize: '8px'
+                            }
+                        }
+                    },
+                    xaxis: {
+                        labels: {
+                            rotate: 90, // لیبل‌ها رو بچرخون که جا بشن
+                            style: {
+                                fontSize: '8px'
+                            }
+                        }
+                    },
+                    dataLabels: {
+                        style: {
+                            fontSize: '8px' // عددهای روی ستون هم کوچیکتر بشن
+                        }
+                    }
+                }
+            }]
+        };
+
+        var chart = new ApexCharts(document.querySelector("#chart4"), options);
+        chart.render();
+    </script>
+    <script>
+        var options = {
+             series: [
+            @saleExpectedAmount11_97,
+            @saleExpectedAmount11_98,
+            @saleExpectedAmount11_99,
+            @saleExpectedAmount11_100,
+            @saleExpectedAmount11_101
+        ],
+            chart: {
+                type: 'donut',
+
+                width: '100%',
+                height: '100%',
+                fontFamily: 'inherit',
+                foreColor: '#fff' // ۱. این اصلی‌ترینه؛ اکثر متن‌های عمومی رو سفید می‌کنه
+            },
+            labels: ['تعداد خانگی', 'تعداد سایر مصارف', 'تعداد عمومی', 'تعداد صنعتی', 'تعداد کشاورزی'],
+            colors: ['#023E8A', '#0077B6', '#0096C7', '#00B4D8', '#48CAE4'],
+
+            stroke: {
+                show: false, // کلاً خط دور رو غیب می‌کنه
+                width: 0,    // ضخامت رو صفر می‌کنه (کمربند محکم‌تر!)
+            },
+            legend: {
+                position: 'right',
+                offsetY: 5,
+                height: '100%',
+                labels: {
+                    colors: '#fff',
+                    useSeriesColors: false
+                },
+                formatter: function (seriesName, opts) {
+                    // اول درصد رو حساب می‌کنیم
+                    var percent = opts.w.globals.seriesPercent[opts.seriesIndex][0].toFixed(1);
+
+                    // اینجا دقیقاً مشخص می‌کنیم چی چاپ بشه: اسم لیبل + درصد
+                    // این کار باعث می‌شه مقدار عددی خودکار حذف بشه
+                    return seriesName + ": " + percent + "%";
+                },
+                markers: {
+                    width: 12,
+                    height: 12,
+                    radius: 12
+                },
+                itemMargin: {
+                    horizontal: 10,
+                    vertical: 5
+                }
+            },
+            tooltip: {
+                enabled: false // کلاً غیرفعال می‌شه
+            },
+            plotOptions: {
+                pie: {
+                    donut: {
+                        labels: {
+                            show: true,
+                            name: {
+                                show: true,
+                                style: {
+                                    fontFamily: '10px',
+                                },
+                                color: '#fff' // ۳. سفید کردن نام لیبل وسط دونات
+                            },
+                            value: {
+                                show: true,
+                                color: '#fff', // ۴. سفید کردن عدد مقدار وسط دونات
+                                formatter: function (val) {
+                                    return Number(val).toLocaleString('en-US'); // جداکننده هزارگان انگلیسی
+                                }
+                            },
+                            total: {
+                                show: true,
+                                label: 'مجموع تعداد ',
+                                color: '#fff', // ۵. سفید کردن متن "مجموع"
+                                formatter: function (w) {
+                                    return w.globals.seriesTotals.reduce((a, b) => a + b, 0).toLocaleString();
+                                }
+                            },
+                            // ۱. اصلاح تول‌تیپ برای تم تاریک
+
+
+                            // ۲. فیکس کردن لجند (تراز کردن و فاصله)
+
+                        }
+                    }
+                }
+            },
+            dataLabels: {
+                style: {
+
+                    colors: ['#fff'] // ۶. سفید کردن عددهای روی خودِ تیکه‌های نمودار
+                }
+            },
+            responsive: [{
+                breakpoint: 480,
+                options: {
+                    chart: {
+                        height: 200,
+
+                    },
+
+                    legend: {
+                        show: false,
+                        position: 'bottom',
+                        verticalAlign: 'bottom',
+                        horizontalAlign: 'center',
+                        height: undefined, // این باعث می‌شه اسکرول حذف بشه و لجند کش بیاد
+                        offsetY: 10,
+                        markers: {
+                            width: 10,
+                            height: 10
+                        },
+                        itemMargin: {
+                            horizontal: 5,
+                            vertical: 2
+                        },
+                        onItemClick: {
+                            toggleDataSeries: true
+                        },
+                        // جلوگیری از اسکرول و مجبور کردن به نمایش همه
+                        containerMargin: {
+                            top: 5,
+                            bottom: 10
+                        }
+                    },
+                    plotOptions: {
+                        pie: {
+                            offsetY: 50,
+                            donut: {
+                                size: '65%', // اندازه دونات رو کمی کوچیک کن که به لجند نچسبه
+                                labels: {
+                                    show: true,
+                                    total: {
+                                        fontSize: '10px'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }]
+        };
+
+        var chart = new ApexCharts(document.querySelector("#chart"), options);
+        chart.render();
+    </script>
+    <script>
+      var options = {
+           series: [
+          @saleExpectedAmount11_141,
+          @saleExpectedAmount11_142
+          @*@saleExpectedAmount11_99,
+          @saleExpectedAmount11_100,
+          @saleExpectedAmount11_101*@
+      ],
+          chart: {
+              type: 'donut',
+
+              width: '100%',
+              height: '100%',
+              fontFamily: 'inherit',
+              foreColor: '#fff' // ۱. این اصلی‌ترینه؛ اکثر متن‌های عمومی رو سفید می‌کنه
+          },
+          labels: ['مبلغ بدهی کنترل پذیر', 'مبلغ بدهی کنترل ناپذیر'],
+          colors: ['#023E8A', '#0077B6'],
+
+          stroke: {
+              show: false, // کلاً خط دور رو غیب می‌کنه
+              width: 0,    // ضخامت رو صفر می‌کنه (کمربند محکم‌تر!)
+          },
+          legend: {
+              position: 'right',
+              offsetY: 5,
+              height: '100%',
+              labels: {
+                  colors: '#fff',
+                  useSeriesColors: false
+              },
+              formatter: function (seriesName, opts) {
+                  // اول درصد رو حساب می‌کنیم
+                  var percent = opts.w.globals.seriesPercent[opts.seriesIndex][0].toFixed(1);
+
+                  // اینجا دقیقاً مشخص می‌کنیم چی چاپ بشه: اسم لیبل + درصد
+                  // این کار باعث می‌شه مقدار عددی خودکار حذف بشه
+                  return seriesName + ": " + percent + "%";
+              },
+              markers: {
+                  width: 12,
+                  height: 12,
+                  radius: 12
+              },
+              itemMargin: {
+                  horizontal: 10,
+                  vertical: 5
+              }
+          },
+          tooltip: {
+              enabled: false // کلاً غیرفعال می‌شه
+          },
+          plotOptions: {
+              pie: {
+                  donut: {
+                      labels: {
+                          show: true,
+                          name: {
+                              show: true,
+                              style: {
+                                  fontFamily: '10px',
+                              },
+                              color: '#fff' // ۳. سفید کردن نام لیبل وسط دونات
+                          },
+                          value: {
+                              show: true,
+                              color: '#fff', // ۴. سفید کردن عدد مقدار وسط دونات
+                              formatter: function (val) {
+                                  return Number(val).toLocaleString('en-US'); // جداکننده هزارگان انگلیسی
+                              }
+                          },
+                          total: {
+                              show: true,
+                              label: 'مجموع بدهی ',
+                              color: '#fff', // ۵. سفید کردن متن "مجموع"
+                              formatter: function (w) {
+                                  return w.globals.seriesTotals.reduce((a, b) => a + b, 0).toLocaleString();
+                              }
+                          },
+                          // ۱. اصلاح تول‌تیپ برای تم تاریک
+
+
+                          // ۲. فیکس کردن لجند (تراز کردن و فاصله)
+
+                      }
+                  }
+              }
+          },
+          dataLabels: {
+              style: {
+
+                  colors: ['#fff'] // ۶. سفید کردن عددهای روی خودِ تیکه‌های نمودار
+              }
+          },
+          responsive: [{
+              breakpoint: 480,
+              options: {
+                  chart: {
+                      height: 200,
+
+                  },
+
+                  legend: {
+                      show: false,
+                      position: 'bottom',
+                      verticalAlign: 'bottom',
+                      horizontalAlign: 'center',
+                      height: undefined, // این باعث می‌شه اسکرول حذف بشه و لجند کش بیاد
+                      offsetY: 10,
+                      markers: {
+                          width: 10,
+                          height: 10
+                      },
+                      itemMargin: {
+                          horizontal: 5,
+                          vertical: 2
+                      },
+                      onItemClick: {
+                          toggleDataSeries: true
+                      },
+                      // جلوگیری از اسکرول و مجبور کردن به نمایش همه
+                      containerMargin: {
+                          top: 5,
+                          bottom: 10
+                      }
+                  },
+                  plotOptions: {
+                      pie: {
+                          offsetY: 50,
+                          donut: {
+                              size: '65%', // اندازه دونات رو کمی کوچیک کن که به لجند نچسبه
+                              labels: {
+                                  show: true,
+                                  total: {
+                                      fontSize: '10px'
+                                  }
+                              }
+                          }
+                      }
+                  }
+              }
+          }]
+      };
+
+        var chart = new ApexCharts(document.querySelector("#chart15"), options);
+      chart.render();
+    </script>
+    <script>
+      var options = {
+           series: [
+          @saleExpectedAmount11_139,
+          @saleExpectedAmount11_140
+          @*@saleExpectedAmount11_99,
+          @saleExpectedAmount11_100,
+          @saleExpectedAmount11_101*@
+      ],
+          chart: {
+              type: 'donut',
+
+              width: '100%',
+              height: '100%',
+              fontFamily: 'inherit',
+              foreColor: '#fff' // ۱. این اصلی‌ترینه؛ اکثر متن‌های عمومی رو سفید می‌کنه
+          },
+          labels: ['تعداد کنترل پذیر', 'تعداد کنترل ناپذیر'],
+          colors: ['#023E8A', '#0077B6'],
+
+          stroke: {
+              show: false, // کلاً خط دور رو غیب می‌کنه
+              width: 0,    // ضخامت رو صفر می‌کنه (کمربند محکم‌تر!)
+          },
+          legend: {
+              position: 'right',
+              offsetY: 5,
+              height: '100%',
+              labels: {
+                  colors: '#fff',
+                  useSeriesColors: false
+              },
+              formatter: function (seriesName, opts) {
+                  // اول درصد رو حساب می‌کنیم
+                  var percent = opts.w.globals.seriesPercent[opts.seriesIndex][0].toFixed(1);
+
+                  // اینجا دقیقاً مشخص می‌کنیم چی چاپ بشه: اسم لیبل + درصد
+                  // این کار باعث می‌شه مقدار عددی خودکار حذف بشه
+                  return seriesName + ": " + percent + "%";
+              },
+              markers: {
+                  width: 12,
+                  height: 12,
+                  radius: 12
+              },
+              itemMargin: {
+                  horizontal: 10,
+                  vertical: 5
+              }
+          },
+          tooltip: {
+              enabled: false // کلاً غیرفعال می‌شه
+          },
+          plotOptions: {
+              pie: {
+                  donut: {
+                      labels: {
+                          show: true,
+                          name: {
+                              show: true,
+                              style: {
+                                  fontFamily: '10px',
+                              },
+                              color: '#fff' // ۳. سفید کردن نام لیبل وسط دونات
+                          },
+                          value: {
+                              show: true,
+                              color: '#fff', // ۴. سفید کردن عدد مقدار وسط دونات
+                              formatter: function (val) {
+                                  return Number(val).toLocaleString('en-US'); // جداکننده هزارگان انگلیسی
+                              }
+                          },
+                          total: {
+                              show: true,
+                              label: 'مجموع تعداد ',
+                              color: '#fff', // ۵. سفید کردن متن "مجموع"
+                              formatter: function (w) {
+                                  return w.globals.seriesTotals.reduce((a, b) => a + b, 0).toLocaleString();
+                              }
+                          },
+                          // ۱. اصلاح تول‌تیپ برای تم تاریک
+
+
+                          // ۲. فیکس کردن لجند (تراز کردن و فاصله)
+
+                      }
+                  }
+              }
+          },
+          dataLabels: {
+              style: {
+
+                  colors: ['#fff'] // ۶. سفید کردن عددهای روی خودِ تیکه‌های نمودار
+              }
+          },
+          responsive: [{
+              breakpoint: 480,
+              options: {
+                  chart: {
+                      height: 200,
+
+                  },
+
+                  legend: {
+                      show: false,
+                      position: 'bottom',
+                      verticalAlign: 'bottom',
+                      horizontalAlign: 'center',
+                      height: undefined, // این باعث می‌شه اسکرول حذف بشه و لجند کش بیاد
+                      offsetY: 10,
+                      markers: {
+                          width: 10,
+                          height: 10
+                      },
+                      itemMargin: {
+                          horizontal: 5,
+                          vertical: 2
+                      },
+                      onItemClick: {
+                          toggleDataSeries: true
+                      },
+                      // جلوگیری از اسکرول و مجبور کردن به نمایش همه
+                      containerMargin: {
+                          top: 5,
+                          bottom: 10
+                      }
+                  },
+                  plotOptions: {
+                      pie: {
+                          offsetY: 50,
+                          donut: {
+                              size: '65%', // اندازه دونات رو کمی کوچیک کن که به لجند نچسبه
+                              labels: {
+                                  show: true,
+                                  total: {
+                                      fontSize: '10px'
+                                  }
+                              }
+                          }
+                      }
+                  }
+              }
+          }]
+      };
+
+        var chart = new ApexCharts(document.querySelector("#char13"), options);
+      chart.render();
+    </script>
+    <script>
+      var options = {
+           series: [
+          @saleExpectedAmount11_127,
+          @saleExpectedAmount11_128
+          @*@saleExpectedAmount11_99,
+          @saleExpectedAmount11_100,
+          @saleExpectedAmount11_101*@
+      ],
+          chart: {
+              type: 'donut',
+
+              width: '100%',
+              height: '100%',
+              fontFamily: 'inherit',
+              foreColor: '#fff' // ۱. این اصلی‌ترینه؛ اکثر متن‌های عمومی رو سفید می‌کنه
+          },
+          labels: ['تعداد عادی', 'تعداد دیماندی'],
+          colors: ['#023E8A', '#0077B6'],
+
+          stroke: {
+              show: false, // کلاً خط دور رو غیب می‌کنه
+              width: 0,    // ضخامت رو صفر می‌کنه (کمربند محکم‌تر!)
+          },
+          legend: {
+              position: 'right',
+              offsetY: 5,
+              height: '100%',
+              labels: {
+                  colors: '#fff',
+                  useSeriesColors: false
+              },
+              formatter: function (seriesName, opts) {
+                  // اول درصد رو حساب می‌کنیم
+                  var percent = opts.w.globals.seriesPercent[opts.seriesIndex][0].toFixed(1);
+
+                  // اینجا دقیقاً مشخص می‌کنیم چی چاپ بشه: اسم لیبل + درصد
+                  // این کار باعث می‌شه مقدار عددی خودکار حذف بشه
+                  return seriesName + ": " + percent + "%";
+              },
+              markers: {
+                  width: 12,
+                  height: 12,
+                  radius: 12
+              },
+              itemMargin: {
+                  horizontal: 10,
+                  vertical: 5
+              }
+          },
+          tooltip: {
+              enabled: false // کلاً غیرفعال می‌شه
+          },
+          plotOptions: {
+
+              pie: {
+                  donut: {
+
+                      labels: {
+                          show: true,
+                          name: {
+                              show: true,
+                              style: {
+                                  fontFamily: '10px',
+                              },
+                              color: '#fff' // ۳. سفید کردن نام لیبل وسط دونات
+                          },
+                          value: {
+                              show: true,
+                              color: '#fff', // ۴. سفید کردن عدد مقدار وسط دونات
+                              formatter: function (val) {
+                                  return Number(val).toLocaleString('en-US'); // جداکننده هزارگان انگلیسی
+                              }
+                          },
+                          total: {
+                              show: true,
+                              label: 'مجموع تعداد ',
+                              color: '#fff', // ۵. سفید کردن متن "مجموع"
+                              formatter: function (w) {
+                                  return w.globals.seriesTotals.reduce((a, b) => a + b, 0).toLocaleString();
+                              }
+                          },
+                          // ۱. اصلاح تول‌تیپ برای تم تاریک
+
+
+                          // ۲. فیکس کردن لجند (تراز کردن و فاصله)
+
+                      }
+                  },
+                  // dataLabels: {
+                  //    offset: 0, // لیبل‌ها رو هل میده بیرون از محیط دایره
+                  //    minAngleToShowLabel: 0 // مطمئن میشیم همه نمایش داده میشن
+                  //}
+              }
+          },
+          dataLabels: {
+
+              style: {
+
+                  colors: ['#fff'] // ۶. سفید کردن عددهای روی خودِ تیکه‌های نمودار
+              }
+          },
+          responsive: [{
+              breakpoint: 480,
+              options: {
+                  chart: {
+                      height: 200,
+
+                  },
+
+                  legend: {
+                      show: false,
+                      position: 'bottom',
+                      verticalAlign: 'bottom',
+                      horizontalAlign: 'center',
+                      height: undefined, // این باعث می‌شه اسکرول حذف بشه و لجند کش بیاد
+                      offsetY: 10,
+                      markers: {
+                          width: 10,
+                          height: 10
+                      },
+                      itemMargin: {
+                          horizontal: 5,
+                          vertical: 2
+                      },
+                      onItemClick: {
+                          toggleDataSeries: true
+                      },
+                      // جلوگیری از اسکرول و مجبور کردن به نمایش همه
+                      containerMargin: {
+                          top: 5,
+                          bottom: 10
+                      }
+                  },
+                  plotOptions: {
+                      pie: {
+                          offsetY: 50,
+                          donut: {
+                              size: '65%', // اندازه دونات رو کمی کوچیک کن که به لجند نچسبه
+                              labels: {
+                                  show: true,
+                                  total: {
+                                      fontSize: '10px'
+                                  }
+                              }
+                          }
+                      }
+                  }
+              }
+          }]
+      };
+
+        var chart = new ApexCharts(document.querySelector("#char9"), options);
+      chart.render();
+    </script>
+
+
+    <script>
+       var options = {
+            series: [
+           @saleExpectedAmount11_129 ,
+           @saleExpectedAmount11_130,
+
+       ],
+           chart: {
+               type: 'donut',
+
+               width: '100%',
+               height: '100%',
+               fontFamily: 'inherit',
+               foreColor: '#fff' // ۱. این اصلی‌ترینه؛ اکثر متن‌های عمومی رو سفید می‌کنه
+           },
+           labels: ['مبلغ بدهی عادی', 'مبلغ بدهی دیماندی'],
+           colors: ['#023E8A', '#0077B6'],
+
+           stroke: {
+               show: false, // کلاً خط دور رو غیب می‌کنه
+               width: 0,    // ضخامت رو صفر می‌کنه (کمربند محکم‌تر!)
+           },
+           legend: {
+               position: 'right',
+               offsetY: 5,
+               height: '100%',
+               labels: {
+                   colors: '#fff',
+                   useSeriesColors: false
+               },
+               formatter: function (seriesName, opts) {
+                   // اول درصد رو حساب می‌کنیم
+                   var percent = opts.w.globals.seriesPercent[opts.seriesIndex][0].toFixed(1);
+
+                   // اینجا دقیقاً مشخص می‌کنیم چی چاپ بشه: اسم لیبل + درصد
+                   // این کار باعث می‌شه مقدار عددی خودکار حذف بشه
+                   return seriesName + ": " + percent + "%";
+               },
+               markers: {
+                   width: 12,
+                   height: 12,
+                   radius: 12
+               },
+               itemMargin: {
+                   horizontal: 10,
+                   vertical: 5
+               }
+           },
+           tooltip: {
+               enabled: false // کلاً غیرفعال می‌شه
+           },
+           plotOptions: {
+               pie: {
+                   donut: {
+                       labels: {
+                           show: true,
+                           name: {
+                               show: true,
+                               style: {
+                                   fontFamily: '10px',
+                               },
+                               color: '#fff' // ۳. سفید کردن نام لیبل وسط دونات
+                           },
+                           value: {
+                               show: true,
+                               color: '#fff', // ۴. سفید کردن عدد مقدار وسط دونات
+                               formatter: function (val) {
+                                   return Number(val).toLocaleString('en-US'); // جداکننده هزارگان انگلیسی
+                               }
+                           },
+                           total: {
+                               show: true,
+                               label: 'مجموع بدهی  ',
+                               color: '#fff', // ۵. سفید کردن متن "مجموع"
+                               formatter: function (w) {
+                                   return w.globals.seriesTotals.reduce((a, b) => a + b, 0).toLocaleString();
+                               }
+                           },
+                           // ۱. اصلاح تول‌تیپ برای تم تاریک
+
+
+                           // ۲. فیکس کردن لجند (تراز کردن و فاصله)
+
+                       }
+                   }
+               }
+           },
+           dataLabels: {
+               style: {
+
+                   colors: ['#fff'] // ۶. سفید کردن عددهای روی خودِ تیکه‌های نمودار
+               }
+           },
+           responsive: [{
+               breakpoint: 480,
+               options: {
+                   chart: {
+                       height: 200,
+
+                   },
+
+                   legend: {
+                       show: false,
+                       position: 'bottom',
+                       verticalAlign: 'bottom',
+                       horizontalAlign: 'center',
+                       height: undefined, // این باعث می‌شه اسکرول حذف بشه و لجند کش بیاد
+                       offsetY: 10,
+                       markers: {
+                           width: 10,
+                           height: 10
+                       },
+                       itemMargin: {
+                           horizontal: 5,
+                           vertical: 2
+                       },
+                       onItemClick: {
+                           toggleDataSeries: true
+                       },
+                       // جلوگیری از اسکرول و مجبور کردن به نمایش همه
+                       containerMargin: {
+                           top: 5,
+                           bottom: 10
+                       }
+                   },
+                   plotOptions: {
+                       pie: {
+                           offsetY: 50,
+                           donut: {
+                               size: '65%', // اندازه دونات رو کمی کوچیک کن که به لجند نچسبه
+                               labels: {
+                                   show: true,
+                                   total: {
+                                       fontSize: '10px'
+                                   }
+                               }
+                           }
+                       }
+                   }
+               }
+           }]
+       };
+
+        var chart = new ApexCharts(document.querySelector("#chart11"), options);
+       chart.render();
+    </script>
+
+    <script>
+        var options = {
+             series: [
+            @saleExpectedAmount11_102 ,
+            @saleExpectedAmount11_103,
+            @saleExpectedAmount11_104,
+            @saleExpectedAmount11_105,
+            @saleExpectedAmount11_106
+        ],
+            chart: {
+                type: 'donut',
+
+                width: '100%',
+                height: '100%',
+                fontFamily: 'inherit',
+                foreColor: '#fff' // ۱. این اصلی‌ترینه؛ اکثر متن‌های عمومی رو سفید می‌کنه
+            },
+            labels: ['مبلغ بدهی خانگی', 'مبلغ بدهی سایر مصارف', 'مبلغ بدهی عمومی', 'مبلغ بدهی صنعتی', 'مبلغ بدهی کشاورزی'],
+            colors: ['#023E8A', '#0077B6', '#0096C7', '#00B4D8', '#48CAE4'],
+
+            stroke: {
+                show: false, // کلاً خط دور رو غیب می‌کنه
+                width: 0,    // ضخامت رو صفر می‌کنه (کمربند محکم‌تر!)
+            },
+            legend: {
+                position: 'right',
+                offsetY: 5,
+                height: '100%',
+                labels: {
+                    colors: '#fff',
+                    useSeriesColors: false
+                },
+                formatter: function (seriesName, opts) {
+                    // اول درصد رو حساب می‌کنیم
+                    var percent = opts.w.globals.seriesPercent[opts.seriesIndex][0].toFixed(1);
+
+                    // اینجا دقیقاً مشخص می‌کنیم چی چاپ بشه: اسم لیبل + درصد
+                    // این کار باعث می‌شه مقدار عددی خودکار حذف بشه
+                    return seriesName + ": " + percent + "%";
+                },
+                markers: {
+                    width: 12,
+                    height: 12,
+                    radius: 12
+                },
+                itemMargin: {
+                    horizontal: 10,
+                    vertical: 5
+                }
+            },
+            tooltip: {
+                enabled: false // کلاً غیرفعال می‌شه
+            },
+            plotOptions: {
+                pie: {
+                    donut: {
+                        labels: {
+                            show: true,
+                            name: {
+                                show: true,
+                                style: {
+                                    fontFamily: '10px',
+                                },
+                                color: '#fff' // ۳. سفید کردن نام لیبل وسط دونات
+                            },
+                            value: {
+                                show: true,
+                                color: '#fff', // ۴. سفید کردن عدد مقدار وسط دونات
+                                formatter: function (val) {
+                                    return Number(val).toLocaleString('en-US'); // جداکننده هزارگان انگلیسی
+                                }
+                            },
+                            total: {
+                                show: true,
+                                label: 'مجموع بدهی  ',
+                                color: '#fff', // ۵. سفید کردن متن "مجموع"
+                                formatter: function (w) {
+                                    return w.globals.seriesTotals.reduce((a, b) => a + b, 0).toLocaleString();
+                                }
+                            },
+                            // ۱. اصلاح تول‌تیپ برای تم تاریک
+
+
+                            // ۲. فیکس کردن لجند (تراز کردن و فاصله)
+
+                        }
+                    },
+
+                }
+            },
+            dataLabels: {
+                style: {
+
+                    colors: ['#fff'] // ۶. سفید کردن عددهای روی خودِ تیکه‌های نمودار
+                }
+            },
+            responsive: [{
+                breakpoint: 480,
+                options: {
+                    chart: {
+                        height: 200,
+
+                    },
+
+                    legend: {
+                        position: 'right',
+                        offsetY: 5,
+                        height: '100%',
+                        labels: {
+                            colors: '#fff',
+                            useSeriesColors: false
+                        },
+                        formatter: function (seriesName, opts) {
+                            // گرفتن درصد از دیتای گلوبال اپکس‌چارت
+                            var percent = opts.w.globals.seriesPercent[opts.seriesIndex][0].toFixed(1);
+
+                            return seriesName + ": " + percent + "%";
+                        },
+                        markers: {
+                            width: 12,
+                            height: 12,
+                            strokeWidth: 0,
+                            radius: 50,
+                        },
+                        itemMargin: {
+                            horizontal: 10,
+                            vertical: 5
+                        }
+                    },
+                    plotOptions: {
+                        pie: {
+                            offsetY: 50,
+                            donut: {
+                                size: '65%', // اندازه دونات رو کمی کوچیک کن که به لجند نچسبه
+                                labels: {
+                                    show: true,
+                                    total: {
+                                        fontSize: '10px'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }]
+        };
+
+        var chart = new ApexCharts(document.querySelector("#chart7"), options);
+        chart.render();
+    </script>
+    <script>
+        var options = {
+            series: [{
+                name: 'آمار فروش',
+data: [
+    @(saleExpectedAmount11_122.GetValueOrDefault().ToString("0.0")),
+    @(saleExpectedAmount11_123.GetValueOrDefault().ToString("0.0")),
+    @(saleExpectedAmount11_124.GetValueOrDefault().ToString("0.0")),
+    @(saleExpectedAmount11_125.GetValueOrDefault().ToString("0.0")),
+    @(saleExpectedAmount11_126.GetValueOrDefault().ToString("0.0"))
+]
+           }],
+            chart: {
+                type: 'bar',
+                height: '100%',
+                background: 'transparent',
+                fontFamily: 'inherit',
+                foreColor: '#fff',
+                toolbar: { show: false }
+            },
+            plotOptions: {
+                bar: {
+                    borderRadius: 8,
+                    columnWidth: '45%',
+                    distributed: true,
+                    dataLabels: {
+                        position: 'top', // عددها بالای ستون نمایش داده بشن
+                    },
+                }
+            },
+            // فعال کردن نمایش عدد بالای هر ستون (چون تول‌تیپ نداری)
+            dataLabels: {
+                enabled: true,
+                offsetY: 0,
+                style: {
+                    fontSize: '12px',
+                    colors: ["#fff"]
+                }
+            },
+            colors: ['#023E8A', '#0077B6', '#0096C7', '#00B4D8', '#48CAE4'],
+            grid: {
+                borderColor: '#1b7a7a66',
+                strokeDashArray: 2, // خط ممتد (اگر خط‌چین نخواستی)
+                xaxis: {
+                    lines: { show: false } // ۱. خطوط گرید عمودی حذف شد
+                },
+                yaxis: {
+                    lines: { show: true } // فقط خطوط گرید افقی نمایش داده بشه
+                }
+            },
+            xaxis: {
+                categories: ['درصد وصول خانگی', 'درصد وصول سایر مصارف', 'درصد وصول عمومی', 'درصد وصول صنعتی', 'درصد وصول کشاورزی'],
+                axisBorder: {
+                    show: true,
+
+                    color: '#fff' // ۲. خط محور افقی سفید شد
+                },
+                labels: {
+                    offsetY:-5,
+                    style: {
+                        fontSize: '7px',
+                        colors: '#fff'
+                    },
+                },
+                axisTicks: { show: false }
+            },
+            yaxis: {
+                axisBorder: {
+                    show: false // ۳. خط محور عمودی کلاً حذف شد
+                },
+                labels: {
+                    offsetX: -10,
+                    style: {
+
+ colors: '#fff' }
+                }
+            },
+            tooltip: {
+                enabled: false
+            },
+            legend: {
+                show: false
+            },
+            responsive: [{
+                breakpoint: 480,
+                options: {
+                    chart: {
+                        height: 300
+                    },
+                    plotOptions: {
+                        bar: {
+                            borderRadius: 2,
+                            columnWidth: '70%', // میله‌ها رو کمی پهن‌تر کن که بهتر دیده بشن
+                        }
+                    },
+                    yaxis: {
+                        labels: {
+                            offsetX: -10,
+                            style: {
+                                fontSize: '8px'
+                            }
+                        }
+                    },
+                    xaxis: {
+                        labels: {
+                            rotate: 90, // لیبل‌ها رو بچرخون که جا بشن
+                            style: {
+                                fontSize: '8px'
+                            }
+                        }
+                    },
+                    dataLabels: {
+                        style: {
+                            fontSize: '8px' // عددهای روی ستون هم کوچیکتر بشن
+                        }
+                    }
+                }
+            }]
+        };
+
+        var chart = new ApexCharts(document.querySelector("#chart6"), options);
+        chart.render();
+    </script>
+</body>
+</html>

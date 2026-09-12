@@ -1,0 +1,142 @@
+﻿@model List<SaabWebProject.Models.DomainModels.tbControllyPeyman>
+
+<div class="card mt-3" style="width: 100%">
+    <div class="table-content p-4" style="z-index:1">
+
+        <table class="table table-hover" style="text-align:center;">
+            <thead>
+                <tr>
+                    <th>
+                        عملیات
+                    </th>
+                    <th>
+                        نام پیمان
+                        <div class="inputWithFilterIcon">
+                            <input type="text" id="filter03-filter" class="inputFilter form-control" placeholder="">
+                            <span><i class="fas fa-filter"></i></span>
+                        </div>
+                    </th>
+                    <th>
+                        نام مولفه کنترلی
+                        <div class="inputWithFilterIcon">
+                            <input type="text" id="filter04-filter" class="inputFilter form-control" placeholder="">
+                            <span><i class="fas fa-filter"></i></span>
+                        </div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    var temp = -1;
+                    foreach (var pro in Model)
+                    {
+                        var npyman = "";
+                        var nmoalfe = "";
+                        if (temp == pro.tbPeymanContracts.pec_ID)
+                        {
+                            npyman = "";
+                            nmoalfe = pro.tbPeymanContracts.pec_Title;
+                        }
+                        else
+                        {
+                            npyman = pro.tbPeymanContracts.pec_Title;
+                            nmoalfe = pro.tbContractMoalefeDastmozdi.md_Title;
+                        }
+
+                        <tr class="task-list-row"
+                            data-filter03="@npyman"
+                            data-filter04="@nmoalfe">
+                            @if (temp == pro.tbPeymanContracts.pec_ID)
+                            {
+                                <td>
+                                </td>
+                                <td></td>
+                                <td>
+                                    @pro.tbContractMoalefeDastmozdi.md_Title
+                                </td>
+                            }
+                            else
+                            {
+                                <td>
+                                    <div class="ms-sm-4 mt-sm-0 mt-2 dropdown-toggle">
+                                        <a href="#" data-bs-toggle="dropdown" class="text-white text-opacity-75 text-decoration-none">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                        <div class="dropdown-menu">
+                                            <a style="cursor:pointer" onclick="EditSyncedPeymanMoalefe(this)" id="@pro.Id" data-bs-toggle="modal" data-bs-target="#modalLg" class="dropdown-item EditUser">
+                                                ویرایش
+                                            </a>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>@pro.tbPeymanContracts.pec_Title</td>
+                                <td>
+                                    @pro.tbContractMoalefeDastmozdi.md_Title
+                                </td>
+                                temp = pro.tbPeymanContracts.pec_ID;
+                            }
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+
+<script src="/Scripts/sweetalert2.js" type="text/javascript"></script>
+<script src="/Areas/Users/Scripts/Companies/Companies.js" type="text/javascript"></script>
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.js" type="text/javascript"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script>
+
+    var
+        filters = {
+            filter03: null,
+            filter04: null,
+        };
+
+    function updateFilters() {
+        $('.task-list-row').hide().filter(function () {
+            var self = $(this),
+                result = true;
+
+            Object.keys(filters).forEach(function (filter) {
+                var filterData = self.data(filter);
+                if (filters[filter] && (filters[filter] != 'None') && (filters[filter] != 'همه')) {
+                    // تبدیل داده به رشته و بررسی مقدار
+                    result = result && (filterData && filterData.toString().indexOf(filters[filter]) !== -1);
+                }
+            });
+
+            return result;
+        }).show();
+    }
+
+    function changeFilter(filterName) {
+        filters[filterName] = this.value;
+        updateFilters();
+    }
+
+    // Assigned User Dropdown Filter
+    $('#filter03-filter').on('input', function () {
+        changeFilter.call(this, 'filter03');
+    });
+    $('#filter04-filter').on('input', function () {
+        changeFilter.call(this, 'filter04');
+    });
+
+</script>
+
+<script src="~/Scripts/sweetalert2.js"></script>
+<script>
+    function EditSyncedPeymanMoalefe(e) {
+        $("#big_modal_body").load('@Url.Content("/Contracts/MoalefeDastmozdi/EditSynced_Peyman_Moalefe")?id='+e.id);
+    }
+</script>

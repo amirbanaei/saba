@@ -1,0 +1,1360 @@
+﻿@using System.Globalization
+
+@{
+    Layout = null;
+    ViewBag.Title = "فیش حقوقی";
+
+}
+@model SaabWebProject.Models.ViewModels.Salaries.Formula.ManualFishDetail
+@using SaabWebProject.Models.DomainModels
+@{ SaabEntities db = new SaabEntities();
+
+}
+@{
+    var tb = db.tbMoalefeDastmozdiValueFromExcel
+        .Where(p => p.tbUsers.usr_Personal_ID == Model.FishHeader.PersonalCode
+                    && p.MoalfeVal_Year == Model.FishHeader.year
+                    && p.MoalfeVal_Value != 0
+                    && p.MoalfeVal_Month == Model.month)
+        .ToList();
+    long day = 0;
+    List<string> mode = new List<string>();
+    List<string> mode2 = new List<string>();
+
+    var findusr = db.tbUsers.Where(s => s.usr_Personal_ID == Model.FishHeader.PersonalCode).FirstOrDefault();
+    if (findusr != null)
+    {
+        var findmoadel = db.tbMoadelPadashJarimeAyab.Where(s => s.UserID == findusr.usr_ID && s.Year == Model.FishHeader.year && s.Month == Model.month && s.Moadel < 1).FirstOrDefault();
+        if (findmoadel != null)
+        {
+            if (Model.month < 7)
+            {
+                day = (long)(findmoadel.Moadel * 31);
+            }
+            else if (Model.month < 12 && Model.month > 6)
+            {
+                day = (long)(findmoadel.Moadel * 30);
+            }
+            else
+            {
+                day = (long)(findmoadel.Moadel * 29);
+
+
+            }
+            mode2.Add($"کارکرد شما در این ماه معادل <span style='color:red;'>{day}</span> روز کاری بوده است و در صورت تکرار کسر کار و جریمه متناسب اعمال می‌گردد.");
+
+        }
+
+
+
+
+    }
+    string nameint = "";
+    var findstrimg = db.tbDetailFish.Where(s => s.month == Model.month && s.year == Model.FishHeader.year && s.FK_usr == findusr.usr_ID).FirstOrDefault();
+    if (findstrimg != null)
+    {
+        nameint = findstrimg.sharh;
+    }
+
+    foreach (var it in tb)
+    {
+        var y = db.tbCaranSettings
+            .Where(p => p.FK_Moalefe_ID == it.MoalfeVal_FKMoalafeDastmozdi && p.CaranStandard != 0)
+            .FirstOrDefault();
+
+        if (y == null)
+        {
+            var u = db.tbCaranSettings
+                .Where(p => p.FK_Moalefe_ID == it.MoalfeVal_FKMoalafeDastmozdi && p.CaranAyabOZahab != 0)
+                .FirstOrDefault();
+
+            if (u != null)
+            {
+                //mode.Add($"{it.tbContractMoalefeDastmozdi.md_Title} ( {Convert.ToDecimal(u.CaranAyabOZahab).ToString("F2")}/ 0 /{Convert.ToDecimal(it.MoalfeVal_Value).ToString("F2")} )----");
+
+                mode.Add($"{it.tbContractMoalefeDastmozdi.md_Title} ( {Convert.ToInt64(u.CaranAyabOZahab)}/ 0 /{it.MoalfeVal_Value} )----");
+            }
+        }
+        else
+        {
+            mode.Add($"{it.tbContractMoalefeDastmozdi.md_Title} ( {Convert.ToInt64(y.CaranAyabOZahab)}/ {Convert.ToInt64(y.CaranStandard)} /{it.MoalfeVal_Value} )---");
+        }
+    }
+
+
+
+
+}
+<link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+@*<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>*@
+
+<style>
+    tbody tr:nth-child(even) {
+        background-color: unset !important;
+    }
+
+    .modal-content {
+        margin: 0px;
+        margin-top: -24px;
+        margin-bottom: -24px;
+    }
+    /*---------------------------------------------------------------*/
+    /*----------------------border -> L R T D------------------------*/
+    tbody {
+        border: 1px solid var(--bs-heading-color);
+    }
+
+    .Le {
+        border-left: 1px solid var(--bs-heading-color);
+    }
+
+    .Ri {
+        border-right: 1px solid var(--bs-heading-color);
+    }
+
+    .To {
+        border-top: 1px solid var(--bs-heading-color);
+    }
+
+    .Bo {
+        border-bottom: 1px solid var(--bs-heading-color);
+    }
+    /*---------------------------------------------------------------*/
+    th, td {
+        border-collapse: collapse !important;
+        /*-----------------------------*/
+        padding: 1px !important;
+        padding-left: 4px !important;
+        padding-right: 4px !important;
+        width: 2.56% !important;
+    }
+
+    /*---------------------------------------------------------------*/
+    table {
+        /*------------border-----------*/
+        border: 1px solid black;
+        border-collapse: collapse;
+        /*-----------------------------*/
+        font-size: 8px;
+        text-align: center;
+        /*font-family: serif;*/
+    }
+    /*---------------------------------------------------------------*/
+    th {
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .titel_01 {
+        font-size: 7px;
+        font-weight: bold;
+    }
+
+    .titel_02 {
+        font-size: 8px;
+        font-weight: bold;
+        text-align: right;
+    }
+
+    .verT01 {
+        font-size: 7px;
+        transform: rotate(180deg);
+        writing-mode: vertical-lr;
+        /*text-orientation: mixed;*/
+    }
+
+    .description {
+        font-size: 8px;
+        font-family: serif;
+        text-align: right;
+        text-align: justify;
+        vertical-align: 0px;
+    }
+    /*---------------------------------------------------------------*/
+    @@media print {
+
+        #printPageButton {
+            display: none; /* برای عدم نمایش دکمه پرینت*/
+        }
+        /*@@page {
+            size: auto;*/ /* یا سایر مقادیر مورد نیاز */
+        /*}*/
+        #modalLg, .modal-content {
+            font-family: var(--bs-body-font-family) !important;
+            background: #FFF !important;
+            color: #000 !important;
+            border: 0 !important;
+        }
+
+        tbody tr:nth-child(even) {
+            border-radius: 40px !important;
+            background-color: #FFF !important;
+        }
+
+        .modal.show .modal-dialog {
+            margin-top: 10px !important;
+            margin-right: -10px !important;
+        }
+
+        .modal-content {
+            width: 740px;
+        }
+        /*---------------------------------------------------------------*/
+        tbody {
+            border: 1px solid black;
+        }
+
+        .Le {
+            border-left: 1px solid black;
+        }
+
+        .Ri {
+            border-right: 1px solid black;
+        }
+
+        .To {
+            border-top: 1px solid black;
+        }
+
+        .Bo {
+            border-bottom: 1px solid black;
+        }
+        /*---------------------------------------------------------------*/
+        .pace .pace-progress { /*loding*/
+            background: unset;
+        }
+    }
+    .watermark {
+        position: fixed;
+        width: 200%;
+        text-align: center;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(-45deg);
+        font-size: 100px;
+        color: #25526430;
+        z-index: 0;
+        pointer-events: none;
+        font-weight: bold;
+    }
+
+
+  
+    /*---------------------------------------------------------------*/
+
+</style>
+
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="Fish.css">
+</head>
+@{
+    var ContL = 0;
+    var ContC = 0;
+    int maxT = 0;
+    ContL = Model.FishValuesAqsat.Count + Model.FishValuesKosoorat.Count;
+    ContC = Model.FishValuesEzafat.Count; /*+ Model.FishValueQaradad.Count;*/
+    if (ContL > ContC)
+    {
+        maxT = ContL;
+    }
+    else
+    {
+        maxT = ContC;
+    }
+}
+@{
+    var maxNum = Model.FishValuesAqsat.Count();
+    //if (Model.FishValuesKosoorat.Where(s=>s.Value>0).Count > maxNum)
+    //{
+    //    maxNum = Model.FishValuesKosoorat.Count;
+    //}
+    if (Model.FishValuesKosoorat.Count() > maxNum)
+    {
+        maxNum = Model.FishValuesKosoorat.Count();
+    }
+
+    if (Model.FishValuesEzafat.Count() > maxNum)
+    {
+        maxNum = Model.FishValuesEzafat.Count;
+    }
+    List<double> ValueL = new List<double>();
+    List<string> TitleL = new List<string>();
+    for (int i = 0; i < maxNum; i++)
+    {
+        if (i < Model.FishValuesAqsat.Count())
+        {
+            TitleL.Add(Model.FishValuesAqsat[i].Title);
+            ValueL.Add(Model.FishValuesAqsat[i].Value);
+        }
+        //var kosooratList = Model.FishValuesKosoorat.Where(s => s.Value > 0).ToList();
+
+        //if (i < kosooratList.Count)
+        //{
+
+        //        TitleL.Add(kosooratList[i].Title);
+        //        ValueL.Add(kosooratList[i].Value);
+
+        //}
+        if (i < Model.FishValuesKosoorat.Count())
+        {
+
+            TitleL.Add(Model.FishValuesKosoorat[i].Title);
+            ValueL.Add(Model.FishValuesKosoorat[i].Value);
+
+
+
+        }
+
+        //}
+    }
+
+}
+
+<body>
+    @*<div>*@
+    <div style="position:relative;">
+        @{
+            var watermark = 1;
+            if (watermark == 0)
+            {
+                <div class="watermark">غیر قابل استناد</div>
+            }
+        }
+        <script>
+            $(document).ready(function () {
+                document.addEventListener("DOMContentLoaded", function () {
+
+                    let showWatermark = 0; // 0 = بدون واترمارک ، 1 = با واترمارک
+
+                    if (showWatermark == 0) {
+                        document.getElementById(".watermark").style.display = "none";
+                    }
+
+                });
+            });
+        </script>
+        <table>
+            <tr class="Bo">
+                <th rowspan="1" colspan="7" CLASS=""></th>
+                <th rowspan="1" colspan="22" CLASS=""> @Model.FishHeader.PeymanName</th>
+                <th rowspan="1" colspan="5" CLASS=""></th>
+                <th rowspan="1" colspan="5" style=" padding: 8px 8px !important;">
+                    <img src="" style="height:62px;width:62px" />
+                </th>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td rowspan="01" colspan="11" CLASS=""></td>
+                <td rowspan="01" colspan="14" CLASS="titel_01">اعلامیه (فیش) حقـوقـی مجازی</td>
+                <td rowspan="01" colspan="07" CLASS=""></td>
+                <td rowspan="01" colspan="02" CLASS="Ri To titel_01">فیش</td>
+                <td rowspan="01" colspan="02" CLASS="To">@Model.FishHeader.MonthName</td>
+                <td rowspan="01" colspan="02" CLASS="Le To">@Model.FishHeader.year</td>
+                <td rowspan="01" colspan="01" CLASS=""></td>
+            </tr>
+            <tr>
+                <td rowspan="01" colspan="4" CLASS="titel_01">شماره پرسنلی:</td>
+                <td rowspan="01" id="valueu" colspan="07" CLASS="">@Model.FishHeader.PersonalCode</td>
+                <td rowspan="01" colspan="07" CLASS="Ri To Le Bo titel_01">نام ونام خانوادگی:</td>
+                <td rowspan="01" colspan="07" CLASS="Ri To Le Bo">@Model.FishHeader.UserName</td>
+                <td rowspan="01" colspan="07" CLASS=""></td>
+                <td rowspan="01" colspan="04" CLASS="Ri Bo titel_01">تعداد روز ماه</td>
+                <td rowspan="01" colspan="02" CLASS="Le Bo">@Model.FishHeader.TedadRoozMonth</td>
+                <td rowspan="01" colspan="01" CLASS=""></td>
+            </tr>
+            <tr>
+                <td rowspan="01" colspan="4" CLASS="titel_01">عـنـوان شـغل:</td>
+                <td rowspan="01" colspan="07" CLASS="">@Model.FishHeader.OnvanShoql</td>
+                <td rowspan="01" colspan="04" CLASS="Ri titel_01">مزد شغل روزانه:</td>
+                <td rowspan="01" colspan="03" CLASS="numbers"> @Model.FishValues.FirstOrDefault(p => p.Title == "مزد شغل (روزانه-ریال)").Value</td>
+                <td rowspan="01" colspan="04" CLASS="titel_01">مزد سنوات روزانه:</td>
+                <td rowspan="01" colspan="03" CLASS="Le numbers">@Model.FishValues.FirstOrDefault(p => p.Title == "مزد سنوات (روزانه-ریال)").Value</td>
+                <td rowspan="01" colspan="14" CLASS=""></td>
+            </tr>
+            <tr>
+                <td rowspan="01" colspan="04" CLASS="titel_01">شماره ملی:</td>
+                <td rowspan="01" colspan="07" CLASS="">@Model.FishHeader.NationalCode</td>
+                <td rowspan="01" colspan="09" CLASS="Ri titel_01">جمع مزد مبنا(روزانه):</td>
+                <td rowspan="01" colspan="05" CLASS="Le numbers">@Model.FishValues.FirstOrDefault(p => p.Title == "جمع مزد مبنا ( روزانه-ریال)").Value</td>
+                <td rowspan="01" colspan="07" CLASS="titel_01">نرخ هر ساعت اضافه کار:</td>
+                <td rowspan="01" colspan="07" CLASS="numbers">@Model.FishValues.FirstOrDefault(p => p.Title == "اضافه کار ( هرساعت-ریال)").Value</td>
+            </tr>
+            <tr>
+                <td rowspan="01" colspan="11" CLASS="To titel_01">عملکرد</td>
+                <td rowspan="01" colspan="14" CLASS="Ri To titel_01">حقوق و مزایا</td>
+                <td rowspan="01" colspan="14" CLASS="Ri To titel_01">کسورات</td>
+            </tr>
+            <tr>
+                <td rowspan="01" colspan="07" CLASS="To Bo titel_01">شرح</td>
+                <td rowspan="01" colspan="02" CLASS="Ri To Bo titel_01">واحد</td>
+                <td rowspan="01" colspan="02" CLASS="Ri To Bo titel_01">مقدار</td>
+                <td rowspan="01" colspan="09" CLASS="Ri To Bo titel_01">شرح</td>
+                <td rowspan="01" colspan="05" CLASS="Ri To Bo titel_01">مبلغ (ریال)</td>
+                <td rowspan="01" colspan="09" CLASS="Ri To Bo titel_01">شرح</td>
+                <td rowspan="01" colspan="05" CLASS="Ri To Bo titel_01">مبلغ (ریال)</td>
+            </tr>
+            <tr>
+                <td rowspan="01" colspan="07" CLASS="titel_02">روز کارکرد</td>
+                <td rowspan="01" colspan="02" CLASS="">روز</td>
+                <td rowspan="01" colspan="02" CLASS=""> @Model.FishValues.FirstOrDefault(p => p.Title == "تعداد روز کارکرد ").Value </td>
+                <td rowspan="01" colspan="09" CLASS="Ri titel_02">مزد گروه (شغل)</td>
+                <td rowspan="01" colspan="05" CLASS="numbers">@Model.FishValues.FirstOrDefault(p => p.Title == "مزد گروه (شغل)").Value</td>
+                <td rowspan="01" colspan="09" CLASS="Ri titel_02">جمع کل مشمول بیمه:</td>
+                <td rowspan="01" colspan="05" CLASS="numbers">@Model.FishValues.FirstOrDefault(p => p.Title == "جمع کل مشمول بیمه (ریال)").Value</td>
+            </tr>
+            <tr>
+                <td rowspan="01" colspan="07" CLASS="titel_02">اضافه کار</td>
+                <td rowspan="01" colspan="02" CLASS="">ساعت</td>
+                <td rowspan="01" colspan="02" CLASS="">@(Math.Round((double)(Model.FishValues.FirstOrDefault(p => p.Title == "تعداد ساعات اضافه کار").Value)))</td>
+                <td rowspan="01" colspan="09" CLASS="Ri titel_02">مزد سنوات</td>
+                <td rowspan="01" colspan="05" CLASS="numbers">@Model.FishValues.FirstOrDefault(p => p.Title == "مزد سنوات (ریال)").Value</td>
+                <td rowspan="01" colspan="09" CLASS="Ri Bo titel_02">جمع کل مشمول مالیات:</td>
+                <td rowspan="01" colspan="05" CLASS="Bo numbers">@Model.FishValues.FirstOrDefault(p => p.Title == "جمع کل مشمول مالیات (ریال)").Value</td>
+            </tr>
+            <tr>
+                <td rowspan="01" colspan="07" class="titel_02">ماموریت</td>
+                <td rowspan="01" colspan="02" CLASS="">روز</td>
+                <td rowspan="01" colspan="02" CLASS="">@Model.FishValues.FirstOrDefault(p => p.Title == "تعداد روز ماموریت").Value</td>
+                <td rowspan="01" colspan="09" CLASS="Ri titel_02">کمک هزینه مسکن</td>
+                <td rowspan="01" colspan="05" CLASS="numbers">@Model.FishValues.FirstOrDefault(p => p.Title == "کمک هزینه مسکن (ریال)").Value</td>
+                <td rowspan="01" colspan="09" CLASS="Ri titel_02">حق بیمه سهم کارمند ( 7%) فیش جاری</td>
+                <td rowspan="01" colspan="05" CLASS="numbers">@Model.FishValues.FirstOrDefault(p => p.Title == "حق بیمه سهم کارمند (ریال)").Value</td>
+            </tr>
+            <tr>
+                <td rowspan="01" colspan="07" class="titel_02">غیبت</td>
+                <td rowspan="01" colspan="02" CLASS="">روز</td>
+                <td rowspan="01" colspan="02" CLASS="">@Model.FishValues.FirstOrDefault(p => p.Title == "تعداد روز غیبت").Value</td>
+                <td rowspan="01" colspan="09" CLASS="Ri titel_02">کمک هزینه اقلام مصرفی خانوار</td>
+                <td rowspan="01" colspan="05" CLASS="numbers">@Model.FishValues.FirstOrDefault(p => p.Title == "کمک هزینه اقلام مصرفی خانوار(ریال)").Value</td>
+                <td rowspan="01" colspan="09" CLASS="Ri titel_02">مالیات سهم کارمند فیش جاری</td>
+                <td rowspan="01" colspan="05" CLASS="numbers">
+                    @(Math.Round((double)Model.FishValues.FirstOrDefault(p => p.Title == "مالیات سهم کارمند (ریال)").Value)))
+                </td>
+            </tr>
+            <tr>
+                <td rowspan="01" colspan="07" class="titel_02">نوبتکاری</td>
+                <td rowspan="01" colspan="02" CLASS="">روز</td>
+                @if (@Model.FishValues.FirstOrDefault(p => p.Title == "نوبتکاری (ریال)").Value > 0)
+                {
+                    <td rowspan="01" colspan="02" CLASS="">@Model.FishHeader.TedadRoozMonth</td>
+
+                }
+                else
+                {
+                    <td rowspan="01" colspan="02" CLASS="">0</td>
+
+
+                }
+                @*<td rowspan="01" colspan="02" CLASS="">@Model.FishValues.FirstOrDefault(p => p.Title == "نوبتکاری (ریال)").Value</td>*@
+                <td rowspan="01" colspan="09" CLASS="Ri titel_02">کمک هزینه عائله مندی (حق اولاد)</td>
+                <td rowspan="01" colspan="05" CLASS="numbers">
+                    @(Math.Round((double)Model.FishValues.FirstOrDefault(p => p.Title == "کمک هزینه اولاد(ریال)").Value)))
+                </td>
+                <td rowspan="01" colspan="09" CLASS="Ri titel_02">کسری کارکرد</td>
+                @*<td rowspan="01" colspan="05" CLASS="numbers">0</td>*@
+
+                <td rowspan="01" colspan="05" CLASS="numbers">@Model.FishValues.FirstOrDefault(p => p.Title == "کسری کارکرد (ریال)").Value</td>
+            </tr>
+            <tr>
+                <td rowspan="01" colspan="07" class="titel_02">کسری کارکرد</td>
+                <td rowspan="01" colspan="02">ساعت</td>
+                <td rowspan="01" colspan="02" CLASS="">@Model.FishValues.FirstOrDefault(p => p.Title == "تعداد ساعات کسر کار").Value</td>
+                @*<td rowspan="01" colspan="02" CLASS="">0</td>*@
+
+                <td rowspan="01" colspan="09" CLASS="Ri titel_02">اضافه کار(ریال)</td>
+                @*<td rowspan="01" colspan="05" CLASS="numbers">@Model.FishValues.FirstOrDefault(p => p.Title == "اضافه کاری (ریال)").Value</td>*@
+                <td rowspan="01" colspan="05" CLASS="numbers">
+                    @(Math.Round((double)Model.FishValues.FirstOrDefault(p => p.Title == "اضافه کاری (ریال)").Value)))
+                </td>
+
+
+
+                <td rowspan="01" colspan="09" CLASS="Ri titel_02">سایر</td>
+                <td rowspan="01" colspan="05" CLASS="numbers">---</td>
+            </tr>
+            <tr>
+                <td rowspan="01" colspan="07" class="titel_02">مرخصی استعلاجی</td>
+                <td rowspan="01" colspan="02" CLASS="">روز</td>
+                <td rowspan="01" colspan="02" CLASS="">@Model.FishValues.FirstOrDefault(p => p.Title == "تعداد روز استعلاجی").Value</td>
+                <td rowspan="01" colspan="09" CLASS="Ri titel_02">ماموریت</td>
+                <td rowspan="01" colspan="05" CLASS="numbers">@Model.FishValues.FirstOrDefault(p => p.Title == "ماموریت (ریال)").Value</td>
+
+
+                <td rowspan="01" colspan="09" CLASS="Ri titel_02">ذخیره کار مازاد (درحال بررسی)</td>
+                <td rowspan="01" colspan="05" CLASS="numbers">@Model.FishValues.FirstOrDefault(p => p.Title == "ذخیره کار مازاد (ریال)").Value</td>
+            </tr>
+            <tr>
+                <td rowspan="01" colspan="11" CLASS=" ">
+                    @*جزئیات فعالیت:<br>(عنوان فعالیت:استاندارد ماهانه/عملکرد
+                    ماهانه)*@
+
+                    @*جزئیات پاداش و جرائم*@
+                </td>
+                <td rowspan="01" colspan="09" CLASS="Ri titel_02">اصلاحیه کمک هزینه مسکن</td>
+                <td rowspan="01" colspan="05" CLASS="numbers">@Model.FishValues.FirstOrDefault(p => p.Title == "اصلاحیه کمک هزینه مسکن(ریال)").Value</td>
+
+
+
+                <td rowspan="01" colspan="09" CLASS="Ri titel_02">کسرمولفه های انگیزشی بابت کسرکارها</td>
+                <td rowspan="01" colspan="05" CLASS="numbers">---</td>
+            </tr>
+            <tr>
+                <td rowspan="01" colspan="11" CLASS="Bo To titel_02">
+                    @*جزئیات فعالیت:<br>(عنوان فعالیت:استاندارد ماهانه/عملکرد
+                    ماهانه)*@
+                    توضیحات
+                    @*جزئیات پاداش و جرائم*@
+                </td>
+
+                <td rowspan="01" colspan="09" CLASS="Ri titel_02">نوبتکاری</td>
+                @*<td rowspan="01" colspan="02" CLASS="">@Model.FishValues.FirstOrDefault(p => p.Title == "نوبتکاری (ریال)").Value</td>*@
+
+                <td rowspan="01" colspan="05" CLASS="numbers">@Model.FishValues.FirstOrDefault(p => p.Title == "نوبتکاری (ریال)").Value</td>
+
+
+                <td rowspan="01" colspan="09" CLASS="Ri titel_02"></td>
+                <td rowspan="01" colspan="05" CLASS="numbers"></td>
+            </tr>
+            @for (int i = 0; i < maxT; i++)
+            {
+                if (ContL > ContC)
+                {
+                    if (i < Model.FishValuesEzafat.Count)
+                    {
+                        if (i == 0)
+                        {
+                            if (Model.FishValuesEzafat[i].Value != 0)
+                            {
+                                <tr>
+                                    <td rowspan="@(9 + maxT)" colspan="11" CLASS="Bo description">...</td>
+                                    <td rowspan="01" colspan="09" CLASS="Ri titel_02">@Model.FishValuesEzafat[i].Title</td>
+                                    <td rowspan="01" colspan="05" CLASS="numbers">@Model.FishValuesEzafat[i].Value</td>
+                                    @if (ValueL[i] > 0)
+                                    {
+                                        <td rowspan="01" colspan="09" CLASS="Ri titel_02">@TitleL[i]</td>
+                                        <td rowspan="01" colspan="05" CLASS="numbers">@ValueL[i]</td>
+                                    }
+                                    else
+                                    {
+                                        <td rowspan="01" colspan="09" CLASS="Ri titel_02"></td>
+                                        <td rowspan="01" colspan="05" CLASS="numbers"></td>
+
+                                    }
+                                </tr>
+
+                            }
+
+                            else
+                            {
+                                <tr>
+                                    <td rowspan="@(9 + maxT)" colspan="11" CLASS="Bo description">...</td>
+                                    <td rowspan="01" colspan="09" CLASS="Ri titel_02"></td>
+                                    <td rowspan="01" colspan="05" CLASS="numbers"></td>
+                                    <td rowspan="01" colspan="09" CLASS="Ri titel_02"></td>
+                                    <td rowspan="01" colspan="05" CLASS="numbers"></td>
+                                </tr>
+
+                            }
+
+
+                        }
+                        else
+                        {
+                            if (Model.FishValuesEzafat[i].Value != 0)
+                            {
+                                <tr>
+                                    <td rowspan="01" colspan="09" CLASS="Ri titel_02">@Model.FishValuesEzafat[i].Title</td>
+                                    <td rowspan="01" colspan="05" CLASS="numbers">@Model.FishValuesEzafat[i].Value</td>
+                                    @if (ValueL[i] > 0)
+                                    {
+                                        <td rowspan="01" colspan="09" CLASS="Ri titel_02">@TitleL[i]</td>
+                                        <td rowspan="01" colspan="05" CLASS="numbers">@ValueL[i]</td>
+                                    }
+                                    else
+                                    {
+                                        <td rowspan="01" colspan="09" CLASS="Ri titel_02"></td>
+                                        <td rowspan="01" colspan="05" CLASS="numbers"></td>
+
+                                    }
+
+                                </tr>
+
+                            }
+
+                            else
+                            {
+                                <tr>
+                                    <td rowspan="01" colspan="09" CLASS="Ri titel_02"></td>
+                                    <td rowspan="01" colspan="05" CLASS="numbers"></td>
+                                    <td rowspan="01" colspan="09" CLASS="Ri titel_02"></td>
+                                    <td rowspan="01" colspan="05" CLASS="numbers"></td>
+                                </tr>
+                            }
+
+                        }
+
+                    }
+                    else
+                    {
+                        if (Model.FishValuesEzafat[i].Value != 0)
+                        {
+                            <tr>
+                                <td rowspan="01" colspan="09" CLASS="Ri titel_02"></td>
+                                <td rowspan="01" colspan="05" CLASS="numbers"></td>
+                                @if (ValueL[i] > 0)
+                                {
+                                    <td rowspan="01" colspan="09" CLASS="Ri titel_02">@TitleL[i]</td>
+                                    <td rowspan="01" colspan="05" CLASS="numbers">@ValueL[i]</td>
+                                }
+                                else
+                                {
+                                    <td rowspan="01" colspan="09" CLASS="Ri titel_02"></td>
+                                    <td rowspan="01" colspan="05" CLASS="numbers"></td>
+
+                                }
+                                @*<td rowspan="01" colspan="09" CLASS="Ri titel_02">@TitleL[i]</td>
+                                <td rowspan="01" colspan="05" CLASS="numbers">@ValueL[i]</td>*@
+                            </tr>
+
+                        }
+
+                        else
+                        {
+                            <tr>
+                                <td rowspan="01" colspan="09" CLASS="Ri titel_02"></td>
+                                <td rowspan="01" colspan="05" CLASS="numbers"></td>
+                                <td rowspan="01" colspan="09" CLASS="Ri titel_02"></td>
+                                <td rowspan="01" colspan="05" CLASS="numbers"></td>
+                            </tr>
+                        }
+
+                    }
+                }
+                else
+                {
+                    if (i < ContL)
+                    {
+                        if (i == 0)
+                        {
+                            if (Model.FishValuesEzafat[i].Value != 0)
+                            {
+                                <tr>
+                                    <td rowspan="@(9 + maxT)" colspan="11" CLASS="Bo description">@nameint</td>
+                                    <td rowspan="01" colspan="09" CLASS="Ri titel_02">@Model.FishValuesEzafat[i].Title</td>
+                                    <td rowspan="01" colspan="05" CLASS="numbers">@Model.FishValuesEzafat[i].Value</td>
+                                    @if (ValueL[i] > 0)
+                                    {
+                                        <td rowspan="01" colspan="09" CLASS="Ri titel_02">@TitleL[i]</td>
+                                        <td rowspan="01" colspan="05" CLASS="numbers">@ValueL[i]</td>
+                                    }
+                                    else
+                                    {
+                                        <td rowspan="01" colspan="09" CLASS="Ri titel_02"></td>
+                                        <td rowspan="01" colspan="05" CLASS="numbers"></td>
+
+                                    }
+                                    @*<td rowspan="01" colspan="09" CLASS="Ri titel_02">@TitleL[i]</td>
+                                    <td rowspan="01" colspan="05" CLASS="numbers">@ValueL[i]</td>*@
+                                </tr>
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td rowspan="@(9 + maxT)" colspan="11" CLASS="Bo description">@nameint</td>
+                                    <td rowspan="01" colspan="09" CLASS="Ri titel_02"></td>
+                                    <td rowspan="01" colspan="05" CLASS="numbers"></td>
+                                    @if (ValueL[i] > 0)
+                                    {
+                                        <td rowspan="01" colspan="09" CLASS="Ri titel_02">@TitleL[i]</td>
+                                        <td rowspan="01" colspan="05" CLASS="numbers">@ValueL[i]</td>
+                                    }
+                                    else
+                                    {
+                                        <td rowspan="01" colspan="09" CLASS="Ri titel_02"></td>
+                                        <td rowspan="01" colspan="05" CLASS="numbers"></td>
+
+                                    }
+                                    @*<td rowspan="01" colspan="09" CLASS="Ri titel_02"></td>
+                                    <td rowspan="01" colspan="05" CLASS="numbers"></td>*@
+                                </tr>
+                            }
+
+                        }
+                        else
+                        {
+                            if (Model.FishValuesEzafat[i].Value != 0)
+                            {
+                                <tr>
+                                    <td rowspan="01" colspan="09" CLASS="Ri titel_02">@Model.FishValuesEzafat[i].Title</td>
+                                    <td rowspan="01" colspan="05" CLASS="numbers">@Model.FishValuesEzafat[i].Value</td>
+                                    @if (ValueL[i] > 0)
+                                    {
+                                        <td rowspan="01" colspan="09" CLASS="Ri titel_02">@TitleL[i]</td>
+                                        <td rowspan="01" colspan="05" CLASS="numbers">@ValueL[i]</td>
+                                    }
+                                    else
+                                    {
+                                        <td rowspan="01" colspan="09" CLASS="Ri titel_02"></td>
+                                        <td rowspan="01" colspan="05" CLASS="numbers"></td>
+
+                                    }
+                                    @*<td rowspan="01" colspan="09" CLASS="Ri titel_02">@TitleL[i]</td>
+                                    <td rowspan="01" colspan="05" CLASS="numbers">@ValueL[i]</td>*@
+                                </tr>
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td rowspan="01" colspan="09" CLASS="Ri titel_02"></td>
+                                    <td rowspan="01" colspan="05" CLASS="numbers"></td>
+                                    @if (ValueL[i] > 0)
+                                    {
+                                        <td rowspan="01" colspan="09" CLASS="Ri titel_02">@TitleL[i]</td>
+                                        <td rowspan="01" colspan="05" CLASS="numbers">@ValueL[i]</td>
+                                    }
+                                    else
+                                    {
+                                        <td rowspan="01" colspan="09" CLASS="Ri titel_02"></td>
+                                        <td rowspan="01" colspan="05" CLASS="numbers"></td>
+
+                                    }
+                                    @*<td rowspan="01" colspan="09" CLASS="Ri titel_02"></td>
+                                    <td rowspan="01" colspan="05" CLASS="numbers"></td>*@
+                                </tr>
+
+                            }
+
+
+                        }
+
+                    }
+                    else
+
+                    {
+                        if (Model.FishValuesEzafat[i].Value != 0)
+                        {
+                            <tr>
+                                <td rowspan="01" colspan="09" CLASS="Ri titel_02">@Model.FishValuesEzafat[i].Title</td>
+                                <td rowspan="01" colspan="05" CLASS="numbers">@Model.FishValuesEzafat[i].Value</td>
+                                <td rowspan="01" colspan="09" CLASS="Ri titel_02"></td>
+                                <td rowspan="01" colspan="05" CLASS="numbers"></td>
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr>
+                                <td rowspan="01" colspan="09" CLASS="Ri titel_02"></td>
+                                <td rowspan="01" colspan="05" CLASS="numbers"></td>
+                                <td rowspan="01" colspan="09" CLASS="Ri titel_02"></td>
+                                <td rowspan="01" colspan="05" CLASS="numbers"></td>
+                            </tr>
+                        }
+
+                    }
+                }
+
+
+            }
+
+            @*@for (int i = 0; i < maxT; i++)
+            {
+                if (ContL > ContC)
+                {
+                    if (i < Model.FishValuesEzafat.Count)
+                    {
+                        if (i == 0)
+                        {
+
+                            <tr>
+                                <td rowspan="@(9 + maxT)" colspan="11" CLASS="Bo description">...</td>
+                                <td rowspan="01" colspan="09" CLASS="Ri titel_02">@Model.FishValuesEzafat[i].Title</td>
+                                <td rowspan="01" colspan="05" CLASS="numbers">@Model.FishValuesEzafat[i].Value</td>
+                                <td rowspan="01" colspan="09" CLASS="Ri titel_02">@TitleL[i]</td>
+                                <td rowspan="01" colspan="05" CLASS="numbers">@ValueL[i]</td>
+                            </tr>
+
+                        }
+                        else
+                        {
+                            <tr>
+                                <td rowspan="01" colspan="09" CLASS="Ri titel_02">@Model.FishValuesEzafat[i].Title</td>
+                                <td rowspan="01" colspan="05" CLASS="numbers">@Model.FishValuesEzafat[i].Value</td>
+                                <td rowspan="01" colspan="09" CLASS="Ri titel_02">@TitleL[i]</td>
+                                <td rowspan="01" colspan="05" CLASS="numbers">@ValueL[i]</td>
+                            </tr>
+                        }
+
+                    }
+                    else
+                    {
+                        <tr>
+                            <td rowspan="01" colspan="09" CLASS="Ri titel_02"></td>
+                            <td rowspan="01" colspan="05" CLASS="numbers"></td>
+                            <td rowspan="01" colspan="09" CLASS="Ri titel_02">@TitleL[i]</td>
+                            <td rowspan="01" colspan="05" CLASS="numbers">@ValueL[i]</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    if (i < ContL)
+                    {
+                        if (i == 0)
+                        {
+                            <tr>
+                                <td rowspan="@(9 + maxT)" colspan="11" CLASS="Bo description">@nameint</td>
+                                <td rowspan="01" colspan="09" CLASS="Ri titel_02">@Model.FishValuesEzafat[i].Title</td>
+                                <td rowspan="01" colspan="05" CLASS="numbers">@Model.FishValuesEzafat[i].Value</td>
+                                <td rowspan="01" colspan="09" CLASS="Ri titel_02">@TitleL[i]</td>
+                                <td rowspan="01" colspan="05" CLASS="numbers">@ValueL[i]</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr>
+                                <td rowspan="01" colspan="09" CLASS="Ri titel_02">@Model.FishValuesEzafat[i].Title</td>
+                                <td rowspan="01" colspan="05" CLASS="numbers">@Model.FishValuesEzafat[i].Value</td>
+                                <td rowspan="01" colspan="09" CLASS="Ri titel_02">@TitleL[i]</td>
+                                <td rowspan="01" colspan="05" CLASS="numbers">@ValueL[i]</td>
+                            </tr>
+                        }
+
+                    }
+                    else
+
+                    {
+                        <tr>
+                            <td rowspan="01" colspan="09" CLASS="Ri titel_02">@Model.FishValuesEzafat[i].Title</td>
+                            <td rowspan="01" colspan="05" CLASS="numbers">@Model.FishValuesEzafat[i].Value</td>
+                            <td rowspan="01" colspan="09" CLASS="Ri titel_02"></td>
+                            <td rowspan="01" colspan="05" CLASS="numbers"></td>
+                        </tr>
+                    }
+                }
+
+
+            }*@
+
+            @*@foreach (var item in Model.FishValuesAqsat)
+            {
+                <tr>
+                    <td rowspan="01" colspan="09" CLASS="Ri titel_02"></td>
+                    <td rowspan="01" colspan="05" CLASS="numbers"></td>
+                    <td rowspan="01" colspan="09" CLASS="Ri titel_02">@item.Title</td>
+                    <td rowspan="01" colspan="05" CLASS="numbers">@item.Value</td>
+                </tr>
+            }
+            @foreach (var item in Model.FishValuesKosoorat)
+            {
+                <tr>
+                    <td rowspan="01" colspan="09" CLASS="Ri titel_02"></td>
+                    <td rowspan="01" colspan="05" CLASS="numbers"></td>
+                    <td rowspan="01" colspan="09" CLASS="Ri titel_02">@item.Title</td>
+                    <td rowspan="01" colspan="05" CLASS="numbers">@item.Value</td>
+
+                </tr>
+            }*@
+            <tr>
+                <td rowspan="01" colspan="09" CLASS="Ri titel_02">ذخیره کار مازاد قبل (بیمه و مالیات ناپذیر)</td>
+                <td rowspan="01" colspan="05" CLASS="numbers">@Model.FishValues.FirstOrDefault(p => p.Title == "ذخیره کارمازاد قبل (بیمه و مالیات ناپذیر)").Value</td>
+                <td rowspan="01" colspan="09" CLASS="Ri titel_02"> </td>
+                <td rowspan="01" colspan="05" CLASS="numbers"></td>
+            </tr>
+            @*<tr>
+                <td rowspan="01" colspan="09" CLASS="Ri titel_02">کمک هزینه بیمه تکمیلی</td>
+                <td rowspan="01" colspan="05" CLASS="numbers">@Model.FishValues.FirstOrDefault(p => p.Title == "کمک هزینه بیمه تکمیل درمان (ریال)").Value</td>
+                <td rowspan="01" colspan="09" CLASS="Ri titel_02"> </td>
+                <td rowspan="01" colspan="05" CLASS="numbers"></td>
+            </tr>*@
+            <tr>
+                <td rowspan="01" colspan="09" CLASS="Ri titel_02">ایاب و ذهاب</td>
+                @if (@Model.FishValues.FirstOrDefault(p => p.Title == "کمک هزینه ایاب و ذهاب(ریال)") != null)
+                {
+                    <td rowspan="01" colspan="05" CLASS="numbers">@Model.FishValues.FirstOrDefault(p => p.Title == "کمک هزینه ایاب و ذهاب(ریال)").Value??0</td>
+
+                }
+                else
+                {
+                    <td rowspan="01" colspan="05" CLASS="numbers">0</td>
+
+                }
+
+                <td rowspan="01" colspan="09" CLASS="Ri titel_02"> </td>
+                <td rowspan="01" colspan="05" CLASS="numbers"> </td>
+            </tr>
+            <tr>
+
+                <td rowspan="01" colspan="09" CLASS="Ri titel_02">پاداش</td>
+                <td rowspan="01" colspan="05" CLASS="numbers">@Model.FishValues.FirstOrDefault(p => p.Title == "پاداش(ریال)").Value</td>
+                <td rowspan="01" colspan="09" CLASS="Ri Bo To titel_02">جمع کل کسورات:</td>
+                <td rowspan="01" colspan="05" CLASS="Ri Bo To numbers">@Model.FishValues.FirstOrDefault(p => p.Title == "جمع کل کسورات (ریال)").Value</td>
+            </tr>
+            <tr>
+                <td rowspan="01" colspan="09" CLASS="Ri titel_02">اصلاحیه حق اولاد</td>
+                <td rowspan="01" colspan="05" CLASS="numbers">@Model.FishValues.FirstOrDefault(p => p.Title == "اصلاحیه کمک هزینه اولاد(ریال)").Value</td>
+                <td rowspan="01" colspan="09" CLASS="Ri Bo titel_02">خالص قابل دریافت</td>
+                <td rowspan="01" colspan="05" CLASS="Ri Bo numbers">@Model.FishValues.FirstOrDefault(p => p.Title == "خالص قابل دریافت (ریال)").Value</td>
+            </tr>
+            <tr>
+                <td rowspan="01" colspan="09" CLASS="Ri titel_02">کمک هزینه تبلت</td>
+                <td rowspan="01" colspan="05" CLASS="numbers">@Model.FishValues.FirstOrDefault(p => p.Title == "کمک هزینه تبلت و رایانه(ریال)").Value</td>
+                <td rowspan="01" colspan="05" CLASS="Ri Bo titel_02">توضیح:مبلغ بیمه تکمیلی:</td>
+                <td rowspan="01" colspan="09" CLASS="Bo numbers">---</td>
+            </tr>
+            <tr>
+                <td rowspan="01" colspan="09" CLASS="Ri titel_02">ابزار کار</td>
+                <td rowspan="01" colspan="05" CLASS="numbers">@Model.FishValues.FirstOrDefault(p => p.Title == "کمک هزینه ابزار کار(ریال)").Value</td>
+                <td rowspan="01" colspan="05" CLASS="Ri Bo titel_02">کمک هزینه بیمه تکمیلی:</td>
+                <td rowspan="01" colspan="09" CLASS="Bo numbers">---</td>
+            </tr>
+
+            @*@foreach (var item in Model.FishValuesEzafat)
+            {
+                <tr>
+                    <td rowspan="01" colspan="09" CLASS="Ri titel_02">@item.Title</td>
+                    <td rowspan="01" colspan="05" CLASS="numbers">@item.Value</td>
+                    <td rowspan="01" colspan="09" CLASS="Ri titel_02"></td>
+                    <td rowspan="01" colspan="05" CLASS="numbers"></td>
+                </tr>
+            }*@
+
+            <tr>
+                <td rowspan="01" colspan="09" CLASS="Ri"></td>
+                <td rowspan="01" colspan="05" CLASS=""></td>
+                <td rowspan="02" colspan="14" CLASS="Ri Bo description">
+                    توضیحات:عملکرد فعالیتهای عملیاتی
+                    مربوط به ماه قبل می باشد
+                </td>
+            </tr>
+            <tr>
+                <td rowspan="01" colspan="07" CLASS="Ri To titel_01">جمع ناخالص حقوق و مزایا</td>
+                <td rowspan="01" colspan="07" CLASS="Ri To numbers">@Model.FishValues.FirstOrDefault(p => p.Title == "جمع ناخالص حقوق و مزایا (ریال)").Value</td>
+            </tr>
+            <tr>
+                <td rowspan="1" colspan="4" class="Ri To titel_01" style="color:red;">تذکرات مهم</td>
+                <td rowspan="01" colspan="35" CLASS="Ri To description">
+                    @foreach (var item in mode2)
+                    {
+                        @Html.Raw(item)<br />
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td rowspan="01" colspan="39" CLASS=" To  "> جزییات کارکرد عملیاتی با الگوری:( عنوان فعالیت:استاندار هزینه تردد به ریال/استاندارد کارکرد ماهانه/کارکرد ماهانه)</td>
+
+            </tr>
+            <tr>
+
+                @*@foreach (var item in Model.FishValuesEzafat)
+                    {
+                    <tr>
+                        <td rowspan="01" colspan="09" CLASS="Ri titel_02">@item.Title</td>
+                        <td rowspan="01" colspan="05" CLASS="numbers">@item.Value</td>
+                        <td rowspan="01" colspan="09" CLASS="Ri titel_02"></td>
+                        <td rowspan="01" colspan="05" CLASS="numbers"></td>
+                    </tr>
+                }*@
+                <td rowspan="01" colspan="39" CLASS="Ri To description">
+
+                    @foreach (var item in mode)
+                    {@item
+
+                }
+
+
+                </td>
+
+
+
+            </tr>
+            <tr>
+                <td rowspan="01" colspan="13" CLASS=" To  "></td>
+                <td rowspan="01" colspan="13" CLASS=" To  ">تراز مطالبات</td>
+
+                <td rowspan="01" colspan="13" CLASS=" To  "></td>
+
+                @*@foreach (var item in Model.FishValuesEzafat)
+                    {
+                    <tr>
+                        <td rowspan="01" colspan="09" CLASS="Ri titel_02">@item.Title</td>
+                        <td rowspan="01" colspan="05" CLASS="numbers">@item.Value</td>
+                        <td rowspan="01" colspan="09" CLASS="Ri titel_02"></td>
+                        <td rowspan="01" colspan="05" CLASS="numbers"></td>
+                    </tr>
+                }*@
+                @*<td rowspan="01" colspan="36" CLASS="Ri To description">
+                    @foreach (var item in mode)
+                    {@item
+
+                }
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+
+                </td>*@
+
+
+
+            </tr>
+
+            <tr>
+                <td rowspan="01" colspan="10" CLASS="Ri To  ">عنوان</td>
+                <td rowspan="01" colspan="10" CLASS="Ri To  ">بدهکار</td>
+                <td rowspan="01" colspan="10" CLASS="Ri To  ">بستانکار</td>
+
+                <td rowspan="01" colspan="9" CLASS="Ri To  "> مانده تجمیعی </td>
+
+                @*@foreach (var item in Model.FishValuesEzafat)
+                    {
+                    <tr>
+                        <td rowspan="01" colspan="09" CLASS="Ri titel_02">@item.Title</td>
+                        <td rowspan="01" colspan="05" CLASS="numbers">@item.Value</td>
+                        <td rowspan="01" colspan="09" CLASS="Ri titel_02"></td>
+                        <td rowspan="01" colspan="05" CLASS="numbers"></td>
+                    </tr>
+                }*@
+                @*<td rowspan="01" colspan="36" CLASS="Ri To description">
+                    @foreach (var item in mode)
+                    {@item
+
+                }
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+
+                </td>*@
+
+
+
+            </tr>
+            @{
+                var AVAL = Model.FishValues.FirstOrDefault(p => p.Title == "خالص قابل دریافت (ریال)").Value;
+                var DOVOM = AVAL + Model.FishHeader.VALUE;
+                var SVOM = DOVOM - Model.FishHeader.VALUE2;
+            }
+            <tr>
+                <td rowspan="01" colspan="10" CLASS="Ri To  ">خالص فیش حقوقی</td>
+                <td rowspan="01" colspan="10" CLASS="Ri To numbers ">----</td>
+                <td rowspan="01" colspan="10" CLASS="Ri To  numbers">@Model.FishValues.FirstOrDefault(p => p.Title == "خالص قابل دریافت (ریال)").Value</td>
+
+                <td rowspan="01" colspan="9" CLASS="Ri To numbers ">@AVAL </td>
+
+                @*@foreach (var item in Model.FishValuesEzafat)
+                    {
+                    <tr>
+                        <td rowspan="01" colspan="09" CLASS="Ri titel_02">@item.Title</td>
+                        <td rowspan="01" colspan="05" CLASS="numbers">@item.Value</td>
+                        <td rowspan="01" colspan="09" CLASS="Ri titel_02"></td>
+                        <td rowspan="01" colspan="05" CLASS="numbers"></td>
+                    </tr>
+                }*@
+                @*<td rowspan="01" colspan="36" CLASS="Ri To description">
+                    @foreach (var item in mode)
+                    {@item
+
+                }
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+
+                </td>*@
+
+
+
+            </tr>
+            @{
+                PersianCalendar pc = new PersianCalendar();
+
+                int shYear = Model.FishHeader.year;   // 1404
+                int shMonth = Model.month;            // 8 (آبان)
+
+                // تاریخ شروع ماه شمسی
+                DateTime startDate = pc.ToDateTime(shYear, shMonth, 1, 0, 0, 0, 0);
+
+                // تعداد روزهای ماه
+                int monthDays = pc.GetDaysInMonth(shYear, shMonth);
+
+                // تاریخ پایان ماه شمسی
+                DateTime endDate = pc.ToDateTime(shYear, shMonth, monthDays, 23, 59, 59, 999);
+            }
+
+            @{
+                var user = db.tbUsers.FirstOrDefault(u => u.usr_Personal_ID == Model.FishHeader.PersonalCode);
+
+                List<FinancialDocuments> creditorList = new List<FinancialDocuments>();
+                List<FinancialDocuments> debtorList = new List<FinancialDocuments>();
+
+                if (user != null)
+                {
+                    creditorList = db.FinancialDocuments
+                        .Where(f => f.User_ID == user.usr_ID &&
+                                    f.Creditor != 0 &&
+                                    f.DataDocument >= startDate &&
+                                    f.DataDocument <= endDate)
+                        .OrderBy(f => f.DataDocument)
+                        .ToList();
+
+                    debtorList = db.FinancialDocuments
+                        .Where(f => f.User_ID == user.usr_ID &&
+                                    f.Debtore != 0 &&
+                                    f.DataDocument >= startDate &&
+                                    f.DataDocument <= endDate)
+                        .OrderBy(f => f.DataDocument)
+                        .ToList();
+                }
+            }
+            @{long val111 = (long)AVAL;
+
+            }
+
+            @foreach (var item in creditorList)
+            {
+                // جمع تجمعی
+                val111 += (long)item.Creditor;
+
+                <tr>
+                    <td colspan="10" CLASS="Ri To numbers">@item.Title</td>
+                    <td colspan="10" CLASS="Ri To numbers">-----</td>
+                    <td colspan="10" CLASS="Ri To numbers">@item.Creditor</td>
+                    <td colspan="9" CLASS="Ri To numbers">@val111</td> <!-- ستون آخر = جمع تجمعی -->
+                </tr>
+            }
+
+            @foreach (var item in debtorList)
+            {
+                // جمع تجمعی
+                val111 -= (long)item.Debtore;
+
+                <tr>
+                    <td colspan="10" CLASS="Ri To numbers">@item.Title</td>
+                    <td colspan="10" CLASS="Ri To numbers">@item.Debtore</td>
+                    <td colspan="10" CLASS="Ri To numbers">-------</td>
+                    <td colspan="9" CLASS="Ri To numbers">@val111</td> <!-- ستون آخر = جمع تجمعی -->
+                </tr>
+            }
+            <!--<tr>
+        <td rowspan="01" colspan="10" CLASS="Ri To  ">سایر بستانکار(اجاره خودرو و..)</td>
+        <td rowspan="01" colspan="10" CLASS="Ri To numbers ">-----</td>
+        <td rowspan="01" colspan="10" CLASS="Ri To numbers ">@Model.FishHeader.VALUE</td>
+
+        <td rowspan="01" colspan="9" CLASS="Ri To numbers ">@DOVOM</td>-->
+            @*@foreach (var item in Model.FishValuesEzafat)
+                {
+                <tr>
+                    <td rowspan="01" colspan="09" CLASS="Ri titel_02">@item.Title</td>
+                    <td rowspan="01" colspan="05" CLASS="numbers">@item.Value</td>
+                    <td rowspan="01" colspan="09" CLASS="Ri titel_02"></td>
+                    <td rowspan="01" colspan="05" CLASS="numbers"></td>
+                </tr>
+            }*@
+            @*<td rowspan="01" colspan="36" CLASS="Ri To description">
+                @foreach (var item in mode)
+                {@item
+
+            }
+                <br>
+                <br>
+                <br>
+                <br>
+
+            </td>*@
+
+
+
+            <!--</tr>
+        <tr>
+            <td rowspan="01" colspan="10" CLASS="Ri To  ">سایر بدهکار(مساعده ماه قبل و..)</td>
+            <td rowspan="01" colspan="10" CLASS="Ri To numbers ">@Model.FishHeader.VALUE2</td>
+            <td rowspan="01" colspan="10" CLASS="Ri To numbers  ">---</td>
+
+            <td rowspan="01" colspan="9" style="font:bold" CLASS="Ri To numbers ">@SVOM</td>
+
+
+
+
+
+        </tr>-->
+        </table>
+    </div>
+    <div class="row" style="margin-top:5px">
+        <div class="col-xl-10"></div>
+        <div class="col-xl-2">
+            <button class="btn form-control buttonGeneral" id="printPageButton" onclick="print()">
+                <i class="fa fa-print fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text">پرینت</span>
+            </button>
+        </div>
+
+    </div>
+</body>
+
+</html>
+<!--------------------------------------------------------------------------------------------------------------------->
+
+<script>
+
+    //$(function () {
+    //    $(".numbers").each(function () {
+    //        var number = parseFloat($(this).text().replace(/,/g, ""));
+    //        if (!isNaN(number)) {
+    //            $(this).text(number.toLocaleString('en-US'));
+    //        }
+
+    //    });
+    //});
+    $(function () {
+        $(".numbers").each(function () {
+            var number = parseFloat($(this).text().replace(/,/g, ""));
+            if (!isNaN(number)) {
+                number = Math.round(number); // رند به نزدیک‌ترین عدد صحیح
+                $(this).text(number.toLocaleString('en-US'));
+            }
+        });
+    });
+</script>
+<script src="~/Assets/js/jquery3.6.0.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/sweetalert2.js"></script>
+@*<script defer>
+        window.onload = function () {
+            console.log("Page loaded");
+            window.print();
+        };
+    </script>*@
+<script>
+
+</script>
+<script>
+    //function myTimer() {
+    //    console.log('در حال چاپ...');
+    //    window.print();
+    //}
+
+    //function setNextTimer() {
+    //    console.log('در حال چاپ22...');
+
+    //    setTimeout(function () {
+    //        console.log('در حال چ22222اپ...');
+
+    //        myTimer(); // اجرای تابع چاپ
+    //        setNextTimer(); // تنظیم تایمر برای اجرای بعدی
+    //    }, 3000); // تنظیم زمان به 30000 میلی‌ثانیه (30 ثانیه)
+    //}
+
+    //// شروع تایمر هنگام بارگذاری صفحه
+    //window.onload = function () {
+    //    myTimer(); // اولین اجرای تابع چاپ
+    //    setNextTimer(); // شروع تایمر برای اجراهای بعدی
+    //};
+
+
+
+
+
+
+
+
+
+    //    function myTimer() {
+    //    console.log('این یک عملیات است که هر 5 ساعت انجام می‌شود.');
+    //        window.print();
+    //}
+
+    //// تابع برای تعیین زمان اجراهای بعدی
+    //function setNextTimer() {
+    //    setTimeout(function () {
+    //        myTimer(); // اجرای تابع
+    //        setNextTimer(); // تنظیم تایمر برای اجرای بعدی
+    //    }, 3000); // هر 45 دقیقه
+    //}
+
+    //// شروع اولین تایمر
+    //setTimeout(function () {
+    //    myTimer(); // اجرای تابع
+    //    setNextTimer(); // تنظیم تایمر برای اجرای بعدی
+    //}, 3000); // 24 نگاه - هر 1.5 دقیقه
+
+    //// توقف تایمر پس از 24 ساعت
+    //setTimeout(function () {
+    //    console.log('تایمر متوقف شد.');
+    //}, 24 * 60 * 60 * 1000); // 24 ساعت
+
+    //     // 60000 میلی‌ثانیه یا 60 ثانیه
+    //    function sendAjax24(url) {
+    //        $.ajax({
+    //            beforeSend: function () {
+    //                document.getElementById("loading-message").style.display = "block";
+    //            },
+    //            url: url,
+    //            //data: { Total: data },
+    //            type: "Post",
+    //            dataType: "html",
+    //            success: function (resp) {
+    //                document.getElementById("loading-message").style.display = "none";
+    //                console.log(resp);
+    //                if (resp == "True") {
+    //                    alert("با موفقیت ثبت شد..");
+    //                    location.reload();
+    //                }
+    //            },
+    //            error: function (resp) {
+    //                document.getElementById("loading-message").style.display = "none";
+    //                alert("دچار مشکل شده است ");
+    //                console.log(resp);
+    //                alert("دچار خطا شده است");
+    //            }
+    //        });
+    //    }
+
+
+
+
+
+</script>

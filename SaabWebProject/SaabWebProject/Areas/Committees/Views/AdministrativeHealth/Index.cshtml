@@ -1,0 +1,808 @@
+﻿
+@{
+    ViewBag.Title = "کمیته ارتقاء سلامت اداری";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+<link href="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.style.css" rel="stylesheet" />
+<script src="~/Assets/js/jalalidatepicker.min.js"></script>
+<link href="~/Assets/css/jalalidatepicker.min.css" rel="stylesheet" />
+<script src="~/Assets/js/jalaali.min.js"></script>
+<link href="~/MyStyles/jalalidatepicker.css" rel="stylesheet" />
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+<style>
+
+    .tableH_Lock {
+        max-height: 378px;
+        /*height: 260px;*/
+    }
+    .tableH_Lock1 {
+        max-height: 258px;
+        /*height: 260px;*/
+    }
+
+    thead {
+        position: sticky;
+        top: 0;
+        text-align: center;
+        z-index: 2;
+    }
+
+    .inputFilter {
+        margin-bottom: 0px !important;
+    }
+
+    thead th {
+        vertical-align: middle;
+    }
+</style>
+
+<div class="">
+    <ul class="nav nav-tabs nav-tabs-v2 ps-4 pe-4">
+        <li class="nav-item me-3">
+            <a href="#Sabt_Davatname" class="nav-link" data-bs-toggle="tab">
+                <button class=" nav-btn">ثبت دعوتنامه</button>
+            </a>
+        </li>
+        <li class="nav-item me-3">
+            <a href="#DavatName_Daryafti" class="nav-link" data-bs-toggle="tab">
+                <button class=" nav-btn">دعوت نامه های دریافتی</button>
+            </a>
+        </li>
+        <li class="nav-item me-3">
+            <a href="#Sabt_Mosavabat_Komite" class="nav-link" data-bs-toggle="tab">
+                <button class=" nav-btn">ثبت  مصوبات کمیته</button>
+            </a>
+        </li>
+        <li class="nav-item me-3">
+            <a href="#Mosavabat_Erja_Shode" class="nav-link" data-bs-toggle="tab">
+                <button class=" nav-btn">مصوبات ارجاع شده</button>
+            </a>
+        </li>
+        <li class="nav-item me-3">
+            <a href="#Reports" class="nav-link" data-bs-toggle="tab">
+                <button class=" nav-btn">گزارشات</button>
+            </a>
+        </li>
+
+
+
+    </ul>
+    <div class="tab-content p-4">
+        @*ثبت دعوتنامه *@
+        <div class="tab-pane active" id="Sabt_Davatname">
+            <div class="row">
+                <div class="col-xl-3">
+                    <div class="form-group mb-3">
+                        <label class="form-label"> انتخاب مخاطبین </label>
+                        <select class="form-select">
+                            <option>انتخاب کنید</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-xl-3">
+                    <div class=" form-group mb-12">
+                        <div class="col-xl-12">
+                            <label class="form-label"> تاریخ</label>
+                        </div>
+                        <div class="col-xl-12">
+                            @*------------------------------------------------[1402/10/03]-|KH|-*@
+                            <input data-jdp jdp-btn-close data-jdp-miladi-input="datepickerFromEn_Eq" id="datepickerFrom_Eq" class="form-control">
+                            <input id="datepickerFromEn_Eq" type="hidden" />
+                            @*-------------------------------------------------------------|KH|-*@
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3">
+                    <div class="form-group mb-3">
+                        <label class="form-label"> ساعت </label>
+                        <input type="number" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-xl-3">
+                    <div class="form-group mb-3">
+                        <label class="form-label"> شماره </label>
+                        <input type="number" class="form-control" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-6">
+                    <div class="form-group mb-6">
+                        <label class="form-label"> موضوع کمیته </label>
+                        <input class="form-control" />
+                    </div>
+                </div>
+                <div class="col-xl-6">
+                    <div class="form-group mb-6">
+                        <label class="form-label"> دستور کار</label>
+                        <textarea class="form-control"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-10">
+                </div>
+                <div class="col-xl-1">
+                    <button class="btn form-control buttonGeneral">
+                        <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                        <span class="bGeneral-text">بارگذاری پیوست ها</span>
+                    </button>
+                </div>
+                <div class="col-xl-1">
+                    <button class="btn form-control buttonGeneral">
+                        <i class="fa fa-mail-forward fa-fw me-1 VecGeneral"></i>
+                        <span class="bGeneral-text"> ثبت و ارسال</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+
+        @*دعوت نامه های دریافتی*@
+        <div class="tab-pane" id="DavatName_Daryafti">
+            <div class="card">
+                <div class="table-content p-2">
+                    <div class="row">
+
+                        <div class="form-group mb-12">
+
+                            <div class="table-responsive tableH_Lock">
+                                <table class="table table-hover text-nowrap">
+                                    <thead>
+                                        <tr style="text-align:center;margin:auto">
+                                            <th>
+                                                @Html.DisplayName("ردیف")
+                                            </th>
+                                            <th style="width:60%">
+                                                @Html.DisplayName("موضوع")
+                                            </th>
+                                            <th>
+                                                @Html.DisplayName("تاریخ")
+                                            </th>
+                                            <th>
+                                                @Html.DisplayName("ساعت")
+                                            </th>
+                                            <th>
+                                                @Html.DisplayName("جزئیات")
+                                            </th>
+
+
+                                        </tr>
+
+                                    </thead>
+                                    <tbody>
+
+
+                                        <tr style="text-align:center;">
+
+
+                                            <td> <span>1</span></td>
+                                            <td> <span>موضوع 1</span></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>مشاهده</td>
+
+
+                                        </tr>
+                                        <tr style="text-align:center;">
+
+
+                                            <td> <span>2</span></td>
+                                            <td> <span>موضوع 2</span></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>مشاهده</td>
+
+
+                                        </tr>
+
+                                        <tr style="text-align:center;">
+
+
+                                            <td> <span>3</span></td>
+                                            <td> <span>موضوع 3</span></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>مشاهده</td>
+
+
+                                        </tr>
+
+                                        <tr style="text-align:center;">
+
+
+                                            <td> <span>4</span></td>
+                                            <td> <span>موضوع 4</span></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>مشاهده</td>
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-arrow">
+                    <div class="card-arrow-top-left"></div>
+                    <div class="card-arrow-top-right"></div>
+                    <div class="card-arrow-bottom-left"></div>
+                    <div class="card-arrow-bottom-right"></div>
+                </div>
+            </div>
+        </div>
+
+        @*ثبت  مصوبات کمیته *@
+        <div class="tab-pane" id="Sabt_Mosavabat_Komite">
+            <div class="row">
+                <div class="col-xl-3">
+                    <div class="form-group mb-3">
+                        <label class="form-label"> شماره کمیته </label>
+                        <select class="form-select">
+                            <option>انتخاب کنید</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-xl-6">
+                    <div class="form-group mb-6">
+                        <label class="form-label"> موضوع  </label>
+                        <input class="form-control" />
+
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="table-content p-3">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="form-group mb-12">
+
+                                <div class="table-responsive tableH_Lock1">
+                                    <table class="table table-hover text-nowrap" style="text-align:center;margin:auto">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    @Html.DisplayName("ردیف")
+                                                </th>
+                                                <th style="width:30%">
+                                                    @Html.DisplayName("شرح مصوبه")
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayName("تاریخ")
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayName("مجری")
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayName("مهلت")
+                                                </th>
+
+
+                                            </tr>
+
+                                        </thead>
+                                        <tbody>
+
+
+                                            <tr style="text-align:center;">
+
+
+                                                <td> <span>1</span></td>
+                                                <td> <span>شرح 1</span></td>
+                                                <td></td>
+                                                <td>
+                                                    <select class="form-select" style="margin-bottom: 0 !important">
+                                                        <option>انتخاب کنید</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <div class="col-xl-12">
+                                                        <input class="form-control" id="datepickerFrom_Eq1" style="margin-bottom: 0 !important" />
+                                                        <input class="form-control" type="hidden" id="datepickerFromEn_Eq1" />
+                                                    </div>
+                                                </td>
+
+
+                                            </tr>
+                                            <tr style="text-align:center;">
+
+
+                                                <td> <span>2</span></td>
+                                                <td> <span>شرح 2</span></td>
+                                                <td></td>
+                                                <td>
+                                                    <select class="form-select" style="margin-bottom: 0 !important">
+                                                        <option>انتخاب کنید</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <div class="col-xl-12">
+                                                        <input class="form-control" id="datepickerFrom_Eq2" style="margin-bottom: 0 !important" />
+                                                        <input class="form-control" type="hidden" id="datepickerFromEn_Eq2" />
+                                                    </div>
+                                                </td>
+
+
+                                            </tr>
+
+                                            <tr style="text-align:center;">
+
+
+                                                <td> <span>3</span></td>
+                                                <td> <span>شرح 3</span></td>
+                                                <td></td>
+                                                <td>
+                                                    <select class="form-select" style="margin-bottom: 0 !important">
+                                                        <option>انتخاب کنید</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <div class="col-xl-12">
+                                                        <input class="form-control" id="datepickerFrom_Eq3" style="margin-bottom: 0 !important" />
+                                                        <input class="form-control" type="hidden" id="datepickerFromEn_Eq3" />
+                                                    </div>
+                                                </td>
+
+
+                                            </tr>
+
+                                            <tr style="text-align:center;">
+
+
+                                                <td> <span>4</span></td>
+                                                <td> <span>شرح 4</span></td>
+                                                <td></td>
+                                                <td>
+                                                    <select class="form-select" style="margin-bottom: 0 !important">
+                                                        <option>انتخاب کنید</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <div class="col-xl-12">
+                                                        <input class="form-control" id="datepickerFrom_Eq4" style="margin-bottom: 0 !important" />
+                                                        <input class="form-control" type="hidden" id="datepickerFromEn_Eq4" />
+                                                    </div>
+                                                </td>
+
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-arrow">
+                    <div class="card-arrow-top-left"></div>
+                    <div class="card-arrow-top-right"></div>
+                    <div class="card-arrow-bottom-left"></div>
+                    <div class="card-arrow-bottom-right"></div>
+                </div>
+            </div>
+            <div class="row" style="margin-top:10px">
+                <div class="col-xl-10"></div>
+                <div class="col-xl-1">
+                    <button class="btn form-control buttonGeneral">
+                        <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                        <span class="bGeneral-text">بارگذاری پیوست ها</span>
+                    </button>
+                </div>
+                <div class="col-xl-1">
+                    <button class="btn form-control buttonGeneral">
+                        <i class="fa fa-mail-forward fa-fw me-1 VecGeneral"></i>
+                        <span class="bGeneral-text"> ثبت و ارسال</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        @*مصوبات ارجاع شده*@
+        <div class="tab-pane" id="Mosavabat_Erja_Shode">
+            <div class="card">
+                <div class="table-content p-2">
+                    <div class="table-responsive tableH_Lock">
+                        <table class="table table-hover text-nowrap">
+                            <thead>
+                                <tr style="text-align:center;margin:auto">
+                                    <th>
+                                        @Html.DisplayName("ردیف")
+                                    </th>
+                                    <th style="width:40%">
+                                        @Html.DisplayName("شرح مصوبه")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("شماره")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("موضوع کمیته")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("مهلت")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("جزئیات")
+                                    </th>
+
+
+                                </tr>
+
+                            </thead>
+                            <tbody>
+
+
+                                <tr style="text-align:center;">
+
+
+                                    <td> <span>1</span></td>
+                                    <td> <span>شرح 1</span></td>
+                                    <td></td>
+                                    <td>
+                                        <select class="form-select" style="margin-bottom: 0 !important">
+                                            <option>انتخاب کنید</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <div class="col-xl-12">
+                                            <input class="form-control" id="datepickerFrom_Eq5" style="margin-bottom: 0 !important" />
+                                            <input class="form-control" type="hidden" id="datepickerFromEn_Eq5" />
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="ms-sm-4 mt-sm-0 mt-2 dropdown-toggle">
+                                            <a href="#" data-bs-toggle="dropdown" class="text-white text-opacity-75 text-decoration-none">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                            <div class="dropdown-menu">
+                                                <a style="cursor:pointer" data-bs-toggle="modal" data-bs-target="#modalLg" class="dropdown-item EditUser" id="Show">
+                                                    مشاهده
+                                                </a>
+                                            </div>
+
+                                        </div>
+                                    </td>
+
+                                </tr>
+                                <tr style="text-align:center;">
+
+
+                                    <td> <span>2</span></td>
+                                    <td> <span>شرح 2</span></td>
+                                    <td></td>
+                                    <td>
+                                        <select class="form-select" style="margin-bottom: 0 !important">
+                                            <option>انتخاب کنید</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <div class="col-xl-12">
+                                            <input class="form-control" id="datepickerFrom_Eq6" style="margin-bottom: 0 !important" />
+                                            <input class="form-control" type="hidden" id="datepickerFromEn_Eq6" />
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="ms-sm-4 mt-sm-0 mt-2 dropdown-toggle">
+                                            <a href="#" data-bs-toggle="dropdown" class="text-white text-opacity-75 text-decoration-none">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                            <div class="dropdown-menu">
+                                                <a style="cursor:pointer" data-bs-toggle="modal" data-bs-target="#modalLg" class="dropdown-item EditUser" id="Show">
+                                                    مشاهده
+                                                </a>
+                                            </div>
+
+                                        </div>
+                                    </td>
+
+                                </tr>
+
+                                <tr style="text-align:center;">
+
+
+                                    <td> <span>3</span></td>
+                                    <td> <span>شرح 3</span></td>
+                                    <td></td>
+                                    <td>
+                                        <select class="form-select" style="margin-bottom: 0 !important">
+                                            <option>انتخاب کنید</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <div class="col-xl-12">
+                                            <input class="form-control" id="datepickerFrom_Eq7" style="margin-bottom: 0 !important" />
+                                            <input class="form-control" type="hidden" id="datepickerFromEn_Eq7" />
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="ms-sm-4 mt-sm-0 mt-2 dropdown-toggle">
+                                            <a href="#" data-bs-toggle="dropdown" class="text-white text-opacity-75 text-decoration-none">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                            <div class="dropdown-menu">
+                                                <a style="cursor:pointer" data-bs-toggle="modal" data-bs-target="#modalLg" class="dropdown-item EditUser" id="Show">
+                                                    مشاهده
+                                                </a>
+                                            </div>
+
+                                        </div>
+                                    </td>
+
+                                </tr>
+
+                                <tr style="text-align:center;">
+
+
+                                    <td> <span>4</span></td>
+                                    <td> <span>شرح 4</span></td>
+                                    <td></td>
+                                    <td>
+                                        <select class="form-select" style="margin-bottom: 0 !important">
+                                            <option>انتخاب کنید</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <div class="col-xl-12">
+                                            <input class="form-control" id="datepickerFrom_Eq8" style="margin-bottom: 0 !important" />
+                                            <input class="form-control" type="hidden" id="datepickerFromEn_Eq8" />
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="ms-sm-4 mt-sm-0 mt-2 dropdown-toggle">
+                                            <a href="#" data-bs-toggle="dropdown" class="text-white text-opacity-75 text-decoration-none">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                            <div class="dropdown-menu">
+                                                <a style="cursor:pointer" data-bs-toggle="modal" data-bs-target="#modalLg" class="dropdown-item EditUser" id="Show">
+                                                    مشاهده
+                                                </a>
+                                            </div>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-arrow">
+                    <div class="card-arrow-top-left"></div>
+                    <div class="card-arrow-top-right"></div>
+                    <div class="card-arrow-bottom-left"></div>
+                    <div class="card-arrow-bottom-right"></div>
+                </div>
+            </div>
+        </div>
+        @*گزارشات*@
+        <div class="tab-pane" id="Reports">
+
+        </div>
+
+
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+    <script src="~/Scripts/jquery-ui.js"></script>
+    <script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+
+    @*------------------------------------------------[1402/10/03]-|KH|-*@
+    <script>
+        jalaliDatepicker.startWatch({
+            time: true,
+            days: ["شنبه", "1شنبه", "2شنبه", "3شنبه", "4شنبه", "5شنبه", "جمعه"],
+            persianDigits: true,
+            autoClose: true,
+            //autocomplete: true,
+            showCloseBtn: true,
+            showEmptyBtn: false,
+            showCloseBtn: true,
+            zIndex: 100000,
+        });
+        //-----------------------------------------------------------------
+        var inputs = document.querySelectorAll("[data-jdp-miladi-input]");
+        for (var i = 0; i < inputs.length; i++) {
+            inputs[i].addEventListener("jdp:change", function (e) {
+                var miladiInput = document.getElementById(this.getAttribute("data-jdp-miladi-input"));
+                var date = this.value.replace(' ', '').slice(0, 10).split('/');
+                date = jalaali.toGregorian(parseInt(date[0]), parseInt(date[1]), parseInt(date[2]),)
+                // If it was empty
+                if (!this.value) {
+                    date = "";
+                }
+                // If it was only history
+                else if (this.value.replace(' ', '').length < 11) {
+                    date = date.gy + '-' + date.gm + '-' + date.gd
+                }
+                // If it was the date and time
+                else {
+                    date = date.gy + '-' + date.gm + '-' + date.gd + ' ' + this.value.replace(' ', '').slice(10, 30)
+                }
+                miladiInput.value = date
+            });
+        }
+    </script>
+    @*-------------------------------------------------------------|KH|-*@
+    <script>
+
+        $(function () {
+
+
+            $('#year_Eq').picker({ search: true });
+            $('#month_Eq').picker({ search: true });
+
+            //$('#datepickerFrom_Eq').MdPersianDateTimePicker({
+            //    targetTextSelector: '#datepickerFrom_Eq',
+            //    targetDateSelector: '#datepickerFromEn_Eq',
+            //    dateFormat: 'yyyy-MM-dd',
+            //    isGregorian: false,
+            //    enableTimePicker: true,
+            //    disableBeforeToday: false
+            //});
+
+            //$('#datepickerTo_Eq').MdPersianDateTimePicker({
+            //    targetTextSelector: '#datepickerTo_Eq',
+            //    targetDateSelector: '#datepickerToEn_Eq',
+            //    dateFormat: 'yyyy-MM-dd',
+            //    isGregorian: false,
+            //    enableTimePicker: true,
+            //    disableBeforeToday: false
+            //});
+
+
+            //1
+            $('#datepickerFrom_Eq1').MdPersianDateTimePicker({
+                targetTextSelector: '#datepickerFrom_Eq1',
+                targetDateSelector: '#datepickerFromEn_Eq1',
+                dateFormat: 'yyyy-MM-dd',
+                isGregorian: false,
+                enableTimePicker: true,
+                disableBeforeToday: false
+            });
+
+            $('#datepickerTo_Eq1').MdPersianDateTimePicker({
+                targetTextSelector: '#datepickerTo_Eq1',
+                targetDateSelector: '#datepickerToEn_Eq1',
+                dateFormat: 'yyyy-MM-dd',
+                isGregorian: false,
+                enableTimePicker: true,
+                disableBeforeToday: false
+            });
+            //2
+            $('#datepickerFrom_Eq2').MdPersianDateTimePicker({
+                targetTextSelector: '#datepickerFrom_Eq2',
+                targetDateSelector: '#datepickerFromEn_Eq2',
+                dateFormat: 'yyyy-MM-dd',
+                isGregorian: false,
+                enableTimePicker: true,
+                disableBeforeToday: false
+            });
+
+            $('#datepickerTo_Eq2').MdPersianDateTimePicker({
+                targetTextSelector: '#datepickerTo_Eq2',
+                targetDateSelector: '#datepickerToEn_Eq2',
+                dateFormat: 'yyyy-MM-dd',
+                isGregorian: false,
+                enableTimePicker: true,
+                disableBeforeToday: false
+            });
+            //3
+            $('#datepickerFrom_Eq3').MdPersianDateTimePicker({
+                targetTextSelector: '#datepickerFrom_Eq3',
+                targetDateSelector: '#datepickerFromEn_Eq3',
+                dateFormat: 'yyyy-MM-dd',
+                isGregorian: false,
+                enableTimePicker: true,
+                disableBeforeToday: false
+            });
+
+            $('#datepickerTo_Eq3').MdPersianDateTimePicker({
+                targetTextSelector: '#datepickerTo_Eq3',
+                targetDateSelector: '#datepickerToEn_Eq3',
+                dateFormat: 'yyyy-MM-dd',
+                isGregorian: false,
+                enableTimePicker: true,
+                disableBeforeToday: false
+            });
+            //4
+            $('#datepickerFrom_Eq4').MdPersianDateTimePicker({
+                targetTextSelector: '#datepickerFrom_Eq4',
+                targetDateSelector: '#datepickerFromEn_Eq4',
+                dateFormat: 'yyyy-MM-dd',
+                isGregorian: false,
+                enableTimePicker: true,
+                disableBeforeToday: false
+            });
+
+            $('#datepickerTo_Eq4').MdPersianDateTimePicker({
+                targetTextSelector: '#datepickerTo_Eq4',
+                targetDateSelector: '#datepickerToEn_Eq4',
+                dateFormat: 'yyyy-MM-dd',
+                isGregorian: false,
+                enableTimePicker: true,
+                disableBeforeToday: false
+            });
+            //5
+            $('#datepickerFrom_Eq5').MdPersianDateTimePicker({
+                targetTextSelector: '#datepickerFrom_Eq5',
+                targetDateSelector: '#datepickerFromEn_Eq5',
+                dateFormat: 'yyyy-MM-dd',
+                isGregorian: false,
+                enableTimePicker: true,
+                disableBeforeToday: false
+            });
+
+            $('#datepickerTo_Eq5').MdPersianDateTimePicker({
+                targetTextSelector: '#datepickerTo_Eq5',
+                targetDateSelector: '#datepickerToEn_Eq5',
+                dateFormat: 'yyyy-MM-dd',
+                isGregorian: false,
+                enableTimePicker: true,
+                disableBeforeToday: false
+            });
+            //6
+            $('#datepickerFrom_Eq6').MdPersianDateTimePicker({
+                targetTextSelector: '#datepickerFrom_Eq6',
+                targetDateSelector: '#datepickerFromEn_Eq6',
+                dateFormat: 'yyyy-MM-dd',
+                isGregorian: false,
+                enableTimePicker: true,
+                disableBeforeToday: false
+            });
+
+            $('#datepickerTo_Eq6').MdPersianDateTimePicker({
+                targetTextSelector: '#datepickerTo_Eq6',
+                targetDateSelector: '#datepickerToEn_Eq6',
+                dateFormat: 'yyyy-MM-dd',
+                isGregorian: false,
+                enableTimePicker: true,
+                disableBeforeToday: false
+            });
+            //7
+            $('#datepickerFrom_Eq7').MdPersianDateTimePicker({
+                targetTextSelector: '#datepickerFrom_Eq7',
+                targetDateSelector: '#datepickerFromEn_Eq7',
+                dateFormat: 'yyyy-MM-dd',
+                isGregorian: false,
+                enableTimePicker: true,
+                disableBeforeToday: false
+            });
+
+            $('#datepickerTo_Eq7').MdPersianDateTimePicker({
+                targetTextSelector: '#datepickerTo_Eq7',
+                targetDateSelector: '#datepickerToEn_Eq7',
+                dateFormat: 'yyyy-MM-dd',
+                isGregorian: false,
+                enableTimePicker: true,
+                disableBeforeToday: false
+            });
+            //8
+            $('#datepickerFrom_Eq8').MdPersianDateTimePicker({
+                targetTextSelector: '#datepickerFrom_Eq8',
+                targetDateSelector: '#datepickerFromEn_Eq8',
+                dateFormat: 'yyyy-MM-dd',
+                isGregorian: false,
+                enableTimePicker: true,
+                disableBeforeToday: false
+            });
+
+            $('#datepickerTo_Eq8').MdPersianDateTimePicker({
+                targetTextSelector: '#datepickerTo_Eq8',
+                targetDateSelector: '#datepickerToEn_Eq8',
+                dateFormat: 'yyyy-MM-dd',
+                isGregorian: false,
+                enableTimePicker: true,
+                disableBeforeToday: false
+            });
+        });
+    </script>
+    <script>
+      $("#Show").click(function () {
+
+        $("#big_modal_body").load('@Url.Content("../../Committees/AdministrativeHealth/_Mosavabat_Erja_Shode")');
+    });
+    </script>
+
+
+}

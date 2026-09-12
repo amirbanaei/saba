@@ -1,0 +1,120 @@
+﻿@model SaabWebProject.Models.ViewModels.Users.ActionViewModel
+<link rel="stylesheet" href="~/Assets/plugins/JsTree/dist/themes/default/style.min.css"/>
+<style>
+  .jstree-hovered{
+  background: cadetblue !important;
+  } 
+  .jstree-clicked{
+    background: cadetblue !important;
+    }
+</style>
+<!-- 3 etup a container element -->
+<div id="jstree">
+    <!-- in this example the tree is populated from inline HTML -->
+    <ul>
+        <li>
+            سطوح دسترسی
+            <ul>
+                @foreach (var item in  Model.AllActions.Where(p => p.Parent_ID == null).ToList())
+                {
+                    <li id="root_@item.Action_ID">
+                        @item.ActionName
+                        <ul>
+                            <li id="child_@item.Action_ID">@item.ActionName</li>
+                            @foreach (var item1 in item.tbActions1.ToList())
+                            {
+                                <li id="child_@item1.Action_ID">@item1.ActionName</li>
+                            }
+                        </ul>
+                    </li>
+                }
+            </ul>
+        </li>
+
+
+    </ul>
+</div>
+<div class="row">
+
+   
+
+    <div class="col-md-10"></div>
+    <div class="col-md-2" style="text-align: left">
+        <button class="btn form-control buttonsabt" id="SaveActions">
+            <span class="bSabt-text">ذخیره</span>
+        </button>
+    </div>
+</div>
+
+<script src="~/Assets/js/jquery3.6.0.js" type="text/javascript"></script>
+<!-- 5 include the minified jstree source -->
+<script src="~/Assets/plugins/JsTree/dist/jstree.min.js" type="text/javascript"></script>
+<script src="/Assets/plugins/JsTree/src/jstree.checkbox.js" type="text/javascript"></script>
+<script src="~/Scripts/sweetalert2.js"></script>
+<script>
+
+var list_Actions = [];
+    $('#jstree').jstree({
+      "plugins" : ["checkbox" ]
+    });
+     
+            // 7 bind to events triggered on the tree
+            $('#jstree').on("changed.jstree", function (e, data) {
+              console.log(data.selected);
+              list_Actions = data.selected;
+            });
+
+            @foreach (var item in Model.ActiveActions.ToList())
+            {
+            
+                  @:$("#jstree").jstree(true).select_node("@item");
+            }
+            
+            
+            $("#SaveActions").click(function (){
+                const Toast = Swal.mixin({
+                                   toast: true,
+                                   showConfirmButton: false,
+                                   timer: 3000,
+                                   timerProgressBar: true,
+                                   didOpen: (toast) => {
+                                       toast.addEventListener('mouseenter', Swal.stopTimer)
+                                       toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                   }
+                               });
+                
+                $.ajax({
+                beforeSend:function (){
+                  document.getElementById("loading-message").style.display = "block";  
+                },
+                     url:"@ViewBag.url",
+                     data:{Actions:list_Actions,Id:@ViewBag.Id},
+                     type:"post",
+                     datatype:"html",
+                     success:function (res){
+                         document.getElementById("loading-message").style.display = "none";  
+                        if (res == "True"){
+                            Toast.fire({
+                                     icon: 'success',
+                                     background: '#35434A',
+                                     color: 'white',
+                                     title: "دسترسی ها با موفقیت تخصیص داده شدند"
+                                 }).then(()=>{
+                                    location.reload(); 
+                                 });
+                        }
+                     }
+                     ,error:function (){
+                         document.getElementById("loading-message").style.display = "none";  
+                         Toast.fire({
+                               icon: 'error',
+                               background: '#35434A',
+                               color: 'white',
+                               title: "عملیات با خطا مواجه شد !!"
+                           });
+                     }
+                })
+                
+            });
+            
+     </script>

@@ -1,0 +1,191 @@
+﻿
+@using SaabWebProject.Models.DomainModels;
+
+@{
+    Layout = null;
+    SaabEntities db = new SaabEntities();
+
+}
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+@model IEnumerable<SaabWebProject.Models.DomainModels.tbReffrenceAccept>
+<style>
+    .tableH_Lock {
+        max-height: 359px;
+        /*height: 260px;*/
+    }
+
+    thead {
+        position: sticky;
+        top: 0;
+        text-align: center;
+        z-index: 2;
+    }
+
+    .inputFilter {
+        margin-bottom: 0px !important;
+    }
+
+    thead th {
+        vertical-align: middle;
+    }
+</style>
+<div class="card">
+    <div class="table-content p-4">
+        <div class="tab-pane fade show active" id="allTab">
+            <div class="table-responsive tableH_Lock">
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr style="text-align:center">
+                            <th>
+                                @Html.DisplayName("فعالیت")
+                            </th>
+                            <th>
+                                @Html.DisplayName("#")
+                            </th>
+                            <th>
+                                @Html.DisplayName("جهت")
+                                <input type="text" id="filter06-filter" class="inputFilter form-control" placeholder="">
+                            </th>
+                            <th>
+                                @Html.DisplayName("پروژه")
+                                <input type="text" id="filter07-filter" class="inputFilter form-control" placeholder="">
+                            </th>
+                            <th>
+                                @Html.DisplayName("بسته")
+                                <input type="text" id="filter08-filter" class="inputFilter form-control" placeholder="">
+                            </th>
+
+                            <th>
+                                @Html.DisplayName("تعداد مراحل")
+                                <input type="text" id="filter09-filter" class="inputFilter form-control" placeholder="">
+                            </th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{ int counter = 0;}
+                        @if (Model != null)
+                        {
+
+                            foreach (var item in Model)
+                            {
+                                <tr class="task-list-rowM"
+                                    data-filter06="@db.tbmarahelsabt.Where(p => p.ID == item.tbReffrenceSaveLevel.tbReffrenceSave.IsFor).Select(s => s.Name).FirstOrDefault()"
+                                    data-filter07="@Html.DisplayFor(modelItem => item.tbPeymanContracts.pec_Title)"
+                                    data-filter08="@Html.DisplayFor(modelItem => item.tbReffrenceSaveLevel.Title)"
+                                    data-filter09="@Html.DisplayFor(modelItem => item.CountLevels)"
+                                    >
+                                    <td>
+                                        <div class="ms-sm-4 mt-sm-0 mt-2 dropdown-toggle">
+                                            <a href="#" data-bs-toggle="dropdown" class="text-white text-opacity-75 text-decoration-none">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                            <div class="dropdown-menu">
+                                                @*<a data-bs-toggle="modal" data-bs-target="#modalLg" class="dropdown-item edit" id="Edit_@item.ID">ویرایش</a>*@
+                                                <a data-bs-toggle="modal" data-bs-target="#modalLg" class="dropdown-item Details" id="Detail_@item.ID">جزئیات</a>
+                                                @*<a class="dropdown-item Delete" id="Delete_@item.ID">حذف</a>*@
+
+
+                                            </div>
+
+
+                                        </div>
+                                    </td>
+                                    <td>
+                                        @{counter = counter + 1;}
+                                        <span>@counter</span>
+                                    </td>
+
+                                    <td>
+                                        @db.tbmarahelsabt.Where(p => p.ID == item.tbReffrenceSaveLevel.tbReffrenceSave.IsFor).Select(s => s.Name).FirstOrDefault()
+
+
+                                    </td>
+
+
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.tbPeymanContracts.pec_Title)
+                                    </td>
+
+
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.tbReffrenceSaveLevel.Title)
+                                    </td>
+
+
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.CountLevels)
+                                    </td>
+
+
+
+                                </tr>
+                            }
+
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+<script>
+
+    var
+        filtersM = {
+            filter06: null,
+            filter07: null,
+            filter08: null,
+            filter09: null,
+        };
+
+    function updateFiltersM() {
+        $('.task-list-rowM').hide().filter(function () {
+            var self = $(this),
+                result = true;
+
+            Object.keys(filtersM).forEach(function (filter) {
+                var filterData = self.data(filter);
+                if (filtersM[filter] && (filtersM[filter] != 'None') && (filtersM[filter] != 'همه')) {
+                    // تبدیل داده به رشته و بررسی مقدار
+                    result = result && (filterData && filterData.toString().indexOf(filtersM[filter]) !== -1);
+                }
+            });
+
+            return result;
+        }).show();
+    }
+
+    function changeFilterM(filterName) {
+        filtersM[filterName] = this.value;
+        updateFiltersM();
+    }
+
+    // Assigned User Dropdown Filter
+    $('#filter06-filter').on('input', function () {
+        changeFilterM.call(this, 'filter06');
+    });
+    $('#filter07-filter').on('input', function () {
+        changeFilterM.call(this, 'filter07');
+    });
+    $('#filter08-filter').on('input', function () {
+        changeFilterM.call(this, 'filter08');
+    });
+    $('#filter09-filter').on('input', function () {
+        changeFilterM.call(this, 'filter09');
+    });
+
+</script>
+<script>
+    $(".Details").click(function () {
+                                    var idd = $(this).attr("id").split("_")[1];
+        $("#big_modal_body").load('@Url.Content("/RegistrationAndConfirmationProcedures/ReffrenceAcceptDetails")?ReffrenceAcceptID='+idd);
+                                });
+</script>

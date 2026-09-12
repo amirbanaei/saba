@@ -1,0 +1,608 @@
+﻿@model SaabWebProject.Models.ViewModels.Contracts.Function.FunctionModel
+@using SaabWebProject.Models.DomainModels;
+@using System.Globalization
+
+@{ SaabEntities db = new SaabEntities();
+
+
+}
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>viewModalIcon</title>
+    <style>
+
+
+
+
+
+        @@keyframes pulseOnline {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.12);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @@keyframes shakeOffline {
+            0%, 100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-4px);
+            }
+
+            75% {
+                transform: translateX(4px);
+            }
+        }
+
+        @@keyframes pulseWarning {
+            0% {
+                box-shadow: 0 0 0 0 rgba(255,193,7,0.7);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(255,193,7,0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(255,193,7,0);
+            }
+        }
+
+        #netStatus {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 26px;
+            color: #fff;
+            transition: all .3s;
+            z-index: 99999;
+        }
+
+
+
+
+
+
+
+
+        @@media (max-width: 768px) {
+            .text-small {
+                font-size: 10px !important;
+                width: fit-content;
+            }
+
+            .text-information {
+                font-size: 10px;
+                margin-bottom: 5px;
+            }
+        }
+
+
+        .row {
+            margin-bottom: 20px;
+        }
+
+
+        .title-hidden {
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+        }
+
+        .hidden-box {
+            margin-top: 20px;
+        }
+
+        .hidden {
+            display: flex;
+            flex-direction: column;
+            padding: 30px 10px;
+            border-radius: 8px;
+            gap: 20px;
+            background-color: #1d2835;
+            width: 100%;
+        }
+
+        .part-hidden {
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+            align-items: center;
+        }
+
+
+
+        .btn-small i {
+            font-size: 12px;
+            /*            padding:3px;*/
+        }
+
+
+        .form-check-input {
+            /*            transform: scale(.6);*/
+            margin: 0 !important;
+        }
+
+        .text-title {
+            /*            font-size: 10px;*/
+        }
+
+        .text-small {
+            font-size: 14px;
+            width: fit-content;
+        }
+    </style>
+</head>
+<body>
+    <div class="row" style="background-color: var(--bs-tab-content-bg); border-radius: 8px; padding: 5px; align-items: baseline; position: relative; margin-top: 10px; border: 1px solid white; ">
+
+        @{
+            long IDID = 0;
+            long FK_us = 0;
+            long vaziat = 0;
+            long vaziat2 = 0;
+
+        }
+
+
+        <hr />
+        <div class="row" style="gap: 15px; display: flex; flex-direction: column;">
+            <div class="col-xl-2">
+                <label class="form-label"></label>
+
+                <select class="form-select select_peyman" id="select_peyman" name="select_peyman">
+                    <option hidden value="Select">انتخاب مورد</option>
+                    @foreach (var item in Model.erja_like_link.ToList())
+                    {
+                        <option value="@item.erja_like.ID">@item.value</option>
+                    }
+                </select>
+            </div>
+
+            @*<div class="hidden">*@
+            @foreach (var item in Model.erja_omomi_edit) // Model شامل لیست رکوردهاست
+            {
+                var findval = db.erja_sabt_usr.Where(s => s.FK_usr == FK_us && s.FK_omomi == IDID && s.FK_erja_omomi_edit == item.ID && s.vaziat == vaziat2).FirstOrDefault();
+
+                // اگر نوع = 0 → چک‌باکس
+                if (item.Type == 0)
+                {
+                    if (findval != null)
+                    {
+                        if (findval.value_cheek != null && findval.value_cheek == true)
+                        {
+                            <div class="part-hidden">
+                                <input class="form-check-input form-check-input1 weewee-check" type="checkbox" id="@item.ID" checked />
+                                <label class="text-small" for="check_@item.">
+                                    @item.Nam
+                                </label>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="part-hidden">
+                                <input class="form-check-input form-check-input1 weewee-check" type="checkbox" id="@item.ID" />
+                                <label class="text-small" for="check_@item.">
+                                    @item.Nam
+                                </label>
+                            </div>
+                        }
+
+                    }
+                    else
+                    {
+                        <div class="part-hidden">
+                            <input class="form-check-input form-check-input1 weewee-check" type="checkbox" id="@item.ID" />
+                            <label class="text-small" for="check_@item.">
+                                @item.Nam
+                            </label>
+                        </div>
+                    }
+
+                }
+                else if (item.Type == 1) // اگر نوع = 1 → اینپوت
+                {
+                    <div class="col-xl-3">
+                        <label class="form-label">@item.Nam</label>
+
+                        @if (item.Model == 0)  // مدل = 0 → input text
+                        {
+                            if (findval != null)
+                            {
+
+                                if (findval.value_str != null)
+                                {
+                                    <input id="@item.ID" class="form-control form-control1" type="text" style="margin-bottom:0 !important" value="@findval.value_str" />
+
+                                }
+                                else
+                                {
+                                    <input id="@item.ID" class="form-control form-control1" type="text" style="margin-bottom:0 !important" />
+
+                                }
+                            }
+
+                            else
+                            {
+                                <input id="@item.ID" class="form-control form-control1" type="text" style="margin-bottom:0 !important" />
+
+                            }
+                        }
+                        else if (item.Model == 1)  // مدل = 1 → input number
+                        {
+                            if (findval != null)
+                            {
+                                if (findval.value_int != null)
+                                {
+                                    <input id="@item.ID"
+                                           class="form-control form-control1 number"
+                                           type="text"
+                                           style="margin-bottom:0 !important"
+                                           value="@(findval?.value_int != null ? string.Format("{0:N0}", findval.value_int) : "")" />
+
+
+                                }
+                                else
+                                {
+                                    <input id="@item.ID" class="form-control form-control1 number" type="text" style="margin-bottom:0 !important" />
+
+                                }
+                            }
+                            else
+                            {
+                                <input id="@item.ID" class="form-control form-control1 number" type="text" style="margin-bottom:0 !important" />
+
+                            }
+                        }
+                        else if (item.Model == 2)  // مدل = 1 → input number
+                        {
+                            if (findval != null)
+                            {
+                                if (findval.value_time != null)
+                                {
+
+                                    string shamsiDate = "";
+                                    if (findval != null && findval.value_time != null)
+                                    {
+                                        var pc = new PersianCalendar();
+                                        var miladi = Convert.ToDateTime(findval.value_time);
+                                        shamsiDate = string.Format("{0:0000}/{1:00}/{2:00}",
+                                            pc.GetYear(miladi),
+                                            pc.GetMonth(miladi),
+                                            pc.GetDayOfMonth(miladi));
+                                    }
+
+                                    <input data-jdp jdp-btn-close data-jdp-miladi-input="miladi_@item.ID"
+                                           id="@item.ID" class="form-control form-control1 pdate"
+                                           value="@shamsiDate" />
+
+                                    <input id="miladi_@item.ID" type="hidden" value="@findval.value_time" />
+                                }
+                                else
+                                {
+
+                                    <input data-jdp jdp-btn-close data-jdp-miladi-input="miladi_@item.ID" id="@item.ID" class="form-control form-control1 pdate" />
+                                    <input id="miladi_@item.ID" type="hidden" />
+                                }
+                            }
+                            else
+                            {
+
+                                <input data-jdp jdp-btn-close data-jdp-miladi-input="miladi_@item.ID" id="@item.ID" class="form-control form-control1 pdate" />
+                                <input id="miladi_@item.ID" type="hidden" />
+                            }
+
+                        }
+
+                    </div>
+                }
+            }
+
+            @*</div>*@
+
+        </div>
+    </div>
+    @if (vaziat != 3)
+    {
+        <button id="btnInsert" class="btn btn-success">ثبت اطلاعات 1</button>
+
+        if (vaziat == 2)
+        {
+            <button id="btnInsert2" class="btn btn-success">ذخیره </button>
+
+        }
+
+    }
+
+    <script src="~/Assets/js/jalalidatepicker.min.js"></script>
+    <link href="~/Assets/css/jalalidatepicker.min.css" rel="stylesheet" />
+    <script src="~/Assets/js/jalaali.min.js"></script>
+    <link href="~/MyStyles/jalalidatepicker.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+
+
+
+    <script>
+        $(document).ready(function () {
+            $("#select_peyman").picker({ search: true });
+
+        });
+    </script>
+
+
+
+
+    @*=========================================================================s*@
+
+    <script>
+    function savePendingErja(dataList, url) {
+        const pending = JSON.parse(localStorage.getItem('pendingErja') || '[]');
+        pending.push({
+            url: url,
+            data: dataList,
+            time: new Date().toISOString()
+        });
+        localStorage.setItem('pendingErja', JSON.stringify(pending));
+    }
+
+
+
+
+
+    document.getElementById("btnInsert").addEventListener("click", function () {
+    const dataList = [];
+
+    document.querySelectorAll(".form-control1, .form-check-input1").forEach(el => {
+        const obj = {};
+        obj.FK_erja_omomi_edit = el.id;
+
+        if (el.classList.contains("form-check-input1")) {
+            obj.value_cheek = el.checked;
+        } else if (el.classList.contains("pdate")) {
+            const miladi = document.getElementById(el.getAttribute("data-jdp-miladi-input"));
+            obj.value_time = miladi.value;
+        } else if (el.classList.contains("number")) {
+            obj.value_int = el.value.replace(/,/g, "");
+        } else {
+            obj.value_str = el.value;
+        }
+        console.log($("#select_peyman").val());
+        obj.FK_omomi = $("#select_peyman").val();
+        obj.unic = "";
+        obj.vaziat = @vaziat;
+
+        dataList.push(obj);
+    });
+
+    if (navigator.onLine) {
+        fetch('/Setting/Orders/InsertErjaSabtUsr1', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(dataList)
+        })
+        .then(res => res.json())
+        .then(() => alert('✅ ثبت انجام شد'))
+        .catch(() => {
+            savePendingErja(dataList, '/Setting/Orders/InsertErjaSabtUsr1');
+            alert('⚠️ ذخیره آفلاین انجام شد');
+        });
+    } else {
+        savePendingErja(dataList, '/Setting/Orders/InsertErjaSabtUsr1');
+        alert('💾 آفلاین ذخیره شد، بعداً ارسال می‌شود');
+    }
+});
+        async function syncPendingErja() {
+            const pending = JSON.parse(localStorage.getItem('pendingErja') || '[]');
+            if (!pending.length) return 0;
+
+            const stillPending = [];
+            let sentCount = 0;
+
+            for (const item of pending) {
+                try {
+                    const res = await fetch(item.url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(item.data)
+                    });
+
+                    if (res.ok) {
+                        sentCount++;
+                    } else {
+                        stillPending.push(item);
+                    }
+
+                } catch {
+                    stillPending.push(item);
+                }
+            }
+
+            localStorage.setItem('pendingErja', JSON.stringify(stillPending));
+
+            return sentCount;
+        }
+
+
+        window.addEventListener('online', async function () {
+
+            alert("ارتباط اینترنت برقرار شد ✅");
+
+            const sent = await syncPendingErja();
+
+            if (sent > 0) {
+                alert(sent + " رکورد آفلاین با موفقیت ارسال شد ✅");
+            }
+
+        });
+
+
+
+    </script>
+
+
+    @*=========================================================================E*@
+    <script>
+        jalaliDatepicker.startWatch({
+            time: false,
+            days: ["شنبه", "1شنبه", "2شنبه", "3شنبه", "4شنبه", "5شنبه", "جمعه"],
+            persianDigits: true,
+            autoClose: true,
+            autocomplete: true,
+            showEmptyBtn: false,
+            showCloseBtn: true,
+            zIndex: 100000,
+        });
+
+        var inputs = document.querySelectorAll("[data-jdp-miladi-input]");
+        for (var i = 0; i < inputs.length; i++) {
+            inputs[i].addEventListener("jdp:change", function (e) {
+                var miladiInput = document.getElementById(this.getAttribute("data-jdp-miladi-input"));
+                var date = this.value.replace(' ', '').slice(0, 10).split('/');
+                date = jalaali.toGregorian(parseInt(date[0]), parseInt(date[1]), parseInt(date[2]));
+                if (!this.value) {
+                    date = "";
+                } else if (this.value.replace(' ', '').length < 11) {
+                    date = date.gy + '-' + date.gm + '-' + date.gd;
+                } else {
+                    date = date.gy + '-' + date.gm + '-' + date.gd + ' ' + this.value.replace(' ', '').slice(10, 30);
+                }
+                miladiInput.value = date;
+            });
+        }
+
+    </script>
+
+    <script>
+        document.querySelectorAll(".number").forEach(input => {
+            input.addEventListener("input", function () {
+                // فقط عدد رو نگه دار (حذف همه غیر عدد)
+                let value = this.value.replace(/\D/g, "");
+
+                // اگر عدد وارد شده، سه رقم سه رقم جدا کن
+                if (value) {
+                    this.value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                } else {
+                    this.value = "";
+                }
+            });
+        });
+    </script>
+    @*=========================================================================S*@
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/service-worker.js')
+                .then(() => console.log('SW Registered'))
+                .catch(err => console.error('SW Error', err));
+        }
+    </script>
+    @*=========================================================================E*@
+
+
+
+    @*====================================سکریپت هوشمند تشخیص اینترنت =====================================S*@
+
+    <div id="netStatus"></div>
+    <script>
+        const SERVER_PING_URL = '/Orders/Ping';
+
+        function setStatus(type) {
+            const icon = document.getElementById("netStatus");
+
+            if (type === "online") {
+                icon.style.background = "#28a745";
+                icon.style.animation = "pulseOnline 1.5s infinite";
+                icon.innerHTML = '<i class="bi bi-wifi"></i>';
+                icon.title = "آنلاین";
+            }
+
+            else if (type === "server-down") {
+                icon.style.background = "#ffc107";
+                icon.style.animation = "pulseWarning 1.5s infinite";
+                icon.innerHTML = '<i class="bi bi-exclamation-triangle"></i>';
+                icon.title = "سرور در دسترس نیست";
+            }
+
+            else {
+                icon.style.background = "#dc3545";
+                icon.style.animation = "shakeOffline 0.6s infinite";
+                icon.innerHTML = '<i class="bi bi-wifi-off"></i>';
+                icon.title = "اینترنت قطع است";
+            }
+        }
+
+        async function checkConnection() {
+
+            // اگر اینترنت سیستم قطع باشد
+            if (!navigator.onLine) {
+                setStatus("offline");
+                return;
+            }
+
+            // اینترنت هست → سرور را تست کن
+            try {
+                const res = await fetch(SERVER_PING_URL + "?t=" + Date.now(), {
+                    method: "GET",
+                    cache: "no-store"
+                });
+
+                if (res.ok) {
+                    setStatus("online");
+                } else {
+                    setStatus("server-down");
+                }
+
+            } catch {
+                setStatus("server-down");
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            checkConnection();
+
+            setInterval(checkConnection, 5000);
+
+            window.addEventListener("online", checkConnection);
+            window.addEventListener("offline", checkConnection);
+        });
+    </script>
+
+
+
+    @*=========================================================================E*@
+
+
+
+
+
+
+
+
+</body>
+</html>
+

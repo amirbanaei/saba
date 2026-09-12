@@ -1,0 +1,996 @@
+﻿@model SaabWebProject.Models.ViewModels.Salaries.Formula.UserSalaryDetailVM
+
+
+
+
+<style>
+    .loader {
+        position: absolute;
+        top: calc(50% - 32px);
+        left: calc(50% - 32px);
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        perspective: 800px;
+    }
+
+    .inner {
+        position: absolute;
+        box-sizing: border-box;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+    }
+
+        .inner.one {
+            left: 0%;
+            top: 0%;
+            animation: rotate-one 1s linear infinite;
+            border-bottom: 3px solid #EFEFFA;
+        }
+
+        .inner.two {
+            right: 0%;
+            top: 0%;
+            animation: rotate-two 1s linear infinite;
+            border-right: 3px solid #EFEFFA;
+        }
+
+        .inner.three {
+            right: 0%;
+            bottom: 0%;
+            animation: rotate-three 1s linear infinite;
+            border-top: 3px solid #EFEFFA;
+        }
+
+    @@keyframes rotate-one {
+        0% {
+            transform: rotateX(35deg) rotateY(-45deg) rotateZ(0deg);
+        }
+
+        100% {
+            transform: rotateX(35deg) rotateY(-45deg) rotateZ(360deg);
+        }
+    }
+
+    @@keyframes rotate-two {
+        0% {
+            transform: rotateX(50deg) rotateY(10deg) rotateZ(0deg);
+        }
+
+        100% {
+            transform: rotateX(50deg) rotateY(10deg) rotateZ(360deg);
+        }
+    }
+
+    @@keyframes rotate-three {
+        0% {
+            transform: rotateX(35deg) rotateY(55deg) rotateZ(0deg);
+        }
+
+        100% {
+            transform: rotateX(35deg) rotateY(55deg) rotateZ(360deg);
+        }
+    }
+</style>
+
+
+<style>
+
+
+
+    #counter {
+        font-size: 24px;
+        margin-top: 50px;
+    }
+
+
+
+
+    /* Anim for loder*/
+    .loader-i {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        display: inline-block;
+        position: relative;
+        background: linear-gradient(0deg, #78ebf230 33%, #78ebf2 100%);
+        /* animation: rotation .4s linear infinite, rotationW 1s 1s ease both;*/
+    }
+        /*, rotationW 1s 1s ease both*/
+        .loader-i:after {
+            width: 23px;
+            height: 23px;
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            background: var(--bs-tab-content-bg);
+        }
+    /* keyFrames */
+    @@keyframes rotation {
+        0% {
+            transform: rotate(0deg)
+        }
+
+        100% {
+            transform: rotate(360deg)
+        }
+    }
+
+    @@keyframes rotationW {
+        0% {
+            opacity: 1;
+        }
+
+        100% {
+            opacity: 0;
+        }
+    }
+</style>
+<style>
+    /* Anim for text*/
+    .textAnim {
+        animation: outer-left 1s 1s ease both;
+    }
+
+    @@keyframes outer-left {
+        from {
+            transform: translateX(10%);
+        }
+
+        to {
+            transform: none;
+        }
+
+        0% {
+            opacity: 0;
+        }
+
+        100% {
+            opacity: 1;
+        }
+    }
+</style>
+<style>
+    /* Anim for cheked*/
+    svg {
+        width: 20px;
+        /*height: 30PX;*/
+        display: block;
+    }
+
+    .path {
+        stroke-dasharray: 1000;
+        stroke-dashoffset: 0;
+    }
+
+        .path.circle {
+            -webkit-animation: dash 1s ease-in-out;
+            animation: dash 1s ease-in-out;
+        }
+
+        .path.line {
+            stroke-dashoffset: 1000;
+            -webkit-animation: dash 1s .5s ease-in-out forwards;
+            animation: dash 1s .5s ease-in-out forwards;
+        }
+
+        .path.check {
+            stroke-dashoffset: -100;
+            -webkit-animation: dash-check 1s .5s ease-in-out forwards;
+            animation: dash-check 1s .5s ease-in-out forwards;
+        }
+
+
+    @@keyframes dash {
+        0% {
+            stroke-dashoffset: 1000;
+        }
+
+        100% {
+            stroke-dashoffset: 0;
+        }
+    }
+
+    @@-webkit-keyframes dash-check {
+        0% {
+            stroke-dashoffset: -100;
+        }
+
+        100% {
+            stroke-dashoffset: 900;
+        }
+    }
+
+    @@keyframes dash-check {
+        0% {
+            stroke-dashoffset: -100;
+        }
+
+        100% {
+            stroke-dashoffset: 900;
+        }
+    }
+</style>
+<style>
+    .buttonM {
+        animation: opacityB 1s .5s ease both;
+    }
+
+    @@keyframes opacityB {
+        0% {
+            opacity: 0;
+        }
+
+        100% {
+            opacity: 1;
+        }
+    }
+</style>
+@{
+    int ClassI = 0;
+    int Check = 0;
+    int doublecheck = 0;
+}
+<div class="" style="margin-top:30px">
+
+    @if (Model.Detail.Keys.First() == 0)
+    {
+        <div class="row">
+            <div class="col-1 " style="width: 30px; margin-top: 3px;">
+                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+                    <circle class="path circle" fill="none" stroke="#D06079" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1" />
+                    <line class="path line" fill="none" stroke="#D06079" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="34.4" y1="37.9" x2="95.8" y2="92.3" />
+                    <line class="path line" fill="none" stroke="#D06079" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="95.8" y1="38" x2="34.4" y2="92.2" />
+                </svg>
+
+            </div>
+            <div class="col-10">
+                @Model.Detail.Values.First()
+            </div>
+        </div>
+    }
+    else
+    {
+        foreach (var item in Model.Detail)
+        {
+
+            if (item.Key == 1)
+            {
+                ClassI += 1;
+                <div ClassI_I="ClassI_@ClassI" class="row" id="ClassI_@ClassI" style="display:none;margin-bottom:10px">
+                    @if (item.Value != "True")
+                    {
+                        doublecheck += 1;
+                        <div class="col-1" style="width:30px;">
+                            <div class='loader-i' style=" animation: rotation .4s linear infinite, rotationW 1s .5s ease both;"></div>
+                        </div>
+                        <div class="col-1 " style="width: 30px; margin-top: 3px;">
+                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+                                <circle class="path circle" fill="none" stroke="#D06079" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1" />
+                                <line class="path line" fill="none" stroke="#D06079" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="34.4" y1="37.9" x2="95.8" y2="92.3" />
+                                <line class="path line" fill="none" stroke="#D06079" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="95.8" y1="38" x2="34.4" y2="92.2" />
+                            </svg>
+
+                        </div>
+                    }
+                    else
+                    {
+                        Check += 1;
+
+
+                        <div class="col-1" style="width:30px;">
+                            <div class='loader-i' style=" animation: rotation .4s linear infinite, rotationW 1s .5s ease both;"></div>
+                        </div>
+                        <div class="col-1 " style="width: 30px; margin-top: 3px;">
+                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+                                <circle class="path circle" fill="none" stroke="#73AF55" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1" />
+                                <polyline class="path check" fill="none" stroke="#73AF55" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 " />
+                            </svg>
+                        </div>
+                    }
+                    <div class="col-4" style="animation: outer-left 1s .2s ease both;">
+                        وضعیت محاسبه فیش ماه قبل
+                    </div>
+                    <div class="col-xl-3">
+
+                    </div>
+                    @*<div class="col-xl-2">
+                            <button class="btn  btn-outline-info form-control csss"
+                                    data-bs-toggle="modal" data-bs-target="#modalCoverExample3">
+                                ثبت عملیات ماه گذشته
+                            </button>
+                        </div>
+                        <div class="col-xl-2">
+                            <button class="btn btn-outline-warning csss2">
+                                <i class="fa fa-sign-out fa-fw me-1"></i>
+                                کنسل
+                            </button>
+                        </div>*@
+                </div>
+
+            }
+            if (item.Key == 2)
+            {
+                ClassI += 1;
+                <div ClassI_I="ClassI_@ClassI" class="row" id="ClassI_@ClassI" style="display:none;margin-bottom:10px">
+                    @if (item.Value != "True")
+                    {
+                        doublecheck += 1;
+                        <div class="col-1" style="width:30px;">
+                            <div class='loader-i' style=" animation: rotation .4s linear infinite, rotationW 1s .5s ease both;"></div>
+                        </div>
+                        <div class="col-1 " style="width: 30px; margin-top: 3px;">
+                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+                                <circle class="path circle" fill="none" stroke="#D06079" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1" />
+                                <line class="path line" fill="none" stroke="#D06079" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="34.4" y1="37.9" x2="95.8" y2="92.3" />
+                                <line class="path line" fill="none" stroke="#D06079" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="95.8" y1="38" x2="34.4" y2="92.2" />
+                            </svg>
+
+                        </div>
+                    }
+                    else
+                    {
+                        Check += 1;
+
+                        <div class="col-1" style="width:30px;">
+                            <div class='loader-i' style=" animation: rotation .4s linear infinite, rotationW 1s .5s ease both;"></div>
+                        </div>
+                        <div class="col-1 " style="width: 30px; margin-top: 3px;">
+                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+                                <circle class="path circle" fill="none" stroke="#73AF55" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1" />
+                                <polyline class="path check" fill="none" stroke="#73AF55" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 " />
+                            </svg>
+                        </div>
+                    }
+                    <div class="col-4" style="animation: outer-left 1s .2s ease both;">
+                        وضعیت تثبیت فیش ماه قبل
+                    </div>
+                    <div class="col-xl-3">
+
+                    </div>
+                    @*<div class="col-xl-2">
+                            <button class="btn  btn-outline-info form-control csss"
+                                    data-bs-toggle="modal" data-bs-target="#modalCoverExample3">
+                                ثبت عملیات ماه گذشته
+                            </button>
+                        </div>
+                        <div class="col-xl-2">
+                            <button class="btn btn-outline-warning csss2">
+                                <i class="fa fa-sign-out fa-fw me-1"></i>
+                                کنسل
+                            </button>
+                        </div>*@
+                </div>
+
+            }
+            if (item.Key == 3)
+            {
+                ClassI += 1;
+                <div ClassI_I="ClassI_@ClassI" class="row" id="ClassI_@ClassI" style="display: none; margin-bottom: 10px">
+                    @if (item.Value != "True")
+                    {
+                        doublecheck += 1;
+                        <div class="col-1" style="width:30px;">
+                            <div class='loader-i' style=" animation: rotation .4s linear infinite, rotationW 1s .5s ease both;"></div>
+                        </div>
+                        <div class="col-1 " style="width: 30px; margin-top: 3px;">
+                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+                                <circle class="path circle" fill="none" stroke="#D06079" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1" />
+                                <line class="path line" fill="none" stroke="#D06079" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="34.4" y1="37.9" x2="95.8" y2="92.3" />
+                                <line class="path line" fill="none" stroke="#D06079" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="95.8" y1="38" x2="34.4" y2="92.2" />
+                            </svg>
+
+                        </div>
+                    }
+                    else
+                    {
+                        Check += 1;
+
+                        <div class="col-1 " style="width:30px;">
+                            <div class='loader-i' style=" animation: rotation .4s linear infinite, rotationW 1s .5s ease both;"></div>
+                        </div>
+                        <div class="col-1 " style="width: 30px; margin-top: 3px;">
+                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+                                <circle class="path circle" fill="none" stroke="#73AF55" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1" />
+                                <polyline class="path check" fill="none" stroke="#73AF55" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 " />
+                            </svg>
+                        </div>
+                    }
+                    <div class="col-4" style="animation: outer-left 1s .2s ease both;">
+                        وضعیت ثبت عملکرد ماه جاری
+                    </div>
+                    @*<div class="col-xl-3">
+                            <button class="btn  btn-outline-info form-control csss">
+                                ماه انتخابی،ماه اول فعالیت است
+                            </button>
+                        </div>
+                        <div class="col-xl-2">
+                            <button class="btn  btn-outline-info form-control csss"
+                                    data-bs-toggle="modal" data-bs-target="#modalCoverExample3">
+                                متوجه شدم ، ادامه بده
+                            </button>
+                        </div>
+                        <div class="col-xl-2">
+                            <button class="btn btn-outline-warning csss2">
+                                <i class="fa fa-sign-out fa-fw me-1"></i>
+                                کنسل
+                            </button>
+                        </div>*@
+                </div>
+
+            }
+            if (item.Key == 4)
+            {
+                ClassI += 1;
+                <div ClassI_I="ClassI_@ClassI" class="row" id="ClassI_@ClassI" style="display: none; margin-bottom: 10px">
+                    @if (item.Value != "True")
+                    {
+                        <div class="col-1" style="width:30px;">
+                            <div class='loader-i' style=" animation: rotation .4s linear infinite, rotationW 1s .5s ease both;"></div>
+                        </div>
+                        <div class="col-1 " style="width: 30px; margin-top: 3px;">
+                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+                                <circle class="path circle" fill="none" stroke="#D06079" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1" />
+                                <line class="path line" fill="none" stroke="#D06079" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="34.4" y1="37.9" x2="95.8" y2="92.3" />
+                                <line class="path line" fill="none" stroke="#D06079" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="95.8" y1="38" x2="34.4" y2="92.2" />
+                            </svg>
+
+                        </div>
+                    }
+                    else
+                    {
+                        Check += 1;
+                        <div class="col-1" style="width:30px;">
+                            <div class='loader-i' style=" animation: rotation .4s linear infinite, rotationW 1s .5s ease both;"></div>
+                        </div>
+                        <div class="col-1" style="width: 30px; margin-top: 3px;">
+                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+                                <circle class="path circle" fill="none" stroke="#73AF55" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1" />
+                                <polyline class="path check" fill="none" stroke="#73AF55" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 " />
+                            </svg>
+                        </div>
+
+                    }
+                    <div class="col-4" style="animation: outer-left 1s .2s ease both;">
+                        وضعیت تایید عملکرد ماه جاری
+                    </div>
+                    @*<div class="col-xl-3">
+                            <button class="btn  btn-outline-info form-control csss">
+                                ماه انتخابی،ماه اول فعالیت است
+                            </button>
+                        </div>
+                        <div class="col-xl-2">
+                            <button class="btn  btn-outline-info form-control csss"
+                                    data-bs-toggle="modal" data-bs-target="#modalCoverExample3">
+                                متوجه شدم ، ادامه بده
+                            </button>
+                        </div>
+                        <div class="col-xl-2">
+                            <button class="btn btn-outline-warning csss2">
+                                <i class="fa fa-sign-out fa-fw me-1"></i>
+                                کنسل
+                            </button>
+                        </div>*@
+                </div>
+
+            }
+        }
+    }
+</div>
+@{
+    ClassI += 1;
+}
+
+
+
+
+
+
+
+<div ClassI_I="ClassI_@ClassI" class="row buttonM " id="ClassI_@ClassI" style="display: none;">
+
+    @if (Check == 4)
+    {
+
+
+        @*<div id="counter" ><span id="countspan">0</span><span>/411</span></div>*@
+
+
+
+
+
+        <div class="loader" style="display:none">
+            <div class="inner one"></div>
+            <div class="inner two"></div>
+            <div class="inner three"></div>
+        </div>
+
+
+
+
+
+
+
+        <div class="col-md-4">
+            <div class="row">
+                <div class="col-xl-2">
+                    <input class="form-check-input" name="radiobutton" type="radio" value="" id="IsFirst" />
+                </div>
+                <div class="col-xl-8">
+                    <label class="form-check-label" for="defaultRadio">از ابتدا محاسبه کن</label>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="row">
+                <div class="col-xl-2">
+                    <input class="form-check-input" checked name="radiobutton" type="radio" value="" id="Continue" />
+                </div>
+                <div class="col-xl-8">
+                    <label class="form-check-label" for="defaultRadio">ادامه محاسبات</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4"></div>
+
+        <div class="col-md-4">
+            <div class="row">
+                <div class="col-xl-2">
+                    <input class="form-check-input" name="radiobutton2" type="radio" value="" id="continuekarkard" />
+                </div>
+                <div class="col-xl-8">
+                    <label class="form-check-label" for="defaultRadio">محاسبه کارکردها </label>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="col-md-4">
+            <div class="row">
+                <div class="col-xl-2">
+                    <input class="form-check-input" checked name="radiobutton2" type="radio" value="" id="outcontinuekarkard" />
+                </div>
+                <div class="col-xl-8">
+                    <label class="form-check-label" for="defaultRadio">محاسبه دوباره کارکردها</label>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <div class="col-xl-2">
+
+        </div>
+        <div class="col-xl-2">
+            <div class="form-group">
+                <button type="button" id="Taeed" class="btn form-control buttonGeneral ">
+                    <i class="fa fa-calculator fa-fw me-1 VecGeneral"></i>
+                    <span class="bGeneral-text">محاسبه</span>
+                </button>
+            </div>
+        </div>
+    }
+    else if (Check > 2 && Check < 4 && doublecheck == 0)
+    {
+
+
+
+        @*<div id="counter"><span id="countspan">0</span><span>/411</span></div>*@
+
+
+
+
+        <div class="loader" style="display:none">
+            <div class="inner one"></div>
+            <div class="inner two"></div>
+            <div class="inner three"></div>
+        </div>
+
+
+
+        <div class="col-xl-4">
+            <div class="row">
+                <div class="col-xl-2">
+                    <input class="form-check-input" name="radiobutton" type="radio" value="" id="IsFirst" />
+                </div>
+                <div class="col-xl-8">
+                    <label class="form-check-label" for="defaultRadio">از ابتدا محاسبه کن</label>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4">
+            <div class="row">
+                <div class="col-xl-2">
+                    <input class="form-check-input" checked name="radiobutton" type="radio" value="" id="Continue" />
+                </div>
+                <div class="col-xl-8">
+                    <label class="form-check-label" for="defaultRadio">ادامه محاسبات</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4"></div>
+
+        <div class="col-md-4">
+            <div class="row">
+                <div class="col-xl-2">
+                    <input class="form-check-input" name="radiobutton2" type="radio" value="" id="continuekarkard" />
+                </div>
+                <div class="col-xl-8">
+                    <label class="form-check-label" for="defaultRadio">محاسبه کارکردها </label>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="col-md-4">
+            <div class="row">
+                <div class="col-xl-2">
+                    <input class="form-check-input" checked name="radiobutton2" type="radio" value="" id="outcontinuekarkard" />
+                </div>
+                <div class="col-xl-8">
+                    <label class="form-check-label" for="defaultRadio">محاسبه دوباره کارکردها</label>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <div class="col-xl-2">
+
+        </div> <div class="col-xl-1">
+            <button type="button" id="Taeed2" class="btn form-control buttonGeneral">
+                <i class="fa fa-calculator fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text">با دانستن شرایط محاسبه کن</span>
+            </button>
+        </div>
+    }
+
+
+</div>
+<script>
+    var delay = 1000; // زمان تأخیر به میلی ثانیه
+    function showNextDiv(ClassNameI) {
+        // نمایش div با استفاده از شناسه
+        document.getElementById(ClassNameI).style.display = "flex";
+    }
+
+    var divs = document.querySelectorAll("[ClassI_I]");
+    var i = 0;
+    var id;
+    divs.forEach(div => {
+        console.log(divs[i].classList[1])
+        id = div.getAttribute("ClassI_I");
+        setTimeout(showNextDiv.bind(null, id), (i + 1) * delay);
+        i++
+    });
+</script>
+<script>
+    //$(document).ready(function () {
+
+    //    if ($("svg").hasClass("NotAcceptedSvg") == false) {
+    //        $("#Taeed").css('display','block')
+    //    }
+
+    //})
+
+
+
+
+
+
+    var contikar = false;
+    $('#continuekarkard').click(function () {
+        if ($('#continuekarkard').is(':checked')) {
+
+            contikar = true;
+        }
+
+    });
+    $('#outcontinuekarkard').click(function () {
+        if ($('#outcontinuekarkard').is(':checked')) {
+
+            contikar = false;
+        }
+        else {
+            contikar = true;
+
+        }
+    });
+
+
+
+
+
+
+    var IsFirst = false;
+    $('#IsFirst').click(function () {
+        if ($('#IsFirst').is(':checked')) {
+
+            IsFirst = true;
+        }
+
+    });
+    $('#Continue').click(function () {
+        if ($('#Continue').is(':checked')) {
+
+            IsFirst = false;
+        }
+        else {
+            IsFirst = true;
+
+        }
+    });
+    var From = $("#FromPersonalcode").val();
+    var To = $("#ToPersonalCode").val();
+
+
+
+
+    $("#Taeed").click(function () {
+
+
+
+        var dataList = []; // ایجاد آرایه‌ای برای ذخیره داده‌ها
+
+        $("input.weewee12").each(function () {
+            var inputId = $(this).attr("id");
+            var isChecked = $(this).is(":checked"); // بررسی چک‌خورده بودن
+
+            if (isChecked) { // فقط مواردی که چک شده‌اند اضافه شود
+                var parts = inputId.split('-');
+                if (parts.length >= 4) { // بررسی صحت ساختار ID
+                    var FK_namebAST = parseInt(parts[1]); // مقدار مربوط به marahl.ID
+                    var FK_city = parseInt(parts[2]);     // مقدار مربوط به city.id
+                    var FK_pymn = parseInt(parts[3]);     // مقدار مربوط به contract.pec_ID
+                    console.log(FK_city)
+
+                    // افزودن فقط مقادیر چک‌شده به آرایه داده‌ها
+                    dataList.push(FK_city); // استفاده از push به‌جای Add
+
+                } else {
+                    console.warn("Invalid ID format for input:", inputId);
+                }
+            }
+        });
+
+        //var users = $("#select_users1");
+        var year = $("#YearSelect");
+        var month = $("#MonthSelect");
+
+
+      if (year.val().length == 0) {
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: "لطفا سال را انتخاب کنید !!"
+            });
+        $("#buttons").css("display","none");
+        } else if (month.val().length == 0) {
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: "لطفا ماه را انتخاب کنید !!"
+            });
+        $("#buttons").css("display","none");
+        }
+        else {
+        $("#buttons").css("display","block");
+          /*document.getElementById("loading-message").style.display = "block";*/
+
+
+
+
+
+          Swal.fire({
+              title: 'فرایند پردازش زمان‌بر است ، از اجرای این فرایند مطمئن هستید؟',
+              icon: 'question',
+              showCancelButton: true,
+              background: 'rgb(29,40,52)',
+              color: 'white',
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'بله ',
+              cancelButtonText: 'خیر'
+          }).then((result) => {
+
+              if (result.isConfirmed == true) {
+                  $(".loader").css('display', 'block');
+                    $.ajax({
+                url: "@Url.Action("CalculateFishdastehbandi", "Formula",new {area="Salaries"})",
+                type: "Post",
+
+                        data: { Year: year.val(), Month: month.val(), IsFirst: IsFirst, contikar: contikar, dataList: dataList },
+                success: function (res) {
+                    $(".loader").css('display', 'none');
+
+                    $('#modalLgDetail').modal('hide');
+                    if (res == "1") {
+                        window.location.replace("/Salaries/Salary/Hilo");
+                    }
+                     else {
+                        Toast.fire({
+                        icon: 'error',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "عملیات  با خطا مواجه شد"
+                    });
+                    }
+
+                },
+                error: function (res) {
+                    console.log(res);
+
+                    $(".loader").css('display', 'none');
+                    Toast.fire({
+                        icon: 'error',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "عملیات  با خطا مواجه شد"
+                    });
+                    return false;
+                }
+            })
+              }
+
+          });
+
+
+
+
+
+
+        }
+
+
+
+
+    });
+
+
+
+
+   
+
+
+
+
+
+    $("#Taeed2").click(function () {
+
+
+
+
+        var users = $("#select_users1");
+        var year = $("#YearSelect");
+        var month = $("#MonthSelect");
+
+
+      if (year.val().length == 0) {
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: "لطفا سال را انتخاب کنید !!"
+            });
+        $("#buttons").css("display","none");
+        } else if (month.val().length == 0) {
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: "لطفا ماه را انتخاب کنید !!"
+            });
+        $("#buttons").css("display","none");
+        }
+        else {
+        $("#buttons").css("display","block");
+          /*document.getElementById("loading-message").style.display = "block";*/
+
+
+
+          Swal.fire({
+              title: 'فرایند پردازش زمان‌بر است ، از اجرای این فرایند مطمئن هستید؟',
+              icon: 'question',
+              showCancelButton: true,
+              background: 'rgb(29,40,52)',
+              color: 'white',
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'بله ',
+              cancelButtonText: 'خیر'
+          }).then((result) => {
+
+              if (result.isConfirmed == true) {
+                  $(".loader").css('display', 'block');
+
+                    $.ajax({
+                url: "@Url.Action("CalculateFish", "Formula",new {area="Salaries"})",
+                type: "Post",
+
+                        data: { Year: year.val(), Month: month.val(), IsFirst: IsFirst, contikar: contikar,From:From,To:To},
+                success: function (res) {
+                    $(".loader").css('display', 'none');
+
+                    $('#modalLgDetail').modal('hide');
+                    if (res == "1") {
+                        window.location.replace("/Salaries/Salary/Hilo");
+                    }
+                     else {
+                        Toast.fire({
+                        icon: 'error',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "عملیات  با خطا مواجه شد"
+                    });
+                    }
+
+                },
+                error: function (res) {
+                    console.log(res);
+
+                    $(".loader").css('display', 'none');
+                    Toast.fire({
+                        icon: 'error',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "عملیات  با خطا مواجه شد"
+                    });
+                    return false;
+                }
+            })
+              }
+
+
+          });
+
+
+
+
+
+
+        }
+
+
+
+
+    });
+
+
+
+
+
+
+
+</script>
+
+@*<script>
+        let count = 0;
+        let intervalId;
+
+        function start() {
+            intervalId = setInterval(increaseCounter, 10000); // Increase counter every second
+        }
+
+
+
+        function increaseCounter() {
+            count++;
+            updateCounter();
+        }
+
+        function updateCounter() {
+            document.getElementById('countspan').innerText = count;
+        }
+    </script>*@

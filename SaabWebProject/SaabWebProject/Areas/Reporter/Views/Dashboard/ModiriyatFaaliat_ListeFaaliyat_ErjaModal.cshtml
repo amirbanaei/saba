@@ -1,0 +1,406 @@
+﻿
+@{
+    Layout = null;
+}
+@using SaabWebProject.Models.DomainModels;
+
+@{
+    SaabEntities db = new SaabEntities();
+
+}
+@model SaabWebProject.Models.DomainModels.dbRelatinafrad
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+<script src="~/Assets/js/jalalidatepicker.min.js"></script>
+<link href="~/Assets/css/jalalidatepicker.min.css" rel="stylesheet" />
+<script src="~/Assets/js/jalaali.min.js"></script>
+<link href="~/MyStyles/jalalidatepicker.css" rel="stylesheet" />
+<div class="row">
+    @*<div class="col-xl-4">
+            <label class="form-label">کاربر را انتخاب کنید<span class="text-danger">*</span></label>
+            <div id="div_users"></div>
+        </div>*@
+    <div class="col-xl-3">
+        <label class="form-label"> کاربران </label>
+        <select class="form-select installmentAmountInputManually" id="creditline">
+            <option>انتخاب کنید</option>
+            @Html.Action("usrtbpersin", "Users", new { area = "Users" })
+        </select>
+    </div>
+
+    <div class="col-xl-2">
+        <label class="form-label">تاریخ</label>
+        @*------------------------------------------------[1402/09/20]-|KH|-*@
+        <input data-jdp jdp-btn-close data-jdp-miladi-input="datepickerFromEn_usr" id="datepickerFrom_usr" class="form-control">
+        <input id="datepickerFromEn_usr" type="hidden" />
+        @*-------------------------------------------------------------|KH|-*@
+    </div>
+    <div class="col-xl-2">
+        <label class="form-label"> پیش بینی زمان اجرا (ساعت) </label>
+        <input class="form-control installmentAmountInputManually3" type="text" data-jdp="" data-jdp-only-time="" id="bestankar" />
+
+    </div>
+    <div class="col-xl-2">
+        <label class="form-label">امکان انجام کار توسط کاربر </label>
+        <input class="form-control installmentAmountInputManually2" id="bedehkar" disabled />
+    </div>
+    <div class="col-xl-1">
+        <label class="form-label"> در آن روز </label>
+
+        <input class="form-check-input form-control custom-control-input" type="checkbox" value="در آن روز" id="checkbox">
+
+    </div>
+      <div class="col-xl-1">
+      <label class="form-label"> الزام در روز تعطیل </label>
+
+      <input class="form-check-input form-control custom-control-input" type="checkbox" value="در آن روز" id="checkbox2">
+
+  </div>
+    <div class="col-xl-2">
+        <label class="form-label">  شرح  </label>
+        <textarea class="form-control" id="bedehkar3"></textarea>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xl-10">
+    </div>
+
+    <div class="col-xl-1">
+        <button id="btnSaveErja" type="button" class="btn form-control buttonsabt">
+            <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+            <span class="bSabt-text">ثبت</span>
+        </button>
+    </div>
+    <div class="col-xl-1">
+        <button class="btn form-control buttonsabt" id="submitAllBtn">
+            <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+            <span class="bSabt-text">پردازش</span>
+        </button>
+    </div>
+</div>
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Scripts/sweetalert2.js" type="text/javascript"></script>
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/src/jquery.md.bootstrap.datetimepicker.js"></script>
+<script>
+    @*$(function () {
+        $("#div_users").load('@Url.Content("/../Users/Users/_PartialViewUsersListWithSearch")', function () {
+            $("#select_users1").attr("id", "users1");
+            $("#showContract").on("click",function(){
+                var idd = $("#users1").val();
+            });
+        });
+    });*@
+
+    jalaliDatepicker.startWatch({
+        time: true,
+        days: ["شنبه", "1شنبه", "2شنبه", "3شنبه", "4شنبه", "5شنبه", "جمعه"],
+        persianDigits: true,
+        autoClose: true,
+        autocomplete: true,
+        showCloseBtn: true,
+        showEmptyBtn: false,
+        showCloseBtn: true,
+        zIndex: 100000,
+    });
+    //-----------------------------------------------------------------
+    var inputs = document.querySelectorAll("[data-jdp-miladi-input]");
+    for (var i = 0; i < inputs.length; i++) {
+        inputs[i].addEventListener("jdp:change", function (e) {
+            var miladiInput = document.getElementById(this.getAttribute("data-jdp-miladi-input"));
+            var date = this.value.replace(' ', '').slice(0, 10).split('/');
+            date = jalaali.toGregorian(parseInt(date[0]), parseInt(date[1]), parseInt(date[2]),)
+            // If it was empty
+            if (!this.value) {
+                date = "";
+            }
+            // If it was only history
+            else if (this.value.replace(' ', '').length < 11) {
+                date = date.gy + '-' + date.gm + '-' + date.gd
+            }
+            // If it was the date and time
+            else {
+                date = date.gy + '-' + date.gm + '-' + date.gd + ' ' + this.value.replace(' ', '').slice(10, 30)
+            }
+            miladiInput.value = date
+            var weekDay = getDayOfWeek(document.querySelector("#datepickerFromEn_usr").value.slice(0, 10))
+            document.querySelector("#weekDay").value = weekDay
+        });
+    }
+    //-----------------------------------------------------------------
+    function getDayOfWeek(gregorianDate) {
+        const [year, month, day] = gregorianDate.split('-').map(Number);
+        const date = new Date(year, month - 1, day);
+        const dayOfWeek = date.getDay();
+        const days = ['یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه', 'شنبه'];
+        return days[dayOfWeek];
+    }
+</script>
+<script>
+    @*$("#btnSaveErja").click(function () {
+        fd = new FormData();
+
+    //console.log($("#datepickerFromEn_Eq12").val());
+    sendAjax3000('@Url.Action("creatvaziat", "FinancialDocuments",new { area = "ManagementAccounting" })', fd);
+});
+
+    function sendAjax3000(url2, fd2) {
+    fd2.append("position", $("#position").val());
+    fd2.append("title", $("#Title20").val());
+    fd2.append("fk_realtinafrad", @Model.ID);
+
+
+    console.log($("#endfalse33").val());
+
+    $.ajax({
+        url: url2,
+        type: 'POST',
+        data: fd2,
+        processData: false,
+        contentType: false,
+        success: function (resp1) {
+            console.log("okeye");
+            console.log(resp1);
+            $("#loading-message").css("display", "none");
+            fd = new FormData();
+            var Filters = [];
+            if (resp1 == "true") {
+                alert("با موفقیت ثبت شد ");
+            }
+
+            console.log("djkjsdkl");
+
+
+        },
+        error: function (resp1) {
+            console.log(resp1);
+            console.log("Nokeye");
+            $("#loading-message").css("display", "none");
+            Toast.fire({
+                icon: 'success',
+                background: '#35434A',
+                color: 'white',
+                title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+            }).then(() => {
+                $("#loading-message").css("display", "none");
+            });
+        }
+    });
+    }*@
+
+
+
+
+
+    let fii = 0;
+
+    $('#submitAllBtn').click(async function () {
+    // درخواست AJAX برای دریافت مقدار fii
+    try {
+        const fiiResponse = await $.ajax({
+            url: '@Url.Action("GetMaxTarif", "FinancialDocuments", new { area = "ManagementAccounting" })',
+            type: 'GET',
+            dataType: 'json'
+        });
+        fii = fiiResponse.fii;
+    } catch (err) {
+        console.error("Error fetching max tarif (fii):", err);
+        alert("خطا در دریافت مقدار 'fii'.");
+        return;
+    }
+
+    // Loop through each installment amount input manually
+    for (let element of $('.installmentAmountInputManually')) {
+        //let rowId = $(element).attr('id').split('_')[1]; // Extract nodesLength from the id
+
+        // Collecting values for each row
+        var val1 = $('#bestankar').val(); // Time
+        var val2 = $('#datepickerFromEn_usr').val(); // Date
+        var val3 = $('#creditline').val(); // User
+        var val4 = $('#bedehkar').val(); // Can or Not
+        var val5 = $('#bedehkar3').val(); // Title
+        var IsVisible = $('#checkbox').is(":checked"); // Correct ID for checkbox
+        var IsVisible2 = $('#checkbox2').is(":checked"); // Correct ID for checkbox
+
+        console.log(val2);
+        console.log(val3);
+        console.log(val4);
+        console.log(val5);
+        console.log(val1);
+        console.log(IsVisible); // To check the value of IsVisible
+
+        if (val1 && val2 && val3 && val5) {
+            // Create an object with the gathered data
+            var rowData = {
+                "DataDocument": val2,
+                "creditline": val3,
+                "EndTime2": val1,
+                "title": val5,
+                "tar": fii // استفاده از fii که از سرور دریافت شد
+            };
+
+            var fd2 = new FormData();
+            fd2.append("DataDocument", val2);
+            fd2.append("creditline", val3);
+            fd2.append("EndTime2", val1);
+            fd2.append("title", val5);
+            fd2.append("tar", fii);
+            fd2.append("IsVisible", IsVisible);
+            fd2.append("IsVisible2", IsVisible2);
+
+            // ارسال اطلاعات با AJAX
+            try {
+                const resp = await $.ajax({
+                    url: '@Url.Action("Testpardas2", "FinancialDocuments", new { area = "ManagementAccounting" })',
+                    type: 'POST',
+                    data: fd2,
+                    processData: false,
+                    contentType: false,
+                });
+
+                console.log("Row "  + " submitted successfully");
+                console.log(resp);
+
+                // Assuming the server sends back 'resp1' in the response
+                var resp1 = resp.resp1 || resp; // Use resp1 if it exists, otherwise use the whole response
+                console.log($("#endfalse33").val());
+                console.log(val2);
+
+                if (val2 > $("#endfalse33").val()) {
+                    console.log(val2);
+                    $('#endfalse33').val(val2);
+                }
+                if (resp1 === "3") {
+
+                    $('#bedehkar').val('تعطیل ');
+                }
+                else if (resp1 === "4") {
+
+                    $('#bedehkar').val('مرخصی ');
+                }
+                else if (resp1 === "0") {
+
+                    $('#bedehkar').val('بلی');
+                }
+                else if (resp1 === "True") {
+
+                    alert("با موفقیت ثبت شد");
+                    location.reload();
+                } else {
+                    $('#bedehkar').val(resp1);
+                }
+            } catch (err) {
+                console.error("Error in row submission for row ");
+                console.log(err);
+                $('#bedehkar').val('خطا در ارسال');
+            }
+        } else {
+            alert("لطفاً تمام فیلدها را برای ردیف "  + " پر کنید.");
+        }
+    }
+});
+
+
+    $('#btnSaveErja').click(async function () {
+
+
+    // Loop through each installment amount input manually
+    for (let element of $('.installmentAmountInputManually')) {
+        //let rowId = $(element).attr('id').split('_')[1]; // Extract nodesLength from the id
+
+        // Collecting values for each row
+        var val1 = $('#bestankar').val(); // Time
+        var val2 = $('#datepickerFromEn_usr').val(); // Date
+        var val3 = $('#creditline').val(); // User
+        var val4 = $('#bedehkar').val(); // Can or Not
+        var val5 = $('#bedehkar3').val(); // Title
+        var IsVisible = $('#checkbox').is(":checked"); // Correct ID for checkbox
+        var IsVisible2 = $('#checkbox2').is(":checked"); // Correct ID for checkbox
+
+        console.log(val2);
+        console.log(val3);
+        console.log(val4);
+        console.log(val5);
+        console.log(val1);
+        console.log(IsVisible); // To check the value of IsVisible
+
+        if (val1 && val2 && val3 && val5) {
+            // Create an object with the gathered data
+            var rowData = {
+                "DataDocument": val2,
+                "creditline": val3,
+                "EndTime2": val1,
+                "title": val5,
+                "tar": fii,
+
+                // استفاده از fii که از سرور دریافت شد
+            };
+
+            var fd2 = new FormData();
+            fd2.append("DataDocument", val2);
+            fd2.append("creditline", val3);
+            fd2.append("EndTime2", val1);
+            fd2.append("title", val5);
+            fd2.append("tar", fii);
+            fd2.append("delet", @Model.ID);
+            fd2.append("canornotcan", val4);
+            //fd2.append("IsVisible2", IsVisible2);
+
+            //fd2.append("IsVisible", IsVisible);
+
+            // ارسال اطلاعات با AJAX
+            try {
+                const resp = await $.ajax({
+                    url: '@Url.Action("crateerjaja", "FinancialDocuments", new { area = "ManagementAccounting" })',
+                    type: 'POST',
+                    data: fd2,
+                    processData: false,
+                    contentType: false,
+                });
+
+                console.log("Row "  + " submitted successfully");
+                console.log(resp);
+
+                // Assuming the server sends back 'resp1' in the response
+                var resp1 = resp.resp1 || resp; // Use resp1 if it exists, otherwise use the whole response
+                console.log($("#endfalse33").val());
+                console.log(val2);
+
+                if (val2 > $("#endfalse33").val()) {
+                    console.log(val2);
+                    $('#endfalse33').val(val2);
+                }
+                if (resp1 === "3") {
+
+                    $('#bedehkar').val('تعطیل ');
+                }
+                else if (resp1 === "4") {
+
+                    $('#bedehkar').val('مرخصی ');
+                }
+                else if (resp1 === "0") {
+
+                    $('#bedehkar').val('بلی');
+                }
+                else if (resp1 === "True") {
+
+                    alert("با موفقیت ثبت شد");
+                    location.reload();
+                } else {
+                    alert("دچار مشکل شده است ");
+                }
+            } catch (err) {
+                console.error("Error in row submission for row ");
+                console.log(err);
+                $('#bedehkar').val('خطا در ارسال');
+            }
+        } else {
+            alert("لطفاً تمام فیلدها را برای ردیف "  + " پر کنید.");
+        }
+    }
+});
+
+</script>

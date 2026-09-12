@@ -1,0 +1,319 @@
+﻿
+@{
+    ViewBag.Title = "تعریف ارتباطات";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model IEnumerable<SaabWebProject.Models.DomainModels.tbperson>
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+<style>
+
+    .tableH_Lock {
+        max-height: 260px;
+        /*height: 260px;*/
+    }
+
+    thead {
+        position: sticky;
+        top: 0;
+        text-align: center;
+        z-index: 2;
+    }
+
+    .inputFilter {
+        margin-bottom: 0px !important;
+    }
+
+    thead th {
+        vertical-align: middle;
+    }
+</style>
+<style>
+    #dateDisplay {
+        float: left;
+    }
+
+    h5 {
+        margin-bottom: 0;
+    }
+</style>
+
+<div class="tab-content">
+
+    <div class="row p-2">
+        <div class="col-xl-8">
+            <h5>تعریف ارتباطات</h5>
+        </div>
+        <div class="col-xl-4">
+            <h5 id="dateDisplay"></h5>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-xl-4">
+            <label class="form-label">کاربر را انتخاب کنید<span class="text-danger">*</span></label>
+            <div id="div_users"></div>
+        </div>
+        <div class="col-xl-8">
+            <label class="form-label">کاربران زیرمجموعه</label>
+            <span id="div_users1"></span>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-xl-11"></div>
+        <div class="col-xl-1">
+            <button id="btnCalculateAzmayeshi" type="button" class="btn form-control buttonGeneral">
+                <i class="fa fa-calculator fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text">ثبت</span>
+            </button>
+        </div>
+    </div>
+    <hr />
+    <div class="card">
+
+        <div class="table-content p-4">
+            <div class="tab-pane fade show active" id="allTab">
+                <div class="table-responsive tableH_Lock">
+                    <table class="table table-hover text-nowrap">
+                        <thead>
+                            <tr>
+                                <th>فعالیت</th>
+
+                                <th>
+                                    نام کاربر
+                                    <div class="inputWithFilterIcon">
+                                        <input type="text" id="filter01-filter" class="inputFilter form-control" placeholder="">
+
+                                        <span><i class="fas fa-filter"></i></span>
+                                    </div>
+                                </th>
+                                <th>
+                                    تعداد کاربران
+                                    <div class="inputWithFilterIcon">
+                                        <input type="text" id="filter02-filter" class="inputFilter form-control" placeholder="">
+
+                                        <span><i class="fas fa-filter"></i></span>
+                                    </div>
+                                </th>
+                                <th>
+                                    نام کابران زیر مجموعه
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                int II = 0;
+                            }
+                            @foreach (var it in Model)
+                            {
+                                string cityvalue = "";
+
+                                II++;
+                                foreach (var ttt in it.dbrelatinperson.ToList())
+                                {
+                                    cityvalue += ttt.tbUsers.FullName;
+                                    cityvalue += ",";
+                                }
+                                <tr class="task-list-row"
+                                    data-filter01="@it.tbUsers.FullName"
+                                    data-filter02=@it.dbrelatinperson.Count()>
+                                    <td>
+                                        <div class="ms-sm-4 mt-sm-0 mt-2 dropdown-toggle">
+                                            <a href="#" data-bs-toggle="dropdown" class="text-white text-opacity-75 text-decoration-none">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                            <div class="dropdown-menu">
+                                                @*<a data-bs-toggle="modal" data-bs-target="#modalLg1" class="dropdown-item edit" id="Edit_@item.ID">ویرایش</a>*@
+                                                <a data-bs-toggle="modal" data-bs-target="#modalLg1" class="dropdown-item Erja" id="Erja_@it.ID">ویرایش</a>
+                                                @*<a class="dropdown-item Delete" id="Delete_@item.ID">حذف</a>*@
+                                                @*<a data-bs-toggle="modal" data-bs-target="#modalLg" class="dropdown-item edit" id="Edit_@item.ID">ویرایش</a>*@
+
+
+                                            </div>
+
+
+                                        </div>
+                                    </td>
+                                    <td>@it.tbUsers.FullName</td>
+
+                                    <td>@it.dbrelatinperson.Count()</td>
+                                    <td>
+                                        @if (cityvalue.Length > 40)
+                                        {
+                                            <span title="@cityvalue">@cityvalue.Substring(0, 40)...</span>
+                                        }
+                                        else
+                                        {
+                                            @cityvalue
+                                        }
+                                    </td>
+
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="card-arrow">
+            <div class="card-arrow-top-left"></div>
+            <div class="card-arrow-top-right"></div>
+            <div class="card-arrow-bottom-left"></div>
+            <div class="card-arrow-bottom-right"></div>
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/sweetalert2.js" type="text/javascript"></script>
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/src/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script>
+
+    var
+        filters = {
+            filter01: null,
+            filter02: null,
+        };
+
+    function updateFilters() {
+        $('.task-list-row').hide().filter(function () {
+            var self = $(this),
+                result = true;
+
+            Object.keys(filters).forEach(function (filter) {
+                var filterData = self.data(filter);
+                if (filters[filter] && (filters[filter] != 'None') && (filters[filter] != 'همه')) {
+                    // تبدیل داده به رشته و بررسی مقدار
+                    result = result && (filterData && filterData.toString().indexOf(filters[filter]) !== -1);
+                }
+            });
+
+            return result;
+        }).show();
+    }
+
+    function changeFilter(filterName) {
+        filters[filterName] = this.value;
+        updateFilters();
+    }
+
+    // Assigned User Dropdown Filter
+    $('#filter01-filter').on('input', function () {
+        changeFilter.call(this, 'filter01');
+    });
+    $('#filter02-filter').on('input', function () {
+        changeFilter.call(this, 'filter02');
+    });
+
+
+
+</script>
+<script>
+    var options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+    var dateString = new Date().toLocaleDateString('fa-IR-u-nu-latn', options);
+    document.getElementById('dateDisplay').textContent = "تاریخ امروز : " + dateString;
+</script>
+<script>
+    $.each($("#select_users1"), function (index, item) {
+        $("#select_users1").attr("id", "select_peyman_");
+        $('#select_peyman_').attr("multiple", "multiple");
+        $('#select_peyman_').picker({ search: true });
+        $('#select_peyman_').on('sp-change', function () { });
+    });
+</script>
+<script>
+            $("#div_users1").load('@Url.Content("/../Users/Users/_PartialViewUsersListWithSearchAndMultiple")', function () {
+                $("#select_users1").attr("id", "users");
+                $('#users').attr("multiple", "multiple");
+                $('#users').picker({ search: true });
+                $('#users').on('sp-change', function () { });
+
+            });
+    $("#select_position").removeAttr("multiple");
+    $('#select_position').change(function () {
+         var x = $("#select_position").val();
+         $("#div_users1").load('@Url.Content("/../Users/Users/_PartialViewUsersListWithSearchAndMultiple")' , { positions: x }  , function () {
+            $("#select_users1").attr("id", "users");
+            $("#users").picker({ search: true });
+            $("#users").picker();
+            $('#users').picker({ search: true });
+
+          //$('#select_users1 option').attr("selected","selected");
+          //$('#select_users1').picker('refresh');
+        });
+    });
+          $(function () {
+          $("#div_users").load('@Url.Content("/../Users/Users/_PartialViewUsersListWithSearch")', function () {
+              $("#select_users1").attr("id", "users1");
+              $("#showContract").on("click",function(){
+                   var idd = $("#users1").val();
+              });
+          });
+          });
+
+
+                $("#btnCalculateAzmayeshi").click(function () {
+          var PeymanArr = [];
+                    $.each($("#users").val().toString().split(","), function (index, item) {
+              if (item !== "") {
+                  if (item != 'Select') {
+                      PeymanArr.push(item);
+                      console.log(item);
+                  }
+              }
+                    });
+                    console.log(PeymanArr);
+                    var month = $("#users1").val();
+
+
+
+
+              $.ajax({
+                  url: "@Url.Action("result", "Orders", new { area = "Setting" })",
+                  type: "Post",
+                  dataType: "html",
+                  data: { Fkpym: PeymanArr, usr: month },
+                  success: function (res) {
+                      document.getElementById("loading-message").style.display = "none";
+                      if (res = "True") {
+                          alert("با موفقیت ثبت شد ");
+                          location.reload();
+                      }
+
+                  },
+                  error: function (res) {
+                      console.log(res);
+
+                      document.getElementById("loading-message").style.display = "none";
+                      Toast.fire({
+                          icon: 'error',
+                          background: '#35434A',
+                          color: 'white',
+                          title: "عملیات  با خطا مواجه شد"
+                      });
+                      return false;
+                  }
+              });
+
+      });
+
+</script>
+<script>
+    $(".Details").click(function () {
+          var idd = $(this).attr("id").split("_")[1];
+          console.log(idd);
+        $("#big_modal_body").load('@Url.Content("Reporter/Dashboard/ModiriyatFaaliat_editertebatat")?id='+idd);
+    });
+                $(".Erja").click(function () {
+var idd = $(this).attr("id").split("_")[1];
+console.log(idd);
+    $("#big_modal_body1").load('@Url.Content("/Reporter/Dashboard/ModiriyatFaaliat_editertebatat")?id='+idd);
+});
+</script>
+

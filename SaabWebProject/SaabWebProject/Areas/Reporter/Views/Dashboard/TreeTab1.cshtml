@@ -1,0 +1,102 @@
+﻿@{
+    ViewBag.Title = "تعیین مراحل";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/MyStyles/MyStyle.css" rel="stylesheet" />
+
+<style>
+    .step {
+        text-align: center;
+    }
+</style>
+
+<div class="tab-content pt-20px">
+    <div class="row" id="bankInfo">
+
+    </div>
+    <hr />
+    <div class="">
+        <a href="#" class="btn form-control buttonGeneralPlus" onclick="AddNewHesab()">
+            <i class="fa fa-plus fa-fw me-1 VecGeneral"></i>
+        </a>
+    </div>
+</div>
+
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.js" type="text/javascript"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/sweetalert2.js" type="text/javascript"></script>
+<script>
+    let nodesLength = 0;
+
+    // تابع اضافه کردن مرحله جدید
+    window.AddNewHesab = function (e) {
+        // بررسی تعداد مراحل موجود
+        if (nodesLength >= 7) {
+            alert("شما نمی‌توانید بیش از 7 مرحله اضافه کنید!");
+            return; // خروج از تابع
+        }
+
+        nodesLength++;
+        $("#bankInfo").append(`
+            <div class="row col-xl-4 bankItem" id="bank_${nodesLength}">
+                <div class="col-xl-4 step">
+                    مرحله ${nodesLength}
+                </div>
+                <div class="col-xl-4">
+                    <label class="form-label">تعداد</label>
+                    <select class="form-select" id="Num_${nodesLength}" onchange="updateMaxLength(${nodesLength})">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                    </select>
+                </div>
+                <div class="col-xl-4">
+                    <label class="form-label">شماره شروع</label>
+                    <input class="form-control" id="cod_${nodesLength}">
+                </div>
+            </div>
+        `);
+
+        // به‌روز‌رسانی طول ورودی شماره شروع بعد از اضافه کردن مرحله
+        updateMaxLength(nodesLength);
+    };
+
+    // تابع برای به‌روزرسانی maxlength ورودی شماره شروع
+    function updateMaxLength(nodeId) {
+        const selectElement = document.getElementById(`Num_${nodeId}`);
+        const selectedValue = parseInt(selectElement.value);
+        const inputElement = document.getElementById(`cod_${nodeId}`);
+
+        // پاک کردن مقدار قبلی ورودی
+        inputElement.value = '';
+
+        // تنظیم maxlength بر اساس تعداد انتخاب شده
+        inputElement.maxLength = selectedValue === 1 ? 1 :
+            selectedValue === 2 ? 2 :
+                selectedValue === 3 ? 3 :
+                    selectedValue === 4 ? 4 : 5; // می‌توانید بیشتر تنظیم کنید
+    }
+
+    // تابع حذف مرحله
+    window.clearInputs = function (input) {
+        var RemoveId = input.id;
+        var Id = RemoveId.split('_')[1];
+        $("#bank_" + Id).remove();
+
+        // کاهش تعداد مراحل
+        nodesLength--;
+    };
+
+    // تابع برای جابجایی بین فیلدها
+    window.moveToNext = function (currentInput, nextInputId) {
+        if (currentInput.value.length >= currentInput.maxLength) {
+            if (nextInputId) {
+                document.getElementById(nextInputId).focus();
+            }
+        }
+    };
+</script>

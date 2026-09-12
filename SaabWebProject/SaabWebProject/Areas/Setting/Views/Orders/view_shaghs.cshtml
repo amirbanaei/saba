@@ -1,0 +1,105 @@
+﻿@* اگر مدل خاصی ندارید این خط را بگذارید بماند یا حذف کنید *@
+@* @model IEnumerable<SaabWebProject.Models.DomainModels.tbTarifAbzarKar1> *@
+
+@{
+    ViewBag.Title = "تعریف شاخه جدید";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+
+<style>
+    .title-page-custom {
+        display: flex;
+        height: 100%;
+        width: 250px;
+        background: var(--bs-Meno-color);
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        padding: 10px;
+        border-radius: 5px;
+        color: white;
+    }
+
+    #titleInput {
+        text-align: right;
+        direction: rtl;
+    }
+</style>
+
+<div class="tab-content" style="padding:20px; background:#f7f7f7; border-radius:10px; margin-top:20px;">
+
+    @* ۱. توکن امنیتی اجباری *@
+    @Html.AntiForgeryToken()
+
+    <div class="row">
+        <div class="col-xl-2 ">
+            <label class="form-label" for="titleInput">عنوان شاخه</label>
+            <input id="titleInput" class="form-control" type="text" />
+        </div>
+        <div class="col-xl-1 col-2">
+            <button type="button" class="btn form-control buttonGeneral" id="Send2">
+                <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text">ثبت</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-xl-11 col-10"></div>
+
+    </div>
+    <div id="ListUsers">
+        @Html.Action("view_shaghslist", "Orders", new { area = "Setting" })
+    </div>
+</div>
+
+@section Scripts {
+    @* اسکریپت‌ها را در بخش Scripts قرار دهید تا بعد از jQuery لود شوند *@
+    <script>
+        $(document).ready(function () {
+            $("#Send2").on("click", function (e) {
+                e.preventDefault();
+
+                var titleVal = $("#titleInput").val().trim();
+
+                if (titleVal === "") {
+                    alert("لطفاً ابتدا عنوان شاخه را وارد نمایید.");
+                    return;
+                }
+
+                var $btn = $(this);
+                $btn.prop("disabled", true);
+
+                // استخراج توکن ضد جعل
+                var token = $('input[name="__RequestVerificationToken"]').val();
+
+                $.ajax({
+                    // دقت کنید که آدرس با اسلش شروع شود یا از Url.Action استفاده شود
+                    url: '@Url.Action("AddShagheh", "Orders", new { area = "Setting" })',
+                    type: 'POST',
+                    data: {
+                        __RequestVerificationToken: token, // ارسال توکن
+                        title: titleVal
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            alert(response.message);
+                            $("#titleInput").val("");
+                        } else {
+                            alert("خطا در ثبت: " + response.message);
+                        }
+                    },
+                    error: function (xhr) {
+                        console.error(xhr.responseText);
+                        alert("خطا در برقراری ارتباط با سرور. وضعیت: " + xhr.status);
+                    },
+                    complete: function () {
+                        $btn.prop("disabled", false);
+                    }
+                });
+            });
+        });
+    </script>
+}

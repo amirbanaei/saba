@@ -1,0 +1,1111 @@
+﻿@model IEnumerable<SaabWebProject.Models.DomainModels.olaviat_1218_link_shart>
+@using SaabWebProject.Models.DomainModels
+@{
+    var modell = Model.FirstOrDefault();
+}
+@{
+    SaabEntities db = new SaabEntities();
+    Layout = null;
+}
+
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+
+<style>
+    .form-select {
+        margin-bottom: 0px !important;
+    }
+
+    .dynamic-row div {
+        position: relative;
+    }
+
+        .dynamic-row div .form-label {
+            position: absolute;
+            top: 0px;
+            right: 5px;
+        }
+
+    .second-row div {
+        position: relative;
+    }
+
+        .second-row div .form-label {
+            position: absolute;
+            top: 0px;
+            right: 5px;
+        }
+
+    .removeRow {
+        background-image: linear-gradient(#cd4646, #631010);
+        border: none;
+    }
+</style>
+
+<ul class="nav nav-tabs nav-tabs-v2 ps-4 pe-4" id="pills-tab" style="margin-bottom:30px">
+    @if (modell.vaziat_moh == 1)
+    {
+        <li class="nav-item me-3">
+            <a href="#page1" class="nav-link active" data-bs-toggle="tab">
+                <button class="nav-btn">محاسباتی</button>
+            </a>
+        </li>
+    }
+    else if (modell.vaziat_moh == 2)
+    {
+        <li class="nav-item me-3">
+            <a href="#page2" class="nav-link active" data-bs-toggle="tab">
+                <button class="nav-btn">باشد نباشد</button>
+            </a>
+        </li>
+    }
+    else if (modell.vaziat_moh == 3)
+    {
+        <li class="nav-item me-3">
+            <a href="#page3" class="nav-link active" data-bs-toggle="tab">
+                <button class="nav-btn">وضعیت نهایی</button>
+            </a>
+        </li>
+    }
+</ul>
+
+<div class="tab-content" id="pills-tabContent">
+    @{
+        var rowIndex = 0;
+    }
+
+    @if (modell.vaziat_moh == 1)
+    {
+        var isshart = Model.Any(x => x.isif == 1) ? 1 : 0;
+        var rowIndex2 = 0;
+
+        <div class="tab-pane fade show active" id="page1">
+
+            <div class="row mb-2">
+                <div class="col-xl-10"></div>
+                <div class="col-xl-1" style="margin-right: 35px;">
+                    <button id="addRowBtn" type="button" class="btn form-control buttonsabt">
+                        <i class="bi bi-plus-circle fa-fw me-1 VecGeneral"></i>
+                        <span class="bSabt-text">افزودن</span>
+                    </button>
+                </div>
+            </div>
+
+            <div style="min-height: 165px; max-height: 165px;" id="rowsContainer">
+                @foreach (var it in Model.Where(s => s.FK_gozaresh1 != null))
+                {
+                    rowIndex += 1;
+                    <div class="row dynamic-row mb-2" data-index="@rowIndex">
+                        <div class="col-xl-3">
+                            <label class="form-label">عنوان فیلد</label>
+                            <select class="form-select select_peyman1" name="select_peyman@rowIndex" id="select_peyman@rowIndex">
+                                <option hidden value="Select">انتخاب مورد</option>
+                                @foreach (var item in db.dbergharel_4_4.ToList())
+                                {
+                                    <option value="@item.ID" @(item.ID == it.FK_gozaresh1 ? "selected" : "")>@item.name</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-xl-3">
+                            <label class="form-label">نام ستون</label>
+                            <select class="form-select peyman-search" name="select_users@rowIndex" id="select_users@rowIndex">
+                                <option value="0">انتخاب کنید</option>
+                                @foreach (var item in db.dbergharel4_5.ToList())
+                                {
+                                    <option value="@item.FK_dbergharel2" @(item.FK_dbergharel2 == it.FK_name ? "selected" : "")>
+                                        @item.dbergha2.name ✅
+                                    </option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-xl-2">
+                            <label class="form-label">علامت</label>
+                            <select class="form-select select_peyman" name="SelectPeyman[@rowIndex]" id="SelectPeyman_@rowIndex">
+                                <option hidden></option>
+                                <option value="1" @(it.alamat == 1 ? "selected" : "")>-</option>
+                                <option value="2" @(it.alamat == 2 ? "selected" : "")>+</option>
+                                <option value="3" @(it.alamat == 3 ? "selected" : "")>*</option>
+                                <option value="4" @(it.alamat == 4 ? "selected" : "")>/</option>
+                                <option value="5" @(it.alamat == 5 ? "selected" : "")>=</option>
+                                <option value="6" @(it.alamat == 6 ? "selected" : "")>B</option>
+                                <option value="7" @(it.alamat == 7 ? "selected" : "")>&gt;</option>
+                                <option value="9" @(it.alamat == 9 ? "selected" : "")>&lt;</option>
+                                <option value="10" @(it.alamat == 10 ? "selected" : "")>&lt;=</option>
+                            </select>
+                        </div>
+
+                        <div class="col-xl-2"></div>
+
+                        <div class="col-xl-1" style="margin-right: 35px;">
+                            <button type="button" class="btn form-control buttonsabt removeRow">
+                                <i class="bi bi-x-circle fa-fw me-1 VecGeneral"></i>
+                                <span class="bSabt-text">حذف</span>
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <hr />
+
+            <div style="overflow-y: auto; overflow-x: hidden;" id="finalSummaryContainer"></div>
+
+            <div class="row mb-2">
+                <div class="col-xl-10"></div>
+                <div class="col-xl-1" style="margin-right: 35px;">
+                    <button id="finalSummaryBtn" type="button" class="btn form-control buttonsabt">
+                        <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                        <span class="bSabt-text">جمع بندی نهایی</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="if-section mt-4">
+                <div class="row mb-3">
+                    <div class="col-xl-4">
+                        <label class="form-label fw-bold">آیا مایل به استفاده از شرط هستید؟</label>
+                        <select id="useIfCondition" class="form-select border-primary">
+                            @if (isshart != 1)
+                            {
+                                <option value="0" selected>خیر - بدون شرط</option>
+                                <option value="1">بله - اعمال شرط (IF)</option>
+                            }
+                            else
+                            {
+                                <option value="1" selected>بله - اعمال شرط (IF)</option>
+                                <option value="0">خیر - بدون شرط</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-xl-8 text-end pt-4">
+                        <button id="addIfRowBtn" type="button" class="btn btn-outline-primary btn-sm" style="@(isshart == 1 ? "" : "display:none;")">
+                            <i class="bi bi-plus-lg"></i> افزودن شرط جدید
+                        </button>
+                    </div>
+                </div>
+
+                <div id="ifRowsContainer" style="@(isshart == 1 ? "" : "display:none;")">
+                    @foreach (var it in Model.Where(x => x.isif == 1))
+                    {
+                        rowIndex2 += 1;
+                        <div class="if-row mb-2 border-bottom pb-2">
+                            <div class="row">
+                                <div class="col-xl-2">
+                                    <label class="small">منطق @rowIndex2</label>
+                                    <select class="form-select sel-if-logic">
+                                        <option value="AND" @(it.val2 == "AND" ? "selected" : "")>AND</option>
+                                        <option value="OR" @(it.val2 == "OR" ? "selected" : "")>OR</option>
+                                        <option value="AND NOT" @(it.val2 == "AND NOT" ? "selected" : "")>AND NOT</option>
+                                        <option value="OR NOT" @(it.val2 == "OR NOT" ? "selected" : "")>OR NOT</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xl-3">
+                                    <label class="small">فیلد شرط @rowIndex2</label>
+                                    <select class="form-select sel-if-gozaresh">
+                                        <option value="">انتخاب...</option>
+                                        @foreach (var item in db.dbergharel_4_4.ToList())
+                                        {
+                                            <option value="@item.ID" @(item.ID == it.FK_gozaresh_if ? "selected" : "")>@item.name</option>
+                                        }
+                                    </select>
+                                </div>
+
+                                <div class="col-xl-3">
+                                    <label class="small">نام ستون @rowIndex2</label>
+                                    <select class="form-select peyman-search3 sel-if-name">
+                                        <option value="">انتخاب...</option>
+                                        @foreach (var item in db.dbergharel4_5.ToList())
+                                        {
+                                            <option value="@item.FK_dbergharel2" @(item.FK_dbergharel2 == it.FK_name_if ? "selected" : "")>
+                                                @item.dbergha2.name ✅
+                                            </option>
+                                        }
+                                    </select>
+                                </div>
+
+                                <div class="col-xl-2">
+                                    <label class="small">علامت @rowIndex2</label>
+                                    <select class="form-select sel-if-alamat">
+                                        <option value="1" @(it.alamat_if == 1 ? "selected" : "")>=</option>
+                                        <option value="2" @(it.alamat_if == 2 ? "selected" : "")>!=</option>
+                                        <option value="3" @(it.alamat_if == 3 ? "selected" : "")>&gt;</option>
+                                        <option value="4" @(it.alamat_if == 4 ? "selected" : "")>&lt;</option>
+                                        <option value="5" @(it.alamat_if == 5 ? "selected" : "")>&gt;=</option>
+                                        <option value="6" @(it.alamat_if == 6 ? "selected" : "")>&lt;=</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xl-1">
+                                    <label class="small">مقدار @rowIndex2</label>
+                                    <input type="text" class="form-control sel-if-val" value="@it.shart_value" />
+                                </div>
+
+                                <div class="col-xl-1 pt-4">
+                                    <button type="button" class="btn btn-danger btn-sm removeIfRow">حذف</button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-xl-10"></div>
+                <div class="col-xl-1" style="margin-right: 35px;">
+                    <button id="sabt-tab1" type="button" class="btn form-control buttonsabt">
+                        <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                        <span class="bSabt-text">ثبت</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    }
+    else if (modell.vaziat_moh == 2)
+    {
+        <div class="tab-pane fade show " id="page1">
+            <div class="row mb-2">
+                <div class="col-xl-10">
+
+
+
+                </div>
+                <div class="col-xl-1" style="margin-right: 35px;">
+                    <button id="addRowBtn" type="button" class="btn form-control buttonsabt">
+                        <i class="bi bi-plus-circle fa-fw me-1 VecGeneral"></i>
+                        <span class="bSabt-text">افزودن</span>
+                    </button>
+                </div>
+            </div>
+
+
+
+
+            <div style="min-height: 165px; max-height: 165px; overflow-y: auto; overflow-x: hidden;" id="rowsContainer">
+                @foreach (var it in Model)
+                {
+                    rowIndex += 1;
+                    <div class="row dynamic-row mb-2" data-index="@rowIndex">
+                        <div class="col-xl-3">
+                            <label class="form-label">عنوان فیلد</label>
+                            <select class="form-select select_peyman1" name="@( "select_peyman" + rowIndex )" id="@( "select_peyman" + rowIndex )">
+                                <option hidden value="Select">انتخاب مورد</option>
+                                @foreach (var item in db.dbergharel_4_4.ToList())
+                                {
+                                    <option value="@item.ID" @(item.ID == it.FK_gozaresh1 ? "selected" : "")>@item.name</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-xl-3">
+                            <label class="form-label">نام ستون</label>
+                            <select class="form-select peyman-search" name="@( "select_users" + rowIndex )" id="@( "select_users" + rowIndex )">
+
+                                <option value="0">انتخاب کنید</option>
+                                @foreach (var item in db.dbergharel4_5.ToList())
+                                {
+                                    <option value="@item.FK_dbergharel2" @(item.FK_dbergharel2 == it.FK_name ? "selected" : "")>@item.dbergha2.name ✅</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-xl-2">
+                            <label class="form-label">علامت</label>
+                            <select class="form-select select_peyman" name="@( "SelectPeyman[" + rowIndex + "]" )"
+                                    id="@( "SelectPeyman[" + rowIndex + "]" )">
+                                <option hidden></option>
+                                <option value="1" @(it.alamat == 1 ? "selected" : "")>-</option>
+                                <option value="2" @(it.alamat == 2 ? "selected" : "")>+</option>
+                                <option value="3" @(it.alamat == 3 ? "selected" : "")>*</option>
+                                <option value="4" @(it.alamat == 4 ? "selected" : "")>/</option>
+                                <option value="5" @(it.alamat == 5 ? "selected" : "")>=</option>
+                                <option value="6" @(it.alamat == 6 ? "selected" : "")>B</option>
+                                <option value="7" @(it.alamat == 7 ? "selected" : "")>></option>
+                                <option value="9" @(it.alamat == 9 ? "selected" : "")><</option>
+                                <option value="10" @(it.alamat == 10 ? "selected" : "")>=<</option>
+                            </select>
+                        </div>
+
+                        <div class="col-xl-2"></div>
+
+                        <div class="col-xl-1" style="margin-right: 35px;">
+                            <button type="button" class="btn form-control buttonsabt removeRow">
+                                <i class="bi bi-x-circle fa-fw me-1 VecGeneral"></i>
+                                <span class="bSabt-text">حذف</span>
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+            <hr />
+            <div style=" overflow-y: auto; overflow-x: hidden;" id="finalSummaryContainer"></div>
+            <div class="row mb-2">
+                <div class="col-xl-10"></div>
+                <div class="col-xl-1" style="margin-right: 35px;">
+                    <button id="finalSummaryBtn" type="button" class="btn form-control buttonsabt">
+                        <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                        <span class="bSabt-text">جمع بندی نهایی</span>
+                    </button>
+                </div>
+            </div>
+
+
+
+
+
+            <div class="row mb-2">
+                <div class="col-xl-10"></div>
+                <div class="col-xl-1" style="margin-right: 35px;">
+                    <button id="sabt-tab1" type="button" class="btn form-control buttonsabt">
+                        <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                        <span class="bSabt-text">ثبت</span>
+                    </button>
+                </div>
+            </div>
+
+
+
+            <!-- Template row (hidden) -->
+
+
+        </div>
+
+        <div class="tab-pane fade active show" id="page2">
+
+            <div class="row" style="margin-top:10px;">
+                <div class="col-xl-2">
+                    <label class="form-label">عنوان فیلد</label>
+                    <select id="onvan1-tab2" class="form-select select_peyman1">
+                        <option hidden value="Select"></option>
+                        @foreach (var item in db.dbergharel_4_4.ToList())
+                        {
+                            <option value="@item.ID" @(item.ID == modell.FK_gozaresh1 ? "selected" : "")>@item.name</option>
+
+                            @*<option value="@item.ID">@item.name</option>*@
+                        }
+                    </select>
+                </div>
+
+                <div class="col-xl-2">
+                    <label class="form-label">نام ستون</label>
+
+                    <select id="karbar1-tab2" class="form-select peyman-search">
+                        <option value="0"></option>
+                        @foreach (var item in db.dbergharel4_5.ToList())
+                        {
+                            <option value="@item.FK_dbergharel2" @(item.FK_dbergharel2 == modell.FK_name ? "selected" : "")>@item.dbergha2.name ✅</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="col-xl-2">
+                    <label class="form-label">وضعیت</label>
+                    <select id="vazeat-tab2" class="form-select select_peyman">
+                        <option hidden></option>
+                        <option value="1" @(modell.alamat == 1 ? "selected" : "")>باشد</option>
+                        <option value="2" @(modell.alamat == 2 ? "selected" : "")>نباشد</option>
+
+
+                    </select>
+                </div>
+                <div class="col-xl-2">
+                    <label class="form-label">عنوان فیلد</label>
+                    <select id="onvan2-tab2" class="form-select select_peyman1">
+                        <option hidden value="Select"></option>
+                        @foreach (var item in db.dbergharel_4_4.ToList())
+                        {
+                            <option value="@item.ID" @(item.ID == modell.FK_gozaresh2 ? "selected" : "")>@item.name</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="col-xl-2">
+                    <label class="form-label">نام ستون</label>
+
+                    <select id="karbar2-tab2" class="form-select peyman-search">
+                        <option value="0"></option>
+                        @foreach (var item in db.dbergharel4_5.ToList())
+                        {
+                            <option value="@item.FK_dbergharel2" @(item.FK_dbergharel2 == modell.FK_name2 ? "selected" : "")>@item.dbergha2.name ✅</option>
+
+                            @*<option value="@item.FK_dbergharel2">@item.dbergha2.name ✅</option>*@
+                        }
+                    </select>
+                </div>
+
+
+            </div>
+            <div class="row mb-2">
+                <div class="col-xl-10"></div>
+                <div class="col-xl-1" style="margin-right: 35px;">
+                    <button id="sabt-tab2" type="button" class="btn form-control buttonsabt">
+                        <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                        <span class="bSabt-text">ثبت</span>
+                    </button>
+                </div>
+            </div>
+
+            <script>
+                $(document).ready(function () {
+                    $("#page2 .peyman-search").picker({
+                        search: true
+                    });
+                });
+            </script>
+
+
+        </div>
+        <div class="tab-pane fade show" id="page3">
+
+            <div class="row" style="margin-top:10px;">
+                <div class="col-xl-2">
+                    <label class="form-label">عنوان فیلد</label>
+                    <select id="onvan1-tab3" class="form-select select_peyman1">
+                        <option hidden value="Select"></option>
+                        @foreach (var item in db.dbergharel_4_4.ToList())
+                        {
+                            <option value="@item.ID">@item.name</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="col-xl-2">
+                    <label class="form-label">نام ستون</label>
+
+                    <select id="karbar1-tab3" class="form-select peyman-search">
+                        <option value="0"></option>
+                        @foreach (var item in db.dbergharel4_5.ToList())
+                        {
+                            <option value="@item.FK_dbergharel2">@item.dbergha2.name ✅</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-xl-2">
+                    <div class="form-group mb-3" style="margin-bottom: 0px !important;">
+                        <label class="form-label">مبلغ</label>
+                        <input class="form-control" id="mablagh-tab3" />
+                    </div>
+                </div>
+                <div class="col-xl-2">
+                    <label class="form-label">علامت</label>
+                    <select id="vazeat-tab3" class="form-select select_peyman">
+                        <option hidden></option>
+                        <option value="1" @(modell.alamat == 1 ? "selected" : "")>!=</option>
+
+                        <option value="3" @(modell.alamat == 3 ? "selected" : "")>=</option>
+
+
+                    </select>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-xl-10"></div>
+                <div class="col-xl-1" style="margin-right: 35px;">
+                    <button id="sabt-tab3" type="button" class="btn form-control buttonsabt">
+                        <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                        <span class="bSabt-text">ثبت</span>
+                    </button>
+                </div>
+            </div>
+
+
+
+            <script>
+
+                //$(document).ready(function () {
+                //    $("#page3 .peyman-search").picker({
+                //        search: true
+                //    });
+                //});
+            </script>
+
+        </div>
+    }
+    else if (modell.vaziat_moh == 3)
+    {
+        <div class="tab-pane fade show " id="page1">
+            <div class="row mb-2">
+                <div class="col-xl-10">
+
+
+
+                </div>
+                <div class="col-xl-1" style="margin-right: 35px;">
+                    <button id="addRowBtn" type="button" class="btn form-control buttonsabt">
+                        <i class="bi bi-plus-circle fa-fw me-1 VecGeneral"></i>
+                        <span class="bSabt-text">افزودن</span>
+                    </button>
+                </div>
+            </div>
+
+
+
+
+            <div style="min-height: 165px; max-height: 165px; overflow-y: auto; overflow-x: hidden;" id="rowsContainer">
+                @foreach (var it in Model)
+                {
+                    rowIndex += 1;
+                    <div class="row dynamic-row mb-2" data-index="@rowIndex">
+                        <div class="col-xl-3">
+                            <label class="form-label">عنوان فیلد</label>
+                            <select class="form-select select_peyman1" name="@( "select_peyman" + rowIndex )" id="@( "select_peyman" + rowIndex )">
+                                <option hidden value="Select">انتخاب مورد</option>
+                                @foreach (var item in db.dbergharel_4_4.ToList())
+                                {
+                                    <option value="@item.ID" @(item.ID == it.FK_gozaresh1 ? "selected" : "")>@item.name</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-xl-3">
+                            <label class="form-label">نام ستون</label>
+                            <select class="form-select peyman-search" name="@( "select_users" + rowIndex )" id="@( "select_users" + rowIndex )">
+
+                                <option value="0">انتخاب کنید</option>
+                                @foreach (var item in db.dbergharel4_5.ToList())
+                                {
+                                    <option value="@item.FK_dbergharel2" @(item.FK_dbergharel2 == it.FK_name ? "selected" : "")>@item.dbergha2.name ✅</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-xl-2">
+                            <label class="form-label">علامت</label>
+                            <select class="form-select select_peyman" name="@( "SelectPeyman[" + rowIndex + "]" )"
+                                    id="@( "SelectPeyman[" + rowIndex + "]" )">
+                                <option hidden></option>
+                                <option value="1" @(it.alamat == 1 ? "selected" : "")>-</option>
+                                <option value="2" @(it.alamat == 2 ? "selected" : "")>+</option>
+                                <option value="3" @(it.alamat == 3 ? "selected" : "")>*</option>
+                                <option value="4" @(it.alamat == 4 ? "selected" : "")>/</option>
+                                <option value="5" @(it.alamat == 5 ? "selected" : "")>=</option>
+                                <option value="6" @(it.alamat == 6 ? "selected" : "")>B</option>
+                                <option value="7" @(it.alamat == 7 ? "selected" : "")>></option>
+                                <option value="9" @(it.alamat == 9 ? "selected" : "")><</option>
+                                <option value="10" @(it.alamat == 10 ? "selected" : "")>=<</option>
+                            </select>
+                        </div>
+
+                        <div class="col-xl-2"></div>
+
+                        <div class="col-xl-1" style="margin-right: 35px;">
+                            <button type="button" class="btn form-control buttonsabt removeRow">
+                                <i class="bi bi-x-circle fa-fw me-1 VecGeneral"></i>
+                                <span class="bSabt-text">حذف</span>
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+            <hr />
+            <div style=" overflow-y: auto; overflow-x: hidden;" id="finalSummaryContainer"></div>
+            <div class="row mb-2">
+                <div class="col-xl-10"></div>
+                <div class="col-xl-1" style="margin-right: 35px;">
+                    <button id="finalSummaryBtn" type="button" class="btn form-control buttonsabt">
+                        <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                        <span class="bSabt-text">جمع بندی نهایی</span>
+                    </button>
+                </div>
+            </div>
+
+
+
+
+
+            <div class="row mb-2">
+                <div class="col-xl-10"></div>
+                <div class="col-xl-1" style="margin-right: 35px;">
+                    <button id="sabt-tab1" type="button" class="btn form-control buttonsabt">
+                        <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                        <span class="bSabt-text">ثبت</span>
+                    </button>
+                </div>
+            </div>
+
+
+
+            <!-- Template row (hidden) -->
+
+
+        </div>
+
+        <div class="tab-pane fade  show" id="page2">
+
+            <div class="row" style="margin-top:10px;">
+                <div class="col-xl-2">
+                    <label class="form-label">عنوان فیلد</label>
+                    <select id="onvan1-tab2" class="form-select select_peyman1">
+                        <option hidden value="Select"></option>
+                        @foreach (var item in db.dbergharel_4_4.ToList())
+                        {
+                            <option value="@item.ID" @(item.ID == modell.FK_gozaresh1 ? "selected" : "")>@item.name</option>
+
+                            @*<option value="@item.ID">@item.name</option>*@
+                        }
+                    </select>
+                </div>
+
+                <div class="col-xl-2">
+                    <label class="form-label">نام ستون</label>
+
+                    <select id="karbar1-tab2" class="form-select peyman-search">
+                        <option value="0"></option>
+                        @foreach (var item in db.dbergharel4_5.ToList())
+                        {
+                            <option value="@item.FK_dbergharel2" @(item.FK_dbergharel2 == modell.FK_name ? "selected" : "")>@item.dbergha2.name ✅</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="col-xl-2">
+                    <label class="form-label">وضعیت</label>
+                    <select id="vazeat-tab2" class="form-select select_peyman">
+                        <option hidden></option>
+                        <option value="1" @(modell.alamat == 1 ? "selected" : "")>باشد</option>
+                        <option value="2" @(modell.alamat == 2 ? "selected" : "")>نباشد</option>
+
+
+                    </select>
+                </div>
+                <div class="col-xl-2">
+                    <label class="form-label">عنوان فیلد</label>
+                    <select id="onvan2-tab2" class="form-select select_peyman1">
+                        <option hidden value="Select"></option>
+                        @foreach (var item in db.dbergharel_4_4.ToList())
+                        {
+                            <option value="@item.ID" @(item.ID == modell.FK_gozaresh2 ? "selected" : "")>@item.name</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="col-xl-2">
+                    <label class="form-label">نام ستون</label>
+
+                    <select id="karbar2-tab2" class="form-select peyman-search">
+                        <option value="0"></option>
+                        @foreach (var item in db.dbergharel4_5.ToList())
+                        {
+                            <option value="@item.FK_dbergharel2" @(item.FK_dbergharel2 == modell.FK_name2 ? "selected" : "")>@item.dbergha2.name ✅</option>
+
+                            @*<option value="@item.FK_dbergharel2">@item.dbergha2.name ✅</option>*@
+                        }
+                    </select>
+                </div>
+
+
+            </div>
+            <div class="row mb-2">
+                <div class="col-xl-10"></div>
+                <div class="col-xl-1" style="margin-right: 35px;">
+                    <button id="sabt-tab2" type="button" class="btn form-control buttonsabt">
+                        <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                        <span class="bSabt-text">ثبت</span>
+                    </button>
+                </div>
+            </div>
+
+            <script>
+                $(document).ready(function () {
+                    $("#page2 .peyman-search").picker({
+                        search: true
+                    });
+                });
+            </script>
+
+
+        </div>
+        <div class="tab-pane fade active show" id="page3">
+
+            <div class="row" style="margin-top:10px;">
+                <div class="col-xl-2">
+                    <label class="form-label">عنوان فیلد</label>
+                    <select id="onvan1-tab3" class="form-select select_peyman1">
+                        <option hidden value="Select"></option>
+                        @foreach (var item in db.dbergharel_4_4.ToList())
+                        {
+                            <option value="@item.ID" @(item.ID == modell.FK_gozaresh1 ? "selected" : "")>@item.name</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="col-xl-2">
+                    <label class="form-label">نام ستون</label>
+
+                    <select id="karbar1-tab3" class="form-select peyman-search">
+                        <option value="0"></option>
+                        @foreach (var item in db.dbergharel4_5.ToList())
+                        {
+                            @*<option value="@item.ID" @(item.ID == it.FK_gozaresh1 ? "selected" : "")>@item.name</option>*@
+
+                            <option value="@item.FK_dbergharel2" @(item.ID == modell.FK_name ? "selected" : "")>
+                                @item.dbergha2.name ✅
+                            </option>
+                        }
+                    </select>
+                </div>
+                <div class="col-xl-2">
+                    <div class="form-group mb-3" style="margin-bottom: 0px !important;">
+                        <label class="form-label">مقدار</label>
+                        <input class="form-control" id="mablagh-tab3" value="@modell.val1" />
+                    </div>
+                </div>
+                <div class="col-xl-2">
+                    <label class="form-label">علامت</label>
+                    <select id="vazeat-tab3" class="form-select select_peyman">
+                        <option hidden></option>
+                        <option value="1" @(modell.alamat == 1 ? "selected" : "")>!=</option>
+
+                        <option value="3" @(modell.alamat == 3 ? "selected" : "")>=</option>
+
+                    </select>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-xl-10"></div>
+                <div class="col-xl-1" style="margin-right: 35px;">
+                    <button id="sabt-tab3" type="button" class="btn form-control buttonsabt">
+                        <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                        <span class="bSabt-text">ثبت</span>
+                    </button>
+                </div>
+            </div>
+
+
+
+            @*<script>
+
+                    $(document).ready(function () {
+                        $("#page3 .peyman-search").picker({
+                            search: true
+                        });
+                    });
+                </script>*@
+
+        </div>
+    }
+</div>
+
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+
+<script>
+    let rowIndex = @rowIndex;
+
+    function initPicker($scope) {
+        $scope.find(".peyman-search, .peyman-search3").each(function () {
+            if (!$(this).data("picker-initialized")) {
+                $(this).picker({ search: true });
+                $(this).data("picker-initialized", true);
+            }
+        });
+    }
+
+    function reIndexIfRows() {
+        $("#ifRowsContainer .if-row").each(function (i) {
+            let idx = i + 1;
+            $(this).find(".small").eq(0).text("منطق " + idx);
+            $(this).find(".small").eq(1).text("فیلد شرط " + idx);
+            $(this).find(".small").eq(2).text("نام ستون " + idx);
+            $(this).find(".small").eq(3).text("علامت " + idx);
+            $(this).find(".small").eq(4).text("مقدار " + idx);
+        });
+    }
+
+    function addIfRow() {
+        let ifIndex = $("#ifRowsContainer .if-row").length + 1;
+
+        let ifHtml = `
+        <div class="if-row mb-2 border-bottom pb-2">
+            <div class="row">
+                <div class="col-xl-2">
+                    <label class="small">منطق ${ifIndex}</label>
+                    <select class="form-select sel-if-logic">
+                        <option value="AND">AND</option>
+                        <option value="OR">OR</option>
+                        <option value="AND NOT">AND NOT</option>
+                        <option value="OR NOT">OR NOT</option>
+                    </select>
+                </div>
+
+                <div class="col-xl-3">
+                    <label class="small">فیلد شرط ${ifIndex}</label>
+                    <select class="form-select sel-if-gozaresh">
+                        <option value="">انتخاب...</option>
+                        @foreach (var item in db.dbergharel_4_4.ToList())
+                        {
+                            <option value="@item.ID">@item.name</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="col-xl-3">
+                    <label class="small">نام ستون ${ifIndex}</label>
+                    <select class="form-select peyman-search3 sel-if-name">
+                        <option value="">انتخاب...</option>
+                        @foreach (var item in db.dbergharel4_5.ToList())
+                        {
+                            <option value="@item.FK_dbergharel2">@item.dbergha2.name ✅</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="col-xl-2">
+                    <label class="small">علامت ${ifIndex}</label>
+                    <select class="form-select sel-if-alamat">
+                        <option value="1">=</option>
+                        <option value="2">!=</option>
+                        <option value="3">&gt;</option>
+                        <option value="4">&lt;</option>
+                        <option value="5">&gt;=</option>
+                        <option value="6">&lt;=</option>
+                    </select>
+                </div>
+
+                <div class="col-xl-1">
+                    <label class="small">مقدار ${ifIndex}</label>
+                    <input type="text" class="form-control sel-if-val" />
+                </div>
+
+                <div class="col-xl-1 pt-4">
+                    <button type="button" class="btn btn-danger btn-sm removeIfRow">حذف</button>
+                </div>
+            </div>
+        </div>`;
+
+        let $newRow = $(ifHtml);
+        $("#ifRowsContainer").append($newRow);
+        initPicker($newRow);
+        reIndexIfRows();
+    }
+
+    function addNewRow() {
+        let hasLockedOperator = false;
+
+        $("#rowsContainer .dynamic-row").each(function () {
+            let vazeatVal = $(this).find(".select_peyman").val();
+            if (vazeatVal === "6" || vazeatVal === "7" || vazeatVal === "8" || vazeatVal === "10" || vazeatVal === "5" || vazeatVal === "9") {
+                hasLockedOperator = true;
+                return false;
+            }
+        });
+
+        if (hasLockedOperator) {
+            alert("شما در این حالت نمی‌توانید ردیف جدیدی اضافه کنید!");
+            return;
+        }
+
+        rowIndex++;
+
+        let newRowHtml = `
+        <div class="row dynamic-row mb-2" data-index="${rowIndex}">
+            <div class="col-xl-3">
+                <label class="form-label">عنوان فیلد</label>
+                <select class="form-select select_peyman1" name="select_peyman${rowIndex}">
+                    <option hidden value="Select">انتخاب مورد</option>
+                    @foreach (var item in db.dbergharel_4_4.ToList())
+                    {
+                        <option value="@item.ID">@item.name</option>
+                    }
+                </select>
+            </div>
+
+            <div class="col-xl-3">
+                <label class="form-label">نام ستون</label>
+                <select class="form-select peyman-search" name="select_users${rowIndex}">
+                    <option value="0">انتخاب کنید</option>
+                    @foreach (var item in db.dbergharel4_5.ToList())
+                    {
+                        <option value="@item.FK_dbergharel2">@item.dbergha2.name ✅</option>
+                    }
+                </select>
+            </div>
+
+            <div class="col-xl-2">
+                <label class="form-label">علامت</label>
+                <select class="form-select select_peyman" name="SelectPeyman[${rowIndex}]">
+                    <option hidden></option>
+                    <option value="1">-</option>
+                    <option value="2">+</option>
+                    <option value="3">*</option>
+                    <option value="4">/</option>
+                    <option value="5">=</option>
+                    <option value="6">B</option>
+                    <option value="7">&gt;</option>
+                    <option value="9">&lt;</option>
+                    <option value="10">&lt;=</option>
+                </select>
+            </div>
+
+            <div class="col-xl-2"></div>
+
+            <div class="col-xl-1" style="margin-right: 35px;">
+                <button type="button" class="btn form-control buttonsabt removeRow">
+                    <i class="bi bi-x-circle fa-fw me-1 VecGeneral"></i>
+                    <span class="bSabt-text">حذف</span>
+                </button>
+            </div>
+        </div>`;
+
+        let $newRow = $(newRowHtml);
+        $("#rowsContainer").append($newRow);
+        initPicker($newRow);
+    }
+
+    $(document).ready(function () {
+        initPicker($(document));
+
+        if ($("#rowsContainer .dynamic-row").length === 0) {
+            addNewRow();
+        }
+
+        if ($("#useIfCondition").val() === "1") {
+            $("#ifRowsContainer").show();
+            $("#addIfRowBtn").show();
+
+            setTimeout(function () {
+                initPicker($("#ifRowsContainer"));
+            }, 100);
+        } else {
+            $("#ifRowsContainer").hide();
+            $("#addIfRowBtn").hide();
+        }
+    });
+
+    $("#addRowBtn").on("click", function () {
+        addNewRow();
+    });
+
+    $("#addIfRowBtn").on("click", function () {
+        addIfRow();
+    });
+
+    $(document).on("click", ".removeRow", function () {
+        $(this).closest(".dynamic-row").remove();
+    });
+
+    $(document).on("click", ".removeIfRow", function () {
+        $(this).closest(".if-row").remove();
+        reIndexIfRows();
+    });
+
+    $("#useIfCondition").on("change", function () {
+        if ($(this).val() === "1") {
+            $("#ifRowsContainer, #addIfRowBtn").slideDown(function () {
+                initPicker($("#ifRowsContainer"));
+            });
+
+            if ($("#ifRowsContainer .if-row").length === 0) {
+                addIfRow();
+            }
+        } else {
+            $("#ifRowsContainer, #addIfRowBtn").slideUp();
+        }
+    });
+
+    $(document).on("change", ".select_peyman", function () {
+        let $changedRow = $(this).closest(".dynamic-row");
+        let val = $(this).val();
+
+        if (val === "6" || val === "7" || val === "8" || val === "10" || val === "5" || val === "9") {
+            $changedRow.nextAll(".dynamic-row").remove();
+            alert("شما در این حالت نمی‌توانید ردیف جدیدی اضافه کنید!");
+        }
+    });
+
+    $("#finalSummaryBtn").on("click", function () {
+        let rows = $("#rowsContainer .dynamic-row");
+
+        if (rows.length === 0) {
+            $("#finalSummaryContainer").hide();
+            alert("هیچ ردیفی برای جمع بندی وجود ندارد!");
+            return;
+        }
+
+        let hasVazeat6 = false;
+        rows.each(function () {
+            if ($(this).find(".select_peyman").val() === "6") {
+                hasVazeat6 = true;
+                return false;
+            }
+        });
+
+        $("#finalSummaryContainer").empty();
+
+        let summaryRow = '<div class="row mb-2">';
+        if (hasVazeat6) {
+            summaryRow += `
+                <div class="col-xl-3">
+                    <label class="form-label">از این</label>
+                    <input id="field1" type="text" class="form-control" placeholder="مقدار اول">
+                </div>
+                <div class="col-xl-3">
+                    <label class="form-label">تا این</label>
+                    <input id="field2" type="text" class="form-control" placeholder="مقدار دوم">
+                </div>
+            `;
+        } else {
+            summaryRow += `
+                <div class="col-xl-3">
+                    <label class="form-label">مساوی</label>
+                    <input id="field3" type="text" class="form-control" placeholder="مقدار">
+                </div>
+            `;
+        }
+        summaryRow += '</div>';
+
+        $("#finalSummaryContainer").append(summaryRow).slideDown(400);
+    });
+
+    $("#sabt-tab1").on("click", function () {
+        let rowsData = [];
+
+        $("#rowsContainer .dynamic-row").each(function () {
+            rowsData.push({
+                FK_gozaresh1: $(this).find(".select_peyman1").val(),
+                FK_name: $(this).find(".peyman-search").val(),
+                alamat: $(this).find(".select_peyman").val()
+            });
+        });
+
+        let ifRowsData = [];
+        if ($("#useIfCondition").val() === "1") {
+            $("#ifRowsContainer .if-row").each(function () {
+                ifRowsData.push({
+                    logic_if: $(this).find(".sel-if-logic").val(),
+                    FK_gozaresh_if: $(this).find(".sel-if-gozaresh").val(),
+                    FK_name_if: $(this).find(".sel-if-name").val(),
+                    alamat_if: $(this).find(".sel-if-alamat").val(),
+                    shart_value: $(this).find(".sel-if-val").val()
+                });
+            });
+        }
+
+        let finalData = {
+            UserId: @modell.ID,
+            Rows: rowsData,
+            IfRows: ifRowsData,
+            UseIfCondition: $("#useIfCondition").val(),
+            Val1: $("#field1").val(),
+            Val2: $("#field2").val(),
+            Val3: $("#field3").val()
+        };
+
+        $.ajax({
+            url: "/Setting/Orders/SaveOlaviat1218Calc",
+            type: "POST",
+            data: JSON.stringify(finalData),
+            contentType: "application/json",
+            success: function (res) {
+                alert("ثبت با موفقیت انجام شد");
+            },
+            error: function () {
+                alert("خطا در ثبت اطلاعات");
+            }
+        });
+    });
+</script>

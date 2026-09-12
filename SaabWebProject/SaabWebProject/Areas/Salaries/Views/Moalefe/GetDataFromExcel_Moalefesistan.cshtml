@@ -1,0 +1,1253 @@
+﻿@model SaabWebProject.Models.ViewModels.Contracts.Function.FunctionModel
+
+@using SaabWebProject.Models.DomainModels;
+
+@{
+    ViewBag.Title = "GetDataFromExcel_Moalefe"; SaabEntities db = new SaabEntities();
+
+    Layout = null;
+}
+@section Styles{
+    <link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+    <link href="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.style.css" rel="stylesheet" />
+}
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+
+<script src="~/Assets/js/jalalidatepicker.min.js"></script>
+<link href="~/Assets/css/jalalidatepicker.min.css" rel="stylesheet" />
+<script src="~/Assets/js/jalaali.min.js"></script>
+<link href="~/MyStyles/jalalidatepicker.css" rel="stylesheet" />
+<style>
+    td input, td div input {
+        margin-bottom: 1px !important;
+    }
+    .white-text {
+        color: #82f7ec8a !important;
+    }
+
+    .mediumvioletred {
+        color: #ff7433 !important;
+    }
+    
+    .sticky-container {
+        position: sticky;
+        top: 0;
+        z-index: 999;
+        /*background-color: white;*/ /* برای اطمینان از اینکه پس‌زمینه سفید باقی می‌ماند */
+        /*        padding: 10px;
+    */
+    }
+
+ /*   .loader {
+        position: absolute;
+        top: calc(50% - 32px);
+        left: calc(50% - 32px);
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        perspective: 800px;
+    }*/
+
+    .inner {
+        position: absolute;
+        box-sizing: border-box;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+    }
+
+        .inner.one {
+            left: 0%;
+            top: 0%;
+            animation: rotate-one 1s linear infinite;
+            border-bottom: 3px solid #EFEFFA;
+        }
+
+        .inner.two {
+            right: 0%;
+            top: 0%;
+            animation: rotate-two 1s linear infinite;
+            border-right: 3px solid #EFEFFA;
+        }
+
+        .inner.three {
+            right: 0%;
+            bottom: 0%;
+            animation: rotate-three 1s linear infinite;
+            border-top: 3px solid #EFEFFA;
+        }
+
+    @@keyframes rotate-one {
+        0% {
+            transform: rotateX(35deg) rotateY(-45deg) rotateZ(0deg);
+        }
+
+        100% {
+            transform: rotateX(35deg) rotateY(-45deg) rotateZ(360deg);
+        }
+    }
+
+    @@keyframes rotate-two {
+        0% {
+            transform: rotateX(50deg) rotateY(10deg) rotateZ(0deg);
+        }
+
+        100% {
+            transform: rotateX(50deg) rotateY(10deg) rotateZ(360deg);
+        }
+    }
+
+    @@keyframes rotate-three {
+        0% {
+            transform: rotateX(35deg) rotateY(55deg) rotateZ(0deg);
+        }
+
+        100% {
+            transform: rotateX(35deg) rotateY(55deg) rotateZ(360deg);
+        }
+    }
+
+    .view {
+        overflow: auto;
+        white-space: nowrap; /* متن در یک خط افقی نمایش داده می‌شود */
+    }
+
+    table {
+        min-width: 100%; /* عرض جدول حداقل برابر با عرض محتوای آن است */
+    }
+
+    .hed {
+        position: sticky;
+        top: 0;
+        text-align: center;
+        z-index: 3;
+    }
+
+    .users {
+        position: sticky;
+        right: 0;
+        text-align: center;
+        z-index: 3;
+    }
+
+    .headRi {
+        background-color: var(--bs-table-th-bg) !important;
+        border-radius: 0 13px 13px 0 !important;
+    }
+
+    .table {
+        width: 80%; /* تنظیم عرض کل جدول */
+        table-layout: fixed; /* جدول با عرض ثابت */
+    }
+
+    th, td {
+        padding: 5px; /* کاهش فضای داخلی سلول‌ها */
+        white-space: nowrap; /* جلوگیری از شکستن متن در چند خط */
+        text-overflow: ellipsis; /* متن طولانی را به صورت سه‌نقطه نمایش می‌دهد */
+        overflow: hidden; /* پنهان کردن متن اضافی */
+    }
+</style>
+@{
+    float ayab = 0;
+    float ezaf = 0;
+    var g = db.tbpeymancities.Where(p => p.tbPeymanContracts.pec_Title == Model.SabtHeader.PeymanName).FirstOrDefault();
+    if (g != null)
+    {
+        var fin = db.tbCities.Where(p => p.ID == g.FK_City).FirstOrDefault();
+        if (fin != null && fin.Max_ezafeh != null)
+        {
+            ezaf = (float)fin.Max_ezafeh;
+        }
+        if (fin != null && fin.Ayab_zohab != null)
+        {
+            ayab = (float)fin.Ayab_zohab;
+        }
+    }
+    var pym = db.tbPeymanContracts.Where(p => p.pec_Title == Model.SabtHeader.PeymanName).Select(s=>s.pec_BriefTitle).FirstOrDefault();
+
+    int tyy = 0;
+    var tui = Model.UsersMoalefe.Count();
+    //foreach (var item2 in Model.UsersMoalefe.ToList())
+    //{
+    //    foreach (var item3 in item2.listMoalefe.ToList())
+    //    {
+    //        tyy++;
+    //    }
+    //}
+    //ezaf = ezaf / tui;
+}
+<div>
+    <div>اطلاعات</div>
+    <hr />
+    <div class="row">
+        <div class="col-xl-2">
+            <label class="form-label">نام پیمان:</label>
+            <input class=" form-control " value="@pym" />
+
+            <input class=" form-control " style="display:none" id="py" value="@Model.SabtHeader.PeymanName" />
+        </div>
+        <div class="col-xl-2">
+
+            <label class="form-label">نام بسته :</label>
+
+            <input class=" form-control " id="baste" value="@Model.SabtHeader.BastehName" />
+        </div>
+        <div class="col-xl-2">
+
+            <label class="form-label">میاتگین اضافه کار محقق شده</label>
+
+            <input class=" form-control  " id="mksa" value="" />
+        </div>
+        <div class="col-xl-2">
+            <label class="form-label">میانگین اضافه کار مجاز</label>
+
+            <input class=" form-control " id="c" value="@String.Format("{0:N0}", ezaf)" />
+        </div>
+        <div class="col-xl-2">
+
+            <label class="form-label">میانگین ایاب و ذهاب محقق شده</label>
+            <input class=" form-control  " id="ayab233" value="" />
+
+            <input class=" form-control  " id="ayab" value="" style="display:none" />
+        </div>
+        <div class="col-xl-2">
+
+            <label class="form-label">میانگین ایاب و ذهاب مجاز</label>
+            <input class=" form-control " id="mksajdfkh" value="@String.Format("{0:N0}", ayab)" />
+        </div>
+
+    </div>
+
+
+
+
+    <div class="col-xl-1"style="display:none">
+
+        <label class="form-label">سال:</label>
+        <input class=" form-control " id="year" value="@Model.SabtHeader.MoalfeVal_Year" />
+    </div>
+    <div class="col-xl-1"style="display:none">
+
+        <label class="form-label">ماه:</label>
+        <input class=" form-control  " id="month" value="@Model.SabtHeader.MoalfeVal_Month" />
+    </div>
+
+
+
+
+
+
+
+
+    <div class="sticky-container">
+        @*<div class="row">
+                <div class="col-xl-3">
+                    <label class="form-label">میانگین اضافه کار  شهرستان</label>
+
+                    <input class=" form-control " id="c" value="@String.Format("{0:N0}", ezaf)" />
+                </div>
+                <div class="col-xl-3">
+
+                    <label class="form-label">میاتگین اضافه کار به دست آمده از عملکرد افراد</label>
+
+                    <input class=" form-control  " id="mksa" value="" />
+                </div>
+                <div class="col-xl-3">
+
+                    <label class="form-label">میانگین ایاب و ذهاب شهرستان</label>
+                    <input class=" form-control " id="mksajdfkh" value="@String.Format("{0:N0}", ayab)" />
+                </div>
+                <div class="col-xl-3">
+
+                    <label class="form-label">میانگین ایاب و ذهاب به دست آمده  از عملکرد افراد</label>
+                    <input class=" form-control  " id="ayab233" value="" />
+
+                    <input class=" form-control  " id="ayab" value="" style="display:none" />
+                </div>
+            </div>*@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <div class="row">
+            <label class="col-xl-2" style="display:none;">از تاریخ </label>
+            <input class="col-xl-4  " style="display:none;" id="FromDate" value="@Model.SabtHeader.FromDate" />
+
+            <label class="col-xl-2" style="display:none;">تا تاریخ  :</label>
+            <input class="col-xl-4 " style="display:none;" id="ToDate" value="@Model.SabtHeader.ToDate" />
+        </div>
+    </div>
+    <div class="view">
+
+
+        <div class="view" style="height: 400px; width: 100%;">
+            <table class="table table-hover text-nowrap">
+                <thead>
+                    <tr class="how">
+                        @{
+                            var uniqueTitles = new List<string>();
+                            var uniqueTitles2 = new List<string>();
+
+                        }
+                        <th class="hed" scope="col" style="white-space: nowrap; width: auto;">نام کاربری</th>
+                        @foreach (var item2 in Model.UsersMoalefe.ToList())
+                        {
+                            int y33 = 0;
+
+                            foreach (var item3 in item2.listMoalefe.ToList())
+                            {
+                                var title = item3.MoalefeTitle;
+                                if (!uniqueTitles.Contains(title))
+                                {
+                                    uniqueTitles.Add(title);
+                                    y33++;
+
+                                    <th class="a hed" scope="col" data-title="@title" style="white-space: nowrap; width: auto;">@title</th>
+                                    if (y33 == 2)
+                                    {
+                    <th class="hed" scope="col" style="white-space: nowrap; width: auto;">سقف اضافه کارمجاز </th>
+                                    }
+                                    if (y33 == 3)
+                                    {
+                    <th class="hed" scope="col" style="white-space: nowrap; width: auto;"> سقف ایاب و ذهاب مجاز</th>
+                                    }
+                                }
+                            }
+                        }
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int y = 0;
+                    }
+
+                    @foreach (var item2 in Model.UsersMoalefe.ToList())
+                    {
+                        uniqueTitles2.Clear(); // پاک کردن لیست در هر حلقه جدید
+                        int y33 = 0;
+
+                        <tr class="hoverable">
+                            <th data-personalcode="@item2.PersonalCode" class="users headRi" scope="row" title="@item2.FullName _@item2.PersonalCode">@item2.FullName</th>
+                            @foreach (var item3 in item2.listMoalefe.ToList())
+                            {
+                                var title = item3.MoalefeTitle;
+
+                                if (!uniqueTitles2.Contains(title))
+                                {
+                                    uniqueTitles2.Add(title);
+                                    y33++;
+
+                                    <td>
+                                        @if (y33 == 2) // بررسی اینکه این ستون دوم است
+                                        {
+                                            var fo = db.tbMaxkarkardMonth
+                                                .Where(p => p.tbUsers.usr_Personal_ID == item2.PersonalCode
+                                                            && p.Month == Model.SabtHeader.MoalfeVal_Month
+                                                            && p.Year == Model.SabtHeader.MoalfeVal_Year)
+                                                .FirstOrDefault();
+
+                                            // تبدیل fo.Value به decimal با بررسی null بودن
+                                            decimal foValue = fo != null ? (decimal)(fo.Value ?? 0) : 0;
+                                            if (fo == null)
+                                            {
+                                                foValue = 560000;
+
+                                            }
+                                            // تبدیل item3.MoalefeValue به عدد
+                                            decimal item3Value = decimal.TryParse(item3.MoalefeValue, out var value) ? value : 0;
+                                            if (item3Value <= foValue)
+                                            {
+                                                <div class="input-group ">
+                                                    <input class="moalefe-value form-control text-center"
+                                                           data-personalcode="@item2.PersonalCode"
+                                                           data-title="@item3.MoalefeTitle"
+                                                           value="@string.Format("{0:N0}", Convert.ToDecimal(item3.MoalefeValue))"
+                                                           title="@item2.FullName - @item3.MoalefeTitle _@foValue _@y33" oninput="formatNumber(this)"
+                                                           onblur="formatNumber(this)" />
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="input-group ">
+                                                    <input class="moalefe-value form-control text-center"
+                                                           data-personalcode="@item2.PersonalCode"
+                                                           data-title="@item3.MoalefeTitle"
+                                                           value="@string.Format("{0:N0}", Convert.ToDecimal(item3.MoalefeValue))"
+                                                           title="@item2.FullName - @item3.MoalefeTitle _ @foValue _ @y33"
+                                                           style="color: #ff7433 !important " oninput="formatNumber(this)"
+                                                           onblur="formatNumber(this)" />
+                                                </div>
+
+                                            }
+
+                                        }
+
+
+
+
+
+
+
+
+                                        else if (y33 == 3) // بررسی اینکه این ستون دوم است
+                                        {
+                                            var fo = db.tbMaxkarkardMonth
+                                                .Where(p => p.tbUsers.usr_Personal_ID == item2.PersonalCode
+                                                            && p.Month == Model.SabtHeader.MoalfeVal_Month
+                                                            && p.Year == Model.SabtHeader.MoalfeVal_Year)
+                                                .FirstOrDefault();
+
+                                            // تبدیل fo.Value به decimal با بررسی null بودن
+                                            decimal foValue = fo != null ? (decimal)(fo.valuemaxayab ?? 0) : 0;
+                                            if (fo == null)
+                                            {
+                                                foValue = 100000000000;
+
+                                            }                                            // تبدیل item3.MoalefeValue به عدد
+                                            decimal item3Value = decimal.TryParse(item3.MoalefeValue, out var value) ? value : 0;
+                                            if (item3Value <= foValue)
+                                            {
+                                                <div class="input-group">
+                                                    <input class="moalefe-value form-control text-center"
+                                                           data-personalcode="@item2.PersonalCode"
+                                                           data-title="@item3.MoalefeTitle"
+                                                           value="@string.Format("{0:N0}", Convert.ToDecimal(item3.MoalefeValue))"
+                                                           title="@item2.FullName - @item3.MoalefeTitle _@foValue _@y33" oninput="formatNumber(this)"
+                                                           onblur="formatNumber(this)" />
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="input-group">
+                                                    <input class="moalefe-value form-control text-center"
+                                                           data-personalcode="@item2.PersonalCode"
+                                                           data-title="@item3.MoalefeTitle"
+                                                           value="@string.Format("{0:N0}", Convert.ToDecimal(item3.MoalefeValue))"
+                                                           title="@item2.FullName - @item3.MoalefeTitle _ @foValue _ @y33"
+                                                           style="color: #ff7433 !important " oninput="formatNumber(this)"
+                                                           onblur="formatNumber(this)" />
+                                                </div>
+
+                                            }
+
+                                        }
+
+
+
+                                        else
+                                        {
+                                            <input class="moalefe-value form-control text-center"
+                                                   data-personalcode="@item2.PersonalCode"
+                                                   data-title="@item3.MoalefeTitle"
+                                                   value="@string.Format("{0:N0}", Convert.ToDecimal(item3.MoalefeValue))"
+                                                   title="@item2.FullName - @item3.MoalefeTitle _@y33" oninput="formatNumber(this)"
+                                                   onblur="formatNumber(this)" />
+                                        }
+                                    </td>
+                                    if (y33 == 2)
+                                    {
+                                        <td>
+
+
+                                            @if (y33 == 2) // بررسی اینکه این ستون دوم است
+                                            {
+                                                var fo = db.tbMaxkarkardMonth
+                                                    .Where(p => p.tbUsers.usr_Personal_ID == item2.PersonalCode
+                                                                && p.Month == Model.SabtHeader.MoalfeVal_Month
+                                                                && p.Year == Model.SabtHeader.MoalfeVal_Year)
+                                                    .FirstOrDefault();
+
+                                                // تبدیل fo.Value به decimal با بررسی null بودن
+                                                decimal foValue = fo != null ? (decimal)(fo.Value ?? 0) : 0;
+                                                if (fo == null)
+                                                {
+                                                    foValue = 560000;
+
+                                                }
+                                                // تبدیل item3.MoalefeValue به عدد
+                                                decimal item3Value = decimal.TryParse(item3.MoalefeValue, out var value) ? value : 0;
+
+                                                <div class="input-group ">
+                                                    <input class=" form-control text-center"
+                                                           value="@String.Format("{0:N0}", foValue)" />
+                                                </div>
+
+
+                                            }
+
+
+
+
+
+
+
+
+
+
+                                        </td>
+
+                                    }
+
+
+
+
+                                    if (y33 == 3)
+                                    {
+                                        <td>
+
+
+                                            @if (y33 == 3) // بررسی اینکه این ستون دوم است
+                                            {
+                                                var fo = db.tbMaxkarkardMonth
+                                                    .Where(p => p.tbUsers.usr_Personal_ID == item2.PersonalCode
+                                                                && p.Month == Model.SabtHeader.MoalfeVal_Month
+                                                                && p.Year == Model.SabtHeader.MoalfeVal_Year)
+                                                    .FirstOrDefault();
+
+                                                // تبدیل fo.Value به decimal با بررسی null بودن
+                                                decimal foValue = fo != null ? (decimal)(fo.valuemaxayab ?? 0) : 0;
+                                                if (fo == null)
+                                                {
+                                                    foValue = 100000000000;
+
+                                                }
+                                                // تبدیل item3.MoalefeValue به عدد
+                                                decimal item3Value = decimal.TryParse(item3.MoalefeValue, out var value) ? value : 0;
+
+                                                <div class="input-group ">
+                                                    <input class=" form-control text-center"
+                                                           value="@String.Format("{0:N0}", foValue)" />
+                                                </div>
+
+
+                                            }
+
+
+
+
+
+
+
+
+
+
+                                        </td>
+
+                                    }
+
+                                }
+                            }
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+        @*<div class="loader" style="display:none">
+            <div class="inner one"></div>
+            <div class="inner two"></div>
+            <div class="inner three"></div>
+        </div>*@
+        <div class="row">
+            <div class="col-xl-11"></div>
+            <div class="col-xl-1">
+
+                <div class="form-group mb-3 mt-3">
+                    <button id="btnCreate12" class="btn form-control buttonsabt">
+                        <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                        <span class="bSabt-text">ثبت</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    @*
+        <script>
+            $("#btnCreate2").click(function () {
+                var data = [];
+
+
+                $('.users').each(function (i, obj) {
+                    var userObj = {};
+                    var personalcode = $(this).attr("id");
+
+                    userObj.MoalfeVal_Month = $('#month').val();
+                    userObj.MoalfeVal_Year = $('#year').val();
+                    userObj.BateName = $('#baste').val();
+                    userObj.pymn = $('#py').val();
+                    userObj.MoalfeVal_FKUser = $("#" + personalcode).val();
+
+                    $("." + personalcode + "_title").each(function (i, element) {
+                        var title = $(element).attr("id");
+                        var value = $("#" + title).val();
+
+                        userObj.MoalfeVal_FKMoalafeDastmozdi = title;
+                        userObj.MoalfeVal_Value = value;
+
+                        data.push(userObj);
+                        console.log(userObj);
+                    });
+                });
+
+
+                sendAjax('@Url.Action("send", "MoalefeC", new { area = "Salaries" })', data);
+            });
+
+
+            function sendAjax(url, data) {
+                console.log(url);
+                $.ajax({
+                    beforeSend: function () {
+                        document.getElementById("loading-message").style.display = "block";
+                    },
+                    url: url,
+                    data: { Filters: data },
+                    type: "POST",
+                    dataType: "json",
+                    traditional: true, // این را اضافه کردم تا آرایه‌ها به صورت درست به بک‌اند ارسال شوند
+                    success: function (resp) {
+                        console.log(resp);
+                        document.getElementById("loading-message").style display = "none";
+                        if (resp === true) {
+                            alert("با موفقیت ثبت شد");
+                        } else {
+                            alert("در ثبت دچار خطا شده ایم! لطفا بعداً تلاش نمائید");
+                        }
+                    },
+                    error: function (resp) {
+                        document.getElementById("loading-message").style.display = "none";
+                        alert("در ثبت دچار مشکل شده است");
+                        console.log(resp);
+                    }
+                });
+            }
+        </script>*@
+    <!-- Add the script section at the end of your HTML body -->
+
+
+    <script>
+
+    function formatNumber(input) {
+        var value = input.value;
+
+        // حذف تمام غیر اعداد
+        value = value.replace(/\D/g, '');
+
+        // فرمت سه رقمی جدا شده با کاما
+        value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+        // مقدار جدید را به input برگردانید
+        input.value = value;
+    }
+
+    $("#btnCreate12").click(function () {
+        //$(".loader").css('display', 'block');
+
+    var Filters = [];
+        var exitFlag = false; // تعریف یک پرچم برای خروج از تابع
+
+    // تعریف یک لیست برای UsersMoalefe
+    var UsersMoalefe = [];
+        var secondColumnIndex = 1; // Index 1 corresponds to the second column (0 is the first column)
+        var secondColumnIndex2 = 2; // Index 1 corresponds to the second column (0 is the first column)
+        var secondColumnTitle = $("th.a").eq(secondColumnIndex).data("title");
+        var secondColumnTitle2 = $("th.a").eq(secondColumnIndex2).data("title");
+    $('.users').each(function (i, obj) {
+        var personalcode = $(this).data("personalcode");
+
+        var userObj = {};
+        userObj.SabtHeader = {};
+        userObj.SabtHeader.MoalfeVal_Month = $('#month').val();
+        userObj.SabtHeader.MoalfeVal_Year = $('#year').val();
+        userObj.SabtHeader.BastehName = $('#baste').val();
+        userObj.SabtHeader.PeymanName = $('#py').val();
+        userObj.SabtHeader.FromDate = $('#FromDate').val();
+        userObj.SabtHeader.ToDate = $('#ToDate').val();
+
+        userObj.MoalefeUserInfo = {};
+        userObj.MoalefeUserInfo.PersonalCode = personalcode;
+        userObj.MoalefeUserInfo.FullName = $(this).text();
+        userObj.MoalefeUserInfo.listMoalefe = [];
+
+        $(".a").each(function (i, element) {
+    var title = $(element).data("title");
+            var value = $(".moalefe-value[data-personalcode='" + personalcode + "'][data-title='" + title + "']").val();
+            value = value.replace(/,/g, '');
+
+            console.log(title);
+            console.log(secondColumnTitle);
+
+
+            if ($(element).data("title") === secondColumnTitle) {
+                var title344 = $(".moalefe-value[data-personalcode='" + personalcode + "'][data-title='" + title + "']").attr("title");
+                var moalefeTitle = $(".moalefe-value[data-personalcode='" + personalcode + "'][data-title='" + title + "']").attr("title");
+                console.log(moalefeTitle);
+
+                var title22 = $(element).attr("title");
+                console.log(title);
+                console.log(title22);
+
+                var foValue = parseFloat(title344.split('_')[1]);
+                console.log(foValue);
+
+                var foValue233 = title344.split(' - ')[0];
+
+                console.log(foValue);
+
+                if (foValue < value) {
+                    console.log(foValue);
+                    console.log(foValue233);
+
+                    alert("لطفا سقف اضافه کار " + foValue233 + " رعایت کنید ");
+                    console.log(foValue);
+                    console.log("عالی");
+                    exitFlag = true;
+
+                    // خروج از تابع پس از نمایش پیام هشدار
+                    return false;
+
+                }
+
+                if (foValue < value) {
+                    console.log(foValue);
+                    console.log(foValue233);
+
+                    alert("لطفا سقف اضافه کار " + foValue233 + " رعایت کنید ");
+                    console.log(foValue);
+                    console.log("عالی");
+                    exitFlag = true;
+
+                    // خروج از تابع پس از نمایش پیام هشدار
+                    return false;
+
+                }
+
+                var fin = $("#mksa").val();
+                console.log(fin);
+
+                if (fin >@ezaf) {
+                    console.log(fin);
+                    console.log(@ezaf);
+
+                    alert("لطفا میانگین اضافه کار را رعایت کنید ");
+                    console.log(foValue);
+                    console.log("بد");
+                    exitFlag = true;
+                }
+
+                console.log(foValue233);
+
+                // Convert the value to a number and sum it
+                //var value = parseFloat($(element).val()) || 0;
+                //total += value; // Add the value to the total
+
+                //// Log the running total after each addition
+                //console.log(total.toFixed(2));
+                //console.log("total");
+            }
+
+
+
+
+
+            if ($(element).data("title") === secondColumnTitle2) {
+                var title344 = $(".moalefe-value[data-personalcode='" + personalcode + "'][data-title='" + title + "']").attr("title");
+                var moalefeTitle = $(".moalefe-value[data-personalcode='" + personalcode + "'][data-title='" + title + "']").attr("title");
+                console.log(moalefeTitle);
+
+                var title22 = $(element).attr("title");
+                console.log(title);
+                console.log(title22);
+
+                var foValue = parseFloat(title344.split('_')[1]);
+                console.log(foValue);
+
+                var foValue233 = title344.split(' - ')[0];
+
+                console.log(foValue);
+
+                if (foValue < value) {
+                    console.log(foValue);
+                    console.log(foValue233);
+
+                    alert("لطفا سقف ایاب و ذهاب " + foValue233 + " رعایت کنید ");
+                    console.log(foValue);
+                    console.log("عالی");
+                    exitFlag = true;
+
+                    // خروج از تابع پس از نمایش پیام هشدار
+                    return false;
+
+                }
+
+
+
+                var fin = $("#mksa").val();
+                console.log(fin);
+
+                if (fin >@ezaf) {
+                    console.log(fin);
+                    console.log(@ezaf);
+
+                    alert("لطفا میانگین اضافه کار را رعایت کنید ");
+                    console.log(foValue);
+                    console.log("بد");
+                    exitFlag = true;
+                }
+                var finay = $("#ayab").val();
+                console.log(finay);
+                console.log(@ayab);
+
+                if (finay >@ayab) {
+                    console.log(finay);
+      console.log(@ayab);
+
+      alert("لطفا میانگین ایاب و ذهاب را رعایت کنید ");
+      console.log(foValue);
+      console.log("بد");
+      exitFlag = true;
+  }
+                console.log(foValue233);
+
+                // Convert the value to a number and sum it
+                //var value = parseFloat($(element).val()) || 0;
+                //total += value; // Add the value to the total
+
+                //// Log the running total after each addition
+                //console.log(total.toFixed(2));
+                //console.log("total");
+            }
+
+    console.log(title);
+
+            var moalefeInfo = {};
+            moalefeInfo.MoalefeTitle = title;
+            moalefeInfo.MoalefeValue = value;
+
+            // اضافه کردن هر moalefeInfo به لیست معلفه‌ها در MoalefeUserInfo
+            userObj.MoalefeUserInfo.listMoalefe.push(moalefeInfo);
+
+            // تنظیم معلومات موجود در userObj.MoalefeUserInfo به userObj.UsersMoalefe
+
+        }); if (exitFlag) return false; // اگر پرچم خروج فعال شد، از حلقه اصلی خارج می‌شویم
+
+        userObj.UsersMoalefe = [];
+        userObj.UsersMoalefe.push(userObj.MoalefeUserInfo);
+
+
+        // اضافه کردن userObj به لیست UsersMoalefe
+        UsersMoalefe.push(userObj);
+        console.log(userObj)
+    });
+        if (exitFlag) return false; // اگر هشدار نمایش داده شد، اجرای تابع کلیک را متوقف می‌کنیم
+
+    // تنظیم UsersMoalefe به Filters
+    Filters = UsersMoalefe;
+    console.log(Filters);
+    console.log(fd);
+    sendAjax('@Url.Action("send", "Moalefe", new { area = "Salaries" })', Filters,);
+});
+
+
+
+function sendAjax(url, data) {
+    console.log(url);
+
+    $.ajax({
+        beforeSend: function () {
+        //    document.getElementById("loading-message").style.display = "block";
+        },
+        url: url,
+        data: { Filters: data },
+        type: "POST",
+        dataType: "html",
+        success: function (resp) {
+            console.log(resp);
+            document.getElementById("loading-message").style.display = "none";
+            if (resp == "true") {
+                //$(".loader").css('display', 'none');
+
+                alert("با موفقیت ثبت شد");
+                console.log("After alert, before reload");
+                location.reload();
+                console.log("After reload");
+            } else {
+                alert("در ثبت دچار خطا شده ایم ! لطفا بعدا تلاش نمائید");
+            }
+        },
+        error: function (resp) {
+            //$(".loader").css('display', 'none');
+
+            document.getElementById("loading-message").style.display = "none";
+            alert("دچار مشکل شده است ");
+            console.log(resp);
+        }
+    });
+}
+
+
+
+
+
+
+    </script>
+
+
+
+
+
+    <script>
+$("#btnCreate1").click(function () {
+    var Filters = {
+        Filters: [] // تعریف لیستی برای اطلاعات فیلترها
+    };
+
+    // جمع‌آوری اطلاعات از فیلدهای ورودی
+    Filters.Month = $('#month').val();
+    Filters.Year = $('#year').val();
+    Filters.Basteh = $('#baste').val();
+    Filters.Peyman = $('#py').val();
+    Filters.FromDate = $('#FromDate').val();
+    Filters.ToDate = $('#ToDate').val();
+    var secondColumnIndex = 1; // Index 1 corresponds to the second column (0 is the first column)
+    var secondColumnIndex2 = 2; // Index 1 corresponds to the second column (0 is the first column)
+    var secondColumnTitle = $("th.a").eq(secondColumnIndex).data("title");
+    var secondColumnTitle2 = $("th.a").eq(secondColumnIndex2).data("title");
+    // تعریف یک لیست برای UsersMoalefe
+    Filters.UsersMoalefe = [];
+
+    $('.users').each(function (i, obj) {
+        var personalcode = $(this).data("personalcode");
+        var userMoalefe = {
+            PersonalCode: personalcode,
+            FullName: $(this).text(),
+            listMoalefe: []
+        };
+
+        $(".moalefe-title[data-personalcode='" + personalcode + "']").each(function (i, element) {
+
+            var title = $(element).data("title");
+            var value = $(".moalefe-value[data-personalcode='" + personalcode + "'][data-title='" + title + "']").val();
+            console.log(title);
+            console.log(secondColumnTitle);
+
+
+            if ($(element).data("title") === secondColumnTitle) {
+                var title = $(element).attr("title");
+                var foValue = parseFloat(title.split('_')[1]);
+                var foValue233 = parseFloat(title.split('_')[3]);
+
+                console.log(foValue);
+
+                if (foValue >= value) {
+                    console.log(foValue);
+
+                    alert("لطفا max اضافه کار" + foValue233+"رعایت کنید ")
+                }
+
+                console.log(foValue233);
+
+                // Convert the value to a number and sum it
+                //var value = parseFloat($(element).val()) || 0;
+                //total += value; // Add the value to the total
+
+                //// Log the running total after each addition
+                //console.log(total.toFixed(2));
+                //console.log("total");
+            }
+            var moalefeInfo = {
+                MoalefeTitle: title,
+                MoalefeValue: value
+            };
+
+            // اضافه کردن هر moalefeInfo به لیست معلفه‌ها در userMoalefe
+            userMoalefe.listMoalefe.push(moalefeInfo);
+        });
+
+        // اضافه کردن userMoalefe به لیست UsersMoalefe
+        Filters.UsersMoalefe.push(userMoalefe);
+    });
+
+    // ارسال درخواست AJAX به سرور
+    sendAjax('@Url.Action("send", "Moalefe", new { area = "Salaries" })', Filters);
+});
+
+function sendAjax(url, data) {
+    console.log(url);
+
+    $.ajax({
+        beforeSend: function () {
+            document.getElementById("loading-message").style.display = "block";
+        },
+        url: url,
+        data: { Filters: data },
+        type: "POST",
+        dataType: "html",
+        success: function (resp) {
+            console.log(resp);
+            //document.getElementById("loading-message").style.display = "none";
+            if (resp == "true") {
+                alert("با موفقیت ثبت شد");
+                console.log("After alert, before reload");
+                location.reload();
+                console.log("After reload");
+            } else {
+                alert("در ثبت دچار خطا شده ایم! لطفاً بعداً تلاش نمائید");
+            }
+        },
+        error: function (resp) {
+            document.getElementById("loading-message").style.display = "none";
+            alert("درخواه مشکلی پیش آمده است.");
+            console.log(resp);
+        }
+    });
+}
+    $(document).ready(function () {
+        // Find the second column's data-title dynamically
+        var secondColumnIndex = 1; // Index 1 corresponds to the second column (0 is the first column)
+        var secondColumnIndex2 = 2; // Index 1 corresponds to the second column (0 is the first column)
+
+        // Get all headers and then target the second column
+        var secondColumnTitle = $("th.a").eq(secondColumnIndex).data("title");
+        var secondColumnTitle2 = $("th.a").eq(secondColumnIndex2).data("title");
+
+        // Function to calculate the total sum for the second column
+        function calculateTotalMoalefe() {
+            var total = 0;
+            var total2 = 0;
+
+            // Log the initial total (should be 0)
+            console.log(total.toFixed(2));
+
+            // Now that we have the title of the second column, select the inputs related to it
+            $(".moalefe-value").each(function () {
+                // Check if this input's data-title matches the second column title
+                if ($(this).data("title") === secondColumnTitle) {
+                    // Convert the value to a number and sum it
+                    var value = $(this).val();
+
+                    // حذف جداکننده‌های سه‌رقمی (کاماها) از رشته
+                    value = value.replace(/,/g, '');
+
+                    // سپس مقدار را به عدد تبدیل کنید
+                    value = parseFloat(value) || 0;
+
+                    total += value; // Add the value to the total
+
+                    // Log the running total after each addition
+                    console.log(total.toFixed(2));
+                    console.log("total");
+                }
+            });
+            $(".moalefe-value").each(function () {
+                // Check if this input's data-title matches the second column title
+                if ($(this).data("title") === secondColumnTitle2) {
+
+
+                    // Convert the value to a number and sum it
+                    var value = $(this).val();
+
+                    // حذف جداکننده‌های سه‌رقمی (کاماها) از رشته
+                    value = value.replace(/,/g, '');
+
+                    // سپس مقدار را به عدد تبدیل کنید
+                    value = parseFloat(value) || 0;
+
+                    total2 += value; // Add the value to the total
+
+                    // Log the running total after each addition
+                    console.log(total2.toFixed(2));
+                }
+            });
+
+         var   total22 = total/@tui;
+            console.log(total22);
+                     var   total22323 = total2/@tui;
+
+            // Set the calculated total into the input field with ID 'mksa'
+            $("#mksa").val(total22.toFixed(0));
+            //if (parseFloat($("#mksa").val()) >= ezaf) {
+            //    console.log("hfd");
+            //    console.log(parseFloat($("#mksa").val()));
+            //    $("#mksa").css("color", "mediumvioletred");
+            //}
+
+
+            var formattedNumber = total22323.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+            // مقدار نهایی را در ورودی مورد نظر قرار دهید
+            $("#ayab233").val(formattedNumber);
+            // Round to 2 decimal places
+            $("#ayab").val(total22323.toFixed(0));
+            var ty = $("#mksa").val();
+            console.log(@ezaf);
+                        console.log(@tui);
+            var ty33 = $("#ayab").val();
+
+            console.log(ty);
+            ty = ty/@tui;
+            console.log(ty);
+            console.log(total22);
+            var yu = total22.toFixed(0);
+            console.log(yu);
+            console.log(ty33);
+
+            var yaya = total22323.toFixed(0);
+            console.log(yaya);
+
+            // Round to 2 decimal places
+            if (yu >= @ezaf) {
+                console.log("hfd");
+                $("#mksa").addClass("mediumvioletred");
+                $("#mksa").css("color", "mediumvioletred");
+            }
+            else {
+                $("#mksa").removeClass("mediumvioletred"); // حذف کلاس mediumvioletred
+
+            }
+            if (yaya >= @ayab) {
+       console.log("hfd");
+                $("#ayab").addClass("mediumvioletred");
+                $("#ayab").css("color", "mediumvioletred");
+                $("#ayab233").addClass("mediumvioletred");
+                $("#ayab233").css("color", "mediumvioletred");
+
+
+            } else {
+                $("#ayab").removeClass("mediumvioletred"); // حذف کلاس mediumvioletred
+                $("#ayab233").removeClass("mediumvioletred"); // حذف کلاس mediumvioletred
+
+            }
+            // Log the final total
+            console.log(total.toFixed(2));
+        }
+
+        // Calculate total on page load
+        calculateTotalMoalefe();
+
+        // Recalculate the total when any value changes in the moalefe-value elements
+        $(document).on("change", ".moalefe-value", function () {
+            if ($(this).data("title") === secondColumnTitle) {
+
+                calculateTotalMoalefe();
+                 }
+
+            // Recalculate the total on value change in the second column
+        });
+
+
+
+
+
+        $(document).on("change", ".moalefe-value", function () {
+            if ($(this).data("title") === secondColumnTitle) {
+
+                var value = $(this).val();
+                value = value.replace(/,/g, '');
+
+                var title = $(this).attr("title");
+                var foValue = parseFloat(title.split('_')[1]);
+
+
+                console.log(foValue);
+                // فرض می‌کنیم foValue در عنوان دوم است
+                var moalefeValue = parseFloat($(this).data("value")); // استفاده از data-value برای مقدار
+                console.log(value);
+
+                if (value <= foValue) {
+                    console.log(value);
+                    $(this).css("color", "aqua"); // حذف تغییرات رنگ قبلی
+                    $(this).removeClass("mediumvioletred"); // حذف کلاس mediumvioletred
+
+                    $(this).addClass("white-text");
+                    // اضافه کردن کلاس CSS
+                }
+                else {
+                    console.log("kjj");
+
+                    $(this).css("color", "mediumvioletred");
+                    $(this).removeClass("white-text");
+
+                    $(this).addClass("mediumvioletred"); // اضافه کردن کلاس CSS
+
+                    // حذف تغییرات رنگ قبلی
+
+                }
+            }
+            // Recalculate the total on value change in the second column
+            // calculateTotalMoalefe();
+        });
+
+
+        $(document).on("change", ".moalefe-value", function () {
+            if ($(this).data("title") === secondColumnTitle2) {
+
+                var value = $(this).val();
+                value = value.replace(/,/g, '');
+
+                var title = $(this).attr("title");
+                var foValue = parseFloat(title.split('_')[1]);
+
+
+                console.log(foValue);
+                // فرض می‌کنیم foValue در عنوان دوم است
+                var moalefeValue = parseFloat($(this).data("value")); // استفاده از data-value برای مقدار
+                console.log(value);
+
+                if (value <= foValue) {
+                    console.log(value);
+                    $(this).css("color", "aqua"); // حذف تغییرات رنگ قبلی
+                    $(this).removeClass("mediumvioletred"); // حذف کلاس mediumvioletred
+
+                    $(this).addClass("white-text");
+                    // اضافه کردن کلاس CSS
+                }
+                else {
+                    console.log("kjj");
+
+                    $(this).css("color", "mediumvioletred");
+                    $(this).removeClass("white-text");
+
+                    $(this).addClass("mediumvioletred"); // اضافه کردن کلاس CSS
+
+                    // حذف تغییرات رنگ قبلی
+
+                }
+            }
+            // Recalculate the total on value change in the second column
+            // calculateTotalMoalefe();
+        });
+
+
+        $(document).on("change", ".moalefe-value", function () {
+            if ($(this).data("title") === secondColumnTitle2) {
+
+                calculateTotalMoalefe();
+            }
+
+            // Recalculate the total on value change in the second column
+        });
+
+
+
+    });
+
+
+
+
+
+    </script>

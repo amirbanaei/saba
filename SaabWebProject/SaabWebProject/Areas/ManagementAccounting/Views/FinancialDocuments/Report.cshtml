@@ -1,0 +1,352 @@
+﻿@{
+    ViewBag.Title = "گزارش مالی";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="/MyStyles/Tablestyle.css" rel="stylesheet">
+
+<link href="~/obj/Release/Package/PackageTmp/Content/bootstrap.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-3.3.1.slim.js"></script>
+
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<link href="~/Assets/plugins/BootstrapPersianDateTimePicker-1/src/jquery.md.bootstrap.datetimepicker.style.css" rel="stylesheet" />
+@*------------------------------------------------[1402/10/19]-|KH|-*@
+<script src="~/Assets/js/jalalidatepicker.min.js"></script>
+<link href="~/Assets/css/jalalidatepicker.min.css" rel="stylesheet" />
+<script src="~/Assets/js/jalaali.min.js"></script>
+<link href="~/MyStyles/jalalidatepicker.css" rel="stylesheet" />
+@*-------------------------------------------------------------|KH|-*@
+
+
+<div class="tab-content">
+    <div class="card-body pb-2">
+        <div class="row">
+            <div class="col-xl-3">
+                <label class="form-label"> عنوان گزارش </label>
+                <select class="form-select" id="select_ReportType">
+                    <option value="0" hidden>انتخاب مورد</option>
+                    <option value="2">بودجه و اعتبارات</option>
+                    <option value="3">اقساط</option>
+                    <option value="1">پیمان</option>
+                    <option value="4">مراکز هزینه</option>
+                    <option value="5">کارکنان</option>
+                </select>
+            </div>
+            <div class="col-xl-3" id="div_TitleAqsat" style="display:none">
+                <label class="form-label"> عنوان قسط </label>
+                <input class="form-control" />
+            </div>
+            <div class="col-xl-3" id="div_TitleMarkazHazine" style="display:none">
+                <label class="form-label"> عنوان مرکز هزینه </label>
+                <input class="form-control" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xl-6" id="div_markazHazine">
+                <label class="form-label"> مرکز هزینه </label>
+                <select class="form-select" id="select_MarkazHazine">
+                    <option value="0">انتخاب مورد</option>
+                </select>
+            </div>
+
+            <div class="col-xl-6" id="div_users">
+                <label class="form-label"> لیست کاربران </label>
+                <div id="isuser"></div>
+            </div>
+
+            <div class="col-xl-3" id="div_fromPersonelCode">
+                <label class="form-label"> از کد پرسنلی </label>
+                <input class="form-control" id="fromPersonelCode" />
+            </div>
+
+            <div class="col-xl-3" id="div_toPersonelCode">
+                <label class="form-label"> تا کد پرسنلی </label>
+                <input class="form-control" id="toPersonelCode" />
+            </div>
+
+            <div class="col-xl-6" id="div_Peyman">
+                <label class="form-label"> لیست پیمان </label>
+                <div id="peyman"></div>
+            </div>
+
+            <div class="col-xl-3" id="div_fromPeymanCode">
+                <label class="form-label"> از کد پیمان </label>
+                <input class="form-control" id="fromPeymanCode" />
+            </div>
+
+            <div class="col-xl-3" id="div_toPeymanCode">
+                <label class="form-label"> تا کد پیمان </label>
+                <input class="form-control" id="toPeymanCode" />
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">از تاریخ</label>
+                @*------------------------------------------------[1402/10/19]-|KH|-*@
+                <input data-jdp jdp-btn-close data-jdp-miladi-input="datepickerFromEn_pr" id="datepickerFrom_pr" class="form-control pdate">
+                <input id="datepickerFromEn_pr" type="hidden" />
+                @*-------------------------------------------------------------|KH|-*@
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">تا تاریخ</label>
+                @*------------------------------------------------[1402/10/19]-|KH|-*@
+                <input data-jdp jdp-btn-close data-jdp-miladi-input="datepickerToEn_pr" id="datepickerTo_pr" class="form-control pdate">
+                <input id="datepickerToEn_pr" type="hidden" />
+                @*-------------------------------------------------------------|KH|-*@
+            </div>
+        </div>
+
+    </div>
+    <div class="row"  style=" margin-bottom: 10px; ">
+        <div class="col-xl-11"></div>
+        <div class="col-xl-1">
+            <button class="btn form-control buttonGeneral">
+                <i class="fa fa-calculator fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text">محاسبه</span>
+            </button>
+        </div>
+    </div>
+    <div class="card">
+        <div class="row">
+
+            <div class="col-xl-12" style="text-align: center; padding-left: 20px; padding-right: 20px">
+                <div class="table-responsive">
+                    <table class="table table-hover text-nowrap">
+                        <tr>
+                            <td colspan="7">گزارش تراز</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">کد پرسنلی : @@@@ </td>
+                            <td colspan="3">آقا / خانم : @@@@ </td>
+                            <td>از : @@@@ </td>
+                            <td>تا : @@@@ </td>
+                        </tr>
+                        <tr>
+                            <td>ردیف</td>
+                            <td>تاریخ</td>
+                            <td>مرکزهزینه/تفضیلی</td>
+                            <td>بستانکار</td>
+                            <td>بدهکار</td>
+                            <td>مانده</td>
+                            <td>تشخیص</td>
+                        </tr>
+
+                    </table>
+                </div>
+            </div>
+
+
+        </div>
+        <div class="card-arrow">
+            <div class="card-arrow-top-left"></div>
+            <div class="card-arrow-top-right"></div>
+            <div class="card-arrow-bottom-left"></div>
+            <div class="card-arrow-bottom-right"></div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker-1/src/jquery.md.bootstrap.datetimepicker.js"></script>
+
+@*تابع دریافت کاربران حقیقی *@
+<script>
+            function loadisuser(){
+                    $("#isuser").load('@Url.Content("/../Users/Users/_GetAllHaghighiUsers_Select")',function(){
+                $("#select_users").attr("id", "select_users2");
+                    var $elem = $('#select_users2');
+                    $elem.picker();
+                    $elem.on('sp-change', function(){
+                        hoghooghi = false;
+                        haghighi = true;
+                        peyman = false;
+                    });
+                });
+            }
+</script>
+@* تابع دریافت کاربران حقوقی *@
+<script>
+            function loadisnotuser(){
+                  $("#isnotuser").load('@Url.Content("/../Users/Users/_HoghoghiUserList")',function(){
+                    $("#select_users").attr("id", "select_users1");
+                        var $elem = $('#select_users1');
+                        $elem.picker();
+                        $elem.on('sp-change', function(){
+                            hoghooghi = true;
+                            haghighi = false;
+                            peyman = false;
+                        });
+                   });
+
+            }
+</script>
+@* تابع دریافت پیمان ها *@
+<script>
+            function loadPeyman(){
+                $("#peyman").load('@Url.Content("/../Contracts/Peyman/_GetAllListPeymans_Select")',function(){
+                   $("#select_peyman").attr("id", "select_peyman1");
+                    $("#select_peyman1").picker({ search: true });
+                    var $elem = $('#select_peyman1');
+                    $elem.picker();
+                    $elem.on('sp-change', function () {
+                    });
+               });
+            }
+
+</script>
+
+<script>
+    $("#select_ReportType").picker({ search: true });
+</script>
+@*تابع سازنده*@
+<script>
+    $(function () {
+        loadisuser();
+        loadisnotuser();
+        loadPeyman();
+    });
+</script>
+@* تقویم و تاریخ *@
+@*------------------------------------------------[1402/10/19]-|KH|-*@
+<script>
+    jalaliDatepicker.startWatch({
+        time: true,
+        days: ["شنبه", "1شنبه", "2شنبه", "3شنبه", "4شنبه", "5شنبه", "جمعه"],
+        persianDigits: true,
+        autoClose: true,
+        autocomplete: true,
+        // showCloseBtn:true,
+        showEmptyBtn: false,
+        showCloseBtn: true,
+        zIndex: 100000,
+
+    });
+    //-----------------------------------------------------------------
+    var inputs = document.querySelectorAll("[data-jdp-miladi-input]");
+    for (var i = 0; i < inputs.length; i++) {
+        inputs[i].addEventListener("jdp:change", function (e) {
+            var miladiInput = document.getElementById(this.getAttribute("data-jdp-miladi-input"));
+            var date = this.value.replace(' ', '').slice(0, 10).split('/');
+            date = jalaali.toGregorian(parseInt(date[0]), parseInt(date[1]), parseInt(date[2]),)
+            // If it was empty
+            if (!this.value) {
+                date = "";
+            }
+            // If it was only history
+            else if (this.value.replace(' ', '').length < 11) {
+                date = date.gy + '-' + date.gm + '-' + date.gd
+            }
+            // If it was the date and time
+            else {
+                date = date.gy + '-' + date.gm + '-' + date.gd + ' ' + this.value.replace(' ', '').slice(10, 30)
+            }
+            miladiInput.value = date
+        });
+    }
+
+</script>
+@*-------------------------------------------------------------|KH|-*@
+<script type="text/javascript">
+
+
+    /////DateTime Picker From
+    //$('#datepickerFrom_pr').MdPersianDateTimePicker({
+    //    targetTextSelector: '#datepickerFrom_pr',
+    //    targetDateSelector: '#datepickerFromEn_pr',
+    //    dateFormat: 'yyyy-MM-dd',
+    //    fromDate: true,
+    //    groupId: 'rangeSelector1',
+    //    enableTimePicker: false,
+    //    isGregorian: false,
+    //    disableBeforeToday: false
+    //});
+    /////DateTime Picker To
+    //$('#datepickerTo_pr').MdPersianDateTimePicker({
+    //    targetTextSelector: '#datepickerTo_pr',
+    //    targetDateSelector: '#datepickerToEn_pr',
+    //    dateFormat: 'yyyy-MM-dd',
+    //    toDate: true,
+    //    groupId: 'rangeSelector1',
+    //    isGregorian: false,
+    //    enableTimePicker: false,
+    //    disableBeforeToday: false
+    //});
+</script>
+
+@* تابع تغییرات ویو هنگام تغییر مقدار عنوان گزارش *@
+<script>
+    $("#select_ReportType").on('sp-change', function () {
+        switch ($(this).val()) {
+            case "1":
+                $("#div_users").css("display", "none");
+                $("#div_fromPersonelCode").css("display", "none");
+                $("#div_toPersonelCode").css("display", "none");
+                $("#div_Peyman").css("display", "block");
+                $("#div_fromPeymanCode").css("display", "block");
+                $("#div_toPeymanCode").css("display", "block");
+                $("#div_markazHazine").css("display", "none");
+                $("#div_TitleAqsat").css("display", "none");
+                $("#div_TitleMarkazHazine").css("display", "none");
+                break;
+            case "2":
+                $("#div_users").css("display", "none");
+                $("#div_fromPersonelCode").css("display", "none");
+                $("#div_toPersonelCode").css("display", "none");
+                $("#div_Peyman").css("display", "block");
+                $("#div_fromPeymanCode").css("display", "block");
+                $("#div_toPeymanCode").css("display", "block");
+                $("#div_markazHazine").css("display", "none");
+                $("#div_TitleAqsat").css("display", "none");
+                $("#div_TitleMarkazHazine").css("display", "none");
+                break;
+            case "3":
+                $("#div_users").css("display", "block");
+                $("#div_fromPersonelCode").css("display", "block");
+                $("#div_toPersonelCode").css("display", "block");
+                $("#div_Peyman").css("display", "block");
+                $("#div_fromPeymanCode").css("display", "block");
+                $("#div_toPeymanCode").css("display", "block");
+                $("#div_markazHazine").css("display", "none");
+                $("#div_TitleAqsat").css("display", "block");
+                $("#div_TitleMarkazHazine").css("display", "none");
+                break;
+            case "4":
+                $("#div_users").css("display", "block");
+                $("#div_fromPersonelCode").css("display", "block");
+                $("#div_toPersonelCode").css("display", "block");
+                $("#div_Peyman").css("display", "block");
+                $("#div_fromPeymanCode").css("display", "block");
+                $("#div_toPeymanCode").css("display", "block");
+                $("#div_markazHazine").css("display", "block");
+                $("#div_TitleAqsat").css("display", "none");
+                $("#div_TitleMarkazHazine").css("display", "block");
+                break;
+            case "5":
+                //alert("dfnsd");
+                $("#div_users").css("display", "block");
+                $("#div_fromPersonelCode").css("display", "block");
+                $("#div_toPersonelCode").css("display", "block");
+                $("#div_Peyman").css("display", "none");
+                $("#div_fromPeymanCode").css("display", "none");
+                $("#div_toPeymanCode").css("display", "none");
+                $("#div_markazHazine").css("display", "none");
+                $("#div_TitleAqsat").css("display", "none");
+                $("#div_TitleMarkazHazine").css("display", "none");
+                break;
+            default:
+                $("#div_users").css("display", "block");
+                $("#div_fromPersonelCode").css("display", "block");
+                $("#div_toPersonelCode").css("display", "block");
+                $("#div_Peyman").css("display", "block");
+                $("#div_fromPeymanCode").css("display", "block");
+                $("#div_toPeymanCode").css("display", "block");
+                $("#div_markazHazine").css("display", "block");
+                $("#div_TitleAqsat").css("display", "none");
+                $("#div_TitleMarkazHazine").css("display", "none");
+        }
+
+    });
+</script>

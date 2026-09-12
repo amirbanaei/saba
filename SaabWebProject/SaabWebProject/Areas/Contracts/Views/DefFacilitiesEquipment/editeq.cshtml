@@ -1,0 +1,119 @@
+﻿@model SaabWebProject.Models.DomainModels.tbEquipments
+
+@{
+    ViewBag.Title = "editeq";
+}
+
+<div class="row">
+    <div class="col-xl-2">
+        <label class="form-label"> ضریب </label>
+        <input value="@Model.UnitCount" class="form-control AmountInput control " id="UnitCount" name="totalAmountInput_edit" type="text" maxlength="15" />
+
+    </div>
+    <div class="col-xl-2">
+        <label class="form-label">  مبلغ</label>
+        <input value="@Model.EachValue" class="form-control AmountInput control " id="EachValue" name="totalAmountInput_edit" type="text" maxlength="15" />
+
+    </div>
+    <div class="col-xl-2">
+        <label class="form-label"> مبلغ کل (ریال) </label>
+        <input value="@Model.TotalPrice" class="form-control AmountInput control " id="TotalPrice" name="totalAmountInput_edit" type="text" maxlength="15" />
+
+    </div>
+</div>
+
+<div class="row">
+    @*<div class="col-xl-3">
+            <a href="#" class="btn btn-outline-info form-control" id="Show_Etebar">
+                <i class="fa fa-eye"></i>
+                مشاهده اعتبار ردیف ها
+            </a>
+        </div>
+        <div class="col-xl-2">
+            <a href="#" class="btn btn-outline-info form-control">
+                <i class="fa fa-download"></i>
+                دانلود فایل نمونه
+            </a>
+
+        </div>
+        <div class="col-xl-2">
+            <a href="#" class="btn btn-outline-info form-control">
+                <i class="fa fa-upload"></i>
+                بارگذاری اطلاعات
+            </a>
+
+        </div>*@
+    <div class="col-xl-11"></div>
+    <div class="col-xl-1">
+        <div class="form-group mb-3">
+            <button class="btn btn-outline-success form-control buttonsabt" id="btnCreate12">ثبت </button>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+        $("#btnCreate12").click(function () {
+            var Filters = [];
+            var obj = new Object();
+
+            
+
+
+
+            obj.TotalPrice = $("#TotalPrice").val();
+            console.log($("#TotalPrice").val());
+
+            //      var creditorCreditValue = $("#bestankar").val();
+            //      var resultString2 = creditorCreditValue.replace(/,/g, '');
+            //      var debtorCreditValue = $("#bedehkar").val();
+            //      var resultString = debtorCreditValue.replace(/,/g, '');
+
+            //obj.Debtore = resultString2;
+            //      obj.Debtorcredit = resultString;
+            obj.EachValue = $("#EachValue").val();
+            console.log($("#Debtore").val());
+
+            obj.UnitCount = $("#UnitCount").val();
+            console.log($("#Creditor").val());
+
+                /*  obj.Determining_creditline_ID = $("#idd").val();*/
+
+            obj.ID=@Model.ID;
+                  Filters.push(obj);
+                   console.log(Filters);
+                  sendAjax11('@Url.Action("editeq", "DefFacilitiesEquipment", new { area = "Contracts" })', Filters);
+                  location.reload();
+
+              ;
+
+        });
+    function sendAjax11(url, data) {
+                console.log(url);
+
+                $.ajax({
+                    beforeSend: function () {
+                        document.getElementById("loading-message").style.display = "block";
+                    },
+                    url: url,
+                    data: { tbfk: data },
+                    type: "POST",
+                    dataType: "html",
+                    success: function (resp) {
+                        console.log(resp);
+                        document.getElementById("loading-message").style.display = "none";
+                        if (resp == "True") {
+                            alert("با موفقیت ثبت شد");
+                        } else {
+                            alert("مبلغ های های بستانکارهای شما بیش از حد مجاز در قرار داد است");
+                        }
+                    },
+                    error: function (resp) {
+                        document.getElementById("loading-message").style.display = "none";
+                        alert("دچار مشکل شده است ");
+                        console.log(resp);
+                    }
+                });
+            }
+</script>

@@ -1,0 +1,167 @@
+﻿@model SaabWebProject.Models.DomainModels.tbUsers
+
+@{
+    ViewBag.Title = "ورود";
+    Layout = "~/Areas/Users/Views/Shared/_LayoutAccount.cshtml";
+}
+@section Style{
+    <link href="~/Areas/Users/Styles/ShareStyle.css" type="text/css" rel="stylesheet" />
+}
+<style>
+    #card-body {
+        background-color: #ffffff99;
+        -webkit-backdrop-filter: blur(5px);
+        backdrop-filter: blur(5px);
+        padding: 50px;
+        color: black !important;
+        border-radius: 45px;
+        border: 4px solid #fff !important;
+    }
+    input.form-control {
+        border: 2px solid #ffffffa6 !important;
+        background-color: #006666e0 !important;
+        color: azure !important;
+    }
+
+    .buttonGeneral {
+        background: linear-gradient(#199b94, #033f33) padding-box, linear-gradient(to bottom, #7bf1f5, #3cd0a5) border-box;
+        border-radius: 33px;
+        border: 2px solid transparent;
+        margin-bottom: 5px;
+        padding:9px !important;
+    }
+
+    .buttonGeneral {
+        position: relative;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1em;
+        color: white !important;
+        padding: 5px 12px 5px 12px;
+        cursor: pointer;
+    }
+    .form-check-input[type="checkbox"] {
+        border-radius: 5px !important;
+        height: 20px;
+        width: 20px;
+        border: 2px solid #ffffffa6 !important;
+        background-color: #137170d6 !important;
+    }
+    input[type="checkbox"]:checked {
+        background-color: #137170a3 !important;
+        border-color: #fff !important;
+        border-width: 2px !important;
+    }
+    #togglePassword {
+        font-size: 14px !important;
+        position: absolute;
+        left: 82px;
+        transform: translateY(-28px);
+        cursor: pointer;
+        color: #9c9c9c;
+    }
+</style>
+<div class="login" style="background :url(../../assets/img/cover/cover-thumb-82.jpg) no-repeat center fixed;     
+    background-size: cover;">
+
+    <div class="login-content" style="display:contents;">
+        <div class="alert alert-danger alert-dismissable fade show p-3" id="alert" style="display:none;">
+            <p id="alert_message"></p>
+
+        </div>
+        <form name="login_form" style="margin-right:90px;">
+
+                <div class="card-body" id ="card-body"style="">
+                    <h1 class="text-center">@ViewBag.Title</h1>
+                    <div class=" text-opacity-50 text-center mb-4">
+                        <img src="~/Assets/img/icons/Logo.png" style="width: 170px;height: 100px;margin-top:-20px;" />
+                    </div>
+                    <div class="mb-3" style="margin-top:20px;">
+                        <label class="form-label" style="font-weight:bold;"> نام کاربری <span class="text-danger">*</span></label>
+                        <input id="usr_NationalCode" type="number" class="form-control form-control-lg  bg-opacity-5 text-black" value="" 
+                               placeholder="" />
+                        <div class="valid-feedback" style="color:#2f7e66;">این درسته !</div>
+                        <div class="invalid-feedback">نام را صحیح وارد نمائید</div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex">
+                            <label class="form-label" style="font-weight:bold;">رمز عبور <span class="text-danger">*</span></label>
+                        </div>
+                        <input autocomplete="off" id="Password" type="password" class="form-control form-control-lg  bg-opacity-5 text-black" value=""
+                               placeholder="" />   
+                        <span id="togglePassword" class="fas fa-eye-slash cursor-pointer" ></span>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input autocomplete="off" class="form-check-input" name="Remember" type="checkbox" value="" id="customCheck1" />
+                            <label class="form-check-label" for="customCheck1" style="font-weight:bold;">مرا به خاطر بسپار</label>
+                        </div>
+                    </div>
+                    <button id="Login" type="button" class="btn btn-outline-default form-control buttonGeneral " style="border:1px solid #2f7e66;font-weight:bold;">ورود</button>
+                    <a href="@Url.Action("FirstLogin","Login")" class="ms-auto  text-decoration-none text-opacity-50" style="color:#2f7e66;font-weight:bolder;">
+                        آیا تا به حال وارد نشده اید؟
+                    </a>
+                </div>
+
+
+
+        </form>
+    </div>
+
+</div>
+@section script{
+    <script src="~/Areas/Users/Scripts/ShareScript.js"></script>
+
+    <script src="~/Areas/Users/Scripts/Login/Login.js"></script>
+
+    <script>
+        Login("@Url.Action("Login","Login")");
+    </script>
+    <script>
+       
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('Password');
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Enter") {
+                event.preventDefault(); // جلوگیری از رفتار پیش‌فرض "Enter"
+                document.getElementById("Login").click(); // شبیه‌سازی کلیک بر روی دکمه "Login"
+            }
+        });
+        togglePassword.addEventListener('click', function () {
+            const type = passwordInput.getAttribute('type');
+            if (type === 'password') {
+                passwordInput.setAttribute('type', 'text');
+                togglePassword.classList.remove('fa-eye-slash');
+                togglePassword.classList.add('fa-eye');
+            } else {
+                passwordInput.setAttribute('type', 'password');
+                togglePassword.classList.remove('fa-eye');
+                togglePassword.classList.add('fa-eye-slash');
+            }
+        });
+
+
+     
+    </script>
+
+}
+@*<style>
+    body {
+        background: url(../../assets/img/cover/cover-thumb-82.jpg) no-repeat center fixed;
+        background-size: cover;
+        direction: rtl;
+        color: white;
+    }
+
+    .title {
+        padding-right: 50px;
+        color: white;
+        padding-top: 300px;
+    }
+</style>
+
+<div class="title">
+    <h5 style="color:white;margin-bottom:20px;">با سلام خدمت شما مراجعه کننده عزیز</h5>
+    <h2 style="color:white;">سامانه به دلایل امنیتی از ساعت 7:45 صبح تا ساعت  15:15 عصر  در دسترس می باشد </h2>
+</div>*@

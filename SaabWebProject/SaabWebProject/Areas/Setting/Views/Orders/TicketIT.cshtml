@@ -1,0 +1,340 @@
+﻿@model IEnumerable<SaabWebProject.Models.DomainModels.Ticket_motaghazi1>
+
+@{
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "IT تیکت";
+
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>TicketIT</title>
+    <style>
+        table tbody td button {
+            border: none;
+            background-image: linear-gradient(#46b8cd, #10635b);
+            border-radius: 8px;
+            height: 25px;
+            width: 25px;
+            align-content: center;
+            display: flex;
+            justify-content: center;
+            margin: auto;
+        }
+
+            table tbody td button i {
+                font-size: 15px;
+                height: 100%;
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+        .modal3 {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            padding-top: 50px;
+        }
+
+        .modal-content2 {
+            background-color: #082D59;
+            margin: 5% auto;
+            padding: 20px;
+            border: 2px solid #00CAFC;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 800px;
+            max-height: 800px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .close-icon {
+            color: #00CAFC;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            position: absolute;
+            top: 15px;
+            left: 20px;
+        }
+
+            .close-icon:hover {
+                color: darkred;
+            }
+
+        .limit-tooltip {
+            position: absolute;
+            background: var(--bs-tab-content-bg);
+            color: aqua;
+            padding: 2px 5px;
+            border: 1px solid aqua;
+            border-radius: 6px;
+            font-size: 13px;
+            max-width: 500px; /* عرض محدود */
+            z-index: 9999;
+            white-space: normal; /* اجازه رفتن به خط بعد */
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            display: none;
+            line-height: 1.6;
+            font-size: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="tab-content" id="pills-tabContent">
+        <div class="row">
+
+
+            <div class="table-responsive tableH_Lock" style="min-height:100px; max-height:300px; overflow-y:auto;">
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr style="text-align:center">
+                            <th>
+                                @Html.DisplayName("عنوان درخواست")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter01-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            <th>
+                                @Html.DisplayName("اولویت")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter02-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            <th>
+                                @Html.DisplayName("شرح")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter03-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            <th></th>
+
+                        </tr>
+                    </thead>
+
+
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr style="text-align:center">
+                                <td>
+                                    @{
+                                        string onvan = item.OnvanDarkhast == 1 ? "رفع باگ" :
+                                                       item.OnvanDarkhast == 2 ? "رفع خطا" :
+                                                       item.OnvanDarkhast == 3 ? "بهبود خدمات" :
+                                                       item.OnvanDarkhast == 4 ? "تولید گزارش جدید" :
+                                                       item.OnvanDarkhast == 5 ? "نیاز به راهنمای" :
+                                                       item.OnvanDarkhast == 6 ? "سایر" :
+                                                       "نامشخص";
+                                    }
+                                    @onvan
+                                </td>
+                                <td>
+                                    @{
+                                        string olaviyat = item.Olaviat == 1 ? "اضطراری" :
+                                                          item.Olaviat == 2 ? "بالا" :
+                                                          item.Olaviat == 3 ? "متوسط" :
+                                                          item.Olaviat == 4 ? "پایین" :
+                                                          "نامشخص";
+                                    }
+                                    @olaviyat
+                                </td>
+
+                                <td class="limit-cell">
+                                    @item.Sharh
+                                </td>
+                                <td>
+                                    <button class="btn-modal-table" data-id="@item.ID">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+
+
+
+
+
+                </table>
+            </div>
+
+
+        </div>
+        @*<div class="card">
+                <div class="card-body pb-2">
+
+                </div>
+                <div class="card-arrow">
+                    <div class="card-arrow-top-left"></div>
+                    <div class="card-arrow-top-right"></div>
+                    <div class="card-arrow-bottom-left"></div>
+                    <div class="card-arrow-bottom-right"></div>
+                </div>
+            </div>*@
+    </div>
+    <div id="mymodal3" class="modal3">
+        <div class="modal-content2">
+            <i class="close-icon fa fa-window-close"></i>
+            <div id="ss"></div>
+        </div>
+    </div>
+
+    <link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-3.3.1.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const maxLength = 35;
+
+            document.querySelectorAll(".limit-cell").forEach(cell => {
+
+                // فقط یک بار متن کامل رو ذخیره کن
+                if (!cell.dataset.fullText) {
+                    cell.dataset.fullText = cell.innerText.trim();
+                }
+
+                const fullText = cell.dataset.fullText;
+
+                if (fullText.length > maxLength) {
+                    cell.innerText = fullText.substring(0, maxLength) + "...";
+                }
+
+                let tooltip = null;
+
+                cell.addEventListener("mouseenter", function () {
+
+                    if (fullText.length <= maxLength) return;
+
+                    tooltip = document.createElement("div");
+                    tooltip.className = "limit-tooltip";
+                    tooltip.innerText = fullText;
+                    document.body.appendChild(tooltip);
+
+                    const rect = cell.getBoundingClientRect();
+
+                    tooltip.style.left = rect.left + window.scrollX + "px";
+                    tooltip.style.top =
+                        rect.top + window.scrollY - tooltip.offsetHeight + 35 + "px";
+
+                    tooltip.style.display = "block";
+                });
+
+                cell.addEventListener("mouseleave", function () {
+                    if (tooltip) {
+                        tooltip.remove();
+                        tooltip = null;
+                    }
+                });
+            });
+
+        });
+
+    </script>
+    <script>
+
+$(document).ready(function () {
+
+    // وقتی روی هر سلول یا دکمه click2 کلیک شد، مودال باز بشه
+    $(".btn-modal-table").click(function () {
+        var $this = $(this);
+
+        // موقعیت المان کلیک‌شده
+        var offset = $this.offset();
+        var elementHeight = $this.outerHeight();
+        $("#hiddenID").val(idd);
+        // نمایش مودال
+        $("#mymodal3")
+            .addClass("fade-in")
+            .css({
+                "display": "block",
+                "position": "absolute",   // لازم
+                "top": offset.top - elementHeight - 100 + "px", // ۵px فاصله پایین المان
+            });
+
+        // گرفتن data-id یا هر چیزی که نیاز داری
+        var idd = $this.data("id");
+        console.log("Clicked ID:", idd);
+
+        // لود محتوا
+        $("#ss").load('@Url.Content("/Setting/Orders/modal_IT")?id=' + idd);
+    });
+
+    // بستن مودال با آیکون
+    $(".close-icon").click(function () {
+        $("#mymodal3").fadeOut();
+    });
+
+    // بستن مودال وقتی روی بک‌گراند کلیک شد
+    $("#mymodal3").click(function (e) {
+        if (e.target === this) {
+            $(this).fadeOut();
+        }
+    });
+
+});
+$(document).ready(function () {
+    $("#expandButton2").click(function () {
+        $("#mymodal3").addClass("fade-in"); // Add the fade-in class
+        $("#mymodal3").css("display", "block");
+    });
+
+    $(".close").click(function () {
+        $("#mymodal3").removeClass("fade-in"); // Remove the fade-in class
+        $("#mymodal3").css("display", "none");
+        location.reload();
+    });
+
+    $(window).click(function (event) {
+        if (event.target == $("#mymodal3")[0]) {
+            $("#mymodal3").removeClass("fade-in"); // Remove the fade-in class
+            $("#mymodal3").css("display", "none");
+        }
+    });
+})
+// بستن مودال با آیکون
+$(".close-icon").click(function () {
+    $("#mymodal3").fadeOut(200, function () {
+        location.reload();
+    });
+});
+
+// بستن مودال با کلیک روی بک‌گراند
+$("#mymodal3").click(function (e) {
+    if (e.target === this) {
+        $(this).fadeOut(200, function () {
+            location.reload();
+        });
+    }
+});
+
+    </script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+

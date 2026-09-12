@@ -1,0 +1,63 @@
+﻿
+@{
+    ViewBag.Title = "تنظیمات بنر";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@*<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />*@
+<script src="/Assets/js/jalalidatepicker.min.js"></script>
+<link href="/Assets/css/jalalidatepicker.min.css" rel="stylesheet">
+<script src="/Assets/js/jalaali.min.js"></script>
+<link href="/MyStyles/jalalidatepicker.css" rel="stylesheet">
+<style>
+    .windowBanner:not(.border-0):before {
+        border-top: 1px solid #fff0 !important;
+        border-bottom: 1px solid #fff0 !important;
+    }
+
+    .windowBanner:not(.border-0):after {
+        border-left: 1px solid #fff0 !important;
+        border-right: 1px solid #fff0 !important;
+    }
+
+</style>
+<div class="tab-content">
+    <div class="row" style="margin-bottom:10px">
+        <div class="col-xl-11"></div>
+        <div class="col-xl-1">
+            <a href="#" id="createNewBanner" class="btn form-control buttonGeneral" data-bs-toggle="modal" data-bs-target="#modalLg">
+                <i class="fa fa-plus-circle fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text">تعریف بنر جدید</span>
+
+            </a>
+        </div>
+    </div>
+    <input name="MyExcelStream12" type="file" style="display:none" />
+
+
+    <div id="myTable">
+        @Html.Action("OptionBanner_List", "Dashboard")
+    </div>
+</div>
+
+
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Scripts/sweetalert2.js"></script>
+
+<script>
+    jalaliDatepicker.startWatch({
+        time: false,
+        days: ["شنبه", "1شنبه", "2شنبه", "3شنبه", "4شنبه", "5شنبه", "جمعه"],
+        persianDigits: true,
+        autoClose: true,
+        //autocomplete: true,
+        showCloseBtn: true,
+        showEmptyBtn: false,
+        showCloseBtn: true,
+        zIndex: 100000,
+    });
+
+    $("#createNewBanner").click(function () {
+        $("#big_modal_body").load('@Url.Content("/Reporter/Dashboard/OptionBanner_Create")');
+    });
+</script>
+

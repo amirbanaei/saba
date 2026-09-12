@@ -1,0 +1,2279 @@
+﻿@using SaabWebProject.Models.DomainModels;
+
+@{
+
+    ViewBag.Title = "ثبت دستورات";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    SaabEntities db = new SaabEntities();
+
+}
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+<link href="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.style.css" rel="stylesheet" />
+
+<script src="~/Assets/js/jalalidatepicker.min.js"></script>
+<link href="~/Assets/css/jalalidatepicker.min.css" rel="stylesheet" />
+<script src="~/Assets/js/jalaali.min.js"></script>
+<link href="~/MyStyles/jalalidatepicker.css" rel="stylesheet" />
+<link href="~/MyStyles/MyStyle.css" rel="stylesheet" />
+
+<div class="">
+    <ul class="nav nav-tabs nav-tabs-v2 ps-4 pe-4" id="pills-tab">
+        <li class="nav-item me-3">
+            <a class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" href="#pills-home">
+                <button class=" nav-btn">محاسبه</button>
+            </a>
+        </li>
+        <li class="nav-item me-3">
+            <a class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" href="#pills-profile">
+                <button class=" nav-btn">تعداد محاسبات </button>
+            </a>
+        </li>
+        <li class="nav-item me-3">
+            <a class="nav-link" id="pills-profile2-tab" data-bs-toggle="pill" href="#pills-profile2">
+                <button class=" nav-btn">گزارش گیری پرسنلی</button>
+            </a>
+        </li>
+        <li class="nav-item me-3">
+            <a class="nav-link" id="pills-profile2-tab" data-bs-toggle="pill" href="#pills-profile3">
+                <button class=" nav-btn">معادل کار دستی</button>
+            </a>
+        </li>
+        <li class="nav-item me-3">
+            <a class="nav-link" id="pills-profile2-tab" data-bs-toggle="pill" href="#pills-profile4">
+                <button class=" nav-btn">حذف  صورت وضعیت</button>
+            </a>
+        </li>
+        <li class="nav-item me-3">
+            <a class="nav-link " id="pills-contact-tab" data-bs-toggle="pill" href="#pills-soratand-bemwh">
+                <button class=" nav-btn">محاسبه بیمه </button>
+            </a>
+        </li>
+        <li class="nav-item me-3">
+            <a class="nav-link" id="pills-profile2-tab" data-bs-toggle="pill" href="#pills-profile5">
+                <button class=" nav-btn">حذف  فیش</button>
+            </a>
+        </li>
+    </ul>
+    <div class="tab-content" id="pills-tabContent">
+        <div class="tab-pane fade show active" id="pills-home">
+            <div class="">
+                <div class="card">
+                    <div class="card-body pb-2">
+                        <div class="row" style="margin-top:10px">
+                            <div class="col-xl-5">
+                                <label class="form-label"> پیمان  </label>
+                                <div id="peymans">
+
+                                </div>
+
+                            </div>
+                            <div class="col-xl-2">
+                                <div class="form-group mb-3">
+                                    <label class="form-label"> ماه </label>
+                                    <select class="form-select my_Select" id="Month">
+                                        <option value="0">انتخاب کنید..</option>
+                                        <option value="1">فروردین</option>
+                                        <option value="2">اردیبهشت</option>
+                                        <option value="3">خرداد</option>
+                                        <option value="4">تیر</option>
+                                        <option value="5">مرداد</option>
+                                        <option value="6">شهریور</option>
+                                        <option value="7">مهر</option>
+                                        <option value="8">آبان</option>
+                                        <option value="9">آذر</option>
+                                        <option value="10">دی</option>
+                                        <option value="11">بهمن</option>
+                                        <option value="12">اسفند</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-xl-2">
+                                <label class="form-label">سال</label>
+
+                                <select id="Year" name="year_Eq" class="form-select">
+                                    <option value="0">انتخاب کنید</option>
+
+                                    @{
+                                        System.Globalization.PersianCalendar cs2 = new System.Globalization.PersianCalendar();
+                                        int currentYear = cs2.GetYear(DateTime.Now);
+
+                                        for (var i = 4; i >= 0; i--)
+                                        {
+                                            var s = DateTime.Now.AddYears(-i);
+
+                                            <option value="@cs2.GetYear(s)">@cs2.GetYear(s)</option>
+                                        }
+                                    }
+                                </select>
+
+                            </div>
+                            <div class="col-xl-3" id="userlabel">
+                                <label class="form-label"> مقدار  </label>
+                                <input class="form-control" id="value" />
+
+
+                            </div>
+                        </div>
+
+                        <div class="row" style="margin-bottom:10px;">
+                            <div class="col-xl-5"></div>
+                            @*<div class="col-xl-1">
+                                    <a href="@Url.Action("ExportAddMoalefeExcel","Orders",new {area="Setting" })" class="btn form-control buttonGeneral">
+                                        <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                                        <span class="bGeneral-text"> دانلود فایل نمونه اقساط</span>
+                                    </a>
+                                </div>*@
+                            <div class="col-xl-1">
+                                <a href="@Url.Action("ExportAddMoalefeExcel", "Orders", new { area = "Setting" })"
+                                   class="btn form-control buttonGeneral"
+                                   onclick="this.href+='?year=' + document.getElementById('Year').value + '&month=' + document.getElementById('Month').value">
+                                    <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                                    <span class="bGeneral-text"> دانلود فایل نمونه اقساط</span>
+                                </a>
+                            </div>
+                            <div class="col-xl-1">
+                                <a href="@Url.Action("ExportAddMoalefeExcelforolad","Orders",new {area="Setting" })" class="btn form-control buttonGeneral">
+                                    <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                                    <span class="bGeneral-text">دانلود فایل نمونه اولاد</span>
+                                </a>
+                            </div>
+                            <div class="col-xl-1">
+                                <a href="@Url.Action("ExportAddMoalefeExcelforestandard","Orders",new {area="Setting" })" class="btn form-control buttonGeneral">
+                                    <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                                    <span class="bGeneral-text"> دانلود فایل نمونه استاندار</span>
+                                </a>
+                            </div>
+                            <div class="col-xl-1">
+                                <a href="@Url.Action("ExportAddMoalefeExcelforpumnusr","Orders",new {area="Setting" })" class="btn form-control buttonGeneral">
+                                    <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                                    <span class="bGeneral-text"> دانلود فایل نمونه پیمان های کاربر </span>
+                                </a>
+                            </div>
+                            <div class="col-xl-1">
+                                <a href="@Url.Action("ExportAddMoalefeExcelforkarkard","Orders",new {area="Setting" })" class="btn form-control buttonGeneral">
+                                    <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                                    <span class="bGeneral-text"> دانلود فایل نمونه کارکرد های کاربر </span>
+                                </a>
+                            </div>
+
+                            <div class="col-xl-1">
+                                <a href="@Url.Action("Magic_box_calculations","Orders",new {area="Setting" })" class="btn form-control buttonGeneral">
+                                    <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                                    <span class="bGeneral-text"> دانلود فایل جعبه جادویی</span>
+                                </a>
+                            </div>
+                            <div class="col-xl-1">
+                                <a href="@Url.Action("ExportAddMoalefeExcelforkarkpymn","Orders",new {area="Setting" })" class="btn form-control buttonGeneral">
+                                    <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                                    <span class="bGeneral-text"> دانلود فایل آدم ها و پیمان ها </span>
+                                </a>
+                            </div>
+                            <div class="col-xl-1">
+                                <a href="@Url.Action("malyat", "Orders", new { area = "Setting" })"
+                                   class="btn form-control buttonGeneral"
+                                   onclick="this.href+='?year=' + document.getElementById('year_usr2').value + '&month_usr=' + document.getElementById('month_usr2').value+ '&compain=' + document.getElementById('compain2').value">
+                                    <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                                    <span class="bGeneral-text">دانلود فایل گزارش مالیات </span>
+                                </a>
+                            </div>
+                            <div class="col-xl-1">
+                                <a href="@Url.Action("Magic_box_fish","Orders",new {area="Setting" })" class="btn form-control buttonGeneral">
+                                    <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                                    <span class="bGeneral-text"> دانلود فایل فیش حقوقی با کارکرد </span>
+                                </a>
+                            </div>
+                            <div class="col-xl-1">
+                                <a href="@Url.Action("ExportAddMoalefeghales", "Orders", new { area = "Setting" })"
+                                   class="btn form-control buttonGeneral"
+                                   onclick="this.href+='?year=' + document.getElementById('Year').value + '&month=' + document.getElementById('Month').value">
+                                    <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                                    <span class="bGeneral-text"> دانلود فایل نمونه تزاز ها و خالص فیش</span>
+                                </a>
+                            </div>
+                            <div class="col-xl-1">
+                                <a href="@Url.Action("ExportAddMoalefeghaleskarkard", "Orders", new { area = "Setting" })"
+                                   class="btn form-control buttonGeneral"
+                                   onclick="this.href+='?year=' + document.getElementById('Year').value + '&month=' + document.getElementById('Month').value">
+                                    <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                                    <span class="bGeneral-text"> karkard</span>
+                                </a>
+                            </div>
+                            <div class="col-xl-1">
+                                <a href="@Url.Action("ExportAddMoalefeghaleskarkardFISJKDFSJ", "Orders", new { area = "Setting" })"
+                                   class="btn form-control buttonGeneral"
+                                   onclick="this.href+='?year=' + document.getElementById('Year').value + '&month=' + document.getElementById('Month').value">
+                                    <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                                    <span class="bGeneral-text"> karkard11</span>
+                                </a>
+                            </div>
+
+
+
+                            <div class="col-xl-1">
+                                <a href="@Url.Action("ExportAddMoalefeghaleskarkardfish", "Orders", new { area = "Setting" })"
+                                   class="btn form-control buttonGeneral"
+                                   onclick="this.href+='?year=' + document.getElementById('Year').value + '&month=' + document.getElementById('Month').value">
+                                    <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                                    <span class="bGeneral-text"> fisjvalueee</span>
+                                </a>
+                            </div>
+                            <div class="col-xl-1">
+                                <a href="@Url.Action("ExportAddMoalefeghaleskarkardmoadel", "Orders", new { area = "Setting" })"
+                                   class="btn form-control buttonGeneral"
+                                   onclick="this.href+='?year=' + document.getElementById('Year').value + '&month=' + document.getElementById('Month').value">
+                                    <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                                    <span class="bGeneral-text">معادل اضافه کار  </span>
+                                </a>
+                            </div>
+
+
+                            <div class="col-xl-1">
+                                <a href="@Url.Action("countdayforbedat", "Orders", new { area = "Setting" })"
+                                   class="btn form-control buttonGeneral"
+                                   onclick="this.href+='?year=' + document.getElementById('Year').value + '&month=' + document.getElementById('Month').value">
+                                    <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                                    <span class="bGeneral-text">فیش دارد یا ندارد   </span>
+                                </a>
+                            </div>
+
+
+
+                            <div class="col-xl-1">
+                                <a class="btn form-control buttonGeneral" id="upload10" style="font-size:10px;margin-bottom:10px;">
+                                    <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                                    <span class="bGeneral-text"> برای نیروهای امانی بارگزاری اطلاعات</span>
+                                </a>
+                            </div>
+                            <div class="col-xl-1">
+                                <a class="btn form-control buttonGeneral" id="upload11" style="font-size:10px;margin-bottom:10px;">
+                                    <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                                    <span class="bGeneral-text"> برای نیروهای امانی بارگزاری اطلاعات55</span>
+                                </a>
+                            </div>
+                            <div class="col-xl-1">
+                                <a class="btn form-control buttonGeneral" id="upload112" style="font-size:10px;margin-bottom:10px;">
+                                    <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                                    <span class="bGeneral-text"> pasword</span>
+                                </a>
+                            </div>
+                            <div class="col-xl-1">
+                                <a class="btn form-control buttonGeneral" id="upload1122" style="font-size:10px;margin-bottom:10px;">
+                                    <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                                    <span class="bGeneral-text"> برای نیروهای امانی بارگزاری اطلاعات222255</span>
+                                </a>
+                            </div>
+                            <div class="col-xl-1">
+                                <a class="btn form-control buttonGeneral" id="upload112332" style="font-size:10px;margin-bottom:10px;">
+                                    <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                                    <span class="bGeneral-text">olad</span>
+                                </a>
+                            </div>
+                            <div class="col-xl-1">
+                                <a class="btn form-control buttonGeneral" id="upload112332444" style="font-size:10px;margin-bottom:10px;">
+                                    <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                                    <span class="bGeneral-text">پیمان ها</span>
+                                </a>
+                            </div>
+                            <div class="col-xl-1">
+                                <a class="btn form-control buttonGeneral" id="pymn" style="font-size:10px;margin-bottom:10px;">
+                                    <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                                    <span class="bGeneral-text">پیمان ها برای کاربرهای لینک شود </span>
+                                </a>
+                            </div>
+
+
+
+                            <div class="col-xl-1">
+                                <a class="btn form-control buttonGeneral" id="bodejeh" style="font-size:10px;margin-bottom:10px;">
+                                    <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                                    <span class="bGeneral-text">بودجه </span>
+                                </a>
+                            </div>
+
+
+
+                            <div class="col-xl-1">
+                                <a class="btn form-control buttonGeneral" id="idupl123" style="font-size:10px;margin-bottom:10px;">
+                                    <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                                    <span class="bGeneral-text">دیتا های فیش حقوقی </span>
+                                </a>
+                            </div>
+
+
+                            <div class="col-xl-1">
+                                <a class="btn form-control buttonGeneral" id="idupl" style="font-size:10px;margin-bottom:10px;">
+                                    <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                                    <span class="bGeneral-text">پاداش جریمه ها</span>
+                                </a>
+                            </div>
+                            <div class="col-xl-1">
+                                <a class="btn form-control buttonGeneral" id="agsattt" style="font-size:10px;margin-bottom:10px;">
+                                    <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                                    <span class="bGeneral-text">اقساط</span>
+                                </a>
+                            </div>
+
+
+
+                            <div class="col-xl-1" id="submitdiv">
+                                <button class="btn buttonsabt form-control" id="btnCreate1555">
+                                    <i class="fa fa-thumbs-up fa-fw me-1 VecGeneral"></i>
+                                    <span class="bSabt-text">ثبت</span>
+                                </button>
+                                <input id="summery_file10" style="display:none" type="file" class="form-control" value="" />
+                                <input id="summery_file11" style="display:none" type="file" class="form-control" value="" />
+                                <input id="summery_file112" style="display:none" type="file" class="form-control" value="" />
+                                <input id="summery_file1123" style="display:none" type="file" class="form-control" value="" />
+                                <input id="summery_file1123344" style="display:none" type="file" class="form-control" value="" />
+                                <input id="idupl3332" style="display:none" type="file" class="form-control" value="" />
+                                <input id="idpymn" style="display:none" type="file" class="form-control" value="" />
+                                <input id="ghst" style="display:none" type="file" class="form-control" value="" />
+                                <input id="idupl3335442" style="display:none" type="file" class="form-control" value="" />
+
+                                <input id="bod" style="display:none" type="file" class="form-control" value="" />
+
+                            </div>
+                        </div>
+                        <div id="test">
+
+                        </div>
+                    </div>
+
+                    <div class="card-arrow">
+                        <div class="card-arrow-top-left"></div>
+                        <div class="card-arrow-top-right"></div>
+                        <div class="card-arrow-bottom-left"></div>
+                        <div class="card-arrow-bottom-right"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade  " id="pills-soratand-bemwh">
+            <div class="mb-10px">
+                <div class="row">
+                    <div class="col-xl-2">
+                        <div class="row">
+                            <div class="col-xl-12">
+                                <label class="form-label">
+                                    کد پرسنلی
+                                </label>
+
+                            </div>
+                            <div class="col-xl-12">
+                                <input class="form-control" id="codpersonaly11" value="0" />
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-xl-2">
+                        <label class="form-label">سال</label>
+
+                        <select id="year_Eq122221" name="year_Eq1222231" class="form-select">
+                            <option value="0">انتخاب کنید</option>
+
+                            @{
+
+
+                                for (var i = 4; i >= 0; i--)
+                                {
+                                    var s = DateTime.Now.AddYears(-i);
+
+                                    <option value="@cs2.GetYear(s)">@cs2.GetYear(s)</option>
+                                }
+                            }
+                        </select>
+
+                    </div>
+
+
+
+                    <div class="col-xl-2" id="Monthly">
+                        <label class="form-label">ماه</label>
+                        <select class="form-select" id="Monthl33y12">
+                            <option value="0">انتخاب کنید..</option>
+                            <option value="1">فروردین</option>
+                            <option value="2">اردیبهشت</option>
+                            <option value="3">خرداد</option>
+                            <option value="4">تیر</option>
+                            <option value="5">مرداد</option>
+                            <option value="6">شهریور</option>
+                            <option value="7">مهر</option>
+                            <option value="8">آبان</option>
+                            <option value="9">آذر</option>
+                            <option value="10">دی</option>
+                            <option value="11">بهمن</option>
+                            <option value="12">اسفند</option>
+
+                        </select>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-xl-11">
+                    </div>
+                    <div class="col-xl-1">
+
+                        @*<button id="btnCreate" type="button" class="form-control buttonGeneral">
+                                <i class="fa fa-info fa-fw me-1 VecGeneral"></i>
+                                <span class="bGeneral-text"> <a data-bs-toggle="modal" data-bs-target="#modalLg1" class="Details ">جزئیات</a></span>
+
+                            </button>*@
+                        <button class="btn form-control buttonGeneral" id="btnShowSR33">
+                            <i class="fa fa-eye fa-fw me-1 VecGeneral"></i>
+                            <span class="bGeneral-text">محاسبه معادل کار</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="tab-pane fade" id="pills-profile">
+
+            <div class="">
+                <div class="card">
+                    <div class="card-body pb-2">
+                        <div class="row" style="margin-top:10px">
+                            <div class="col-xl-5">
+                                <label class="form-label"> پیمان  </label>
+                                <div id="peymans2">
+
+                                </div>
+
+                            </div>
+                            <div class="col-xl-2">
+                                <div class="form-group mb-3">
+                                    <label class="form-label"> ماه </label>
+                                    <select class="form-select my_Select" id="Month2">
+                                        <option value="0">انتخاب کنید..</option>
+                                        <option value="1">فروردین</option>
+                                        <option value="2">اردیبهشت</option>
+                                        <option value="3">خرداد</option>
+                                        <option value="4">تیر</option>
+                                        <option value="5">مرداد</option>
+                                        <option value="6">شهریور</option>
+                                        <option value="7">مهر</option>
+                                        <option value="8">آبان</option>
+                                        <option value="9">آذر</option>
+                                        <option value="10">دی</option>
+                                        <option value="11">بهمن</option>
+                                        <option value="12">اسفند</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-xl-2">
+                                <label class="form-label">سال</label>
+
+                                <select id="Year2" name="year_Eq" class="form-select">
+                                    <option value="0">انتخاب کنید</option>
+
+                                    @{
+
+                                        for (var i = 4; i >= 0; i--)
+                                        {
+                                            var s = DateTime.Now.AddYears(-i);
+
+                                            <option value="@cs2.GetYear(s)">@cs2.GetYear(s)</option>
+                                        }
+                                    }
+                                </select>
+
+                            </div>
+                            <div class="col-xl-3" id="userlabel">
+                                <label class="form-label"> مقدار  </label>
+                                <input class="form-control" id="value2" />
+
+
+                            </div>
+                        </div>
+
+                        <div class="row" style="margin-bottom:10px;">
+                            <div class="col-xl-11"></div>
+
+                            <div class="col-xl-1">
+                                <a href="#" class=" btn form-control buttonGeneral" id="dwn" onclick="DownloadExcel23() ">
+                                    <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                                    <span class="bGeneral-text">دانلود فایل نمونه</span>
+                                </a>
+                            </div>
+                            <div class="col-xl-1">
+                                <a class="btn form-control buttonGeneral" id="agsattt11" style="font-size:10px;margin-bottom:10px;">
+                                    <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                                    <span class="bGeneral-text">تعداد</span>
+                                </a>
+                            </div>
+                            <div class="col-xl-1">
+                                <a class="btn form-control buttonGeneral" id="olav" style="font-size:10px;margin-bottom:10px;">
+                                    <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                                    <span class="bGeneral-text">اولوبت</span>
+                                </a>
+                            </div>
+                            <input id="idupl3335442111" style="display:none" type="file" class="form-control" value="" />
+                            <input id="idupl3335442112221" style="display:none" type="file" class="form-control" value="" />
+
+                            <div class="col-xl-1" id="submitdiv">
+                                <button class="btn buttonsabt form-control" id="btnCreate15552">
+                                    <i class="fa fa-thumbs-up fa-fw me-1 VecGeneral"></i>
+                                    <span class="bSabt-text">ثبت</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="test2">
+
+                        </div>
+                    </div>
+
+                    <div class="card-arrow">
+                        <div class="card-arrow-top-left"></div>
+                        <div class="card-arrow-top-right"></div>
+                        <div class="card-arrow-bottom-left"></div>
+                        <div class="card-arrow-bottom-right"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="tab-pane fade" id="pills-profile2">
+
+            <div class="">
+                <div class="card">
+                    <div class="card-body pb-2">
+                        <div class="row" style="margin-top:10px">
+                            <div class="col-xl-5">
+                                <label class="form-label"> پیمان  </label>
+                                <select class="form-select select_peyman" id="select_peyman4" name="select_peyman">
+                                    <option hidden value="Select">انتخاب مورد</option>
+                                    @foreach (var item in db.tbPeymanContracts.ToList())
+                                    {
+                                        <option value="@item.pec_ID">@item.pec_Title</option>
+                                    }
+                                </select>
+
+                            </div>
+                            <div class="col-xl-2">
+                                <div class="form-group mb-3">
+                                    <label class="form-label"> ماه </label>
+                                    <select class="form-select my_Select" id="Month23">
+                                        <option value="0">انتخاب کنید..</option>
+                                        <option value="1">فروردین</option>
+                                        <option value="2">اردیبهشت</option>
+                                        <option value="3">خرداد</option>
+                                        <option value="4">تیر</option>
+                                        <option value="5">مرداد</option>
+                                        <option value="6">شهریور</option>
+                                        <option value="7">مهر</option>
+                                        <option value="8">آبان</option>
+                                        <option value="9">آذر</option>
+                                        <option value="10">دی</option>
+                                        <option value="11">بهمن</option>
+                                        <option value="12">اسفند</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-xl-2">
+                                <label class="form-label">سال</label>
+
+                                <select id="Year23" name="year_Eq" class="form-select">
+                                    <option value="0">انتخاب کنید</option>
+
+                                    @{
+
+                                        for (var i = 4; i >= 0; i--)
+                                        {
+                                            var s = DateTime.Now.AddYears(-i);
+
+                                            <option value="@cs2.GetYear(s)">@cs2.GetYear(s)</option>
+                                        }
+                                    }
+                                </select>
+
+                            </div>
+                            <div class="col-xl-3" id="userlabel">
+                                <label class="form-label"> مقدار  </label>
+                                <input class="form-control" id="value2" />
+
+
+                            </div>
+                        </div>
+
+                        <div class="row" style="margin-bottom:10px;">
+                            <div class="col-xl-11"></div>
+
+                            <div class="col-xl-1">
+                                <a href="#" class=" btn form-control buttonGeneral" id="dwn" onclick="DownloadExcel() ">
+                                    <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                                    <span class="bGeneral-text">دانلود فایل نمونه</span>
+                                </a>
+                            </div>
+
+
+                            @*<div class="col-xl-1" id="submitdiv">
+                                        <button class="btn buttonsabt form-control" id="btnCreate15552">
+                                            <i class="fa fa-thumbs-up fa-fw me-1 VecGeneral"></i>
+                                            <span class="bSabt-text">ثبت</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div id="test2">
+
+                                </div>*@
+                        </div>
+
+                        <div class="card-arrow">
+                            <div class="card-arrow-top-left"></div>
+                            <div class="card-arrow-top-right"></div>
+                            <div class="card-arrow-bottom-left"></div>
+                            <div class="card-arrow-bottom-right"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+        <div class="tab-pane fade" id="pills-profile3">
+
+            <div class="row">
+                <div class="col-xl-2">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <label class="form-label">
+                                کد پرسنلی
+                            </label>
+
+                        </div>
+                        <div class="col-xl-12">
+                            <input class="form-control" id="codpersonaly" value="0" />
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-xl-2">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <label class="form-label">
+                                مقدار دستی معادل
+                            </label>
+
+                        </div>
+                        <div class="col-xl-12">
+                            <input class="form-control" id="valuemoadel" value="0" />
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-xl-2">
+                    <label class="form-label">سال</label>
+
+                    <select id="year_Eq11" name="year_Eq11" class="form-select">
+                        <option value="0">انتخاب کنید</option>
+
+                        @{
+
+
+                            for (var i = 4; i >= 0; i--)
+                            {
+                                var s = DateTime.Now.AddYears(-i);
+
+                                <option value="@cs2.GetYear(s)">@cs2.GetYear(s)</option>
+                            }
+                        }
+                    </select>
+
+                </div>
+
+
+
+                <div class="col-xl-2" id="Monthly">
+                    <label class="form-label">ماه</label>
+                    <select class="form-select" id="Monthly12">
+                        <option value="0">انتخاب کنید..</option>
+                        <option value="1">فروردین</option>
+                        <option value="2">اردیبهشت</option>
+                        <option value="3">خرداد</option>
+                        <option value="4">تیر</option>
+                        <option value="5">مرداد</option>
+                        <option value="6">شهریور</option>
+                        <option value="7">مهر</option>
+                        <option value="8">آبان</option>
+                        <option value="9">آذر</option>
+                        <option value="10">دی</option>
+                        <option value="11">بهمن</option>
+                        <option value="12">اسفند</option>
+
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-11">
+                </div>
+                <div class="col-xl-1">
+
+                    @*<button id="btnCreate" type="button" class="form-control buttonGeneral">
+                            <i class="fa fa-info fa-fw me-1 VecGeneral"></i>
+                            <span class="bGeneral-text"> <a data-bs-toggle="modal" data-bs-target="#modalLg1" class="Details ">جزئیات</a></span>
+
+                        </button>*@
+                    <button class="btn form-control buttonGeneral" id="btnShowSR">
+                        <i class="fa fa-eye fa-fw me-1 VecGeneral"></i>
+                        <span class="bGeneral-text">مقدار دستی معادل کار</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+
+
+        <div class="tab-pane fade" id="pills-profile4">
+
+            <div class="row">
+                <div class="col-xl-2">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <label class="form-label">
+                                شماره صورت وضعیت
+                            </label>
+
+                        </div>
+                        <div class="col-xl-12">
+                            <input class="form-control" id="numbersoart" value="0" />
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-xl-4">
+                    <label class="form-label">نام دوره </label>
+
+                    <select class="form-select select_peymanhazf" id="selecthazfpymn" name="selecthazf">
+                        <option hidden value="Select">انتخاب مورد</option>
+                        @foreach (var item in db.tbPeymanContracts.ToList())
+                        {
+                            <option value="@item.pec_ID"> @item.pec_Title</option>
+                        }
+                    </select>
+
+                </div>
+                <div class="col-xl-2">
+                    <label class="form-label">سال</label>
+
+                    <select id="year_Eq111" name="year_Eq111" class="form-select">
+                        <option value="0">انتخاب کنید</option>
+
+                        @{
+
+
+                            for (var i = 4; i >= 0; i--)
+                            {
+                                var s = DateTime.Now.AddYears(-i);
+
+                                <option value="@cs2.GetYear(s)">@cs2.GetYear(s)</option>
+                            }
+                        }
+                    </select>
+
+                </div>
+
+
+
+                <div class="col-xl-2" id="Monthly">
+                    <label class="form-label">ماه</label>
+                    <select class="form-select" id="Monthly121">
+                        <option value="0">انتخاب کنید..</option>
+                        <option value="1">فروردین</option>
+                        <option value="2">اردیبهشت</option>
+                        <option value="3">خرداد</option>
+                        <option value="4">تیر</option>
+                        <option value="5">مرداد</option>
+                        <option value="6">شهریور</option>
+                        <option value="7">مهر</option>
+                        <option value="8">آبان</option>
+                        <option value="9">آذر</option>
+                        <option value="10">دی</option>
+                        <option value="11">بهمن</option>
+                        <option value="12">اسفند</option>
+
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-11">
+                </div>
+                <div class="col-xl-1">
+
+                    @*<button id="btnCreate" type="button" class="form-control buttonGeneral">
+                            <i class="fa fa-info fa-fw me-1 VecGeneral"></i>
+                            <span class="bGeneral-text"> <a data-bs-toggle="modal" data-bs-target="#modalLg1" class="Details ">جزئیات</a></span>
+
+                        </button>*@
+                    <button class="btn form-control buttonGeneral" id="btnhazf">
+                        <i class="fa fa-eye fa-fw me-1 VecGeneral"></i>
+                        <span class="bGeneral-text">مقدار دستی معادل کار</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+        <div class="tab-pane fade" id="pills-profile5">
+
+            <div class="row">
+                <div class="col-xl-2">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <label class="form-label">
+                                کد پرسنلی
+                            </label>
+
+                        </div>
+                        <div class="col-xl-12">
+                            <input class="form-control" id="numbersoartcod" value="0" />
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-xl-2">
+                    <label class="form-label">سال</label>
+
+                    <select id="year_Eq111fish" name="year_Eq111fish" class="form-select">
+                        <option value="0">انتخاب کنید</option>
+
+                        @{
+
+
+                            for (var i = 4; i >= 0; i--)
+                            {
+                                var s = DateTime.Now.AddYears(-i);
+
+                                <option value="@cs2.GetYear(s)">@cs2.GetYear(s)</option>
+                            }
+                        }
+                    </select>
+
+                </div>
+
+
+
+                <div class="col-xl-2" id="Monthly">
+                    <label class="form-label">ماه</label>
+                    <select class="form-select" id="Monthly121fidh">
+                        <option value="0">انتخاب کنید..</option>
+                        <option value="1">فروردین</option>
+                        <option value="2">اردیبهشت</option>
+                        <option value="3">خرداد</option>
+                        <option value="4">تیر</option>
+                        <option value="5">مرداد</option>
+                        <option value="6">شهریور</option>
+                        <option value="7">مهر</option>
+                        <option value="8">آبان</option>
+                        <option value="9">آذر</option>
+                        <option value="10">دی</option>
+                        <option value="11">بهمن</option>
+                        <option value="12">اسفند</option>
+
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-11">
+                </div>
+                <div class="col-xl-1">
+
+                    @*<button id="btnCreate" type="button" class="form-control buttonGeneral">
+                            <i class="fa fa-info fa-fw me-1 VecGeneral"></i>
+                            <span class="bGeneral-text"> <a data-bs-toggle="modal" data-bs-target="#modalLg1" class="Details ">جزئیات</a></span>
+
+                        </button>*@
+                    <button class="btn form-control buttonGeneral" id="btnhazffish">
+                        <i class="fa fa-eye fa-fw me-1 VecGeneral"></i>
+                        <span class="bGeneral-text">مقدار دستی معادل کار</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    @section Scripts{
+        @*    <script src="~/Scripts/jquery-3.3.1.js"></script>*@
+
+        <script src="~/Scripts/jquery-ui.js"></script>
+        <script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+        <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+
+        <script>
+            $(document).ready(function () {
+                $('#btnShowSR33').click(function () {
+                    var year = $('#year_Eq122221').val();
+                    var month = $('#Monthl33y12').val();
+
+                    if (year == "0" || month == "0") {
+                        alert('لطفاً همه فیلدها را انتخاب کنید.');
+                        return;
+                    }
+
+                    var url = `/Salaries/Formula/mohasebehbemh?month=${month}&Year=${year}`;
+
+                    $.ajax({
+                        type: 'GET',
+                        url: url,
+                        success: function (response) {
+                            if (response === "true") {
+                                alert('عملیات موفق بود.');
+                            } else {
+                                alert('پاسخ: ' + response);
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            alert('خطا در انجام درخواست.');
+                        }
+                    });
+                });
+            });
+            $(document).ready(function () {
+                $("#selecthazfpymn").picker({ search: true });
+
+            });
+            $(document).ready(function () {
+                $('#btnShowSR').click(function () {
+                    var codPersonal = $('#codpersonaly').val();
+                    var year = $('#year_Eq11').val();
+                    var month = $('#Monthly12').val();
+                    var valuemoadel = $('#valuemoadel').val();
+
+                    if (year == "0" || month == "0") {
+                        alert('لطفاً همه فیلدها را انتخاب کنید.');
+                        return;
+                    }
+
+                    var url = `/Salaries/Formula/moadeldastin?Month=${month}&id=${codPersonal}&value=${valuemoadel}&Year=${year}`;
+
+                    $.ajax({
+                        type: 'GET',
+                        url: url,
+                        success: function (response) {
+                            if (response === "true") {
+                                alert('عملیات موفق بود.');
+                            } else {
+                                alert('پاسخ: ' + response);
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            alert('خطا در انجام درخواست.');
+                        }
+                    });
+                });
+            });
+            $(document).ready(function () {
+                $('#btnhazf').click(function () {
+                    var codPersonal = $('#numbersoart').val();
+                    var year = $('#year_Eq111').val();
+                    var month = $('#Monthly121').val();
+                    var valuemoadel = $('#selecthazfpymn').val();
+
+                    if (year == "0" || month == "0") {
+                        alert('لطفاً همه فیلدها را انتخاب کنید.');
+                        return;
+                    }
+
+                    var url = `/Salaries/Formula/deletesoratvaziar?Month=${month}&id=${codPersonal}&value=${valuemoadel}&Year=${year}`;
+
+                    $.ajax({
+                        type: 'GET',
+                        url: url,
+                        success: function (response) {
+                            if (response === "true") {
+                                alert('عملیات موفق بود.');
+                            } else {
+                                alert('پاسخ: ' + response);
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            alert('خطا در انجام درخواست.');
+                        }
+                    });
+                });
+            });
+            $(document).ready(function () {
+                $('#btnhazffish').click(function () {
+                    var codPersonal = $('#numbersoartcod').val();
+                    var year = $('#year_Eq111fish').val();
+                    var month = $('#Monthly121fidh').val();
+                    //var valuemoadel = $('#selecthazfpymn').val();
+
+                    if (year == "0" || month == "0") {
+                        alert('لطفاً همه فیلدها را انتخاب کنید.');
+                        return;
+                    }
+
+                    var url = `/Salaries/Formula/deletefish?Month=${month}&id=${codPersonal}&Year=${year}`;
+
+                    $.ajax({
+                        type: 'GET',
+                        url: url,
+                        success: function (response) {
+                            if (response === "true") {
+                                alert('عملیات موفق بود.');
+                            } else {
+                                alert('پاسخ: ' + response);
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            alert('خطا در انجام درخواست.');
+                        }
+                    });
+                });
+            });
+            function DownloadExcel23() {
+        console.log($("#year_usr").val());
+        console.log($("#month_usr").val());
+        console.log($("#datepickerFromEn_usr").val());
+        console.log($("#datepickerToEn_usr").val());
+
+
+
+
+
+
+
+
+                console.log($("#peymans3").val());
+                var aa = $("#Month2").val();
+            //Basteh = $('#basteOfPeyman').val();
+
+
+            $.ajax({
+                beforeSend: function () {
+                    document.getElementById("loading-circle").style.display = "block";//مهندس دارین برعککس میزارین
+                    //این درسته
+                    //شبیه هم ننوشتین
+                    //خوب ورودی هام فرق داتشنت الاان فهمیدم چیشد + اضافه گذاشته بود
+                },
+                @*url: '@Url.Action("ExportMoalefeExcel", "Moalefe", new { area = "Salaries" })?year=' + $("#year_usr").val() + '&month=' + aa + '&FromDate=' + $("#datepickerFromEn_usr").val() + '&ToDate=' + $("#datepickerToEn_usr").val() + '&PeymanID=' + $("#baste_peyman2").val() + '&Basteh=' + Basteh,*@
+                type: 'GET',
+                dataType: 'html',
+
+
+                success: function (res) {
+                    if (res === "False") {
+                        // اجرای بلوک error در صورت مطابقت با "False"
+                        alert("برای این ماه و این سال این بسته تایید نهایی شده است ");
+                        window.location.reload();
+                        console.log(res);
+                    }
+                    else {
+
+                        document.getElementById("loading-circle").style.display = "none";
+                        @*window.location = '@Url.Action("ExportSafheChaharom", "Orders", new { area = "Setting" })?year=' + $("#Year2").val() + '&month=' + aa + '&peymans3=' + $("#select_peyman3").val() ;*@
+                                    window.location = '@Url.Action("ExportSafheChaharom", "Orders", new { area = "Setting" })' ;
+
+                    }
+                },
+                error: function (res) {
+                    alert("fdslsfdk")
+                    console.log(res);
+                }
+            });
+
+    }
+
+        function UploadedFile(result) {
+                    Toast.fire({
+                        background: '#35434A',
+                        color: 'white',
+                        title: result
+                    }).then(function () {
+                        location.reload();
+                    });
+    }
+
+
+
+         $("#upload10").click(function () {
+
+
+
+
+
+       $("#summery_file10").click();
+
+         });
+        fd = new FormData();
+
+ $("#summery_file10").change(function (e) {
+              $.each(e.target.files, function (index, file) {
+                  fd.append("MyExcelStream", file);
+              });
+     sendAjax14('@Url.Action("GetDataFromExcel_Khodro2", "Orders", new { area = "Setting" })', fd);
+ });
+
+         function sendAjax14(url2, fd2) {
+
+
+
+     $.ajax({
+         url: url2,
+         type: 'POST',
+         data: fd2,
+         processData: false,
+         contentType: false,
+         success: function (res) {
+             $("#loading-circle").css("display", "none");
+             fd = new FormData();
+             console.log(res);
+             console.log("jj");
+
+             if (res == "با موفقیت انجام شد") {
+                 alert("با موفقیت ثبت شد ");
+             }
+                    @*$("#table_div").load('@Url.Content("../defFacilitiesEquipment/_ListEquipmentMoalefeValue")');*@
+
+
+
+         },
+         error: function (res) {
+             $("#loading-circle").css("display", "none");
+             console.log(res);
+             console.log("jj");
+             Toast.fire({
+                 icon: 'success',
+                 background: '#35434A',
+                 color: 'white',
+                 title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+             }).then(() => {
+                 $("#loading-circle").css("display", "none");
+             });
+         }
+     });
+ }
+
+
+
+
+
+        fd5 = new FormData();
+
+
+        $("#upload11").click(function () {
+
+
+
+
+
+            $("#summery_file11").click();
+
+        });
+
+         $("#summery_file11").change(function (e) {
+              $.each(e.target.files, function (index, file) {
+                  fd5.append("MyExcelStream", file);
+              });
+             sendAjax15('@Url.Action("ImportExcel_soratvaziat", "Orders", new { area = "Setting" })', fd5);
+ });
+
+
+        function sendAjax15(url2, fd2) {
+
+
+
+            $.ajax({
+                url: url2,
+                type: 'POST',
+                data: fd2,
+                processData: false,
+                contentType: false,
+                success: function (res) {
+                    $("#loading-circle").css("display", "none");
+                    fd = new FormData();
+                    console.log(res);
+                    console.log("jj");
+
+                    if (res == "True") {
+                        alert("با موفقیت ثبت شد ");
+                    }
+                     $("#table_div").load('@Url.Content("../defFacilitiesEquipment/_ListEquipmentMoalefeValue")');
+
+
+
+         },
+                error: function (res) {
+                    $("#loading-circle").css("display", "none");
+                    console.log(res);
+                    console.log("jj");
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                    }).then(() => {
+                        $("#loading-circle").css("display", "none");
+                    });
+                }
+            });
+        }
+
+
+
+
+               fd55 = new FormData();
+
+
+        $("#upload112").click(function () {
+
+
+
+
+
+            $("#summery_file112").click();
+
+        });
+
+        $("#summery_file112").change(function (e) {
+             $.each(e.target.files, function (index, file) {
+                 fd55.append("MyExcelStream", file);
+             });
+            sendAjax155('@Url.Action("ImportExcel_soratvaziat2", "Orders", new { area = "Setting" })', fd55);
+});
+
+
+
+
+      function sendAjax155(url2, fd2) {
+
+
+
+      $.ajax({
+          url: url2,
+          type: 'POST',
+          data: fd2,
+          processData: false,
+          contentType: false,
+          success: function (res) {
+              $("#loading-circle").css("display", "none");
+              fd = new FormData();
+              console.log(res);
+              console.log("jj");
+
+              if (res == "True") {
+                  alert("با موفقیت ثبت شد ");
+              }
+               @*$("#table_div").load('@Url.Content("../defFacilitiesEquipment/_ListEquipmentMoalefeValue")');*@
+
+
+
+   },
+          error: function (res) {
+              $("#loading-circle").css("display", "none");
+              console.log(res);
+              console.log("jj");
+              Toast.fire({
+                  icon: 'success',
+                  background: '#35434A',
+                  color: 'white',
+                  title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+              }).then(() => {
+                  $("#loading-circle").css("display", "none");
+              });
+          }
+      });
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   fd555 = new FormData();
+
+
+        $("#upload112332").click(function () {
+
+
+
+
+
+            $("#summery_file1123").click();
+
+       });
+
+        $("#summery_file1123").change(function (e) {
+             $.each(e.target.files, function (index, file) {
+                 fd555.append("MyExcelStream", file);
+             });
+            @*sendAjax1555555('@Url.Action("ImportExcel_soratvaziat234", "Orders", new { area = "Setting" })', fd555);*@
+                        sendAjax1555555('@Url.Action("ImportExcel_soratvaziat2", "Orders", new { area = "Setting" })', fd555);
+
+});
+
+
+
+
+      function sendAjax1555555(url2, fd2) {
+
+
+
+      $.ajax({
+          url: url2,
+          type: 'POST',
+          data: fd2,
+          processData: false,
+          contentType: false,
+          success: function (res) {
+              $("#loading-circle").css("display", "none");
+              fd = new FormData();
+              console.log(res);
+              console.log("jj");
+
+              if (res == "True") {
+                  alert("با موفقیت ثبت شد ");
+              }
+               @*$("#table_div").load('@Url.Content("../defFacilitiesEquipment/_ListEquipmentMoalefeValue")');*@
+
+
+
+   },
+          error: function (res) {
+              $("#loading-circle").css("display", "none");
+              console.log(res);
+              console.log("jj");
+              Toast.fire({
+                  icon: 'success',
+                  background: '#35434A',
+                  color: 'white',
+                  title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+              }).then(() => {
+                  $("#loading-circle").css("display", "none");
+              });
+          }
+      });
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                       fd555544545455 = new FormData();
+
+
+        $("#idupl").click(function () {
+
+
+
+
+
+            $("#idupl3332").click();
+
+       });
+
+        $("#idupl3332").change(function (e) {
+             $.each(e.target.files, function (index, file) {
+                 fd555544545455.append("MyExcelStream", file);
+             });
+            sendAjax15555532343245('@Url.Action("ImportExcel_soratvaziat2343234232", "Orders", new { area = "Setting" })', fd555544545455);
+});
+
+
+
+
+        function sendAjax15555532343245(url2, fd2) {
+
+
+
+      $.ajax({
+          url: url2,
+          type: 'POST',
+          data: fd2,
+          processData: false,
+          contentType: false,
+          success: function (res) {
+              $("#loading-circle").css("display", "none");
+              fd = new FormData();
+              console.log(res);
+              console.log("jj");
+
+              if (res == "True") {
+                  alert("با موفقیت ثبت شد ");
+              }
+               @*$("#table_div").load('@Url.Content("../defFacilitiesEquipment/_ListEquipmentMoalefeValue")');*@
+
+
+
+   },
+          error: function (res) {
+              $("#loading-circle").css("display", "none");
+              console.log(res);
+              console.log("jj");
+              Toast.fire({
+                  icon: 'success',
+                  background: '#35434A',
+                  color: 'white',
+                  title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+              }).then(() => {
+                  $("#loading-circle").css("display", "none");
+              });
+          }
+      });
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                       fd555544545455666 = new FormData();
+
+
+            $("#idupl123").click(function () {
+
+
+
+
+
+                $("#idupl3335442").click();
+
+       });
+
+            $("#idupl3335442").change(function (e) {
+             $.each(e.target.files, function (index, file) {
+                 fd555544545455666.append("MyExcelStream", file);
+             });
+            sendAjax15555532343247885('@Url.Action("ImportExcel_soratvaziat2343234232fish", "Orders", new { area = "Setting" })', fd555544545455666);
+});
+
+
+
+
+            function sendAjax15555532343247885(url2, fd2) {
+
+
+
+      $.ajax({
+          url: url2,
+          type: 'POST',
+          data: fd2,
+          processData: false,
+          contentType: false,
+          success: function (res) {
+              $("#loading-circle").css("display", "none");
+              fd = new FormData();
+              console.log(res);
+              console.log("jj");
+
+              if (res == "True") {
+                  alert("با موفقیت ثبت شد ");
+              }
+               @*$("#table_div").load('@Url.Content("../defFacilitiesEquipment/_ListEquipmentMoalefeValue")');*@
+
+
+
+   },
+          error: function (res) {
+              $("#loading-circle").css("display", "none");
+              console.log(res);
+              console.log("jj");
+              Toast.fire({
+                  icon: 'success',
+                  background: '#35434A',
+                  color: 'white',
+                  title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+              }).then(() => {
+                  $("#loading-circle").css("display", "none");
+              });
+          }
+      });
+  }
+
+            agsattt11 = new FormData();
+
+            $("#agsattt11").click(function () {
+
+
+
+
+
+                $("#idupl3335442111").click();
+
+            });
+
+
+
+
+            $("#idupl3335442111").change(function (e) {
+             $.each(e.target.files, function (index, file) {
+                 agsattt11.append("MyExcelStream", file);
+             });
+                sendAjaxghestmoh('@Url.Action("ImportExcel_SafheChaharom", "Orders", new { area = "Setting" })', agsattt11);
+
+                @*sendAjaxghest('@Url.Action("ImportExcel_bime", "DefFacilitiesEquipment", new { area = "Contracts" })', agsattt11);*@
+});
+
+
+
+
+
+
+
+
+            function sendAjaxghestmoh(url2, fd2) {
+
+
+
+                $.ajax({
+                    url: url2,
+                    type: 'POST',
+                    data: fd2,
+                    processData: false,
+                    contentType: false,
+                    success: function (res) {
+                        $("#loading-circle").css("display", "none");
+                        fd = new FormData();
+                        console.log(res);
+                        console.log("jj");
+
+                        if (res == "با موفقیت انجام شد") {
+                            alert("با موفقیت ثبت شد ");
+                        }
+                        @* $("#table_div").load('@Url.Content("../defFacilitiesEquipment/_ListEquipmentMoalefeValue")');* @
+
+
+
+   },
+                    error: function (res) {
+                        $("#loading-circle").css("display", "none");
+                        console.log(res);
+                        console.log("jj");
+                        Toast.fire({
+                            icon: 'success',
+                            background: '#35434A',
+                            color: 'white',
+                            title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                        }).then(() => {
+                            $("#loading-circle").css("display", "none");
+                        });
+                    }
+                });
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                       ghesttt = new FormData();
+
+
+        $("#agsattt").click(function () {
+
+
+
+
+
+            $("#ghst").click();
+
+       });
+
+        $("#ghst").change(function (e) {
+             $.each(e.target.files, function (index, file) {
+                 ghesttt.append("MyExcelStream", file);
+             });
+            sendAjaxghest('@Url.Action("ImportExcel_bime", "DefFacilitiesEquipment", new { area = "Contracts" })', ghesttt);
+});
+
+
+
+
+        function sendAjaxghest(url2, fd2) {
+
+
+
+      $.ajax({
+          url: url2,
+          type: 'POST',
+          data: fd2,
+          processData: false,
+          contentType: false,
+          success: function (res) {
+              $("#loading-circle").css("display", "none");
+              fd = new FormData();
+              console.log(res);
+              console.log("jj");
+
+              if (res == "با موفقیت انجام شد") {
+                  alert("با موفقیت ثبت شد ");
+              }
+               @*$("#table_div").load('@Url.Content("../defFacilitiesEquipment/_ListEquipmentMoalefeValue")');*@
+
+
+
+   },
+          error: function (res) {
+              $("#loading-circle").css("display", "none");
+              console.log(res);
+              console.log("jj");
+              Toast.fire({
+                  icon: 'success',
+                  background: '#35434A',
+                  color: 'white',
+                  title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+              }).then(() => {
+                  $("#loading-circle").css("display", "none");
+              });
+          }
+      });
+  }
+
+                    agsattt1111 = new FormData();
+
+            $("#olav").click(function () {
+
+
+
+
+
+                $("#idupl3335442112221").click();
+
+            });
+
+
+
+
+            $("#idupl3335442112221").change(function (e) {
+             $.each(e.target.files, function (index, file) {
+                 agsattt1111.append("MyExcelStream", file);
+             });
+                sendAjaxghestmoh1('@Url.Action("ImportExcel_CityPriority", "Orders", new { area = "Setting" })', agsattt1111);
+
+                @*sendAjaxghest('@Url.Action("ImportExcel_bime", "DefFacilitiesEquipment", new { area = "Contracts" })', agsattt11);*@
+});
+
+
+
+
+
+
+
+
+            function sendAjaxghestmoh1(url2, fd2) {
+
+
+
+                $.ajax({
+                    url: url2,
+                    type: 'POST',
+                    data: fd2,
+                    processData: false,
+                    contentType: false,
+                    success: function (res) {
+                        $("#loading-circle").css("display", "none");
+                        fd = new FormData();
+                        console.log(res);
+                        console.log("jj");
+
+                        if (res == "با موفقیت انجام شد") {
+                            alert("با موفقیت ثبت شد ");
+                        }
+                        @* $("#table_div").load('@Url.Content("../defFacilitiesEquipment/_ListEquipmentMoalefeValue")');* @
+
+
+
+   },
+                    error: function (res) {
+                        $("#loading-circle").css("display", "none");
+                        console.log(res);
+                        console.log("jj");
+                        Toast.fire({
+                            icon: 'success',
+                            background: '#35434A',
+                            color: 'white',
+                            title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                        }).then(() => {
+                            $("#loading-circle").css("display", "none");
+                        });
+                    }
+                });
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                       ghesttt = new FormData();
+
+
+        $("#agsattt").click(function () {
+
+
+
+
+
+            $("#ghst").click();
+
+       });
+
+        $("#ghst").change(function (e) {
+             $.each(e.target.files, function (index, file) {
+                 ghesttt.append("MyExcelStream", file);
+             });
+            sendAjaxghest('@Url.Action("ImportExcel_bime", "DefFacilitiesEquipment", new { area = "Contracts" })', ghesttt);
+});
+
+
+
+
+        function sendAjaxghest(url2, fd2) {
+
+
+
+      $.ajax({
+          url: url2,
+          type: 'POST',
+          data: fd2,
+          processData: false,
+          contentType: false,
+          success: function (res) {
+              $("#loading-circle").css("display", "none");
+              fd = new FormData();
+              console.log(res);
+              console.log("jj");
+
+              if (res == "با موفقیت انجام شد") {
+                  alert("با موفقیت ثبت شد ");
+              }
+               @*$("#table_div").load('@Url.Content("../defFacilitiesEquipment/_ListEquipmentMoalefeValue")');*@
+
+
+
+   },
+          error: function (res) {
+              $("#loading-circle").css("display", "none");
+              console.log(res);
+              console.log("jj");
+              Toast.fire({
+                  icon: 'success',
+                  background: '#35434A',
+                  color: 'white',
+                  title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+              }).then(() => {
+                  $("#loading-circle").css("display", "none");
+              });
+          }
+      });
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                       fd55544 = new FormData();
+
+
+        $("#upload112332444").click(function () {
+
+
+
+
+
+            $("#summery_file1123344").click();
+
+       });
+
+        $("#summery_file1123344").change(function (e) {
+             $.each(e.target.files, function (index, file) {
+                 fd55544.append("MyExcelStream", file);
+             });
+            sendAjax15555555455('@Url.Action("ImportExcel_soratvaziat234", "Orders", new { area = "Setting" })', fd55544);
+});
+
+
+
+
+        function sendAjax15555555455(url2, fd2) {
+
+
+
+      $.ajax({
+          url: url2,
+          type: 'POST',
+          data: fd2,
+          processData: false,
+          contentType: false,
+          success: function (res) {
+              $("#loading-circle").css("display", "none");
+              fd = new FormData();
+              console.log(res);
+              console.log("jj");
+
+              if (res == "True") {
+                  alert("با موفقیت ثبت شد ");
+              }
+               @*$("#table_div").load('@Url.Content("../defFacilitiesEquipment/_ListEquipmentMoalefeValue")');*@
+
+
+
+   },
+          error: function (res) {
+              $("#loading-circle").css("display", "none");
+              console.log(res);
+              console.log("jj");
+              Toast.fire({
+                  icon: 'success',
+                  background: '#35434A',
+                  color: 'white',
+                  title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+              }).then(() => {
+                  $("#loading-circle").css("display", "none");
+              });
+          }
+      });
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+                       bodjrhh = new FormData();
+
+
+            $("#bodejeh").click(function () {
+
+
+
+
+
+                $("#bod").click();
+
+       });
+
+            $("#bod").change(function (e) {
+             $.each(e.target.files, function (index, file) {
+                 bodjrhh.append("MyExcelStream", file);
+             });
+            sendAjaxbod('@Url.Action("ImportExcel_forbod", "Orders", new { area = "Setting" })', bodjrhh);
+});
+
+
+
+
+            function sendAjaxbod(url2, fd2) {
+
+
+
+      $.ajax({
+          url: url2,
+          type: 'POST',
+          data: fd2,
+          processData: false,
+          contentType: false,
+          success: function (res) {
+              $("#loading-circle").css("display", "none");
+              fd = new FormData();
+              console.log(res);
+              console.log("jj");
+
+              if (res == "با موفقیت انجام شد") {
+                  alert("با موفقیت ثبت شد ");
+              }
+               @*$("#table_div").load('@Url.Content("../defFacilitiesEquipment/_ListEquipmentMoalefeValue")');*@
+
+
+
+   },
+          error: function (res) {
+              $("#loading-circle").css("display", "none");
+              console.log(res);
+              console.log("jj");
+              Toast.fire({
+                  icon: 'success',
+                  background: '#35434A',
+                  color: 'white',
+                  title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+              }).then(() => {
+                  $("#loading-circle").css("display", "none");
+              });
+          }
+      });
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                       pymn = new FormData();
+
+
+        $("#pymn").click(function () {
+
+
+
+
+
+            $("#idpymn").click();
+
+       });
+
+        $("#idpymn").change(function (e) {
+             $.each(e.target.files, function (index, file) {
+                 pymn.append("MyExcelStream", file);
+             });
+            sendAjaxpymn('@Url.Action("ImportExcel_forpyman", "Orders", new { area = "Setting" })', pymn);
+});
+
+
+
+
+        function sendAjaxpymn(url2, fd2) {
+
+
+
+      $.ajax({
+          url: url2,
+          type: 'POST',
+          data: fd2,
+          processData: false,
+          contentType: false,
+          success: function (res) {
+              $("#loading-circle").css("display", "none");
+              fd = new FormData();
+              console.log(res);
+              console.log("jj");
+
+              if (res == "با موفقیت انجام شد") {
+                  alert("با موفقیت ثبت شد ");
+              }
+               @*$("#table_div").load('@Url.Content("../defFacilitiesEquipment/_ListEquipmentMoalefeValue")');*@
+
+
+
+   },
+          error: function (res) {
+              $("#loading-circle").css("display", "none");
+              console.log(res);
+              console.log("jj");
+              Toast.fire({
+                  icon: 'success',
+                  background: '#35434A',
+                  color: 'white',
+                  title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+              }).then(() => {
+                  $("#loading-circle").css("display", "none");
+              });
+          }
+      });
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    function sendAjax(url, data) {
+        console.log(data)
+
+            $.ajax({
+                beforeSend: function () {
+                    document.getElementById("loading-circle").style.display = "block";
+                },
+                url: url,
+                data: data, // اصلاح شده
+                type: "POST",
+                dataType: "html",
+                success: function (resp) {
+                    console.log(resp);
+                    document.getElementById("loading-circle").style.display = "none";
+                    if (resp == "True") {
+                        alert("با موفقیت ثبت شد");
+                        location.reload();
+                    } else {
+                        alert("در ثبت دچار خطا شده ایم ! لطفا بعدا تلاش نمائید")
+                    }
+                },
+                error: function (resp) {
+                    document.getElementById("loading-circle").style.display = "none";
+                    alert("دچار مشکل شده است ");
+                    console.log(resp);
+                }
+            });
+        }
+
+
+            $("#test").load('@Url.Content("/../Setting/Orders/listt")');
+                        $("#test2").load('@Url.Content("/../Setting/Orders/listt2")');
+
+$("#btnCreate1555").click(function () {
+    console.log("inje");
+    var Filters = [];
+    var obj = new Object();
+    obj.year = $("#Year").val();
+    obj.fk = $("#select_peyman1").val();
+    //obj.ShortTitle = $("#sss").val();
+    obj.month = $("#Month").val();
+    obj.number_sorat = $("#value").val();
+
+    console.log($("#Year").val());
+    console.log($("#select_peyman1").val());
+
+    console.log($("#Month").val());
+
+    console.log($("#value").val());
+    Filters.push(obj);
+    console.log(Filters)
+    sendAjax('@Url.Action("sabtkasriabz", "Orders", new { area = "Setting" })', obj);
+});
+
+
+
+
+
+
+
+
+
+
+        function sendAjax1(url, data) {
+            console.log(data)
+
+            $.ajax({
+                beforeSend: function () {
+                    document.getElementById("loading-circle").style.display = "block";
+                },
+                url: url,
+                data: data, // اصلاح شده
+                type: "POST",
+                dataType: "html",
+                success: function (resp) {
+                    console.log(resp);
+                    document.getElementById("loading-circle").style.display = "none";
+                    if (resp == "True") {
+                        alert("با موفقیت ثبت شد");
+                        location.reload();
+                    } else {
+                        alert("در ثبت دچار خطا شده ایم ! لطفا بعدا تلاش نمائید")
+                    }
+                },
+                error: function (resp) {
+                    document.getElementById("loading-circle").style.display = "none";
+                    alert("دچار مشکل شده است ");
+                    console.log(resp);
+                }
+            });
+        }
+
+
+
+$("#btnCreate15552").click(function () {
+    console.log("inje");
+    var Filters = [];
+    var obj = new Object();
+    obj.year = $("#Year2").val();
+    obj.fk = $("#select_peyman3").val();
+    //obj.ShortTitle = $("#sss").val();
+    obj.month = $("#Month2").val();
+    obj.number_sorat = $("#value2").val();
+
+    console.log($("#Year2").val());
+
+    console.log($("#select_peyman3").val());
+
+    console.log($("#Month2").val());
+
+    console.log($("#value2").val());
+    Filters.push(obj);
+    console.log(Filters)
+    sendAjax1('@Url.Action("viewkasrimoshin", "Orders", new { area = "Setting" })', obj);
+});
+
+
+
+        </script>
+
+        @*------------------------------------------------[1402/09/01]-|KH|-
+            <script type="text/javascript">
+                jalaliDatepicker.startWatch({
+                    time: true,
+                    days: ["شنبه", "1شنبه", "2شنبه", "3شنبه", "4شنبه", "5شنبه", "جمعه"],
+                    persianDigits: true,
+                    autoClose: true,
+                    autocomplete: true,
+                    showCloseBtn: true,
+                    showEmptyBtn: false,
+                    showCloseBtn: true,
+                    zIndex: 100000,
+                });
+                //-----------------------------------------------------------------
+                var inputs = document.querySelectorAll("[data-jdp-miladi-input]");
+                for (var i = 0; i < inputs.length; i++) {
+                    inputs[i].addEventListener("jdp:change", function (e) {
+                        var miladiInput = document.getElementById(this.getAttribute("data-jdp-miladi-input"));
+                        var date = this.value.replace(' ', '').slice(0, 10).split('/');
+                        date = jalaali.toGregorian(parseInt(date[0]), parseInt(date[1]), parseInt(date[2]),)
+                        // If it was empty
+                        if (!this.value) {
+                            date = "";
+                        }
+                        // If it was only history
+                        else if (this.value.replace(' ', '').length < 11) {
+                            date = date.gy + '-' + date.gm + '-' + date.gd
+                        }
+                        // If it was the date and time
+                        else {
+                            date = date.gy + '-' + date.gm + '-' + date.gd + ' ' + this.value.replace(' ', '').slice(10, 30)
+                        }
+                        miladiInput.value = date
+                    });
+                }
+            </script>
+            @*-------------------------------------------------------------|KH|-*@
+
+        <script>
+    $(function(){
+        $("#peymans2" ).load('@Url.Content("/../Contracts/Peyman/_GetAllListPeymans_Select")',function(){
+                 $("#select_peyman").attr("id", "select_peyman3");
+
+
+
+
+        });
+             $("#peymans3" ).load('@Url.Content("/../Contracts/Peyman/_GetAllListPeymans_Select")',function(){
+         $("#select_peyman").attr("id", "select_peyman4");
+
+
+
+
+     });
+             $("#isuser").load('@Url.Content("/../Users/Users/_GetAllHaghighiUsers_Select")',function(){
+                  $("#select_users1").attr("id", "select_users2");
+                    var $elem = $('#select_users2');
+                    $elem.picker({ search: true });
+                    $elem.on('sp-change', function(){
+
+                 });
+             });
+             $("#isNotuser").load('@Url.Content("/../Users/Users/_HoghoghiUserList")',function(){
+                 $("#select_users1").attr("id", "select_users3");
+                    var $elem = $('#select_users3');
+                    $elem.picker({ search: true });
+                    $elem.on('sp-change', function(){
+
+                 });
+              });
+
+
+    });
+         $("#peymans").load('@Url.Content("/../Contracts/Peyman/_GetAllListPeymans_Select")', function () {
+    $("#select_peyman").attr("id", "select_peyman1");
+});
+    @*$("#peymans2").load('@Url.Content("/../Contracts/Peyman/_GetAllListPeymans_Select")', function () {
+    $("#select_peyman").attr("id", "select_peyman2");
+    });*@
+
+        </script>
+        <script>
+
+        </script>
+    }

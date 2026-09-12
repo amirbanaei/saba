@@ -1,0 +1,179 @@
+﻿
+@{
+    ViewBag.Title = "اکسل";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="tab-content">
+    <div class="row mt-10px">
+        @*<div class="col-xl-4">
+                <label class="form-label">انتخاب نوع تجهیز</label>
+                @Html.Action("_ListGroup", "DefFacilitiesEquipment")
+            </div>*@
+        <div class="col-xl-7">
+            <label class="form-label"> پیمان </label>
+            @Html.Action("_GetAllListPeymans_SingleSelecforFishsabt", "Peyman", new { area = "Contracts" })
+        </div>
+    </div>
+    <div class="d-flex align-items-center mb-3">
+        <div class="col-xl-2 ">
+            <a href="#" class=" btn form-control buttonGeneral" style="font-size:10px;margin-bottom:10px;" id="dwn" onclick="DownloadExcel2222() ">
+                <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text">دانلود فایل نمونه</span>
+            </a>
+        </div>
+        <div class="ms-auto">
+
+
+
+            <a href="~/Content/ExcelFiles/MoalefeahFish.xlsx" class="btn form-control buttonGeneral" style="">
+                <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text">دانلود فایل اکسل نمونه</span>
+            </a>
+            <input name="MyExcelStream" type="file" style="display:none" />
+            <a href="#" onclick="ShowDialogFile()" class="btn form-control buttonGeneral" style="border-radius:20px;  color: white;background-color: #0d3244;border-color: #7bedf8;">
+                <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text"> بارگذاری اطلاعات</span>
+
+            </a>
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Scripts/sweetalert2.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+@*<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>*@
+<script>
+
+
+    function DownloadExcel2222() {
+
+
+
+
+
+
+
+        var selectedValue = $("#baste_peyman7").val();
+        var parts = selectedValue.split('_');
+        var FK_Baste = parts[1];
+        var pymnID = parts[0];
+
+            $.ajax({
+                beforeSend: function () {
+                    document.getElementById("loading-message").style.display = "block";//مهندس دارین برعککس میزارین
+                    //این درسته
+                    //شبیه هم ننوشتین
+                    //خوب ورودی هام فرق داتشنت الاان فهمیدم چیشد + اضافه گذاشته بود
+                },
+                @*url: '@Url.Action("ExportMoalefeExcelformoalfefish", "Moalefe", new { area = "Salaries" })?PeymanID=' + pymnID,*@
+                type: 'GET',
+                dataType: 'html',
+
+
+                success: function (res) {
+                               document.getElementById("loading-message").style.display = "none";
+                    window.location = '@Url.Action("ExportMoalefeExcelformoalfefish", "Moalefe", new { area = "Salaries" })?PeymanID=' + pymnID;
+                },
+                error: function (res) {
+                    alart("fdslsfdk")
+                    console.log(res);
+                }
+            });
+        }
+
+
+
+    var Toast2 = Swal.mixin({
+        toast: true,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    });
+
+    $(function () {
+        $("#myTable").load('@Url.Content("/MoalefeDastMozdi/_PartialListMoalefeDastMozdi")');
+    });
+    $("#createMoalefeButtonModal").click(function () {
+            $("#big_modal_body").load('@Url.Content("/MoalefeDastMozdi/_PartialCreateMoalefeDastMozdi")');
+    });
+    var Temp = "@TempData["Message"]";
+    if (Temp != "") {
+
+        Toast2.fire({
+            icon: 'success',
+            background: '#35434A',
+            color: 'white',
+            title: Temp
+        });
+
+    }
+    $("#btn_submit").click(function () {
+        $("#submit_input").click();
+    });
+    $("#submit_input").click(function () {
+        $("#send").click();
+    });
+</script>
+<script>
+      $("input[name='MyExcelStream']").change(function () {
+        var file = this.files[0];
+        var ext = file.name.split('.')[1];
+        if (ext == "xlsx" || ext == "xls") {
+
+            var  obj = new FormData();
+
+            obj.append("MyExcelStream", file);
+
+            console.log(file);
+            $.ajax({
+            beforeSend:function (){
+              document.getElementById("loading-message").style.display = "block";
+            },
+                 url: "@Url.Action("ImportExcel_AddFish", "Formula", new { area = "Salaries" })",
+               type: "post",
+               contentType: false,
+               data: obj,
+               processData: false,
+               cache: false,
+               success: function (res) {
+                   document.getElementById("loading-message").style.display = "none";
+                   Swal.fire({
+                       icon: 'success',
+                       background: 'rgb(29,40,52)',
+                       color: 'white',
+                       confirmButtonText: 'باشه',
+                       title: 'آپلود اکسل',
+                       text: res,
+                   });
+
+               },
+               error: function (res) {
+                   console.log(res);
+               }
+           });
+        }
+        else {
+
+            Swal.fire({
+                icon: 'warning',
+                background: 'rgb(29,40,52)',
+                color: 'white',
+                confirmButtonText: 'باشه',
+                title: 'نوع فایل',
+                text: 'لطفا فایلی با پسوند اکسل وارد کنید',
+            });
+            return false;
+        }
+
+    });
+    /// Open Dialog File
+    function ShowDialogFile() {
+        $("input[name='MyExcelStream']").val(null);
+        $("input[name='MyExcelStream']").click();
+    }
+</script>

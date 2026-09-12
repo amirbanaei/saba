@@ -1,0 +1,373 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+@using System.Globalization
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>ModiriatStedad</title>
+
+    <style>
+        @@media (max-width: 768px) {
+            /* ستون اول ثابت */
+            .sticky-col {
+                position: sticky;
+                right: 0; /* ستون سمت چپ */
+                background: #fff; /* پس‌زمینه ثابت */
+                z-index: 2000; /* زیر هدر، بالاتر از بقیه سلول‌ها */
+                min-width: 120px; /* جلوگیری از قاطی شدن متن */
+            }
+            /* هدر ستون اول بالاتر از سلول‌ها */
+            .sticky-col-header {
+                z-index: 3;
+            }
+
+            table {
+                overflow-x: auto !important;
+            }
+
+
+
+            .title {
+                padding-right: 0 !important;
+                flex-direction: column !important;
+                gap: 10px !important;
+            }
+
+            .title-page {
+                display: none !important;
+            }
+
+            .lebel-title {
+                font-size: 10px;
+                margin-right: 10px;
+            }
+
+            #SaatKhateme, #SaatShoroo {
+                width: 80px;
+            }
+        }
+
+
+
+
+        input[type="radio"] {
+            margin-bottom: 0 !important;
+            margin-top: 4px;
+        }
+
+        .time-input {
+            margin-bottom: 0 !important;
+            width: 100px;
+            margin: auto;
+        }
+
+        .select-eyb {
+            margin-top: 5px !important;
+            margin-bottom: 5px !important;
+            width: 100px;
+            margin: auto;
+        }
+
+        .inputWithFilterIcon {
+            width: 100px;
+            margin: auto;
+        }
+
+
+        .TextCenter {
+            align-content: center;
+            align-items: center;
+            justify-content: center;
+            border-left: 1px solid white;
+        }
+
+
+
+        tbody tr td:first-child {
+            border-top-right-radius: 0px !important;
+            border-bottom-right-radius: 0px !important;
+            border-left: 1px solid white;
+            border-bottom: 1px solid white !important;
+        }
+
+        .position {
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px !important;
+        }
+
+        .title-page {
+            display: flex;
+            height: 100%;
+            width: 220px;
+            background: var(--bs-Meno-color);
+            align-content: center;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            padding: 0px !important;
+        }
+
+        .title {
+            border-width: 2px;
+            margin-bottom: 50px;
+            display: flex;
+            gap: 20px;
+            padding-right: 900px;
+        }
+
+            .title div {
+                display: flex;
+                gap: 5px;
+                align-content: center;
+                align-items: baseline;
+            }
+
+        .thwidth {
+            width: 60px;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="tab-content" id="pills-tabContent" style="padding:20px; background:#f7f7f7;">
+
+        <div class="row">
+            <div class="col-xl-12">
+
+                <div class="form-control title position " style="padding:0 !important;">
+                    <div class="title-page">
+                        <label class="lebel-title">استعداد خودرو</label>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row">
+            <div class="col-xl-2">
+
+                <label class="form-label">تاریخ ثبت</label>
+                <input data-jdp jdp-btn-close data-jdp-miladi-input="miladi_date1" id="datepickerFrom_shw1" class="form-control pdate" name="datepickerFrom_shw1">
+                <input id="miladi_date1" type="hidden" />
+            </div>
+            <div class="col-xl-1">
+                <a href="#" class="btn form-control buttonGeneral" id="Sendnamayesh">
+                    <i class="bi bi-plus-circle fa-fw me-1 VecGeneral"></i>
+                    <span class="bGeneral-text">نمایش</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="tab-pane fade show active" id="allTab">
+            <div class="table-responsive tableH_Lock">
+
+            </div>
+        </div>
+
+
+
+    </div>
+
+
+    <script src="~/Assets/js/jalalidatepicker.min.js"></script>
+    <link href="~/Assets/css/jalalidatepicker.min.css" rel="stylesheet" />
+    <script src="~/Assets/js/jalaali.min.js"></script>
+    <link href="~/MyStyles/jalalidatepicker.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+    @*جدیدا رو اینجا بزن*@
+
+
+
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    // 🔹 Jalali Datepicker
+    jalaliDatepicker.startWatch({
+        time: false,
+        days: ["شنبه","1شنبه","2شنبه","3شنبه","4شنبه","5شنبه","جمعه"],
+        persianDigits: true,
+        autoClose: true,
+        autocomplete: true,
+        showEmptyBtn: false,
+        showCloseBtn: true,
+        zIndex: 100000,
+    });
+
+    document.querySelectorAll("[data-jdp-miladi-input]").forEach(input=>{
+        input.addEventListener("jdp:change", function(){
+            const miladiInput = document.getElementById(this.getAttribute("data-jdp-miladi-input"));
+            if(!this.value){ miladiInput.value=""; return; }
+            let dateParts = this.value.replace(' ','').slice(0,10).split('/');
+            let date = jalaali.toGregorian(parseInt(dateParts[0]),parseInt(dateParts[1]),parseInt(dateParts[2]));
+            miladiInput.value = this.value.replace(' ','').length<11 ? `${date.gy}-${date.gm}-${date.gd}` : `${date.gy}-${date.gm}-${date.gd} ${this.value.replace(' ','').slice(10,30)}`;
+        });
+    });
+
+    // 🔹 تابع اعمال قوانین فعال/غیرفعال کردن فیلدها
+    function applyRules() {
+        document.querySelectorAll(".tableH_Lock tbody tr").forEach(row => {
+            const btn1 = row.querySelector('input[name^="btn1_"]:checked'); // حضور/عدم حضور
+            const NoeEyb = row.querySelector('select.select-noaeyb:last-of-type');
+            const startInput = row.querySelector('input[name^="start_"]');
+            const endInput = row.querySelector('input[name^="end_"]');
+            const kilometrInput = row.querySelector('.kilometr-input');
+            const NoeAmaliat = row.querySelector('select[id="selct_namen"]:not(.select-noaeyb)');
+            const VaziatKhodroRadios = row.querySelectorAll('input[name^="btn2_"]'); // سالم/معیوب
+            const VaziatKhodroChecked = row.querySelector('input[name^="btn2_"]:checked');
+
+            if (btn1 && btn1.value === "1") { // عدم حضور
+                // غیر فعال کردن همه input و select ها به جز توضیحات
+                [startInput, endInput, kilometrInput, NoeAmaliat, NoeEyb].forEach(el => {
+                    if (el) { el.disabled = true; el.value = ""; el.style.opacity = '.5'; }
+                });
+                // رادیوهای نوع عیب غیرفعال و از حالت انتخاب خارج شوند
+                VaziatKhodroRadios.forEach(rb => {
+                    rb.disabled = true;
+                    rb.checked = false;
+                    rb.parentElement.style.opacity = '.5';
+                });
+            } else if (btn1 && btn1.value === "2") { // حضور
+                [startInput, endInput, kilometrInput, NoeAmaliat].forEach(el => {
+                    if (el) { el.disabled = false; el.style.opacity = '1'; }
+                });
+                VaziatKhodroRadios.forEach(rb => {
+                    rb.disabled = false;
+                    rb.parentElement.style.opacity = '1';
+                });
+                if (NoeEyb && (!VaziatKhodroChecked || VaziatKhodroChecked.value === "8")) {
+                    NoeEyb.disabled = false; NoeEyb.style.opacity = '1';
+                }
+            }
+
+            // کنترل نوع عیب بر اساس رادیو سالم/معیوب
+            if (VaziatKhodroChecked) {
+                if (VaziatKhodroChecked.value === "7") { if (NoeEyb) { NoeEyb.disabled = true; NoeEyb.value = ""; NoeEyb.style.opacity = '.5'; } }
+                else if (VaziatKhodroChecked.value === "8" && btn1?.value !== "1") { if (NoeEyb) { NoeEyb.disabled = false; NoeEyb.style.opacity = '1'; } }
+            }
+        });
+    }
+
+
+
+    // 🔹 تغییر رادیوهای حضور (btn1_)
+    $(document).on("change",'input[name^="btn1_"]', function(){
+        const row = this.closest('tr');
+        applyRules();
+    });
+
+    // 🔹 تغییر رادیوهای نوع عیب (btn2_)
+    $(document).on("change",'input[name^="btn2_"]', function(){
+        const row = this.closest('tr');
+        applyRules();
+    });
+
+    // 🔹 نمایش جدول با تاریخ انتخاب شده
+    $(document).on("click","#Sendnamayesh",function(e){
+        e.preventDefault();
+        const selectedDate = $("#miladi_date1").val();
+        if(!selectedDate){ alert("لطفاً تاریخ را انتخاب کنید."); return; }
+
+        fetch('@Url.Action("BargashEstedadKhodroByDate", "Orders")?date=' + selectedDate,{
+            method:"GET",
+            headers:{"X-Requested-With":"XMLHttpRequest"}
+        }).then(res=>res.text())
+          .then(html=>{
+              $(".tableH_Lock").html(html);
+              applyRules(); // 🔹 بعد از لود جدول، قوانین اعمال میشه
+          }).catch(err=>console.error("خطا در بارگذاری جدول:",err));
+    });
+
+    // 🔹 ثبت داده‌ها
+    $(document).on("click","#Send",function(e){
+        e.preventDefault();
+        const $btn = $(this);
+        $btn.prop("disabled",true);
+
+        const rows = document.querySelectorAll(".tableH_Lock tbody tr");
+        const tarikhSabt = $("#miladi_date1").val();
+        const items = [];
+        let allValid = true;
+        let messages = [];
+
+        rows.forEach((row,index)=>{
+            const rowNum = index+1;
+            const usrId = parseInt(row.dataset.userid);
+            const VaziatHozor = row.querySelector('input[name^="btn1_"]:checked')?.value || null;
+            const VaziatKhodro = row.querySelector('input[name^="btn2_"]:checked')?.value || null;
+            const start = row.querySelector('input[name^="start_"]')?.value || null;
+            const end = row.querySelector('input[name^="end_"]')?.value || null;
+            const kilometr = parseFloat(row.querySelector('.kilometr-input')?.value) || null;
+            const NoeAmaliat = row.querySelector('select#selct_namen:not(.select-noaeyb)')?.selectedIndex || null;
+            const NoeEyb = row.querySelector('select.select-noaeyb:last-of-type')?.value || null;
+            const Sharh = row.querySelector('td:last-child input')?.value || null;
+
+            if(VaziatHozor==="2"){
+                if(!start){ allValid=false; messages.push(`ردیف ${rowNum}: ساعت شروع خالی است.`);}
+                if(!end){ allValid=false; messages.push(`ردیف ${rowNum}: ساعت خاتمه خالی است.`);}
+                if(!kilometr){ allValid=false; messages.push(`ردیف ${rowNum}: کیلومتر خالی است.`);}
+                if(!NoeAmaliat){ allValid=false; messages.push(`ردیف ${rowNum}: نوع عملیات انتخاب نشده است.`);}
+                if(VaziatKhodro===null){ allValid=false; messages.push(`ردیف ${rowNum}: وضعیت خودرو انتخاب نشده است.`);}
+                if(VaziatKhodro==="8" && !NoeEyb){ allValid=false; messages.push(`ردیف ${rowNum}: نوع عیب انتخاب نشده است.`);}
+            }
+
+            if(usrId && (VaziatHozor || VaziatKhodro || kilometr || Sharh || start || end)){
+                items.push({
+                    FK_: usrId,
+                    VaziatHozor,
+                    Kilometr: kilometr,
+                    NoeAmaliat,
+                    VaziatKhodro,
+                    NoeEyb,
+                    Sharh,
+                    SaatShoro: start,
+                    SaatKhateme: end,
+                    TarikhSabt: tarikhSabt
+                });
+            }
+        });
+
+        if(!allValid){
+            alert(messages.join("\n"));
+            $btn.prop("disabled",false);
+            return;
+        }
+
+        fetch('@Url.Action("SaveEstedadKhodro", "Orders")',{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json",
+                "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val()
+            },
+            body: JSON.stringify(items)
+        })
+        .then(res=>res.json())
+        .then(data=>alert(data.success ? data.message : "خطا در ثبت داده‌ها"))
+        .catch(err=>console.error(err))
+        .finally(()=> $btn.prop("disabled",false));
+
+    });
+
+});
+
+    </script>
+
+
+
+
+
+
+</body>
+</html>

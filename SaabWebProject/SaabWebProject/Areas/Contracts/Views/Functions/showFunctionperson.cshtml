@@ -1,0 +1,483 @@
+﻿
+@{
+    ViewBag.Title = "مدیریت کاربران ";
+    Layout = null;
+
+
+}
+@section Styles{
+    <link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+    <link href="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.style.css" rel="stylesheet" />
+}
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+
+<div>
+    <div class="row" id="pymnandbasteh1">
+
+
+    </div>
+    <br />
+    <div class="row">
+
+        <div class="col-xl-2">
+            <div class="row">
+                <div class="col-xl-12">
+                    <label class="form-label">سال</label>
+                    
+                </div>
+                <div class="col-xl-12">
+                    <select id="year_usr">
+                        <option value="1400">1400</option>
+                        <option value="1401">1401</option>
+                        <option value="1402">1402</option>
+                        <option value="1403">1403</option>
+                        <option value="1404">1404</option>
+                        <option value="1405">1405</option>
+                    </select>
+
+                </div>
+            </div>
+        </div>
+        @*<div class="col-xl-2">*@
+        @*<div class="row">
+                <div class="col-xl-12">
+                    <label class="form-label">سال</label>
+                    
+                </div>
+
+                <div class="col-xl-12">
+                    <select id="year_usr" name="year_usr" class="form-control">
+                        <option value="0">انتخاب سال</option>
+                        @{
+                            System.Globalization.PersianCalendar cs3 = new System.Globalization.PersianCalendar();
+
+                            for (var i = -1; i <= 5; i++)
+                            {
+                                var s = DateTime.Now.AddYears(i);
+                                var x = @cs3.GetYear(s);
+                                <option selected="selected" value="@cs3.GetYear(s)">@cs3.GetYear(s)</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>*@
+        @*</div>*@
+        @*<div class="col-xl-2">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <label class="form-label">ماه</label>
+                        
+                    </div>
+
+                    <div class="col-xl-12">
+                        <select id="month_usr" name="month_usr" class="form-control">
+                            <option value="0">انتخاب ماه</option>
+                            @{
+                                for (var i = 1; i <= 12; i++)
+                                {
+                                    <option selected="selected" value="@i">@i</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>*@
+        <div class="col-xl-2">
+            <div class="row">
+                <div class="col-xl-12">
+                    <label class="form-label">ماه</label>
+                    
+                </div>
+                <div class="col-xl-12">
+                    <select id="month_usr">
+                        <option value="1">فروردین</option>
+                        <option value="2">اردیبهشت</option>
+                        <option value="3">خرداد</option>
+                        <option value="4">تیر</option>
+                        <option value="5">مرداد</option>
+                        <option value="6">شهریور</option>
+                        <option value="7">مهر</option>
+                        <option value="8">آبان</option>
+                        <option value="9">آذر</option>
+                        <option value="10">دی</option>
+                        <option value="11">بهمن</option>
+                        <option value="12">اسفند</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-2">
+
+            <div class="col-xl-12">
+                <label class="form-label">از تاریخ</label>
+                
+            </div>
+
+            <div class="col-xl-12">
+                <input class="form-control"  id="datepickerFrom_usr" />
+                <input class="form-control"  type="hidden" id="datepickerFromEn_usr" />
+            </div>
+
+        </div>
+        <div class="col-xl-2">
+            <div class="col-xl-12">
+                <label class="form-label">تا تاریخ</label>
+                
+            </div>
+            <div class="col-xl-12">
+                <input class="form-control"  id="datepickerTo_usr1" />
+                <input class="form-control"  type="hidden" id="datepickerToEn_usr1" />
+            </div>
+        </div>
+        <input type="text" id="datepicker">
+        <input type="text" id="datepicker1">
+
+    </div>
+
+    <br />
+    <div class="row">
+        <div class="col-xl-8">
+            <div class="row">
+                <div class="col-xl-12">
+                    <label class="form-label">توضیحات</label>
+                    
+                </div>
+                <div class="col-xl-12">
+                    <textarea class="form-control" rows="10" style="height: 20px;    width: 70%;">
+
+                                       </textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <style>
+            @@media only screen and (max-width: 768px) {
+
+                .xoi {
+                    width: 100% !important;
+                    margin: 3px;
+                }
+            }
+        </style>
+        <div class="col-xl-2 ">
+            <a href="#" class=" btn form-control buttonGeneral" style="font-size:10px;margin-bottom:10px;" id="dwn" onclick="DownloadExcel() ">
+                <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text">دانلود فایل نمونه</span>
+            </a>
+        </div>
+        <div class="col-xl-2 xoi">
+            <a data-bs-toggle="modal" data-bs-target="#modalLg" href="#" onclick="ShowDialogFile()" class=" btn form-control buttonGeneral" style="font-size:10px;margin-bottom:5px;">
+                <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text">بارگذاری فایل</span>
+            </a>
+        </div>
+
+
+        <div class="col-xl-2 xoi" style="text-align: right">
+            <button class="btn form-control buttonGeneral" style="width: 100%;font-size:10px;margin-bottom:10px;">
+                <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text">بارگزاری پیوست ها</span>
+            </button>
+
+        </div>
+        <div class="col-xl-2 xoi" style="text-align: right">
+            <button class="btn form-control buttonGeneral" style="font-size:10px;margin-bottom:10px;" data-bs-toggle="modal" data-bs-target="#modalLg" id="ShowMoalefe">
+                <i class="fa fa-check-circle fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text">مولفه های ثبت شده</span>
+            </button>
+
+        </div>
+        <div class="form-group">
+            <div class="input-group">
+                <div class="input-group-addon" data-mddatetimepicker="true" data-trigger="click" data-targetselector="#fromDate1" data-groupid="group1" data-fromdate="true" data-enabletimepicker="false" data-placement="left">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </div>
+                <input type="text" class="form-control" id="fromDate1" placeholder="از تاریخ" data-mddatetimepicker="true" data-trigger="click" data-targetselector="#fromDate1" data-groupid="group1" data-fromdate="true" data-enabletimepicker="false" data-placement="right" />
+            </div>
+
+            <div class="input-group">
+                <div class="input-group-addon" data-mddatetimepicker="true" data-trigger="click" data-targetselector="#toDate1" data-groupid="group1" data-todate="true" data-enabletimepicker="true" data-placement="left">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </div>
+                <input type="text" class="form-control" id="toDate1" placeholder="تا تاریخ" data-mddatetimepicker="true" data-trigger="click" data-targetselector="#toDate1" data-groupid="group1" data-todate="true" data-enabletimepicker="true" data-placement="right" />
+            </div>
+        </div>
+        <input name="MyExcelStream" type="file" style="display:none" />
+
+
+    </div>
+
+    @*<s
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.8.0/css/pikaday.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jalali-moment/3.3.2/jalali-moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.8.0/pikaday.min.js"></script>*@
+
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.8.0/css/pikaday.min.css">
+    @*<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.8.0/pikaday.min.js"></script>*@
+
+</div>
+@*<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>*@
+@*<script src="https://cdn.jsdelivr.net/npm/pikaday/pikaday.js"></script>*@
+
+<script src="script.js"></script>
+
+
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Scripts/sweetalert2.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Areas/Contracts/MyJs/Ajax.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    $(document).ready(function () {
+        var picker = new Pikaday({
+            field: document.getElementById('datepicker'),
+            format: 'YYYY/MM/DD', // تاریخ Jalali
+            yearRange: [1300, 1500],
+            i18n: {
+                previousMonth: 'ماه قبل',
+                nextMonth: 'ماه بعد',
+                months: ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'],
+                weekdays: ['یک‌شنبه', 'دو‌شنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه', 'شنبه'],
+                weekdaysShort: ['ی', 'د', 'س', 'چ', 'پ', 'ج', 'ش'],
+                year: '1402'
+            },
+
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        var picker = new Pikaday({
+            field: document.getElementById('datepicker1'),
+            format: 'YYYY/MM/DD', // تاریخ Jalali
+            yearRange: [1300, 1500],
+            i18n: {
+                previousMonth: 'ماه قبل',
+                nextMonth: 'ماه بعد',
+                months: ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'],
+                weekdays: ['یک‌شنبه', 'دو‌شنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه', 'شنبه'],
+                weekdaysShort: ['ی', 'د', 'س', 'چ', 'پ', 'ج', 'ش'],
+                year: '1402'
+            },
+
+        });
+    });
+</script>
+
+
+
+<script>
+
+
+
+
+
+    ///DateTime Picker To
+
+
+
+    $('#datepickerFrom_usr').MdPersianDateTimePicker({
+        targetTextSelector: '#datepickerFrom_usr',
+        targetDateSelector: '#datepickerFromEn_usr',
+        dateFormat: 'yyyy-MM-dd',
+        isGregorian: false,
+        enableTimePicker: true,
+        disableBeforeToday: false
+    });
+
+    $('#datepickerTo_usr1').MdPersianDateTimePicker({
+        targetTextSelector: '#datepickerTo_usr1',
+        targetDateSelector: '#datepickerToEn_usr1',
+        dateFormat: 'yyyy-MM-dd',
+        isGregorian: false,
+        enableTimePicker: true,
+        disableBeforeToday: false
+    });
+
+</script>
+<script>
+            const Toast = Swal.mixin({
+                toast: true,
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+
+                let year =0;
+                let month = 0;
+                let Basteh = 0;
+                var $elemyear = $('#year_usr');
+                $elemyear.picker();
+                year =1392;
+                $elemyear.on('sp-change', function () {
+                    year = $('#year_usr').find(":selected").val();
+
+                });
+                    var $elemmonth = $('#month_usr');
+                    month = 1;
+                    $elemmonth.picker();
+                    $elemmonth.on('sp-change', function () {
+
+                      month = $('#month_usr').find(":selected").val();
+
+                });
+
+                   // Select Excel File And Submit Form
+    $("input[name='MyExcelStream']").change(function () {
+        console.log($("#baste_peyman").val());
+        if ($("#baste_peyman").val() == null) {
+            alert("پیمان مورد نظر را انتخاب نمایید")
+        } else if ($("#basteOfPeyman").val() == null) {
+            alert("بسته مورد نظر را انتخاب نمایید")
+        }
+        else if ($("#year_usr").val() == 0) {
+            alert("سال مورد نظر را انتخاب نمایید")
+        } else if ($("#month_usr").val() == 0) {
+            console.log($("#month_usr").val())
+            alert("ماه مورد نظر را انتخاب نمایید")
+        } else if ($("#datepickerFrom_usr").val() == null) {
+            alert("از تاریخ مورد نظر را انتخاب نمایید")
+        } else if ($("#datepickerTo_usr1").val() == null) {
+            alert("تا تاریخ مورد نظر را انتخاب نمایید")
+        } else {
+                var file = this.files[0];
+                var ext = file.name.split('.')[1];
+                if (ext == "xlsx" || ext == "xls") {
+
+                    var  obj = new FormData();
+
+                    obj.append("MyExcelStream", file);
+                    obj.append("FromDate", $("#datepickerFromEn_usr").val());
+                    obj.append("ToDate", $("#datepickerToEn_usr1").val());
+                    obj.append("Basteh", $('#basteOfPeyman').val());
+                    obj.append("PeymanID", $("#baste_peyman2").val());
+                    console.log(file);
+                    $.ajax({
+                    beforeSend:function (){
+                      document.getElementById("loading-message").style.display = "block";
+                    },
+                       url: "@Url.Action("ImportExcel_Moalefe", "Moalefe",new { area="Salaries" })",
+                       type: "post",
+                       contentType: false,
+                       data: obj,
+                       processData: false,
+                       cache: false,
+                        success: function (res) {
+                            document.getElementById("loading-message").style.display = "none";
+                            //UploadedFile(res);
+
+
+
+                            // نمایش مدال SweetAlert2
+
+                            // نمایش مدال شما
+                           // if (res.lenght() > 300) {
+                                $("#big_modal_body").html(res);
+
+                           // } else {
+                           //     alert(res);
+                           // }
+
+
+
+
+                       },
+                       error: function (res) {
+                           console.log(res);
+                       }
+                   });
+                }
+                else {
+
+                    Swal.fire({
+                        icon: 'warning',
+                        background: 'rgb(29,40,52)',
+                        color: 'white',
+                        confirmButtonText: 'باشه',
+                        title: 'نوع فایل',
+                        text: 'لطفا فایل را صحیح وارد کنید',
+                    });
+                    return false;
+                }
+        }
+
+
+            });
+            /// Open Dialog File
+    function ShowDialogFile() {
+        console.log($("#datepicker1").val());
+        console.log($("#datepicker").val());
+                $("input[name='MyExcelStream']").val(null);
+                $("input[name='MyExcelStream']").click();
+            }
+
+
+    function DownloadExcel() {
+        console.log($("#month_usr").val());
+        var aa = $("#month_usr").val();
+        Basteh = $('#basteOfPeyman').val();
+        var ye = ($("#year_usr").val())
+        console.log($("#basteOfPeyman").val());
+        console.log($("#year_usr").val());
+        console.log($("#datepicker1").val());
+        console.log($("#datepicker").val());
+
+
+                    $.ajax({
+                        beforeSend: function () {
+                            document.getElementById("loading-message").style.display = "block";//مهندس دارین برعککس میزارین
+                            //این درسته
+                            //شبیه هم ننوشتین
+                            //خوب ورودی هام فرق داتشنت الاان فهمیدم چیشد + اضافه گذاشته بود
+                        },
+                        url: '@Url.Action("ExportMoalefeExcel", "Moalefe", new { area = "Salaries" })?year=' + ye + '&month=' + aa + '&FromDate=' + $("#datepicker1").val() + '&ToDate=' + $("#datepicker").val() + '&PeymanID=' + $("#baste_peyman2").val() + '&Basteh=' + Basteh,
+                        type: 'GET',
+                        dataType: 'html',
+                        //در گام اول میخواین اطلاعات رو بفرستین کاری به دانلود ندارین
+//الان چرا از این استفاده نمیکنید ؟
+    //من میخوام اکسل دانلود کنه نه pdf
+    //من اطلاعات که ثبت کرده را فرستادم توی دیتابیس حالا میخوام نمایش بدم به اون که بادی تایید کند
+    //دقت کنید ! ..
+    //شما میخواین یک ایدی را بفرستید صرفا ، بقیه اطلاعات در بقیه ستون های آن ایدی نهفته است
+    //ای دی را بفرستید اطلاعات را از دیتابیس واکشی کنید در یک فایل اکسل بریزید و اکسل را برگردانید
+    //                    درسته ؟
+    //خوب شما منم اگر کدم را ببینید همین کار را کردم ولی نمیفرسته سمت سرور و اگر برود درسته الاناون تابع که نمیره مشکلم اون جاست
+    //متوجهم
+    //گام اول پس نیاز نیست ماه و سال و .. رو بفرستید
+    //صرفا ایدی رو بفرستید
+    //حالا در گام دوم ببینیم چرا وارد نمیشه
+
+                        success: function (res) {
+                            document.getElementById("loading-message").style.display = "none";
+                            window.location = '@Url.Action("ExportMoalefeExcel", "Moalefe",new { area = "Salaries" })?year=' + ye + '&month=' + aa + '&FromDate=' + $("#datepicker1").val() + '&ToDate=' + $("#datepicker").val() + '&PeymanID=' + $("#baste_peyman2").val() + '&Basteh=' + Basteh;
+                       },
+                       error: function (res) {
+                           console.log(res);
+                       }
+                   });
+            }
+
+</script>
+
+<script>
+    $("#pymnandbasteh1").load('@Url.Content("/RegistrationAndConfirmationProcedures/ReffrenceSaveGetPeymans")?isSabt=True&IsFor=1');
+
+
+    $("#ShowMoalefe").click(function () {
+        $("#big_modal_body").load('@Url.Content("../../Contracts/Functions/_ShowMoalefeModal")');
+    });
+</script>
+

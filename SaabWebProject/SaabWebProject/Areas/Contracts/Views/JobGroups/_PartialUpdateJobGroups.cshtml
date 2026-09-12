@@ -1,0 +1,190 @@
+﻿@model SaabWebProject.Models.DomainModels.tbContractJobGroup
+@{
+    ViewBag.TitleLargModal = "آپدیت  گروه شغلی";
+    Layout = null;
+}
+<link rel="stylesheet" href="extensions/sticky-header/bootstrap-table-sticky-header.css">
+<script src="extensions/sticky-header/bootstrap-table-sticky-header.js"></script>
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+<style>
+    .headTo {
+        position: sticky;
+        top: 0;
+        text-align: center;
+        z-index: 2
+        /*z-index: 2*/ /*اطمینان حاصل کنید که هیچ عنصر دیگری روی هدر ثابت نمایش داده نمی‌شود*/
+    }
+
+    .headRi {
+        position: sticky;
+        right: 0;
+        text-align: center;
+    }
+</style>
+<body>
+    <div class="row">
+
+        <div class="col-xl-2">
+            <label class="form-label">حق مسکن</label>
+            <input class="form-control" id="jg_HagheMaskan" value="@Model.jg_HagheMaskan" />
+        </div>
+
+        <div class="col-xl-2">
+            <label class="form-label">حق اولاد</label>
+            <input class="form-control" id="jg_HagheOlad" value="@Model.jg_HagheOlad" />
+        </div>
+
+        <div class="col-xl-2">
+            <label class="form-label">خواروبار</label>
+            <input class="form-control" id="jg_KharoBar" value="@Model.jg_KharoBar" />   
+        </div>
+        @*------------------------------------------------[1402/08/11]-|KH|-*@
+        <div class="col-xl-6">
+            <label class="form-label"> شرح  </label>
+            <textarea class="form-control control" id="title">@Model.title</textarea>
+        </div>
+        @*-------------------------------------------------------------|KH|-*@
+    </div>
+
+    <div class="row" >
+        <div class="card p-0">
+            <div class="table-content p-4">
+
+                <div class="table-responsive " style="height:500px">
+                    <table class="table table-hover text-nowrap"">
+                        <thead class="headTo ">
+                            <tr>
+                                <th>گروه ها</th>
+                                <th scope="col">مزد شغل</th>
+                                <th scope="col">سال1</th>
+                                <th scope="col">سال2</th>
+                                <th scope="col">سال3</th>
+                                <th scope="col">سال4</th>
+                                <th scope="col">سال5</th>
+                                <th scope="col">سال6</th>
+                                <th scope="col">سال7</th>
+                                <th scope="col">سال8</th>
+                                <th scope="col">سال9</th>
+                                <th scope="col">سال10</th>
+                                <th scope="col">سال11</th>
+                                <th scope="col">سال12</th>
+                                <th scope="col">سال13</th>
+                                <th scope="col">سال14</th>
+                                <th scope="col">سال15</th>
+                                <th scope="col">سال16</th>
+                                <th scope="col">سال17</th>
+                                <th scope="col">سال18</th>
+                                <th scope="col">سال19</th>
+                                <th scope="col">سال20</th>
+                                <th scope="col">سال21</th>
+                                <th scope="col">سال22</th>
+                                <th scope="col">سال23</th>
+                                <th scope="col">سال24</th>
+                                <th scope="col">سال25</th>
+                                <th scope="col">سال26</th>
+                                <th scope="col">سال27</th>
+                                <th scope="col">سال28</th>
+                                <th scope="col">سال29</th>
+                                <th scope="col">سال30</th>
+                                <th scope="col">سال31</th>
+                                <th scope="col">سال32</th>
+                                <th scope="col">سال33</th>
+                                <th scope="col">سال34</th>
+                                <th scope="col">سال35</th>
+                                <th scope="col">سال36</th>
+                                <th scope="col">سال37</th>
+                                <th scope="col">سال38</th>
+                                <th scope="col">سال39</th>
+                                <th scope="col">سال40</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.tbContractJobGroupValues.FirstOrDefault() != null)
+                            {
+                                for (int i = 1; i <= 40; i++)
+                                {
+                                    <tr class="mytr " id="mytr_@i">
+                                        <th scope="row" class="headRi "><div style="width:80px;">گروه @i</div></th>
+                                        @for (int j = 0; j <= 40; j++)
+                                        {
+                                            string value;
+                                            if (j == 0)
+                                            {
+                                                value = Model.tbContractJobGroupValues.Where(p => p.SanavatYear == j && p.GroupNumber == i).FirstOrDefault().ValueMozdGroup;
+                                            }
+                                            else
+                                            {
+                                                value = Model.tbContractJobGroupValues.Where(p => p.SanavatYear == j && p.GroupNumber == i).FirstOrDefault().ValueSanavat;
+
+                                            }
+
+
+
+                                            <td><input class="form-control mytd" style="width:85px;margin-bottom:0 !important" id="mytd_@i _@j" value="@value" /></td>
+                                        }
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                for (int i = 1; i <= 40; i++)
+                                {
+                                    <tr class="mytr " id="mytr_@i">
+                                        <th scope="row" class="headRi"><div style="width:80px;">گروه @i</div></th>
+                                        @for (int j = 0; j <= 40; j++)
+                                        {
+                                            <td><input class="form-control mytd" style="width: 85px; margin-bottom: 0 !important" id="mytd_@i _@j" value="0" /></td>
+                                        }
+                                    </tr>
+                                }
+
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+
+            </div>
+            <div class="card-arrow">
+                <div class="card-arrow-top-left"></div>
+                <div class="card-arrow-top-right"></div>
+                <div class="card-arrow-bottom-left"></div>
+                <div class="card-arrow-bottom-right"></div>
+            </div>
+        </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="dist/js/freeze-table.js"></script>
+<script>
+    //$(document).ready(function () {
+    //    // 2 Columns to be fixed
+    //    $(".table2").freezeTable({
+    //        'columnNum': 2,
+    //    });
+    //});
+</script>
+<script>
+
+    $(function () {
+        $.each($("input"), function (index, item) {
+
+            var amount = $(this).val().replace(/[\D\s\._\-]+/g, "");
+            amount = amount ? parseInt(amount, 10) : 0;
+            $(this).val(function () {
+                return (amount === 0) ? "" : amount.toLocaleString("en-US");
+            });
+        });
+
+    });
+
+
+
+    $("input").keyup(function () {
+        var amount = $(this).val().replace(/[\D\s\._\-]+/g, "");
+        amount = amount ? parseInt(amount, 10) : 0;
+        $(this).val(function () {
+            return (amount === 0) ? "" : amount.toLocaleString("en-US");
+        });
+    });
+</script>

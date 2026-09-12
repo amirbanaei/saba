@@ -1,0 +1,77 @@
+﻿@using SaabWebProject.Models.DomainModels;
+
+@{
+    SaabEntities db = new SaabEntities();
+
+    Layout = null;
+}
+@model SaabWebProject.Models.DomainModels.dbtarifmahdodayt3
+<div class="row" @*style="padding-left: 8px;"*@>
+    <div class="col-xl-6">
+        <label class="form-label">نام  </label>
+        <input class="form-control form-control222editt" id="name_mkjedit" value="@Model.name"/>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xl-10"></div>
+    <div class="col-xl-2">
+        <div>
+
+
+            <button id="btnSaveContract222edit" type="button" class="btn form-control buttonsabt">
+                <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                <span class="bSabt-text">ثبت</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $("#btnSaveContract222edit").click(function () {
+    @*var PeymanArr = [];
+        $.each($("#select_Allmoalefe_").val().toString().split(","), function (index, item) {
+        if (item !== "") {
+        if (item != 'Select') {
+        PeymanArr.push(item);
+        console.log(item);
+        }
+        }
+        });
+        console.log(PeymanArr);*@
+    var month = $("#name_mkjedit").val();
+    var month2 = @Model.ID;
+
+
+
+
+    $.ajax({
+    url: "@Url.Action("marhal3mahdodeditcreat", "Dashboard", new { area = "Reporter" })",
+
+    type: "Post",
+    dataType: "html",
+    data: { @*Fkpym: PeymanArr,*@ name: month,id:month2 },
+    success: function (res) {
+    document.getElementById("loading-message").style.display = "none";
+    if (res = "True") {
+    alert("با موفقیت ثبت شد ");
+    location.reload();
+    }
+
+    },
+    error: function (res) {
+    console.log(res);
+
+    document.getElementById("loading-message").style.display = "none";
+    Toast.fire({
+    icon: 'error',
+    background: '#35434A',
+    color: 'white',
+    title: "عملیات  با خطا مواجه شد"
+    });
+    return false;
+    }
+    });
+
+    });
+</script>

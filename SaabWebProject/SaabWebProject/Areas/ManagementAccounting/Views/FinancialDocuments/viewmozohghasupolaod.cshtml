@@ -1,0 +1,128 @@
+﻿
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="row">
+    @*<div class="col-xl-3">
+        <label class="form-label"> عنوان  </label>
+        <input class="form-control" id="Title" />
+    </div>*@
+    <div class="col-xl-9">
+        <label class="form-label"> شرح  </label>
+        <input class="form-control" id="Description" />
+    </div>
+</div>
+<div class="col-md-12">
+    <p class="text-danger" id="paragraph"></p>
+</div>
+<div class="row">
+    <div class="col-xl-11"></div>
+    @*<div class="col-xl-2" style="margin-top:30px">
+
+                <a href="#" class="btn btn-outline-info form-control">
+                    <i class="bi bi-download"></i>
+                    دانلود فایل نمونه
+                </a>
+        </div>
+        <div class="col-xl-2" style="margin-top:30px">
+                <a href="#" class="btn btn-outline-info form-control">
+                    <i class="bi bi-upload"></i>
+                    بارگذاری اطلاعات
+                </a>
+        </div>*@
+    <div class="col-xl-1">
+        <button class="btn form-control buttonsabt" id="SubmitRadifEtebari">
+            <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+            <span class="bSabt-text">ثبت</span>
+        </button>
+    </div>
+</div>
+
+
+
+<hr />
+<div id="eee">
+
+</div>
+>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $("#SubmitRadifEtebari").click(function () {
+          
+        var titel = $("#Description ").val();
+        $("#loading-circle .loadingText1").text("لطفا منتظر نمایش اطلاعات بمانید ...");
+        $("#loading-circle").css("display", "flex");
+                if ($("#Description").val() == '') {
+                alert("لطفا پیمان ها را انتخاب کنید");
+            }
+             
+            else {
+                $.ajax({
+                    url: "@Url.Action("createmozoh", "FinancialDocuments", new { area = "ManagementAccounting" })",
+                    type: "Post",
+                    dataType: "html",
+                    data: { titel: titel },
+                    success: function (res) {
+                        if (res == "True") {
+                            $("#loading-circle").css("display", "none");
+                            alert("با موفقیت ثبت شد");
+                            location.reload();
+
+                        }
+                        else {
+                            $("#loading-circle").css("display", "none");
+                            alert(res);
+                        }
+
+                    },
+                    error: function (res) {
+                        console.log(res);
+
+                        document.getElementById("loading-message").style.display = "none";
+                        Toast.fire({
+                            icon: 'error',
+                            background: '#35434A',
+                            color: 'white',
+                            title: "عملیات  با خطا مواجه شد"
+                        });
+                        return false;
+                    }
+                });
+            }
+        });
+    $(document).ready(function () {
+        $("#Description").keydown(function (e) {
+            $("#paragraph").text("در حال تایپ ....");
+        });
+
+        $("#Description").keyup(function (e) {
+
+            setInterval(function () {
+                $("#paragraph").text("");
+            }, 3000);
+        });
+    });
+
+
+</script>
+<script>
+    $(document).ready(function () {
+        $("#Title").keydown(function (e) {
+            $("#paragraph").text("در حال تایپ ....");
+        });
+
+        $("#Title").keyup(function (e) {
+
+            setInterval(function () {
+                $("#paragraph").text("");
+            }, 1000);
+        });
+    });
+</script>
+<script>
+        $("#eee").load('@Url.Content("/ManagementAccounting/FinancialDocuments/listmozoh")');
+</script>

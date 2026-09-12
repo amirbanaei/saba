@@ -1,0 +1,340 @@
+﻿
+@using SaabWebProject.Models.DomainModels;
+
+@{
+    SaabEntities db = new SaabEntities();
+
+    Layout = null;
+}
+<style>
+
+    .tableH_LockSS {
+        max-height: 363px;
+        /*height: 260px;*/
+    }
+
+    thead {
+        position: sticky;
+        top: 0;
+        text-align: center;
+        z-index: 2;
+    }
+
+    .inputFilter {
+        margin-bottom: 0px !important;
+    }
+
+    .RadioFilter {
+        margin-bottom: 0px !important;
+    }
+
+    thead th {
+        vertical-align: middle;
+    }
+
+    .inputSS44334 {
+        margin-bottom: 0px !important;
+    }
+</style>
+
+<div class="card">
+    <div class="table-content p-4">
+        <div class="tab-pane fade show active" id="allTab">
+            <div class="table-responsive tableH_LockSS">
+                <table class="table table-hover text-nowrap">
+                    <thead class="sticky-header">
+                        <tr>
+                            <th class="users headRi0">
+                                نام و نام خانوادگی
+
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter20-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            <th class="users headRi1">
+                                کد پرسنلی
+
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter30-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            <th class="users headRi1">
+                               سمت
+
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter31-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            @foreach (var item in db.arzyzbi1.ToList())
+                            {
+                                <th class="TitelL" style="padding-bottom: 11px !important;">
+                                    @item.name
+                                    <div class="form-check EmkRadio" style=" justify-self: center;">
+                                        <!-- رادیو باتن برای انتخاب همه چک‌باکس‌ها در ستون -->
+                                        <input class="form-check-input RadioFilter" type="checkbox"
+                                               name="selectAllOwner"
+                                               id="selectAllMamur_@item.ID"
+                                               onclick="selectAllRadios11('@item.ID')" />
+                                    </div>
+                                </th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int II = 0;
+                            var marahls = db.tbmarahlsabtbastedit1.Where(p => p.naem != null).ToList(); // ستون‌های ثابت
+
+                            var list = db.arzyzbi4_link.ToList();
+                            var cit = db.tbpeymancities.ToList();
+                        }
+                        @foreach (var contract in db.tbUsers.Where(s=>s.usr_Personal_ID!=null).ToList())
+                        {
+                            string semat = "";
+                            //var cities = cit.Where(p => p.FK_PYMN == contract.pec_ID).ToList();
+                            var find = db.tbUser_link_BusinessSide.Where(s => s.FK_u_ID == contract.usr_ID).FirstOrDefault();
+                            if (find != null)
+                            {
+                                //var find2 = db.tbBusinessSide.Where(s => s.up_Id == find.FK_u_ID).FirstOrDefault();
+                                semat= find.tbBusinessSide.up_name;
+
+                            }
+                            else
+                            {
+                                semat = "مامور خدمات مشترکین";
+
+
+                            }
+                            <tr class="task-list-rowEM2"
+                                data-filter20="@contract.FullName"
+                                data-filter30="@contract.usr_Personal_ID"   data-filter31="@semat">
+
+                                <td class="headRi0">@contract.FullName</td>
+                                <td class="headRi1">@contract.usr_Personal_ID</td>
+                                <td class="headRi2">@semat</td>
+
+                                @foreach (var marahl in db.arzyzbi1.ToList())
+                                {
+                                    var findvalu = list
+                                                     .FirstOrDefault(p => p.FK_usr == contract.usr_ID
+                                                                          && p.FK_arzyzbi1 == marahl.ID
+                                                                          );
+                                    var hasValue = findvalu?.vaziat ?? false;
+
+                                    <td data-column="@marahl.ID">
+                                        <input class="form-check-input mamur inputSS44334 weewee12"
+                                               name="checkRow_@marahl.ID"
+                                               type="checkbox"
+                                               id="checkVasileV1-@marahl.ID-@contract.usr_ID-@contract.usr_ID"
+                                               data-column="@marahl.ID"
+                                               data-bind="@marahl.ID"
+                                               data-keyboard="@marahl.ID"
+                                               @(hasValue ? "checked" : "") />
+                                    </td>
+
+                                }
+                            </tr>
+                            II++;
+
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+<div class="row mt-10px">
+    <div class="col-xl-11"></div>
+    <div class="col-xl-1">
+        <button id="savelink" type="button" class="btn form-control buttonsabt">
+            <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+            <span class="bSabt-text">ثبت</span>
+        </button>
+    </div>
+</div>
+
+
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Scripts/popper.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script>
+    var
+        filtersEM2 = {
+            filter20: null,
+            filter30: null,
+        };
+    function updateFiltersEM2() {
+        $('.task-list-rowEM2').hide().filter(function () {
+            var self = $(this),
+                result = true;
+
+            Object.keys(filtersEM2).forEach(function (filter) {
+                var filterData = self.data(filter);
+                if (filtersEM2[filter] && (filtersEM2[filter] != 'None') && (filtersEM2[filter] != 'همه')) {
+                    // تبدیل داده به رشته و بررسی مقدار
+                    result = result && (filterData && filterData.toString().indexOf(filtersEM2[filter]) !== -1);
+                }
+            });
+
+            return result;
+        }).show();
+    }
+
+    function changeFilterEM2(filterName) {
+        filtersEM2[filterName] = this.value;
+        updateFiltersEM2();
+    }
+
+    // Assigned User Dropdown Filter
+    $('#filter20-filter').on('input', function () {
+        changeFilterEM2.call(this, 'filter20');
+    });
+    $('#filter30-filter').on('input', function () {
+        changeFilterEM2.call(this, 'filter30');
+    });
+    $('#filter31-filter').on('input', function () {
+        changeFilterEM2.call(this, 'filter31');
+    });
+</script>
+<script>
+
+
+    function selectAllRadios11(columnId) {
+        // انتخاب همه چک‌باکس‌ها در ستون مشخص که قابل مشاهده هستند
+        var checkboxes = $("td[data-column='" + columnId + "'] input[type='checkbox']:visible");
+
+        // بررسی وضعیت چک‌باکس اصلی
+        var isChecked = document.getElementById("selectAllMamur_" + columnId).checked;
+
+        // اگر هیچ چک‌باکسی پیدا نشد، پیام را در کنسول چاپ کنید
+        if (checkboxes.length === 0) {
+            console.log("No visible checkboxes found for columnId: ", columnId);
+        } else {
+            // چک یا لغو انتخاب فقط چک‌باکس‌های قابل مشاهده
+            checkboxes.each(function () {
+                this.checked = isChecked;
+            });
+        }
+    }
+
+    // اطمینان از اینکه کد پس از بارگذاری کامل صفحه اجرا شود
+    document.addEventListener("DOMContentLoaded", function () {
+        // اینجا می‌توانید کدهایی را که نیاز به تعامل با صفحه دارند قرار دهید.
+        // به عنوان مثال، فراخوانی selectAllRadios11 برای اولین بار، در صورتی که نیاز باشد.
+    });
+
+
+
+    function formatNumberWithCommas(number) {
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+    $("input.form-technololghhhh").on('input', function () {
+        var value = $(this).val();
+        value = removeCommas(value); // Remove existing commas
+        if ($.isNumeric(value)) {
+            $(this).val(formatNumberWithCommas(value)); // Format with commas
+        }
+    });
+    $("input.form-technololghhhh").each(function () {
+        var value = $(this).val();
+        if ($.isNumeric(value)) {
+            $(this).val(formatNumberWithCommas(value)); // اعمال فرمت
+        }
+    });
+    function removeCommas(number) {
+        return number.replace(/,/g, '');
+    }
+    $("#savelink").click(function () {
+        $("#loading-circle .loadingText1").text("لطفا منتظر ثبت اطلاعات بمانید ...");
+        $("#loading-circle").css("display", "flex");
+        // جمع‌آوری داده‌ها
+        var dataList = []; // ایجاد آرایه‌ای برای ذخیره داده‌ها
+
+        $("input.weewee12").each(function () {
+            var inputId = $(this).attr("id");
+            var isChecked = $(this).is(":checked"); // بررسی چک‌خورده بودن
+
+            // تقسیم ID به اجزا با جداکننده صحیح
+            var parts = inputId.split('-');
+            if (parts.length >= 4) { // بررسی صحت ساختار ID
+                // اجزای ID
+                var FK_namebAST = parseInt(parts[1]); // مقدار مربوط به marahl.ID
+                var FK_city = parseInt(parts[2]);     // مقدار مربوط به city.id
+                var FK_pymn = parseInt(parts[3]);     // مقدار مربوط به contract.pec_ID
+                console.log(FK_city)
+
+                // افزودن به آرایه داده‌ها
+                dataList.push({
+                    FK_arzyzbi1: FK_namebAST,
+                    FK_usr: FK_city,
+                    //FK_pymn: FK_pymn,
+                    vaziat: isChecked // اگر چک شده باشد true وگرنه false
+                });
+            } else {
+                console.warn("Invalid ID format for input:", inputId);
+            }
+        });
+
+        if (dataList.length > 0) {
+            console.log(dataList)
+            updateDatabase5885(dataList); // ارسال داده‌ها به سرور
+            console.log("Data to be sent:", dataList); // نمایش داده‌ها در کنسول برای بررسی
+        } else {
+            console.warn("No valid data collected!");
+        }
+    });
+
+    // تابع ارسال داده‌ها به سرور
+    function updateDatabase5885(dataList) {
+   
+        $.ajax({
+            url: '/Setting/Orders/Linkarzyab', // آدرس اکشن کنترلر شما
+            method: 'POST',
+            data: JSON.stringify(dataList), // تبدیل داده‌ها به JSON
+            contentType: 'application/json',
+            success: function (response) {
+                console.log("Record updated successfully:", response);
+                if (response === "true") {
+                    $("#loading-circle").css("display", "none"); // پنهان کردن لودینگ
+
+                    alert("با موفقیت ثبت شد");
+                    location.reload();
+                } else {
+                    alert("خطا در ثبت اطلاعات: " + response);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Error updating record:", {
+                    status: status,
+                    error: error,
+                    responseText: xhr.responseText
+                });
+                alert("خطا در ارسال اطلاعات. لطفاً دوباره تلاش کنید.");
+            }
+        });
+    }
+
+
+</script>

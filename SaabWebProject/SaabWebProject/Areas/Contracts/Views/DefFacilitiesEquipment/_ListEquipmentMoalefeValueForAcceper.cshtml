@@ -1,0 +1,325 @@
+﻿@model List<SaabWebProject.Models.DomainModels.tbEquipmentMoalefeValueReffrenceSave>
+@using SaabWebProject.Models.DomainModels;
+
+@{
+    Layout = null;
+    SaabEntities db = new SaabEntities();
+
+}
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+<div class="card">
+    <div class="table-content p-4">
+        <div class="tab-pane fade show active" id="allTab">
+            <div class="table-responsive">
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr style="text-align:center">
+                            @*<th>
+            @Html.DisplayName("فعالیت")
+        </th>*@
+                            <th>
+                                @Html.DisplayName("#")
+                            </th>
+                            <th>
+                                @Html.DisplayName("پیمان")
+                            </th>
+                            <th>
+                                @Html.DisplayName("نوع تجهیز")
+                            </th>
+                          
+                            <th>
+                                @Html.DisplayName("نام بارگزار کننده")
+                            </th>
+                            <th>
+                                @Html.DisplayName("نقش بارگزار کننده")
+                            </th>
+                            <th>
+                                @Html.DisplayName("ماه")
+                            </th>
+                            <th>
+                                @Html.DisplayName("سال")
+                            </th>
+
+                            <th>
+                                @Html.DisplayName("جزئیات")
+                            </th>
+                            <th>
+                                @Html.DisplayName("بارگیری اطلاعات")
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody style="text-align:center;">
+                        @{ var counter = 0;}
+                        @foreach (var item in Model)
+                        {
+                           
+                                var t = db.tbEquipmentMoalefeValue.Where(p => p.FK_tbEquipmentMoalefeValueReffrenceSave == item.ID).FirstOrDefault();
+                                var tt = db.tbEquipments.Where(p => p.ID == t.FK_Equipment).FirstOrDefault();
+                                var ttt = db.tbEquipmentBunch.Where(p => p.Eqpbnch_ID == tt.FK_Bunch).FirstOrDefault();
+                                var tttt = db.tbEquipmentGroup.Where(p => p.Eqpgrp_ID == ttt.FK_EqpgrpID).FirstOrDefault();
+                           
+                                counter++;
+
+                            <tr>
+                                @*<td>
+            <div class="ms-sm-4 mt-sm-0 mt-2 dropdown-toggle">
+                <a href="#" data-bs-toggle="dropdown" class="text-white text-opacity-75 text-decoration-none">
+                    <i class="fa fa-edit"></i>
+                </a>
+                <div class="dropdown-menu">
+                    @if (item.File_SystemName == null)
+                    {
+
+                        <a class="dropdown-item uploadSummery" id="uploadSummery_@item.ID">
+                            <span>بارگذاری خلاصه مدرک </span>
+                        </a>
+
+                    }
+
+                    <input id="summery_file5" style="display:none" type="file" class="form-control" value="" />
+
+
+
+                </div>
+
+            </div>
+        </td>*@
+                                <td>@counter</td>
+                                <td id="pym">@t.tbPeymanContracts.pec_Title</td>
+                                <td>
+                                    @tttt.Eqpgrp_Name
+                                </td>
+                                @*<td id="from">@item.tbEquipmentMoalefeValue.FirstOrDefault().FromDate</td>*@
+                                @*<td id="todata">@item.tbEquipmentMoalefeValue.FirstOrDefault().ToDate</td>*@
+                                @*------------------------------------------------[1402/09/20]-|KH|-*@
+                                
+                                @*-------------------------------------------------------------|KH|-*@
+
+                                <td>@t.tbEquipmentMoalefeValueReffrenceSave.tbUsers.FullName</td>
+                                @if (t.tbEquipmentMoalefeValueReffrenceSave.Final_Accept == true)
+                                {
+                                    <td>تایید کننده نهایی</td>
+
+                                }
+                                else if (t.tbEquipmentMoalefeValueReffrenceSave.For_Acceot == true)
+                                {
+                                    <td>تایید کننده </td>
+
+                                }
+                                else
+                                {
+                                    <td>ثبت کننده</td>
+
+                                }
+                                <td>
+                                    @{
+                                        var monthNumber = t.Month;
+                                        string monthName;
+
+                                        switch (monthNumber)
+                                        {
+                                            case 1:
+                                                monthName = "فروردین";
+                                                break;
+                                            case 2:
+                                                monthName = "اردیبهشت";
+                                                break;
+                                            case 3:
+                                                monthName = "خرداد";
+                                                break;
+                                            case 4:
+                                                monthName = "تیر";
+                                                break;
+                                            case 5:
+                                                monthName = "مرداد";
+                                                break;
+                                            case 6:
+                                                monthName = "شهریور";
+                                                break;
+                                            case 7:
+                                                monthName = "مهر";
+                                                break;
+                                            case 8:
+                                                monthName = "آبان";
+                                                break;
+                                            case 9:
+                                                monthName = "آذر";
+                                                break;
+                                            case 10:
+                                                monthName = "دی";
+                                                break;
+                                            case 11:
+                                                monthName = "بهمن";
+                                                break;
+                                            case 12:
+                                                monthName = "اسفند";
+                                                break;
+                                            default:
+                                                monthName = "نامشخص";
+                                                break;
+                                        }
+                                    }
+                                    @monthName
+                                </td>
+                                <td>@t.Year</td>
+                                @if (item.File_SystemName != null)
+                                {
+
+                                    <td>
+                                        <a target="_blank" href="~/Areas/Contracts/Contents/DefFacilitiesEquipment/UserUpload/@item.FileName">دانلود</a>
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td>پیوستی ثبت نشده </td>
+                                }
+                                @if (item.File_SystemNameForAccept != null)
+
+
+                                {
+
+                                    <td>
+                                        <a target="_blank" href="~/Areas/Contracts/Contents/DefFacilitiesEquipment/UserUpload/@item.File_SystemNameForAccept">
+                                            دانلود اطلاعات ثبت شده
+                                        </a>
+                                    </td>
+                                }
+
+
+
+                                else
+                                {
+                                    <td>
+                                        <button class="btn btn-outline-theme csss" onclick="downloadAjax2('@t.tbPeymanContracts.pec_Title', '@t.FromDate', '@t.ToDate', '@item.ID',' @tttt.Eqpgrp_ID')" style="border-radius:15px; font-size:10px; color: white; background-color: #0d3244;margin-bottom:10px;">
+                                            دانلود اطلاعات ثبت شده
+                                        </button>
+                                    </td>
+                                }
+                                <td id="id5" style="display:none">@item.ID</td>
+                                <td id="type" style="display:none">
+                                    @tttt.Eqpgrp_ID
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+
+<!-- Your existing script references -->
+@*------------------------------------------------[1402/09/20]-|KH|-*@
+<script>
+    // Convert Gregorian date to jaali in the table
+    var tds = document.querySelectorAll("[cont-date1]");
+    var valueD, id, target;
+    var options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    tds.forEach(td => {
+        valueD = new Date(td.textContent).toLocaleDateString('fa-IR-u-nu-latn', options).replace(',', '').replace(" ", "");
+        valueD = valueD.slice(0, 10) + " " + td.textContent.slice(10, 30)
+        id = td.getAttribute("cont-date1");
+        target = document.getElementById(id);
+        target.textContent = valueD;
+    });
+</script>
+@*-------------------------------------------------------------|KH|-*@
+<script>
+    function downloadAjax2(pym, fromdata, todata, id, type) {
+        console.log(fromdata);
+        console.log(pym);
+        console.log(id);
+
+        $("#loading-message").css("display", "block");
+
+        window.location = '@Url.Action("ExportExcel_MachinsOrTools2", "DefFacilitiesEquipment", new { area = "Contracts" })' +
+            '?Peyman_ID2=' + encodeURIComponent(pym) +
+            '&Fromdata=' + encodeURIComponent(fromdata) +
+            '&Todate=' + encodeURIComponent(todata) +
+            '&type2=' + encodeURIComponent(type)+
+            '&id=' + encodeURIComponent(id);
+
+        $("#loading-message").css("display", "none");
+    }
+</script>
+<script>
+
+    var obj = new FormData();
+
+     $(".uploadSummery").click(function () {
+       FK_DDOfTitle = $(this).attr("id").split("_")[2];
+       ID = $(this).attr("id").split("_")[1];
+         $("#summery_file5").click();
+   });
+
+    $("#summery_file5").change(function (e) {
+       $.each(e.target.files, function (index, file) {
+           obj.append("files", file);
+       });
+            sendAjax2('@Url.Action("pavastrools", "DefFacilitiesEquipment", new { area = "Contracts" })', obj);
+    });
+
+
+    function sendAjax2(url2, fd2) {
+        obj.append("id", ID);
+
+
+
+
+        $.ajax({
+            url: url2,
+            type: 'POST',
+            data: fd2,
+            processData: false,
+            contentType: false,
+            success: function (resp1) {
+                console.log("okeye");
+                console.log(resp1);
+                $("#loading-message").css("display", "none");
+                fd = new FormData();
+                if (resp1 == "True") {
+                    alert("با موفقیت ثبت شد");
+                    setTimeout(function () {
+                        location.reload(); // یا می‌توانید از location.reload(true) هم استفاده کنید
+                    }, 2000); // بازه زمانی به میلی‌ثانیه، اینجا 2000 میلی‌ثانیه (یعنی 2 ثانیه)
+                }
+                else {
+                    $("#loading-message").css("display", "none");
+                    console.log("jlk;;kkj");
+                    Toast.fire({
+
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                    }).then(() => {
+                        $("#loading-message").css("display", "none");
+                    });
+                }
+
+            },
+            error: function (resp1) {
+                console.log(resp1);
+                console.log("Nokeye");
+                $("#loading-message").css("display", "none");
+                Toast.fire({
+                    icon: 'success',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                }).then(() => {
+                    $("#loading-message").css("display", "none");
+                });
+            }
+        });
+    }
+
+
+</script>
+

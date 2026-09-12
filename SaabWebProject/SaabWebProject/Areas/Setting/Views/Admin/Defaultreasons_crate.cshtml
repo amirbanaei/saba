@@ -1,0 +1,242 @@
+﻿@{
+    ViewBag.TitleLargModal = " پیمان ها جدید";
+    Layout = null;
+}
+@model SaabWebProject.Models.DomainModels.tbDefault_reasons
+
+<style>
+    .modal-lg, .modal-xl {
+        margin-top: 8px !important;
+        max-width: 80% !important;
+    }
+</style>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div id="formControls" >
+        <div class="card">
+            <div class="card-body pb-2">
+                <form>
+                    <div class="row">
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> عنوان </label>
+                                <select class="form-select" id="titleSelect">
+                                    <option value="0">انتخاب کنید..</option>
+                                    <option value="1">خودرو</option>
+                                    <option value="2">عملکرد</option>
+                                    <option value="3">محدودیت</option>
+                                    <option value="4">ابزار</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-xl-1"  >
+                            <button id="btnplass"  type="button" class="btn form-control buttonGeneralPlus">
+                                <i class="fa fa-plus VecGeneral" style=""></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="forReasons">
+
+                    </div>
+                    <div class="row" style="margin-top:4.5%">
+                        <div class="col-xl-11">
+                        </div>
+                        <div class="col-xl-1">
+                            <button id="btnCreate1" type="button" class="btn form-control buttonsabt">
+                                <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                                <span class="bSabt-text">ثبت</span>
+                            </button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="card-arrow">
+                <div class="card-arrow-top-left"></div>
+                <div class="card-arrow-top-right"></div>
+                <div class="card-arrow-bottom-left"></div>
+                <div class="card-arrow-bottom-right"></div>
+            </div>
+        </div>
+    </div>
+
+
+}
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script>
+    var i = 1;
+    $(function () {
+        // جهت لود اولین سطر توضیحات و علت
+        $("#forReasons").load('@Url.Content("/Setting/Admin/_AddMoreResons")', function () {
+            $("#roww").attr("id", "roww_1");
+            $("#minu").attr("id", "minu_1");
+            $("#Reason").attr("id", "Reason_1");
+            $("#Description").attr("id", "Description_1");
+            $("#NextRow").attr("id", "NextRow_2");
+
+           $(".minus_class").on("click", function () {
+                var id = $(this).attr("id").split("_")[1];
+                if (id != 1) {
+                $("#roww_" + id).remove();
+                }
+             });
+        });
+
+       addButtonListener(); // جهت کلیک برروی دکمه پلاس
+
+                    
+    });
+</script>
+
+<script>
+   function addButtonListener() {
+    var btn = document.getElementById("btnplass");
+    btn.addEventListener("click", function () {
+        var titleInput = document.getElementById("title");
+        var briefTitleInput = document.getElementById("brieftitle");
+        if (titleSelect.value == '0') {
+            alert('لطفا عنوان را انتخاب نمایید ');
+            return;
+        } else {
+            i++;
+           $("#NextRow_" + i).load('@Url.Content("/Setting/Admin/_AddMoreResons")', function () {
+               $("#roww").attr("id", "roww_"+i);
+               $("#minu").attr("id", "minu_" + i);
+               $("#Reason").attr("id", "Reason_" + i);
+               $("#Description").attr("id", "Description_" + i);
+               $("#NextRow").attr("id", "NextRow_" + (i + 1));
+               $(".minus_class").on("click", function () {
+                   var id = $(this).attr("id").split("_")[1];
+                   if (id != 1) {
+                         $("#roww_" + id).remove();
+                   }
+               });
+           });
+
+               //var row = document.createElement("div");
+               // row.classList.add("row");
+
+               // var col1 = document.createElement("div");
+               // col1.classList.add("col-xl-3", "col-md-4", "d-flex", "align-items-center");
+
+               // var minusBtn = document.createElement("button");
+               // minusBtn.id = "btnnegetive";
+               // minusBtn.type = "button";
+               // minusBtn.classList.add("btn", "btn-outline-theme");
+               // minusBtn.textContent = "-";
+
+               // var formGroup = document.createElement("div");
+               // formGroup.classList.add("form-group", "mb-3", "flex-grow-1");
+
+               // var label = document.createElement("label");
+               // label.classList.add("form-label");
+               // label.textContent = "علت";
+
+               // var input = document.createElement("input");
+               // input.id = "title";
+               // input.classList.add("form-control");
+               // input.value = "";
+
+               // formGroup.appendChild(label);
+               // formGroup.appendChild(input);
+               // col1.appendChild(minusBtn);
+               // col1.appendChild(formGroup);
+
+               // var col2 = document.createElement("div");
+               // col2.classList.add("col-xl-7", "col-md-6");
+
+               // var formGroup2 = document.createElement("div");
+               // formGroup2.classList.add("form-group", "mb-3");
+
+               // var label2 = document.createElement("label");
+               // label2.classList.add("form-label");
+               // label2.textContent = "توضیحات";
+
+               // var input2 = document.createElement("input");
+               // input2.id = "brieftitle";
+               // input2.classList.add("form-control");
+               // input2.value = "";
+
+               // formGroup2.appendChild(label2);
+               // formGroup2.appendChild(input2);
+               // col2.appendChild(formGroup2);
+
+               // row.appendChild(col1);
+               // row.appendChild(col2);
+
+               // var container = document.getElementById("container");
+               // container.appendChild(row);
+
+               // addMinusButtonListener(minusBtn);
+        }
+
+        
+    });
+}
+
+//function addMinusButtonListener(btn) {
+//    btn.addEventListener("click", function () {
+//        var row = this.closest(".row");
+//        row.remove();
+//    });
+//}
+
+
+
+</script>
+
+<script>
+        $("#btnCreate1").click(function () {
+            var Filters = [];
+            if ($("#titleSelect").val() == 0) {
+                alert("لطفا عنوان را انتخاب نمائید");
+            } else {
+                
+            $('.Resons_rows').each(function (i, obj) {
+                var id = $(this).attr("id").split("_")[1];
+                var obj = new Object();
+                if ($("#Reason_" + id).val().trim().length == 0) {
+                    alert("لطفا علت را در سطر " + id + "بیان فرمائید");
+                } else {
+                    
+                obj.Reason = $("#Reason_" + id).val();
+                obj.TitleNumber = $("#titleSelect").val();
+                obj.Description = $("#Description_" + id).val();
+                Filters.push(obj);
+                }
+              });
+
+              sendAjax('@Url.Action("DefaultReasons_Add", "Admin", new { area = "Setting" })', Filters);
+            }
+    });
+
+    function sendAjax(url, data) {
+                console.log(url);
+
+                $.ajax({
+                    beforeSend: function () {
+                        document.getElementById("loading-message").style.display = "block";
+                    },
+                    url: url,
+                    data: { Filters: data },
+                    type: "POST",
+                    dataType: "html",
+                    success: function (resp) {
+                        console.log(resp);
+                        document.getElementById("loading-message").style.display = "none";
+                        if (resp == "True") {
+                            alert("با موفقیت ثبت شد");
+                        } else {
+                            alert("در ثبت دچار خطا شده ایم ! لطفا بعدا تلاش نمائید")
+                        }
+                    },
+                    error: function (resp) {
+                        document.getElementById("loading-message").style.display = "none";
+                        alert("دچار مشکل شده است ");
+                        console.log(resp);
+                    }
+                });
+            }
+</script>

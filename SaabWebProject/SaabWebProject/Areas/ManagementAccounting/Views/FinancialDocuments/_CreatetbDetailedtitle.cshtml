@@ -1,0 +1,141 @@
+﻿@{
+    Layout = null;
+}
+
+@model SaabWebProject.Models.DomainModels.tbDetailedtitle
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+<div class="row" style="margin-top:20px">
+    <div class="col-xl-2">
+        <label class="form-label"> شماره تفصیلی  </label>
+        <input class="form-control" id="Detailednumber"  />
+    </div>
+    <div class="col-xl-2">
+        <label class="form-label">  عنوان تفصیلی  </label>
+        <input class="form-control" id="Detailedtitle"  />
+    </div>
+
+    <div class="col-xl-8">
+        <label class="form-label"> خلاصه شرح  </label>
+        <input class="form-control" id="sss"  />
+    </div>
+</div>
+<div class="row" style="margin-top:20px;">
+    <div class="col-xl-11" >
+    </div>
+    <div class="col-xl-1">
+        <div class="form-group mb-3">
+            <button id="btnCreate1555" type="button" class="btn buttonsabt form-control">
+                <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                <span class="bSabt-text">ثبت</span>
+            </button>
+        </div>
+    </div>
+</div>
+}
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script>
+          function sendAjax(url, data) {
+                    $.ajax({
+                        beforeSend: function () {
+                            document.getElementById("loading-message").style.display = "block";
+                        },
+                        url: url,
+                        data: { Filters: data },
+                        type: "POST",
+                        dataType: "html",
+                        success: function (resp) {
+                            console.log(resp);
+                            document.getElementById("loading-message").style.display = "none";
+                            if (resp == "True") {
+                                alert("با موفقیت ثبت شد");
+                                location.reload();
+                            } else {
+                                alert("در ثبت دچار خطا شده ایم ! لطفا بعدا تلاش نمائید")
+                            }
+                        },
+                        error: function (resp) {
+                            document.getElementById("loading-message").style.display = "none";
+                            alert("دچار مشکل شده است ");
+                            console.log(resp);
+                        }
+                    });
+                }
+
+
+
+        $("#btnCreate1555").click(function () {
+            console.log("inje");
+            var Filters = [];
+            var obj = new Object();
+            obj.Detailedtitle = $("#Detailedtitle").val();
+            obj.Detailednumber = $("#Detailednumber").val();
+            obj.ShortTitle = $("#sss").val();
+            console.log($("#sss").val());
+            Filters.push(obj);
+            console.log(Filters)
+            sendAjax('@Url.Action("tbDetailedtitle_Add", "FinancialDocuments", new { area = "ManagementAccounting" })', Filters);
+        });
+
+
+
+</script>
+@*
+<script>
+    $("#btnCreate1555").click(function () {
+        console.log("dfs");
+            var Filters = [];
+            if ($("#titleSelect").val() == 0) {
+                alert("لطفا عنوان را انتخاب نمائید");
+            } else {
+
+            $('.Resons_rows').each(function (i, obj) {
+                var id = $(this).attr("id").split("_")[1];
+                var obj = new Object();
+                if ($("#Reason_" + id).val().trim().length == 0) {
+                    alert("لطفا علت را در سطر " + id + "بیان فرمائید");
+                } else {
+
+                obj.Reason = $("#Reason_" + id).val();
+                obj.TitleNumber = $("#titleSelect").val();
+                obj.Description = $("#Description_" + id).val();
+                Filters.push(obj);
+                }
+              });
+
+              sendAjax('@Url.Action("DefaultReasons_Add", "Admin", new { area = "Setting" })', Filters);
+            }
+    });
+
+    function sendAjax(url, data) {
+                console.log(url);
+
+                $.ajax({
+                    beforeSend: function () {
+                        document.getElementById("loading-message").style.display = "block";
+                    },
+                    url: url,
+                    data: { Filters: data },
+                    type: "POST",
+                    dataType: "html",
+                    success: function (resp) {
+                        console.log(resp);
+                        document.getElementById("loading-message").style.display = "none";
+                        if (resp == "True") {
+                            alert("با موفقیت ثبت شد");
+                        } else {
+                            alert("در ثبت دچار خطا شده ایم ! لطفا بعدا تلاش نمائید")
+                        }
+                    },
+                    error: function (resp) {
+                        document.getElementById("loading-message").style.display = "none";
+                        alert("دچار مشکل شده است ");
+                        console.log(resp);
+                    }
+                });
+            }
+</script>*@
+
+

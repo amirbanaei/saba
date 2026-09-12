@@ -1,0 +1,422 @@
+﻿@model SaabWebProject.Models.ViewModels.Contracts.Function.FunctionModel
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+@using SaabWebProject.Models.DomainModels;
+
+@{
+    ViewBag.Title = "ارزیابی";
+    SaabEntities db = new SaabEntities();
+    Layout = null;
+}
+
+<div class="tab-content" id="pills-tabContent">
+    <div class="tab-pane fade show active" id="pills-profile ">
+
+        <div class="">
+            <div class="card">
+                <div class="card-body pb-2">
+                    <div class="row" style="margin-top:10px">
+                        <div class="col-xl-2">
+                            <label class="form-label">نام فیلد </label>
+                            <input id="sabteghdam1" class="form-control" type="text" />
+                        </div>
+                        <div class="col-xl-3">
+                            <label class="form-label"> عنوان فیلد  </label>
+                            <select class="form-select select_peyman" id="select_peyman100" name="select_peyman">
+                                <option hidden value="Select">انتخاب مورد</option>
+
+                                <option value="1">فیلد 1</option>
+                                <option value="2">فیلد 2</option>
+                                <option value="3">فیلد 3</option>
+                                <option value="4">فیلد 4</option>
+                                <option value="5">فیلد 5</option>
+                                <option value="6">فیلد 6</option>
+                                <option value="7">فیلد 7</option>
+                                <option value="8">فیلد 8</option>
+                                <option value="9">فیلد 9</option>
+                                <option value="10">فیلد 10</option>
+                            </select>
+
+
+                        </div>
+                        <div class="col-xl-3">
+                            <label class="form-label"> عنوان فیلد  </label>
+                            <select class="form-select select_peyman" id="select_val" name="select_peyman">
+                                <option value="Select">انتخاب مورد</option>
+                                @foreach (var it in db.dbdashbord1.GroupBy(s => s.value_nv).ToList())
+                                {
+                                    var find = db.dbdashbord1.Where(s => s.value_nv == it.Key).FirstOrDefault();
+                                    if (find != null)
+                                    {
+                                        <option value="@find.value_nv"
+                                                data-big="@find.valu_big">
+                                            @find.value_nv _@find.valu_big
+                                        </option>
+
+                                    }
+                                }
+                                @*<option value="1">فیلد 1</option>
+                                    <option value="2">فیلد 2</option>
+                                    <option value="3">فیلد 3</option>
+                                    <option value="4">فیلد 4</option>
+                                    <option value="5">فیلد 5</option>
+                                    <option value="6">فیلد 6</option>
+                                    <option value="7">فیلد 7</option>
+                                    <option value="8">فیلد 8</option>
+                                    <option value="9">فیلد 9</option>
+                                    <option value="10">فیلد 10</option>*@
+                            </select>
+
+
+                        </div>
+                        @*<div class="col-xl-3">
+                                <label class="form-label"> عنوان فیلد  </label>
+                                <div id="peymans">
+
+                                </div>
+
+                            </div>
+                            <div class="col-xl-3" id="userlabel">
+                                <label class="form-label"> کاربر  </label>
+                                <input class="form-control" id="userinput" />
+                                <div id="UserOFPeyman">
+
+                                </div>
+
+                            </div>*@
+                        @*<div class="col-xl-4">
+                                <label class="form-label">نام دوره </label>
+
+                                <select class="form-select select_peyman" id="select_peyman" name="select_peyman">
+                                    <option hidden value="Select">انتخاب مورد</option>
+                                    @foreach (var item in Model.arzyzbi5_time.ToList())
+                                    {
+                                        <option value="@item.ID"> نام گزارش :@item.arzyzbi1.name _ نام دوره :@item.namedoreh</option>
+                                    }
+                                </select>
+
+                            </div>
+                            <div class="col-xl-4">
+                                <label class="form-label">کاربر حقیقی</label>
+
+                                <select class="form-select select_peyman22" id="select_peyman22" name="select_peyman22">
+                                    <option hidden value="Select">انتخاب مورد</option>
+                                    @foreach (var item in Model.tbAdamAdam2.ToList())
+                                    {
+                                        //var find = db.tbUsers.Where(s => s.usr_ID == item.Name).FirstOrDefault();
+
+                                        <option value="@item.ID">@item.fullname </option>
+                                    }
+                                </select>
+
+                            </div>*@
+                        @*<div class="col-xl-1">
+                                <a href="#" class=" btn form-control buttonGeneral" id="dwn">
+                                    <i class="bi bi-download  fa-fw me-1 VecGeneral"></i>
+                                    <span class="bGeneral-text">دانلود فایل نمونه</span>
+                                </a>
+                            </div>*@
+                        <!--<div class="col-xl-1">
+                        <a href="#" class=" btn btn-outline-info buttonGeneral" style="margin-bottom:5px;">
+                            <i class="bi bi-eye fa-fw me-1 VecGeneral"></i>-->
+                        @*<span class="bGeneral-text">مشاهده</span>*@
+                        <!--</a>
+                        </div>-->
+                        <div class="col-xl-1">
+
+                            <button onclick="DownloadExcel23()">
+                                ثبت
+                            </button>
+                        </div>
+
+                        @*<div class="col-xl-1">
+                                <a href="#" id="createMoalefeButtonModal" class="btn form-control buttonGeneral" data-bs-toggle="modal" data-bs-target="#modalLg1" style="">
+                                    <i class="VecGeneral fa fa-plus-circle fa-fw me-1"></i>
+                                    <span class="bGeneral-text">تعریف سند</span>
+                                </a>
+                            </div>*@
+                    </div>
+                    <input name="MyExcelStream" type="file" style="display:none" />
+
+                    <div class="row" style="margin-bottom:10px;">
+                        <div class="col-xl-11"></div>
+
+
+
+                    </div>
+                    <hr />
+
+                    <div id="test2">
+
+                    </div>
+                </div>
+
+                <div class="card-arrow">
+                    <div class="card-arrow-top-left"></div>
+                    <div class="card-arrow-top-right"></div>
+                    <div class="card-arrow-bottom-left"></div>
+                    <div class="card-arrow-bottom-right"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+
+<script>
+    // استفاده از noConflict برای اطمینان از عدم تداخل با سایر کتابخانه‌ها
+    var $j = jQuery.noConflict();
+
+    $j(document).ready(function () {
+        if ($j.isFunction($j.fn.picker)) {
+            $j("#select_val").picker({ search: true });
+        } else {
+            console.error("پلاگین Picker بارگذاری نشده است!");
+        }
+    });
+</script>
+
+
+
+
+<script>
+
+        $(document).ready(function () {
+
+            // وقتی روی هر سلول یا دکمه click2 کلیک شد، مودال باز بشه
+$(".click2").click(function () {
+    var $this = $(this);
+
+    // موقعیت المان کلیک‌شده
+    var offset = $this.offset();
+    var elementHeight = $this.outerHeight();
+
+    // نمایش مودال
+    $("#mymodal3")
+        .addClass("fade-in")
+        .css({
+            "display": "block",
+            "position": "absolute",   // لازم
+            "top": offset.top + elementHeight + 5 + "px", // ۵px فاصله پایین المان
+        });
+
+    // گرفتن data-id یا هر چیزی که نیاز داری
+    var idd = $this.data("id");
+    console.log("Clicked ID:", idd);
+
+    // لود محتوا
+    $("#ss").load('@Url.Content("/Setting/Orders/sabteghdam")?id=' + idd);
+});
+
+            // بستن مودال با آیکون
+            $(".close-icon").click(function () {
+                $("#mymodal3").fadeOut();
+            });
+
+            // بستن مودال وقتی روی بک‌گراند کلیک شد
+            $("#mymodal3").click(function (e) {
+                if (e.target === this) {
+                    $(this).fadeOut();
+                }
+            });
+
+        });
+        $(document).ready(function () {
+            $("#expandButton2").click(function () {
+                $("#mymodal3").addClass("fade-in"); // Add the fade-in class
+                $("#mymodal3").css("display", "block");
+            });
+
+            $(".close").click(function () {
+                $("#mymodal3").removeClass("fade-in"); // Remove the fade-in class
+                $("#mymodal3").css("display", "none");
+                location.reload();
+            });
+
+            $(window).click(function (event) {
+                if (event.target == $("#mymodal3")[0]) {
+                    $("#mymodal3").removeClass("fade-in"); // Remove the fade-in class
+                    $("#mymodal3").css("display", "none");
+                }
+            });
+        })
+</script>
+<script>
+function DownloadExcel23() {
+    //var month = $("#Month2").val();
+    //var year = $("#select_peyman").val();
+
+    //var usrID = $("#select_peyman22").val();
+    var fild = $("#select_peyman100").val();
+    var sabteghdam = $("#sabteghdam1").val();
+    var value_nv = $("#select_val").val();
+    var valu_big = $("#select_val option:selected").data("big");
+
+    document.getElementById("loading-circle").style.display = "block";
+
+    //if ( year == 0) {
+    //    alert("لطفاً ماه و سال را انتخاب کنید.");
+    //    return;
+    //}
+
+    $.ajax({
+        url: '@Url.Action("SaveOrUpdate_data", "Orders", new { area = "Setting" })',
+        type: "POST",
+        data: { select_peyman: value_nv, select_peyman22: valu_big, select_peyman1: fild, name:@Model.usrID, string_name: sabteghdam },
+        success: function (result) {
+            document.getElementById("loading-circle").style.display = "none";
+            if (result.success) {
+                alert(result.message);
+            } else {
+                alert(result.message);
+            }
+        },
+        error: function () {
+            alert("خطا در بارگذاری اطلاعات.");
+        }
+    });
+}
+    @*$("#peymans").load('@Url.Content("/../Setting/Orders/_GetAllListPeyman_gozaresh")', function () {
+        $("#select_peyman1").attr("id", "select_peyman");
+
+        $("#select_peyman").change(function () {
+            var id = $(this).val();
+            $("#userinput").css('display','none')
+            console.log("ینستمتشسیممنستیم");
+
+            $("#UserOFPeyman").load('@Url.Content("/../Setting/Orders/_GetusersBaseOnarzyabiunics")?PeymanID='+id)
+            $("#userlabel").css('display','block')
+            $("#submitdiv").css('display','block')
+        });
+    });*@
+
+
+
+</script>
+
+
+<script>
+                              $("input[name='MyExcelStream']").change(function () {
+var file = this.files[0];
+var ext = file.name.split('.')[1];
+if (ext == "xlsx" || ext == "xls") {
+
+    var  obj = new FormData();
+
+    obj.append("MyExcelStream", file);
+
+    console.log(file);
+    $.ajax({
+    beforeSend:function (){
+      document.getElementById("loading-message").style.display = "block";
+    },
+         url: "@Url.Action("ImportExcel_timearzyabi", "Orders", new { area = "Setting" })",
+        type: "post",
+        contentType: false,
+        data: obj,
+        processData: false,
+        cache: false,
+        success: function (res) {
+        document.getElementById("loading-message").style.display = "none";
+        Swal.fire({
+        icon: 'success',
+        background: 'rgb(29,40,52)',
+        color: 'white',
+        confirmButtonText: 'باشه',
+        title: 'آپلود اکسل',
+        text: res,
+        });
+
+        },
+        error: function (res) {
+        console.log(res);
+        }
+        });
+        }
+        else {
+
+        Swal.fire({
+        icon: 'warning',
+        background: 'rgb(29,40,52)',
+        color: 'white',
+        confirmButtonText: 'باشه',
+        title: 'نوع فایل',
+        text: 'لطفا فایلی با پسوند اکسل وارد کنید',
+        });
+        return false;
+        }
+
+        });
+        /// Open Dialog File
+        function ShowDialogFile() {
+        $("input[name='MyExcelStream']").val(null);
+        $("input[name='MyExcelStream']").click();
+        }
+            $("#dwn").click(function () {
+        console.log("kfsdk;");
+
+
+
+
+
+
+
+
+
+
+
+
+        $.ajax({
+        beforeSend: function () {
+        document.getElementById("loading-message").style.display = "block";//مهندس دارین برعککس میزارین
+        //این درسته
+        //شبیه هم ننوشتین
+        //خوب ورودی هام فرق داتشنت الاان فهمیدم چیشد + اضافه گذاشته بود
+        },
+        @*url: '@Url.Action("ExportMoalefeExcel", "Moalefe", new { area = "Salaries" })?year=' + $("#year_usr").val() + '&month=' + aa + '&FromDate=' + $("#datepickerFromEn_usr").val() + '&ToDate=' + $("#datepickerToEn_usr").val() + '&PeymanID=' + $("#baste_peyman2").val() + '&Basteh=' + Basteh,*@
+        type: 'GET',
+        dataType: 'html',
+
+
+        success: function (res) {
+        if (res === "False") {
+        // اجرای بلوک error در صورت مطابقت با "False"
+        alert("برای این ماه و این سال این بسته تایید نهایی شده است ");
+        window.location.reload();
+        console.log(res);
+        }
+        else {
+
+        document.getElementById("loading-message").style.display = "none";
+        @*window.location = '@Url.Action("ExportMoalefeExcel", "Moalefe",new { area = "Salaries" })?year=' + $("#year_usr").val() + '&month=' + aa + '&FromDate=' + $("#datepickerFromEn_usr").val() + '&ToDate=' + $("#datepickerToEn_usr").val() + '&PeymanID=' + $("#baste_peyman2").val() + '&Basteh=' + Basteh;*@
+        window.location = '@Url.Action("EXCEL_timearzyab", "Orders", new { area = "Setting" })'
+
+        }
+        },
+        error: function (res) {
+        alart("fdslsfdk")
+        console.log(res);
+        }
+        });
+        });
+    //$(document).ready(function () {
+    //    $("#select_peyman").picker({ search: true });
+
+    //});
+    ////$(document).ready(function () {
+    //    $("#select_peyman1").picker({ search: true });
+
+    //});
+    //$(document).on('change', '#select_val', function () {
+    //    $(this).picker({ search: true });
+    //});
+
+    //$(document).ready(function () {
+    //    $("#select_val").picker({ search: true });
+
+    //});
+</script>

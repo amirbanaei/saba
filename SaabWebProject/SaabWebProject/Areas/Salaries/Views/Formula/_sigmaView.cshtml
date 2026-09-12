@@ -1,0 +1,203 @@
+﻿@model List<SaabWebProject.Areas.Contracts.Models.Classes.ListOfMoalefeha>
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" type="text/css" />
+<div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-12">
+                    مولفه دستمزدی
+                </div>
+                <div class="col-md-12" style="margin-top:10px !important;">
+                    <select class="form-control" id="moalefedastmozdi">
+                        @foreach (var item in Model)
+                        {
+                            <option value="@item.Type _ @item.ID">@item.variablePersianName</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-md-6">
+            شروع
+        </div>
+        <div class="col-md-6">
+            پایان
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2" style="margin-top: 10px;">
+            <select id="start_sigma" class="form-control">
+                @{
+                    System.Globalization.PersianCalendar c = new System.Globalization.PersianCalendar();
+
+                    for (var i = 5; i >= 1; i--)
+                    {
+                        var s = DateTime.Now.AddYears(-i);
+                        <option value="@c.GetYear(s)">@c.GetYear(s)</option>
+                    }
+                    <option selected value="@c.GetYear(DateTime.Now)">@c.GetYear(DateTime.Now)</option>
+                    for (var i = 1; i < 5; i++)
+                    {
+                        var s = DateTime.Now.AddYears(i);
+                        <option value="@c.GetYear(s)">@c.GetYear(s)</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="col-md-2" style="margin-top: 10px;">
+            <select id="start_sigma_month" class="form-control">
+                @{
+                    for (var i = 1; i <= 12; i++)
+                    {
+                        if (c.GetMonth(DateTime.Now) == i)
+                        {
+                            <option selected value="@c.GetMonth(DateTime.Now)">@c.GetMonth(DateTime.Now)</option>
+
+                        }
+                        else
+                        {
+                            <option value="@i">@i</option>
+                        }
+                    }
+                }
+            </select>
+        </div>
+        <div class="col-md-2" style="margin-top: 10px;">
+            <select id="start_sigma_day" class="form-control">
+                @{
+                    for (var i = 1; i <= 31; i++)
+                    {
+                        if (c.GetDayOfMonth(DateTime.Now) == i)
+                        {
+                            <option selected value="@c.GetDayOfMonth(DateTime.Now)">@c.GetDayOfMonth(DateTime.Now)</option>
+
+                        }
+                        else
+                        {
+                            <option value="@i">@i</option>
+                        }
+                    }
+                }
+            </select>
+        </div>
+        <div class="col-md-2" style="margin-top: 10px;">
+            <select id="end_sigma" class="form-control">
+                @{
+                    for (var i = 5; i >= 1; i--)
+                    {
+                        var s = DateTime.Now.AddYears(-i);
+                        <option value="@c.GetYear(s)">@c.GetYear(s)</option>
+                    }
+                    <option selected value="@c.GetYear(DateTime.Now)">@c.GetYear(DateTime.Now)</option>
+                    for (var i = 1; i < 5; i++)
+                    {
+                        var s = DateTime.Now.AddYears(i);
+                        <option value="@c.GetYear(s)">@c.GetYear(s)</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="col-md-2" style="margin-top: 10px;">
+            <select id="end_sigma_month" class="form-control">
+                @{
+                    for (var i = 1; i <= 12; i++)
+                    {
+                        if (c.GetMonth(DateTime.Now) == i)
+                        {
+                            <option selected value="@c.GetMonth(DateTime.Now)">@c.GetMonth(DateTime.Now)</option>
+
+                        }
+                        else
+                        {
+                            <option value="@i">@i</option>
+                        }
+                    }
+                }
+            </select>
+        </div>
+        <div class="col-md-2" style="margin-top: 10px;">
+            <select id="end_sigma_day" class="form-control">
+                @{
+                    for (var i = 1; i <= 31; i++)
+                    {
+                        if (c.GetDayOfMonth(DateTime.Now) == i)
+                        {
+                            <option selected value="@c.GetDayOfMonth(DateTime.Now)">@c.GetDayOfMonth(DateTime.Now)</option>
+
+                        }
+                        else
+                        {
+                            <option value="@i">@i</option>
+                        }
+                    }
+                }
+            </select>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12" style="margin-top:10px;">
+            <input type="button" value="ذخیره" class="btn btn-outline-success" id="saveSigma" style="float:left;" />
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js" type="text/javascript"></script>
+<script>
+    $("#moalefedastmozdi").picker({ search: true });
+    $("#start_sigma").picker();
+    $("#start_sigma_month").picker();
+    $("#start_sigma_day").picker();
+    $("#end_sigma").picker();
+    $("#end_sigma_month").picker();
+    $("#end_sigma_day").picker();
+    $("#saveSigma").click(function () {
+
+        var val = list_moalefeha_farsi[list_moalefeha_farsi.length - 1];
+        var filter = list_moalefeha.filter(p => p.includes("sigma"));
+        console.log(filter);
+        //if (filter.length >= 1 && exitsts == true) {
+        //    Toast.fire({
+        //        icon: 'warning',
+        //        background: '#35434A',
+        //        color: 'white',
+        //        title: "لطفا عملگر را وارد کنید ( نکته برای ویرایش سیگما را پاک کنید )"
+        //    });
+        //    return false;
+        //}
+
+        //if (val == "=" || val == "+" || val == "/" || val == "-" || val == "*") {
+
+        //}
+        //else if (list_moalefeha.length != 1) {
+        //    return false;
+        //}
+
+        exitsts = true;
+        var start_year = $("#start_sigma").val();
+        var start_month = $("#start_sigma_month").val();
+        var start_day = $("#start_sigma_day").val();
+        var end_year = $("#end_sigma").val();
+        var end_month = $("#end_sigma_month").val();
+        var end_day = $("#end_sigma_day").val();
+        var md_ID = document.getElementById("moalefedastmozdi");
+
+        var str = "سیگما (" + " " + start_day + " " + "/" + " " + start_month + " " + "/" + " " + start_year + " " + "," + " " + end_day + " " + "/" + " " + end_month + " " + "/" + " " + end_year + " " + "," + " " + " " + md_ID.options[md_ID.selectedIndex].text + " " + ")";
+
+        var str1 = "sigma(" + " " + start_day + " " + "/" + " " + start_month + " " + "/" + " " + start_year + " " + "," + " " + end_day + " " + "/" + end_month + " " + "/" + end_year + "," + " " + md_ID.value + " " + ")";
+
+        list_moalefeha_farsi.push(str);
+        list_moalefeha.push(str1);
+
+        var textbox = $("#textbox-calc");
+        textbox.val(textbox.val() + " " + str);
+        $(".modal-dialog").css("display", "none");
+        $(".modal-backdrop").hide();
+        console.log(list_moalefeha);
+        console.log(list_moalefeha_farsi);
+
+    });
+
+</script>

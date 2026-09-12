@@ -1,0 +1,923 @@
+﻿@using SaabWebProject.Models.DomainModels;
+
+@{
+    ViewBag.TitleLargModal = " پیمان ها جدید";
+    Layout = null;
+    SaabEntities db = new SaabEntities();
+
+}
+<style>
+</style>
+@{
+    var company = Model.FK_KarfarmaID.HasValue ? db.tbCompanies.FirstOrDefault(c => c.ID == Model.FK_KarfarmaID.Value) : null;
+    var company2 = Model.FK_UserTarafDovvom.HasValue ? db.tbCompanies.FirstOrDefault(c => c.ID == Model.FK_UserTarafDovvom.Value) : null;
+
+    var company3 = Model.FK_UserDastGahNezarati.HasValue ? db.tbCompanies.FirstOrDefault(c => c.ID == Model.FK_UserDastGahNezarati.Value) : null;
+
+}
+
+@model SaabWebProject.Models.DomainModels.tbPeymanContracts
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div id="formControls" class="">
+        <div class="card">
+            <div class="card-body pb-2">
+                <form>
+                    <div class="row">
+                        <div class="col-xl-8">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> عنوان </label>
+                                <input class="form-control" id="title" disabled value="@Model.pec_Title" />
+                            </div>
+                        </div>
+                        <div class="col-xl-4">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> مخفف عنوان </label>
+                                <input class="form-control" id="brieftitle" value="@Model.pec_BriefTitle" />
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> کارفرما </label>
+                                @*<div id="div_karfamayan" title="@company.CompanyName (@company.tbUsers.FullName)"></div>*@
+                                <input class="form-control numbers" disabled id="pec_Price" title="@company.CompanyName (@company.tbUsers.FullName)" value="@company.CompanyName (@company.tbUsers.FullName)" />
+
+
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> طرف دوم پیمان </label>
+                                @*<div id="div_tarafeDovvom"></div>*@
+                                <input class="form-control numbers" disabled id="pec_Price" title="@company2.CompanyName (@company2.tbUsers.FullName)" value="@company2.CompanyName (@company2.tbUsers.FullName)" />
+
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> دستگاه نظارت </label>
+                                @*<div id="div_dastgah"></div>*@
+                                <input class="form-control numbers" disabled id="pec_Price" title="@company3.CompanyName (@company3.tbUsers.FullName)" value="@company3.CompanyName (@company3.tbUsers.FullName)" />
+
+                            </div>
+                        </div>
+           
+
+                    </div>
+                    <div class="row">
+                        @*------------------------------------------------[1402/09/21]-|KH|-*@
+
+                        <div class="col-xl-3">
+
+                            <div class="form-group mb-3">
+                                <label class="form-label"> شماره قرارداد </label>
+                                <input class="form-control" disabled id="pec_ContractNumber" value="@Model.pec_ContractNumber" />
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3">
+                            <div class="col-md-12">
+                                <label class="form-label">شهرستان</label>
+                            </div>
+
+                            <div id="PlaceOfRegister">
+                                @Html.Action("_Cities_Select", "Users", new { area = "Users" })
+                            </div>
+                            <select id="PlaceOfRegisterHid" hidden>
+                                @foreach (var item in Model.tbpeymancities.ToList())
+                                {
+                                    <option value="@item.FK_City">@item.tbCities.Name</option>
+                                }
+                            </select>
+
+                        </div>
+                        @*-------------------------------------------------------------|KH|-*@
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> کد پروژه </label>
+                                <input class="form-control" disabled id="pec_ProjectCode" value="@Model.pec_ProjectCode" type="number" />
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> نوع پیمان </label>
+                                <select disabled class="form-select" id="pec_TypeOfContract">
+                                    <option value="False">پیمانکاری</option>
+                                    <option value="True">کارفرمایی</option>
+                                </select>
+                            </div>
+                        </div>
+                
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> شروع  (روز) </label>
+                                <select disabled class="form-select" id="pec_StartTime_day">
+                                    <option value="0">انتخاب کنید..</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                    <option value="11">11</option>
+                                    <option value="12">12</option>
+                                    <option value="13">13</option>
+                                    <option value="14">14</option>
+                                    <option value="15">15</option>
+                                    <option value="16">16</option>
+                                    <option value="17">17</option>
+                                    <option value="18">18</option>
+                                    <option value="19">19</option>
+                                    <option value="20">20</option>
+                                    <option value="21">21</option>
+                                    <option value="22">22</option>
+                                    <option value="23">23</option>
+                                    <option value="24">24</option>
+                                    <option value="25">25</option>
+                                    <option value="26">26</option>
+                                    <option value="27">27</option>
+                                    <option value="28">28</option>
+                                    <option value="29">29</option>
+                                    <option value="30">30</option>
+                                    <option value="31">31</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> ماه </label>
+                                <select disabled class="form-select" id="pec_StartTime_month">
+                                    <option value="0">انتخاب کنید..</option>
+                                    <option value="1">فروردین</option>
+                                    <option value="2">اردیبهشت</option>
+                                    <option value="3">خرداد</option>
+                                    <option value="4">تیر</option>
+                                    <option value="5">مرداد</option>
+                                    <option value="6">شهریور</option>
+                                    <option value="7">مهر</option>
+                                    <option value="8">آبان</option>
+                                    <option value="9">آذر</option>
+                                    <option value="10">دی</option>
+                                    <option value="11">بهمن</option>
+                                    <option value="12">اسفند</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> سال </label>
+                                <select disabled class="form-select" id="pec_StartTime_year">
+                                    <option value="0">انتخاب کنید..</option>
+                                    <option value="1400">1400</option>
+                                    <option value="1401">1401</option>
+                                    <option value="1402">1402</option>
+                                    <option value="1403">1403</option>
+                                    <option value="1404">1404</option>
+                                    <option value="1405">1405</option>
+                                </select>
+
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+
+                                @if (Model.pec_FileSystemName != null)
+                                {
+                                    <a href="~/Areas/Contracts/Contents/Peymans/@Model.pec_FileSystemName" target="_blank">@Model.pec_FileName</a>
+
+                                }
+                                else
+                                {
+                                    <div class="color:red">بدون پیوست</div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> پایان (روز) </label>
+                                <select disabled class="form-select " id="pec_ENDTime_day">
+                                    <option value="0">انتخاب کنید..</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                    <option value="11">11</option>
+                                    <option value="12">12</option>
+                                    <option value="13">13</option>
+                                    <option value="14">14</option>
+                                    <option value="15">15</option>
+                                    <option value="16">16</option>
+                                    <option value="17">17</option>
+                                    <option value="18">18</option>
+                                    <option value="19">19</option>
+                                    <option value="20">20</option>
+                                    <option value="21">21</option>
+                                    <option value="22">22</option>
+                                    <option value="23">23</option>
+                                    <option value="24">24</option>
+                                    <option value="25">25</option>
+                                    <option value="26">26</option>
+                                    <option value="27">27</option>
+                                    <option value="28">28</option>
+                                    <option value="29">29</option>
+                                    <option value="30">30</option>
+                                    <option value="31">31</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> ماه </label>
+                                <select disabled class="form-select" id="pec_ENDTime_month">
+                                    <option value="0">انتخاب کنید..</option>
+                                    <option value="1">فروردین</option>
+                                    <option value="2">اردیبهشت</option>
+                                    <option value="3">خرداد</option>
+                                    <option value="4">تیر</option>
+                                    <option value="5">مرداد</option>
+                                    <option value="6">شهریور</option>
+                                    <option value="7">مهر</option>
+                                    <option value="8">آبان</option>
+                                    <option value="9">آذر</option>
+                                    <option value="10">دی</option>
+                                    <option value="11">بهمن</option>
+                                    <option value="12">اسفند</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> سال </label>
+                                <select disabled class="form-select" id="pec_ENDTime_year">
+                                    <option value="0">انتخاب کنید..</option>
+                                    <option value="1400">1400</option>
+                                    <option value="1401">1401</option>
+                                    <option value="1402">1402</option>
+                                    <option value="1403">1403</option>
+                                    <option value="1404">1404</option>
+                                    <option value="1405">1405</option>
+                                </select>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    @foreach (var item in Model.tbPeymanContractPrice.Where(p => p.IsElhaghie != true).ToList())
+                    {
+                        <div class="row">
+                            <div class="col-xl-3">
+                                <div class="form-group mb-3">
+                                    <label class="form-label"> عنوان </label>
+                                    <input disabled="disabled" class="form-control" id="UnitTitle" value="@item.UnitTitle" />
+                                </div>
+                            </div>
+                            <div class="col-xl-1">
+                                <div class="form-group mb-3">
+                                    <label class="form-label"> واحد </label>
+                                    <input disabled class="form-control" id="Unit" value="@item.Unit" />
+                                </div>
+                            </div>
+                            <div class="col-xl-3">
+                                <div class="form-group mb-3">
+                                    <label class="form-label"> نرخ واحد </label>
+                                    <input disabled class="form-control numbers" placeholder="ریال" value="@item.CountForPer" id="CountForPer" />
+                                </div>
+                            </div>
+                            <div class="col-xl-2">
+
+                                <div class="form-group mb-3">
+                                    <label class="form-label"> تعداد </label>
+                                    <input disabled class="form-control" type="number" value="@item.Count" />
+                                </div>
+                            </div>
+                            <div class="col-xl-3">
+                                <div class="form-group mb-3">
+                                    <label class="form-label"> مبلغ کل </label>
+                                    <input class="form-control  numbers" placeholder="ریال" value="@item.Price" disabled />
+                                </div>
+                            </div>
+
+                        </div>
+                    }
+                    @{var lastItem = Model.tbPeymanContractPrice.Where(p => p.IsElhaghie == true).LastOrDefault();
+                    }
+                    @if (lastItem != null)
+                    {
+                        // اینجا مطمئن شوید که عنصر
+
+
+                        for (var i = 0; i < Model.tbPeymanContractPrice.Where(p => p.IsElhaghie == true).LastOrDefault().ElahghieCount; i++)
+                        {
+                            var counter = i + 1;
+                            <hr class="mb-4" />
+
+                            <h5>الحاقیه شماره : @counter  </h5>
+                            foreach (var item in Model.tbPeymanContractPrice.Where(p => p.IsElhaghie == true && p.ElahghieCount == (@i + 1)).ToList())
+                            {
+
+                                <div class="row">
+                                    <div class="col-xl-3">
+                                        <div class="form-group mb-3">
+                                            <label class="form-label"> عنوان </label>
+                                            <input disabled="disabled" class="form-control" id="UnitTitle" value="@item.UnitTitle" />
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-1">
+                                        <div class="form-group mb-3">
+                                            <label class="form-label"> واحد </label>
+                                            <input disabled class="form-control" id="Unit" value="@item.Unit" />
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-3">
+                                        <div class="form-group mb-3">
+                                            <label class="form-label"> نرخ واحد </label>
+                                            <input disabled class="form-control numbers" placeholder="ریال" value="@item.CountForPer" id="CountForPer" />
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-2">
+                                        <div class="form-group mb-3">
+                                            <label class="form-label"> تعداد </label>
+                                            <input disabled class="form-control" type="number" value="@item.Count" />
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-3">
+                                        <div class="form-group mb-3">
+                                            <label class="form-label"> مبلغ کل </label>
+                                            <input class="form-control  numbers" placeholder="ریال" value="@item.Price" disabled />
+                                        </div>
+                                    </div>
+
+                                </div>
+                            }
+                        }
+
+                    }
+
+                    <div class="row">
+                        <h5>الحاقیه شماره جدید  </h5>
+
+                        @foreach (var item in Model.tbPeymanContractPrice.Where(p => p.IsElhaghie == false).ToList())
+                        {
+
+                            <div class="row prices_row_class" id="roww_@item.ID">
+
+                                <div class="col-xl-3">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label"> عنوان </label>
+                                        <input disabled="disabled" class="form-control" id="UnitTitle_@item.ID" value="@item.UnitTitle" />
+                                    </div>
+                                </div>
+                                <div class="col-xl-1">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label"> واحد </label>
+                                        <input disabled class="form-control" id="Unit_@item.ID" value="@item.Unit" />
+                                    </div>
+                                </div>
+                                <div class="col-xl-3">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label"> نرخ واحد </label>
+                                        <input class="form-control PricePer numbers" placeholder="ریال" value="" id="CountForPer_@item.ID" />
+                                    </div>
+                                </div>
+                                <div class="col-xl-2">
+
+                                    <div class="form-group mb-3">
+                                        <label class="form-label"> تعداد </label>
+                                        <input class="form-control Count" type="number" id="Count_@item.ID" value="" />
+                                    </div>
+                                </div>
+                                <div class="col-xl-3">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label"> مبلغ کل </label>
+                                        <input class="form-control TotalPriceForEveryUnit numbers" placeholder="ریال" value="" id="Price_@item.ID" disabled />
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+
+
+                        }
+                        <div class="row">
+                            <div class="col-xl-12">
+                                <div class="form-group mb-3">
+                                    <label class="form-label"> مبلغ(ریال) </label>
+                                    <input class="form-control numbers" disabled id="pec_Price" value="@Model.pec_Price" />
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+
+                        <div class="row">
+                            <div class="col-xl-3">
+                                <div class="form-group mb-3">
+                                    <label class="form-label"> الحاقیه بابت </label>
+                                    <select id="IsLower" class="form-select">
+                                        <option value="-1">انتخاب کنید..</option>
+                                        <option value="true">کاهش</option>
+                                        <option value="false">افزایش</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-xl-3">
+                                <div class="form-group mb-3">
+                                    <label class="form-label"> عنوان </label>
+                                    <input disabled="disabled" class="form-control" id="UnitTitle" />
+                                </div>
+                            </div>
+                            <div class="col-xl-1">
+                                <div class="form-group mb-3">
+                                    <label class="form-label"> واحد </label>
+                                    <input disabled class="form-control" id="Unit" />
+                                </div>
+                            </div>
+                            <div class="col-xl-3">
+                                <div class="form-group mb-3">
+                                    <label class="form-label"> نرخ واحد </label>
+                                    <input class="form-control PricePer numbers" placeholder="ریال" value="" id="CountForPer" />
+                                </div>
+                            </div>
+                            <div class="col-xl-2">
+
+                                <div class="form-group mb-3">
+                                    <label class="form-label"> تعداد </label>
+                                    <input class="form-control Count" type="number" id="Count" value="" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-xl-3">
+                                <div class="form-group mb-3">
+                                    <label class="form-label"> مبلغ </label>
+                                    <input class="form-control numbers" id="Price" />
+                                </div>
+                            </div>
+                            <div class="col-xl-6">
+                                <div class="form-group mb-3">
+                                    <label class="form-label"> توضیحات </label>
+                                    <input class="form-control" id="Description" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xl-3">
+                                <div class="form-group mb-3">
+                                    <label class="form-label"> تاریخ پایان جدید (روز) </label>
+                                    <select class="form-select" id="EndTime_day">
+                                        <option value="0">انتخاب کنید..</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                        <option value="13">13</option>
+                                        <option value="14">14</option>
+                                        <option value="15">15</option>
+                                        <option value="16">16</option>
+                                        <option value="17">17</option>
+                                        <option value="18">18</option>
+                                        <option value="19">19</option>
+                                        <option value="20">20</option>
+                                        <option value="21">21</option>
+                                        <option value="22">22</option>
+                                        <option value="23">23</option>
+                                        <option value="24">24</option>
+                                        <option value="25">25</option>
+                                        <option value="26">26</option>
+                                        <option value="27">27</option>
+                                        <option value="28">28</option>
+                                        <option value="29">29</option>
+                                        <option value="30">30</option>
+                                        <option value="31">31</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-xl-3">
+                                <div class="form-group mb-3">
+                                    <label class="form-label"> ماه </label>
+                                    <select class="form-select" id="EndTime_month">
+                                        <option value="0">انتخاب کنید..</option>
+                                        <option value="1">فروردین</option>
+                                        <option value="2">اردیبهشت</option>
+                                        <option value="3">خرداد</option>
+                                        <option value="4">تیر</option>
+                                        <option value="5">مرداد</option>
+                                        <option value="6">شهریور</option>
+                                        <option value="7">مهر</option>
+                                        <option value="8">آبان</option>
+                                        <option value="9">آذر</option>
+                                        <option value="10">دی</option>
+                                        <option value="11">بهمن</option>
+                                        <option value="12">اسفند</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-xl-3">
+                                <div class="form-group mb-3">
+                                    <label class="form-label"> سال </label>
+                                    <select class="form-select" id="EndTime_year">
+                                        <option value="0">انتخاب کنید..</option>
+                                        <option value="1400">1400</option>
+                                        <option value="1401">1401</option>
+                                        <option value="1402">1402</option>
+                                        <option value="1403">1403</option>
+                                        <option value="1404">1404</option>
+                                        <option value="1405">1405</option>
+                                    </select>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+
+
+
+
+
+                        <div class="row" style="margin-top:10px;margin-bottom:10px">
+                            <div class="col-xl-11">
+                            </div>
+                            <div class="col-xl-1">
+                                <button id="btnupdate" type="button" class="btn form-control buttonsabt">
+                                    <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                                    <span class="bSabt-text">ثبت</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="card-arrow">
+                <div class="card-arrow-top-left"></div>
+                <div class="card-arrow-top-right"></div>
+                <div class="card-arrow-bottom-left"></div>
+                <div class="card-arrow-bottom-right"></div>
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+    var Filters = new Object();
+
+    $(function () {
+
+       $("#div_karfamayan").load('@Url.Content("/../Users/Company/_PartialListCompaniesInDropDown")',function(){
+           $("#companies").attr("id", "karfarma");
+           $("#karfarma").val(@Model.FK_KarfarmaID);
+           $("#karfarma").attr("disabled", "disabled");
+           const selectElement = document.querySelector("#PlaceOfRegisterHid22");
+           for (const option of selectElement.options) {
+               $('#karfarma').picker('set', option.value)
+           }
+           $('#karfarma').on('sp-change', function () { });
+       });
+       $("#div_dastgah").load('@Url.Content("/../Users/Company/_PartialListCompaniesInDropDown")',function(){
+           $("#companies").attr("id", "dastgah");
+           $("#dastgah").val(@Model.FK_UserDastGahNezarati);
+           $("#dastgah").attr("disabled","disabled");
+       });
+        $("#div_tarafeDovvom").load('@Url.Content("/../Users/Company/_PartialListCompaniesInDropDown")', function () {
+            $("#companies").attr("id", "tarafeDovvom");
+            $("#tarafeDovvom").val(@Model.FK_UserTarafDovvom);
+            $("#tarafeDovvom").attr("disabled", "disabled");
+            //const selectElement = document.querySelector("#PlaceOfRegisterHid");
+            //for (const option of selectElement.options) {
+            //    $('#select_Cities').picker('set', option.value)
+            //}
+            //$('#select_Cities').on('sp-change', function () { });
+        });
+
+       $("#PlaceOfRegister").load('@Url.Content("/../Users/Users/_Cities_Select")',function(){
+           $("#cities").attr("id", "select_Cities");
+           $('#select_Cities').attr("multiple", "multiple");
+           $('#select_Cities').picker({ search: true });
+           const selectElement = document.querySelector("#PlaceOfRegisterHid");
+           for (const option of selectElement.options) {
+               $('#select_Cities').picker('set', option.value)
+           }
+           $('#select_Cities').on('sp-change', function () { });
+       });
+
+        $("#pec_TypeOfContract").val('@Model.pec_TypeOfContract');
+        $("#pec_StartTime_day").val(@Model.pec_StartTime_day);
+        $("#pec_StartTime_month").val(@Model.pec_StartTime_month);
+        $("#pec_ENDTime_year").val(@Model.pec_ENDTime_year);
+        $("#pec_ENDTime_month").val(@Model.pec_ENDTime_month);
+        $("#pec_ENDTime_day").val(@Model.pec_ENDTime_day);
+        $("#pec_StartTime_year").val(@Model.pec_StartTime_year);
+
+
+        $("#Price").change(function () {
+            var a = 0;
+            console.log(back_number_to_standard_format(@Model.pec_Price.ToString()));
+            if ($("#IsLower").val() == -1)
+                alert("ابتدا نوع الحاق را افزایش یا کاهش انتخاب نمایید ");
+            else if ($("#IsLower").val() == "true") {
+                a = (parseInt(@Model.pec_Price.ToString().Replace(",","")) - parseFloat(back_number_to_standard_format($(this).val()))).toFixed();
+
+            $("#pec_Price").val(FloatNumber_to_digited_format(a));
+            $("#pec_Price").css("border", "1px solid #3cd2a5");
+            $("#pec_Price").css("background-color", "rgb(116 205 178)");
+
+            } else  {
+                a = (parseInt(@Model.pec_Price.ToString().Replace(",","")) + parseFloat(back_number_to_standard_format($(this).val()))).toFixed();
+                $("#pec_Price").val(FloatNumber_to_digited_format(a));
+                $("#pec_Price").css("border", "1px solid #3cd2a5");
+                $("#pec_Price").css("background-color", "rgb(116 205 178)");
+            }
+
+
+
+        });
+    });
+
+
+       @*$("#btnupdate").click(function () {
+
+       if ($("#IsLower").val() == -1) {
+           alert("دلیل الحاق خودرا انتخاب نمایید");
+       } else if ($("#EndTime_day").val() != 0 && ($("#EndTime_month").val() == 0 || $("#EndTime_year").val() ==0 )) {
+           alert("لطفا تاریخ را به تمامی پر کنید");
+       } else if ($("#EndTime_month").val() != 0 && ($("#EndTime_day").val() == 0 || $("#EndTime_year").val() == 0)) {
+           alert("لطفا تاریخ را به تمامی پر کنید");
+       } else if ($("#EndTime_year").val() != 0 && ($("#EndTime_day").val() == 0 || $("#EndTime_month").val() == 0)) {
+           alert("لطفا تاریخ را به تمامی پر کنید");
+       } else {
+           // ------------------------------------------------[1402/10/20]-|KH|-
+           console.log($("#select_Cities").val())
+           var CitiesArr = [];
+           $.each($("#select_Cities").val().toString().split(","), function (index, item) {
+               if (item !== "") {
+                   var citise_obj = new Object();
+                   if (item != 0) {
+                       console.log(item)
+                       citise_obj.FK_City = item;
+                       CitiesArr.push(citise_obj);
+                   }
+               }
+           });
+           Filters.tbpeymancities = CitiesArr;
+           // -------------------------------------------------------------|KH|-
+           Filters.IsLower = $("#IsLower").val();
+           Filters.EndTime_day = $("#EndTime_day").val();
+           Filters.EndTime_month = $("#EndTime_month").val();
+           Filters.EndTime_year = $("#EndTime_year").val();
+           Filters.Price = $("#Price").val();
+           Filters.Description = $("#Description").val();
+           Filters.FK_PeymanID = @Model.pec_ID;
+           Filters.pec_Price = $("#pec_Price").val();
+           sendAjax('@Url.Action("SaveElhaghie","Peyman",new { area = "Contracts" })', Filters);
+       }
+   });
+   function sendAjax(url, data) {
+       $("#loading-message").css("display", "block");
+       $.ajax({
+           url: url,
+           data: { Filters: data },
+           type: "Post",
+           dataType: "html",
+           success: function (resp) {
+
+               $("#loading-message").css("display", "none");
+               if (resp == "True") {
+                   Toast.fire({
+                       icon: 'success',
+                       background: '#35434A',
+                       color: 'white',
+                       title: "الحاقیه با موفقیت اعمال شد"
+                   }).then(() => {
+                       location.reload();
+
+                   });
+               } else {
+                   Toast.fire({
+                       icon: 'success',
+                       background: '#35434A',
+                       color: 'white',
+                       title: "عملیات با خطا مواجه شده است"
+                   }).then(() => {
+                   });
+               }
+           },
+           error: function (resp) {
+               console.log(resp);
+               console.log("nashod");
+               Toast.fire({
+                   icon: 'success',
+                   background: '#35434A',
+                   color: 'white',
+                   title: "عملیات با خطا مواجه شده است"
+               }).then(() => {
+               });
+               $("#loading-message").css("display", "none");
+
+           }
+       });
+
+   }
+   var Toast = Swal.mixin({
+       toast: true,
+       showConfirmButton: false,
+       timer: 3000,
+       timerProgressBar: true,
+       didOpen: (toast) => {
+           toast.addEventListener('mouseenter', Swal.stopTimer)
+           toast.addEventListener('mouseleave', Swal.resumeTimer)
+       }
+   });*@
+    $("#btnupdate").click(function () {
+        let barArray = [];
+        $('.prices_row_class').each(function (i, obj) {
+            var id = $(this).attr("id").split("_")[1];
+            if ($("#CountForPer_" + id).val().trim().length == 0) {
+                alert("نرخ واحد را وارد نمایید");
+                flag = false;
+
+            } else if ($("#Count_" + id).val().trim().length == 0) {
+                alert("تعداد را وارد نمایید");
+                flag = false;
+            } else {
+                var Objct = new Object();
+                Objct.UnitTitle = $("#UnitTitle_" + id).val();
+                Objct.Unit = $("#Unit_" + id).val();
+                Objct.CountForPer = $("#CountForPer_" + id).val();
+                Objct.Count = $("#Count_" + id).val();
+                Objct.IsElhaghie = true;
+                Objct.Price = $("#Price_" + id).val();
+   var lastItem = @Model.tbPeymanContractPrice.Where(p => p.IsElhaghie == true).LastOrDefault();
+if (lastItem != null)
+{
+    // در اینجا اطمینان حاصل شده است که lastItem مقدار معتبری دارد
+    // حالا می‌توان به ویژگی ElahghieCount آن دسترسی پیدا کرد
+    Objct.ElahghieCount = (lastItem.ElahghieCount ?? 0) + 1;
+}
+    // اینجا مطمئن شوید که عنصر
+
+                barArray.push(Objct);
+            }
+        });
+        var Obj_fd = new Object();
+        Obj_fd.pec_ID = '@Model.pec_ID';
+        Obj_fd.pec_Price = $("#pec_Price").val();
+        Obj_fd.tbPeymanContractPrice = barArray;
+        console.log(barArray);
+        console.log(Obj_fd);
+        sendAjax('@Url.Action("SaveElhaghie","Peyman",new { area = "Contracts" })', Obj_fd)
+
+    });
+
+    function sendAjax(url, data) {
+        $("#loading-message").css("display", "block");
+        $.ajax({
+            url: url,
+            data: { Filters: data },
+            type: "Post",
+            dataType: "html",
+            success: function (resp) {
+                $("#loading-message").css("display", "none");
+                if (resp == "True") {
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "الحاقیه با موفقیت اعمال شد"
+                    }).then(() => {
+                        location.reload();
+                    });
+                } else {
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "عملیات با خطا مواجه شده است"
+                    }).then(() => {
+                    });
+                }
+            },
+            error: function (resp) {
+                console.log(resp);
+                console.log("nashod");
+                Toast.fire({
+                    icon: 'success',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "عملیات با خطا مواجه شده است"
+                }).then(() => {
+                });
+                $("#loading-message").css("display", "none");
+
+            }
+        });
+
+    }
+
+    var Toast = Swal.mixin({
+        toast: true,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    });
+</script>
+
+
+<script>
+    $(".numbers").keyup(function () {
+        $(this).val(FloatNumber_to_digited_format($(this).val()));
+    });
+    function number_to_digited_format(input) {
+        var amount = input.toString().replace(/[\D\s\._\-]+/g, "");
+        amount = amount ? parseInt(amount, 10) : 0;
+        return (amount === 0) ? "" : amount.toLocaleString("en-US");
+    }
+    function FloatNumber_to_digited_format(input) {
+        if (input.toString().split(".").length == 2) {
+            var amount = input.toString().split(".")[0].toString().replace(/[\D\s\._\-]+/g, "");
+            amount = amount ? parseInt(amount, 10) : 0;
+            return (amount === 0) ? "0." + input.toString().split(".")[1] : amount.toLocaleString("en-US") + "." + input.toString().split(".")[1];
+        } else {
+            var amount = input.toString().replace(/[\D\s\._\-]+/g, "");
+            amount = amount ? parseInt(amount, 10) : 0;
+            return (amount === 0) ? "" : amount.toLocaleString("en-US");
+
+        }
+    }
+    function back_number_to_standard_format(input) {
+        input = input.toString().replace(/,/g, "", "").replace("/", ".");
+
+        return input;
+    }
+    $(".Count").change(function () {
+        var id = $(this).attr("id").split("_")[1];
+        $("#Price_" + id).val(FloatNumber_to_digited_format($(this).val() * back_number_to_standard_format($("#CountForPer_" + id).val())));
+        calculate_total_price();
+
+    });
+    $(".PricePer").change(function () {
+        var id = $(this).attr("id").split("_")[1];
+        var num = (back_number_to_standard_format($(this).val()) * $("#Count_" + id).val());
+        $("#Price_" + id).val(FloatNumber_to_digited_format(num));
+        calculate_total_price();
+
+    });
+    function calculate_total_price() {
+        var sum = 0;
+        $('.TotalPriceForEveryUnit').each(function (item) {
+            var id = $(this).attr("id");
+            sum = parseFloat(sum) + parseFloat(back_number_to_standard_format($(this).val()));
+        });
+
+        var final = sum + parseFloat(back_number_to_standard_format( @Model.pec_Price));
+        console.log(final);
+        if (isNaN(final)) {
+            final =  @Model.pec_Price;
+        } else {
+           final = number_to_digited_format(final)
+        }
+        console.log(final);
+        $("#pec_Price").val(final);
+
+    }
+</script>

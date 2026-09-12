@@ -1,0 +1,111 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Mouse Inactivity Slider</title>
+    <style>
+        /* Add your custom styles here */
+
+        .page {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: white;
+            z-index: 9999;
+            overflow: hidden;
+            animation-duration: 1s;
+        }
+
+        .show-page {
+            display: block;
+            animation-name: slide-in;
+        }
+
+        @@keyframes slide-in {
+            from {
+                opacity: 0;
+                transform: translateX(-100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h1>My Website</h1>
+    <p>Welcome to my website! Move your mouse to see the content.</p>
+
+    <!-- Page 1 -->
+    <div id="page1" class="page">
+        <h2>Page 1</h2>
+        <p>This is the content for page 1.</p>
+    </div>
+
+    <!-- Page 2 -->
+    <div id="page2" class="page">
+        <h2>Page 2</h2>
+        <p>This is the content for page 2.</p>
+    </div>
+
+    <!-- Page 3 -->
+    <div id="page3" class="page">
+        <h2>Page 3</h2>
+        <p>This is the content for page 3.</p>
+    </div>
+
+    <!-- Your website content goes here -->
+    <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent vel tellus non augue elementum faucibus. Etiam euismod urna in risus pulvinar interdum. Donec interdum commodo odio, eu pellentesque elit tempor a. Sed lacus ante, iaculis at dolor
+        non, lacinia varius leo. Quisque nec blandit sapien. In sed odio nibh.
+    </p>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        let timer;
+        let pages = ["#page1", "#page2", "#page3"];
+        let currentPage = 0;
+
+        function showPages() {
+            $(pages[currentPage]).addClass("show-page");
+            setTimeout(function() {
+                $(pages[currentPage]).removeClass("show-page");
+                currentPage++;
+                if (currentPage >= pages.length) {
+                    currentPage = 0;
+                }
+                showPages();
+            }, 5000); // Change this value to adjust page duration
+        }
+
+        function hidePages() {
+            for (let i = 0; i < pages.length; i++) {
+                $(pages[i]).removeClass("show-page");
+            }
+        }
+
+        // Hide the pages when the page first loads
+        hidePages();
+
+        // Set up the mousemove event listener
+        $(document).mousemove(function() {
+            clearTimeout(timer);
+            hidePages();
+            timer = setTimeout(showPages, 10 * 1000); // Set timer for 10 seconds
+        });
+
+        // Set timer to show pages after 10 seconds
+        timer = setTimeout(showPages, 10 * 1000);
+    </script>
+</body>
+
+</html>

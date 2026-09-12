@@ -1,0 +1,276 @@
+﻿@using SaabWebProject.Models.DomainModels;
+
+@{
+    SaabEntities db = new SaabEntities();
+}
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var letters = Enumerable.Range('A', 26).Select(x => ((char)x).ToString()).ToList();
+}
+
+<div class="form-container">
+    <h2>تعریف فیلد های مورد نظر در گزارش ورودی</h2>
+
+    <form id="unicForm">
+        <div class="row">
+            <div class="col-md-3">
+                <label>انتخاب نام جدول</label>
+                <select class="form-control form-select FK_namegozarwsh" id="FK_namegozarwsh">
+                    @foreach (var item in db.dbergharel_4_4)
+                    {
+                        <option value="@item.ID">@item.name</option>
+                    }
+                </select>
+            </div>
+            @*<div class="col-md-3">
+                <label>نام گزارش</label>
+                <input type="text" id="namegozaresh" class="form-control" />
+            </div>*@
+            <div class="col-md-2">
+                <label>نوع گزارش گیری</label>
+                <select class="form-control form-select type" id="type">
+
+                    <option value="1">روزانه</option>
+                    <option value="2">تاریخ</option>
+                    <option value="3">ازتاریخ تا تاریخ </option>
+                    <option value="4">ماهانه</option>
+                    <option value="5">ماه / سال</option>
+                    <option value="6">فصل </option>
+                    <option value="7">دوره </option>
+
+                </select>
+                @*<input type="number" id="type" class="form-control" />*@
+            </div>
+            <div class="col-md-2">
+                <label>انتخاب نام جدول</label>
+                <select class="form-control form-select dberganametanble2_2" id="dberganametanble2_2">
+                    @foreach (var item in db.dberganametanble2_2)
+                    {
+                        <option value="@item.ID">@item.nametable</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label>شماره ردیف فیلد مرجع </label>
+                <input type="text" id="radifstart" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label>شماره شیت شروع</label>
+                <input type="number" id="start" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label>نام ستون شروع </label>
+                <input type="text" id="unic" class="form-control" />
+            </div>
+            <div class="col-xl-1">
+                <a href="#" class=" btn form-control buttonGeneral" id="downloadFish">
+                    <i class="bi bi-download  fa-fw me-1 VecGeneral"></i>
+                    <span class="bGeneral-text"> دانلود فایل نمونه</span>
+                </a>
+            </div>            <div class="col-xl-1">
+                <a class="btn form-control buttonGeneral" id="upload10" style="font-size:10px;margin-bottom:10px;">
+                    <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                    <span class="bGeneral-text"> بارگزای اکسل</span>
+                </a>
+            </div>
+        </div>
+        <input id="summery_file10" style="display:none" type="file" class="form-control" value="" />
+        <input id="summery_file11" style="display:none" type="file" class="form-control" value="" />
+        <input id="summery_file112" style="display:none" type="file" class="form-control" value="" />
+        <hr />
+        <div id="subContainer"></div>
+
+        <button type="button" id="addSubBtn" class="btn btn-success mt-2">+</button>
+        <button type="submit" class="btn btn-primary mt-2">ثبت</button>
+    </form>
+</div>
+
+@section scripts {
+    <script>
+        $("#upload10").click(function () {
+
+
+
+
+
+            $("#summery_file10").click();
+
+        });
+       fd3 = new FormData();
+
+$("#summery_file10").change(function (e) {
+             $.each(e.target.files, function (index, file) {
+                 fd3.append("MyExcelStream", file);
+             });
+    //var jobId = document.getElementById("pestenka").value; // مقدار input
+
+/*    fd3.append("jobId", jobId);*/
+
+    sendAjax14('@Url.Action("ImportExcel_Unicanother", "Orders", new { area = "Setting" })', fd3);
+});
+    
+        function sendAjax14(url2, fd2) {
+
+            document.getElementById("loading-circle").style.display = "block";
+
+
+    $.ajax({
+        url: url2,
+        type: 'POST',
+        data: fd2,
+        processData: false,
+        contentType: false,
+        success: function (res) {
+            document.getElementById("loading-circle").style.display = "none";
+
+            $("#loading-message").css("display", "none");
+            fd = new FormData();
+            console.log(res);
+            console.log("jj");
+
+            if (res == "True") {
+                alert("با موفقیت ثبت شد ");
+            //    location.reload();
+            }
+                   @*$("#table_div").load('@Url.Content("../defFacilitiesEquipment/_ListEquipmentMoalefeValue")');*@
+
+
+
+        },
+        error: function (res) {
+            $("#loading-message").css("display", "none");
+            console.log(res);
+            console.log("jj");
+            Toast.fire({
+                icon: 'success',
+                background: '#35434A',
+                color: 'white',
+                title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+            }).then(() => {
+                $("#loading-message").css("display", "none");
+            });
+        }
+    });
+        }
+        $(document).on("click", "#downloadFish", function () {
+
+
+
+            window.location.href =
+                "/Setting/Orders/ExportUnicanother";
+        });
+    let subCount = 0;
+    document.getElementById("addSubBtn").addEventListener("click", function() {
+        subCount++;
+        const div = document.createElement("div");
+        div.className = "sub-item border p-2 mt-2";
+
+        div.innerHTML = `
+            <div class="row">
+                <div class="col-md-3">
+                    <label>انتخاب فیلد</label>
+                    <select class="form-control form-select fk_dbergha2">
+                        @foreach(var item in db.dbergha2) {
+                            <option value="@item.ID">@item.name</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label>شماره</label>
+                    <input type="number" min="1" max="10000000" class="form-control shomareh" />
+                </div>
+
+
+                <div class="col-md-2">
+                    <label>حرف 3</label>
+                    <select class="form-control form-select letter3">
+                        <option value="">-</option>
+                        @foreach(var l in letters) {
+                            <option value="@l">@l</option>
+                        }
+                    </select>
+                </div>
+                  <div class="col-md-2">
+      <label>حرف 2</label>
+      <select class="form-control form-select letter2">
+          <option value="">-</option>
+          @foreach(var l in letters) {
+              <option value="@l">@l</option>
+          }
+      </select>
+  </div>
+                 <div class="col-md-2">
+     <label>حرف 1</label>
+     <select class="form-control form-select letter1">
+         <option value="">-</option>
+         @foreach(var l in letters) {
+             <option value="@l">@l</option>
+         }
+     </select>
+ </div>
+                <div class="col-md-1 d-flex align-items-end">
+                    <button type="button" class="btn btn-danger" onclick="this.closest('.sub-item').remove()">X</button>
+                </div>
+            </div>`;
+        document.getElementById("subContainer").appendChild(div);
+    });
+
+    // ارسال فرم
+    document.getElementById("unicForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const formData = {
+            FK_namegozarwsh: document.getElementById("FK_namegozarwsh").value,
+            Type: document.getElementById("type").value,
+            Start: document.getElementById("start").value,
+            Unic: document.getElementById("unic").value,
+            radifstart: document.getElementById("radifstart").value,
+
+            dberganametanble2_2: document.getElementById("dberganametanble2_2").value,
+            Details: []
+        };
+
+        document.querySelectorAll(".sub-item").forEach(el => {
+            const fk_dbergha2 = el.querySelector(".fk_dbergha2").value;
+            const shomareh = el.querySelector(".shomareh").value;
+
+            // ترکیب سه selector
+            let letters = [];
+            const l1 = el.querySelector(".letter1").value;
+            const l2 = el.querySelector(".letter2").value;
+            const l3 = el.querySelector(".letter3").value;
+            if (l1) letters.push(l1);
+            if (l2) letters.push(l2);
+            if (l3) letters.push(l3);
+
+            const onvan = letters.join("");
+
+            formData.Details.push({
+                FK_dbergha2: fk_dbergha2,
+                Shomareh: shomareh,
+                Onvan: onvan
+            });
+        });
+
+        fetch('/Setting/Orders/SaveReport', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json;charset=utf-8' },
+            body: JSON.stringify(formData)
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                alert("اطلاعات ذخیره شد");
+                location.reload();
+            } else {
+                alert("Error: " + data.message);
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert("Unexpected error occurred.");
+        });
+    });
+
+    </script>
+}

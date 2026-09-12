@@ -1,0 +1,151 @@
+﻿@using SaabWebProject.Models.DomainModels;
+
+@{
+
+    ViewBag.Title = "ثبت دستورات";
+    Layout = null;
+    SaabEntities db = new SaabEntities();
+}
+<div class="row">
+    <div class="col-xl-2">
+        <div class="row">
+            <div class="col-xl-12">
+                <label class="form-label">
+                    شماره صورت وضعیت
+                </label>
+
+            </div>
+            <div class="col-xl-12">
+                <input class="form-control" id="numbersoart_sharh" value="0" />
+            </div>
+        </div>
+
+    </div>
+    <div class="col-xl-3" id="sharh_sharh">
+        <label class="form-label"> شرح  </label>
+        <input class="form-control" id="value" />
+
+
+    </div>
+    <div class="col-xl-4">
+        <label class="form-label">نام دوره </label>
+
+        <select class="form-select select_peymanhazf" id="selecthazfpymn_sharh" name="selecthazf">
+            <option hidden value="Select">انتخاب مورد</option>
+            @foreach (var item in db.tbPeymanContracts.ToList())
+            {
+                <option value="@item.pec_ID"> @item.pec_Title</option>
+            }
+        </select>
+
+    </div>
+    <div class="col-xl-2">
+        <label class="form-label">سال</label>
+
+        <select id="year_Eq111_sharh" name="year_Eq111" class="form-select">
+            <option value="0">انتخاب کنید</option>
+
+            @{
+                System.Globalization.PersianCalendar cs2 = new System.Globalization.PersianCalendar();
+
+
+                for (var i = 4; i >= 0; i--)
+                {
+                    var s = DateTime.Now.AddYears(-i);
+
+                    <option value="@cs2.GetYear(s)">@cs2.GetYear(s)</option>
+                }
+            }
+        </select>
+
+    </div>
+
+
+
+    <div class="col-xl-2" id="Monthly">
+        <label class="form-label">ماه</label>
+        <select class="form-select" id="Monthly121_sharh">
+            <option value="0">انتخاب کنید..</option>
+            <option value="1">فروردین</option>
+            <option value="2">اردیبهشت</option>
+            <option value="3">خرداد</option>
+            <option value="4">تیر</option>
+            <option value="5">مرداد</option>
+            <option value="6">شهریور</option>
+            <option value="7">مهر</option>
+            <option value="8">آبان</option>
+            <option value="9">آذر</option>
+            <option value="10">دی</option>
+            <option value="11">بهمن</option>
+            <option value="12">اسفند</option>
+
+        </select>
+    </div><div class="col-xl-2" id="Monthly">
+    <label class="form-label">وضیعت</label>
+    <select class="form-select" id="vaziat_sharh">
+        <option value="-1">انتخاب کنید..</option>
+        <option value="1">فعال</option>
+        <option value="0">غیر فعال </option>
+      
+
+    </select>
+</div>
+</div>
+<div class="row">
+    <div class="col-xl-11">
+    </div>
+    <div class="col-xl-1">
+
+        @*<button id="btnCreate" type="button" class="form-control buttonGeneral">
+                <i class="fa fa-info fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text"> <a data-bs-toggle="modal" data-bs-target="#modalLg1" class="Details ">جزئیات</a></span>
+
+            </button>*@
+        <button class="btn form-control buttonGeneral" id="btnhazf">
+            <i class="fa fa-eye fa-fw me-1 VecGeneral"></i>
+            <span class="bGeneral-text">ثبت شرح </span>
+        </button>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+
+        $('#btnhazf').click(function () {
+            var numbersorat = $('#numbersoart_sharh').val();
+            var sharh = $('#value').val();
+            var fkPymn = $('#selecthazfpymn_sharh').val();
+            var year = $('#year_Eq111_sharh').val();
+            var month = $('#Monthly121_sharh').val();
+            var vaziat = $('#vaziat_sharh').val(); // اگر وضعیت خاصی داری اینجا مقدار بده، فعلا 1 نمونه است
+
+            if (fkPymn === "Select" || fkPymn === "0" || year === "0" || month === "0" || !numbersorat) {
+                alert('لطفاً همه فیلدها را کامل کنید.');
+                return;
+            }
+
+            $.ajax({
+                type: 'POST',
+                url: '/Salaries/Formula/SaveSharhSooratVaziat',
+                data: {
+                    FK_pymn: fkPymn,
+                    numbersorat: numbersorat,
+                    month: month,
+                    year: year,
+                    sharh: sharh,
+                    vaziat: vaziat
+                },
+                success: function (response) {
+                    if (response === "true") {
+                        alert('ثبت/به‌روزرسانی با موفقیت انجام شد.');
+                    } else {
+                        alert(response); // متن خطا از سرور
+                    }
+                },
+                error: function () {
+                    alert('خطا در انجام درخواست.');
+                }
+            });
+        });
+
+    });
+</script>

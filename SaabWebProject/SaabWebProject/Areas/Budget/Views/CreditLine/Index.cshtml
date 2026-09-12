@@ -1,0 +1,265 @@
+﻿@using SaabWebProject.Models.Classes;
+@{
+    ViewBag.Title = "تعریف ردیف های اعتباری";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+
+<link href="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.style.css" rel="stylesheet" />
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+
+<div class="">
+    <ul class="nav nav-tabs nav-tabs-v2 ps-4 pe-4">
+        <li class="nav-item me-3">
+            <a href="#Tarif_Onvan" class="nav-link active" data-bs-toggle="tab">
+                <button class=" nav-btn ">مدیریت عناوین ردیف اعتباری</button>
+
+            </a>
+        </li>
+        <li class="nav-item me-3">
+            <a href="#Etebar_Radifha" class="nav-link" data-bs-toggle="tab">
+                <button class=" nav-btn">مدیریت اعتبار ردیف ها</button>
+
+            </a>
+        </li>
+        @if (UserStuf.PosID == "9")
+        {
+            <li class="nav-item me-3">
+                <a href="#Mojavez_Dastresi" class="nav-link" data-bs-toggle="tab">
+                    <button class=" nav-btn">مجوز دسترسی</button>
+
+                </a>
+            </li>
+        }
+
+    </ul>
+    <div class="tab-content p-3">
+        @* تعریف عنوان ردیف اعتباری *@
+        <div class="tab-pane active" id="Tarif_Onvan">
+            @Html.Action("_CreateCreditIndiactors", "CreditLine", new { area = "Budget" })
+        </div>
+        @* تعیین اعتبار ردیف ها  *@
+        <div class="tab-pane" id="Etebar_Radifha">
+            @Html.Action("ManageValidityOfCredit", "CreditLine", new { area = "Budget" })
+
+        </div>
+        @* مجوز دسترسی *@
+        <div class="tab-pane" id="Mojavez_Dastresi">
+            <div class="row">
+                <div class="col-xl-7">
+                    <label class="form-label"> پیمان  </label>
+                    <div id="peyman2">
+                    </div>
+                </div>
+                <div class="col-xl-5">
+                    <label class="form-label"> ردیف اعتباری  </label>
+                    <select class="form-select">
+                        <option>انتخاب کنید</option>
+                        <option>خالص حقوق و مزایای مامورین</option>
+                        <option>خالص ایاب و ذهاب مامورین</option>
+                        <option>سوخت و تعمیرات وسائل نقلیه</option>
+                        <option>اجاره وسائل نقلیه</option>
+                        <option>کالای ایمنی و ابزار کار</option>
+                        <option> خالص کمک هزینه تلفن همراه</option>
+                        <option>خالص بیمه تکمیل درمان مامورین</option>
+                        <option>خالص بیمه تامین اجتماعی مامورین </option>
+                        <option>خالص مالیات حقوق مامورین</option>
+                        <option>سایر درآمدهای پیمانکار</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-4">
+                    <label class="form-label"> کاربر  </label>
+                    @Html.Action("_GetAllUsers_Select", "Users", new { area = "Users" })
+                </div>
+                <div class="col-xl-3">
+                    <label class="form-label"> نوع دسترسی  </label>
+                    <select class="form-select">
+                        <option>انتخاب کنید</option>
+                        <option>درخواست اعتبار</option>
+                        <option>تایید اعتبار </option>
+                        <option>تغییر اعتبار</option>
+                    </select>
+                </div>
+                <div class="col-xl-2"></div>
+                <div class="col-xl-1">
+                    <button class="btn form-control buttonGeneral">
+                        <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                        <span class="bGeneral-text">دانلود فایل نمونه</span>
+                    </button>
+                </div>
+                <div class="col-xl-1">
+                    <button class="btn form-control buttonGeneral">
+                        <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                        <span class="bGeneral-text">بارگذاری اطلاعات</span>
+                    </button>
+                </div>
+
+                <div class="col-xl-1">
+                    <button class="btn form-control buttonsabt" id="">
+                        <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                        <span class="bSabt-text">ثبت</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+
+</div>
+@section Scripts{
+
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+    <script src="~/Scripts/jquery-ui.js"></script>
+    <script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+
+    <script>
+
+        $(function () {
+            $('#year_Eq').picker({ search: true });
+            $('#month_Eq').picker({ search: true });
+
+            $.each($("#bedehkar"), function (index, item) {
+
+                var amount = $(this).val().replace(/[\D\s\._\-]+/g, "");
+                amount = amount ? parseInt(amount, 10) : 0;
+                $(this).val(function () {
+                    return (amount === 0) ? "" : amount.toLocaleString("en-US");
+                });
+            });
+
+        });
+
+    </script>
+    <script>
+        $("#bedehkar").keyup(function () {
+            var amount = $(this).val().replace(/[\D\s\._\-]+/g, "");
+            amount = amount ? parseInt(amount, 10) : 0;
+            $(this).val(function () {
+                return (amount === 0) ? "" : amount.toLocaleString("en-US");
+            });
+        });
+    </script>
+    <script>
+
+        $.each($("#bestankar"), function (index, item) {
+
+            var amount = $(this).val().replace(/[\D\s\._\-]+/g, "");
+            amount = amount ? parseInt(amount, 10) : 0;
+            $(this).val(function () {
+                return (amount === 0) ? "" : amount.toLocaleString("en-US");
+            });
+        });
+
+
+
+    </script>
+    <script>
+
+        $("#bestankar").keyup(function () {
+            var amount = $(this).val().replace(/[\D\s\._\-]+/g, "");
+            amount = amount ? parseInt(amount, 10) : 0;
+            $(this).val(function () {
+                return (amount === 0) ? "" : amount.toLocaleString("en-US");
+            });
+        });
+
+
+
+
+        $("#Show_Etebar").click(function () {
+
+
+            $("#ShowImage").css("display", "block");
+        });
+
+    </script>
+    <script>
+
+        $("#peyman2").load('@Url.Content("/../Contracts/Peyman/_GetAllListPeymans_Select")',function(){
+           $("#select_peyman").attr("id", "select_peyman2");
+            var $elem2 = $('#select_peyman2');
+            $elem2.picker();
+                $elem2.on('sp-change', function () {
+
+            });
+
+       });
+
+    </script>
+
+    <script>
+
+        const Toast = Swal.mixin({
+            toast: true,
+            showConfirmButton: false,
+            timer: 4000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+        $("#SubmitRadifEtebari").click(function () {
+
+            $.ajax({
+                beforeSend: function () {
+                    document.getElementById("loading-message").style.display = "block";
+                },
+                url: "@Url.Action("CreateCreditIndicators", "CreditLine",   new { area = "Budget" })",
+                data: { Title: $("#Title").val(), Description: $("#Description").val() },
+                success: function (res) {
+                    document.getElementById("loading-message").style.display = "none";
+
+                    if (res="1") {
+                        Toast.fire({
+                            icon: 'success',
+                            background: '#35434A',
+                            color: 'white',
+                            title: "اطلاعات با موفقیت ذخیره شد"
+                        }).then(function () {
+
+                            document.location.reload();
+
+                        });
+                    }
+                    else {
+                        Toast.fire({
+                            icon: 'error',
+                            background: '#35434A',
+                            color: 'white',
+                            title: "اطلاعات ذخیره نشد"
+                        }).then(function () {
+
+                            document.location.reload();
+
+                        });
+                    }
+
+                },
+                error: function (res) {
+                    document.getElementById("loading-message").style.display = "none";
+                    Toast.fire({
+                        icon: 'error',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "اطلاعات ذخیره نشد"
+                    }).then(function () {
+
+                        document.location.reload();
+
+                    });
+                }
+            });
+
+        })
+    </script>
+
+
+
+
+}

@@ -1,0 +1,418 @@
+﻿@using SaabWebProject.Models.DomainModels;
+
+@{
+    ViewBag.Title = "تعریف فروشنده";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model IEnumerable<SaabWebProject.Models.DomainModels.dbAsnadcratsher>
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+<script src="~/Assets/js/jalalidatepicker.min.js"></script>
+<link href="~/Assets/css/jalalidatepicker.min.css" rel="stylesheet" />
+<script src="~/Assets/js/jalaali.min.js"></script>
+<link href="~/MyStyles/jalalidatepicker.css" rel="stylesheet" />
+
+<style>
+    #dateDisplay {
+        float: left;
+    }
+
+    h5 {
+        margin-bottom: 0;
+    }
+
+    .tableH_Lock {
+        max-height: 187px;
+    }
+
+    thead {
+        position: sticky;
+        top: 0;
+        text-align: center;
+        z-index: 2;
+    }
+
+    .inputFilter {
+        margin-bottom: 0px !important;
+    }
+
+    thead th {
+        vertical-align: middle;
+    }
+</style>
+
+<div class="tab-content">
+
+    <div class="row mt-2">
+        <!--<div class="col-xl-3">
+        <label class="form-label">تاریخ</label>-->
+        @*------------------------------------------------[1402/09/20]-|KH|-*@
+        <!--<input data-jdp jdp-btn-close data-jdp-miladi-input="datepickerFromEn_usr" id="datepickerFrom_usr" class="form-control">
+        <input id="datepickerFromEn_usr" type="hidden" />-->
+        @*-------------------------------------------------------------|KH|-*@
+        <!--</div>
+        <div class="col-xl-2">
+            <label class="form-label">روز هفته</label>
+            <input class="form-control" id="weekDay" disabled />
+        </div>
+        <div class="col-xl-2">
+            <label class="form-label">تعطیل رسمی/غیر رسمی</label>
+            <select class="form-select" id="tael">
+                <option value="0" hidden>انتخاب مورد</option>
+                <option value="1">رسمی</option>
+                <option value="2">غیر رسمی</option>
+            </select>
+        </div>-->
+        <div class="col-xl-4">
+            <label class="form-label">  نام  فروشنده   </label>
+            <input class="form-control" id="nameplace" />
+        </div>
+        <div class="col-xl-2">
+            <label class="form-label">  کد اقتصادی  </label>
+            <input class="form-control" id="codeeghtesadi" />
+        </div>
+        <div class="col-xl-2">
+            <label class="form-label">  کد سامانه مودیان  </label>
+            <input class="form-control" id="codmoadiyan" />
+        </div>
+        <div class="col-xl-4">
+            <label class="form-label">  آدرس  </label>
+            <textarea class="form-control" id="addresss"></textarea>
+        </div>
+        <div class="col-xl-2">
+            <label class="form-label"> تلفن همراه  </label>
+            <input class="form-control" id="MOBILEPHON" />
+        </div>
+        <div class="col-xl-2">
+            <label class="form-label">  تلفن ثابت    </label>
+            <input class="form-control" id="SABETPHONE" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-11">
+        </div>
+        <div class="col-md-1">
+            <button id="btnsher" type="button" class="btn form-control buttonsabt">
+                <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                <span class="bSabt-text">ثبت</span>
+            </button>
+        </div>
+    </div>
+    <hr />
+    <div class="card">
+
+        <div class="table-content p-4">
+            <div class="tab-pane fade show active" id="allTab">
+                <div class="table-responsive tableH_Lock">
+                    <table class="table table-hover text-nowrap">
+                        <thead>
+                            <tr>
+                                <th>
+                                    نام
+                                    <div class="inputWithFilterIcon">
+                                        <input type="text" id="filter01-filter" class="inputFilter form-control" placeholder="">
+
+                                        <span><i class="fas fa-filter"></i></span>
+                                    </div>
+                                </th>
+                                <th>
+                                    کد اقتصادی
+                                    <div class="inputWithFilterIcon">
+                                        <input type="text" id="filter02-filter" class="inputFilter form-control" placeholder="">
+
+                                        <span><i class="fas fa-filter"></i></span>
+                                    </div>
+                                </th>
+                                <th>
+                                    کد مودیان
+                                    <div class="inputWithFilterIcon">
+                                        <input type="text" id="filter03-filter" class="inputFilter form-control" placeholder="">
+
+                                        <span><i class="fas fa-filter"></i></span>
+                                    </div>
+                                </th>
+                                <th>
+                                    آدرس
+                                    <div class="inputWithFilterIcon">
+                                        <input type="text" id="filter04-filter" class="inputFilter form-control" placeholder="">
+
+                                        <span><i class="fas fa-filter"></i></span>
+                                    </div>
+                                </th>
+                                <th>
+                                    تلفن ثابت
+                                    <div class="inputWithFilterIcon">
+                                        <input type="text" id="filter05-filter" class="inputFilter form-control" placeholder="">
+
+                                        <span><i class="fas fa-filter"></i></span>
+                                    </div>
+                                </th>
+                                <th>
+                                    تلفن همراه
+                                    <div class="inputWithFilterIcon">
+                                        <input type="text" id="filter06-filter" class="inputFilter form-control" placeholder="">
+
+                                        <span><i class="fas fa-filter"></i></span>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                int II = 0;
+                            }
+                            @foreach (var it in Model)
+                            {
+                                II++;
+                                <tr class="task-list-row "
+                                    data-filter01="@it.nameshr"
+                                    data-filter02="@it.codeghtesadi"
+                                    data-filter03="@it.codmoadyan"
+                                    data-filter04="@it.addres"
+                                    data-filter05="@it.SABETPHONE"
+                                    data-filter06="@it.MOBILEPHON">
+
+                                    <td>@it.nameshr</td>
+                                    <td>@it.codeghtesadi</td>
+                                    <td>@it.codmoadyan</td>
+
+                                    <td>@it.addres</td>
+                                    <td>@it.SABETPHONE</td>
+                                    <td>@it.MOBILEPHON</td>
+
+                                    @*<td cont-date="dateS_@II" hidden>
+
+                                            @((it.Dtatime != null) ? it.Dtatime.Value.ToString("MM / dd / yyyy") : null)
+
+                                        </td>
+                                        <td id="dateS_@II"></td>
+
+                                        <td>@it.day</td>
+                                        @if (it.Title == 1)
+                                        {
+                                            <td>رسمی</td>
+
+                                        }
+                                        else
+                                        {
+                                            <td>غیر رسمی</td>
+
+                                        }*@
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="card-arrow">
+            <div class="card-arrow-top-left"></div>
+            <div class="card-arrow-top-right"></div>
+            <div class="card-arrow-bottom-left"></div>
+            <div class="card-arrow-bottom-right"></div>
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/sweetalert2.js" type="text/javascript"></script>
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/src/jquery.md.bootstrap.datetimepicker.js"></script>
+<script>
+
+    var
+        filters = {
+            filter01: null,
+            filter02: null,
+            filter03: null,
+            filter04: null,
+            filter05: null,
+            filter06: null,
+        };
+
+    function updateFilters() {
+        $('.task-list-row').hide().filter(function () {
+            var self = $(this),
+                result = true;
+
+            Object.keys(filters).forEach(function (filter) {
+                var filterData = self.data(filter);
+                if (filters[filter] && (filters[filter] != 'None') && (filters[filter] != 'همه')) {
+                    // تبدیل داده به رشته و بررسی مقدار
+                    result = result && (filterData && filterData.toString().indexOf(filters[filter]) !== -1);
+                }
+            });
+
+            return result;
+        }).show();
+    }
+
+    function changeFilter(filterName) {
+        filters[filterName] = this.value;
+        updateFilters();
+    }
+
+    // Assigned User Dropdown Filter
+    $('#filter01-filter').on('input', function () {
+        changeFilter.call(this, 'filter01');
+    });
+    $('#filter02-filter').on('input', function () {
+        changeFilter.call(this, 'filter02');
+    });
+    $('#filter03-filter').on('input', function () {
+        changeFilter.call(this, 'filter03');
+    });
+    $('#filter04-filter').on('input', function () {
+        changeFilter.call(this, 'filter04');
+    });
+    $('#filter05-filter').on('input', function () {
+        changeFilter.call(this, 'filter05');
+    });
+    $('#filter06-filter').on('input', function () {
+        changeFilter.call(this, 'filter06');
+    });
+
+
+</script>
+<script>
+    var options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+    var dateString = new Date().toLocaleDateString('fa-IR-u-nu-latn', options);
+    document.getElementById('dateDisplay').textContent = "تاریخ امروز : " + dateString;
+</script>
+<script>
+    jalaliDatepicker.startWatch({
+        time: true,
+        days: ["شنبه", "1شنبه", "2شنبه", "3شنبه", "4شنبه", "5شنبه", "جمعه"],
+        persianDigits: true,
+        autoClose: true,
+        autocomplete: true,
+        showCloseBtn: true,
+        showEmptyBtn: false,
+        showCloseBtn: true,
+        zIndex: 100000,
+    });
+    //-----------------------------------------------------------------
+    var inputs = document.querySelectorAll("[data-jdp-miladi-input]");
+    for (var i = 0; i < inputs.length; i++) {
+        inputs[i].addEventListener("jdp:change", function (e) {
+            var miladiInput = document.getElementById(this.getAttribute("data-jdp-miladi-input"));
+            var date = this.value.replace(' ', '').slice(0, 10).split('/');
+            date = jalaali.toGregorian(parseInt(date[0]), parseInt(date[1]), parseInt(date[2]),)
+            // If it was empty
+            if (!this.value) {
+                date = "";
+            }
+            // If it was only history
+            else if (this.value.replace(' ', '').length < 11) {
+                date = date.gy + '-' + date.gm + '-' + date.gd
+            }
+            // If it was the date and time
+            else {
+                date = date.gy + '-' + date.gm + '-' + date.gd + ' ' + this.value.replace(' ', '').slice(10, 30)
+            }
+            miladiInput.value = date
+            var weekDay = getDayOfWeek(document.querySelector("#datepickerFromEn_usr").value.slice(0, 10))
+            document.querySelector("#weekDay").value = weekDay
+        });
+    }
+    //-----------------------------------------------------------------
+    function getDayOfWeek(gregorianDate) {
+        const [year, month, day] = gregorianDate.split('-').map(Number);
+        const date = new Date(year, month - 1, day);
+        const dayOfWeek = date.getDay();
+        const days = ['یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه', 'شنبه'];
+        return days[dayOfWeek];
+    }
+
+
+
+
+    $("#btnsher").click(function () {
+              var Filters  = [];
+          var obj = new Object();
+
+
+         console.log("djkjsdkl");
+        var val2 = $('#nameplace').val();
+        var val22 = $('#codeeghtesadi').val();
+        var val24 = $('#addresss').val();
+        var val243 = $('#codmoadiyan').val();
+        var val2434 = $('#MOBILEPHON').val();
+        var val2435 = $('#SABETPHONE').val();
+
+          console.log(val22);
+          //console.log(val24);
+          console.log(val2);
+
+        obj.nameshr = val2;
+        obj.codeghtesadi = val22;
+        obj.addres = val24;
+        obj.codmoadyan = val243;
+        obj.SABETPHONE = val2435;
+        obj.MOBILEPHON = val2434;
+          console.log(obj);
+
+
+
+
+
+
+
+
+          sendAjax10('@Url.Action("creatnameplace", "FinancialDocuments", new { area = "ManagementAccounting" })', obj);
+
+
+
+       ;
+
+  });
+
+
+
+    function sendAjax10(url, data) {
+        console.log(url);
+
+        $.ajax({
+            beforeSend: function () {
+                document.getElementById("loading-message").style.display = "block";
+            },
+            url: url,
+            data: data,
+            type: "POST",
+            dataType: "html",
+            success: function (resp) {
+                console.log(resp);
+                document.getElementById("loading-message").style.display = "none";
+                if (resp == "True") {
+                    alert("با موفقیت ثبت شد");
+                    location.reload();
+                }
+
+                else {
+                    alert("resp")
+                }
+            },
+            error: function (resp) {
+                document.getElementById("loading-message").style.display = "none";
+                alert("دچار مشکل شده است ");
+                console.log(resp);
+            }
+        });
+    }
+</script>
+<script>
+    // Convert Gregorian date to jaali in the table
+    var tds = document.querySelectorAll("[cont-date]");
+    var valueD, id, target;
+    var options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    tds.forEach(td => {
+        valueD = new Date(td.textContent).toLocaleDateString('fa-IR-u-nu-latn', options).replace(',', '').replace(" ", "");
+        valueD = valueD.slice(0, 10) + " " + td.textContent.slice(10, 30)
+        id = td.getAttribute("cont-date");
+        target = document.getElementById(id);
+        target.textContent = valueD;
+    });
+</script>
+

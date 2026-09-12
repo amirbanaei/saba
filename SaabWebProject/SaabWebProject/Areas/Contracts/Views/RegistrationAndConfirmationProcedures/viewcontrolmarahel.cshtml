@@ -1,0 +1,318 @@
+﻿
+
+@using SaabWebProject.Models.DomainModels;
+@using SaabWebProject.Models.Classes;
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+
+}
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+<link href="~/MyStyles/MyStyle.css" rel="stylesheet" />
+<style>
+    .form-check-input {
+        margin-bottom: 0 !important;
+    }
+
+    .heiBox {
+        max-height: 329px;
+    }
+</style>
+@{
+    SaabEntities db = new SaabEntities();
+}
+
+
+@*<img src="/Content/ExcelFiles/34324.png" alt="Image Description" />*@
+
+<div class="row">
+    <div class="col-xl-2">
+        <div class="col-xl-12">
+            <label class="form-label">سال</label>
+        </div>
+        <div class="col-xl-12">
+            <div class="col-xl-12">
+                <select class="form-select" id="year_usr">
+                    <option value="0">انتخاب کنید</option>
+
+                    @{
+                        System.Globalization.PersianCalendar cs2 = new System.Globalization.PersianCalendar();
+                        int currentYear1 = cs2.GetYear(DateTime.Now);
+
+                        for (var i = 4; i >= 0; i--)
+                        {
+                            var s = DateTime.Now.AddYears(-i);
+
+                            <option value="@cs2.GetYear(s)">@cs2.GetYear(s)</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+    @*<div class="col-xl-2">*@
+    @*<div class="row">
+            <div class="col-xl-12">
+                <label class="form-label">سال</label>
+
+            </div>
+
+            <div class="col-xl-12">
+                <select id="year_usr" name="year_usr" class="form-control">
+                    <option value="0">انتخاب سال</option>
+                    @{
+                        System.Globalization.PersianCalendar cs3 = new System.Globalization.PersianCalendar();
+
+                        for (var i = -1; i <= 5; i++)
+                        {
+                            var s = DateTime.Now.AddYears(i);
+                            var x = @cs3.GetYear(s);
+                            <option selected="selected" value="@cs3.GetYear(s)">@cs3.GetYear(s)</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>*@
+    @*</div>*@
+    @*<div class="col-xl-2">
+            <div class="row">
+                <div class="col-xl-12">
+                    <label class="form-label">ماه</label>
+
+                </div>
+
+                <div class="col-xl-12">
+                    <select id="month_usr" name="month_usr" class="form-control">
+                        <option value="0">انتخاب ماه</option>
+                        @{
+                             for (var i = 1; i <= 12; i++)
+                            {
+                                <option selected="selected" value="@i">@i</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>*@
+    @{
+        var currentMonth = cs2.GetMonth(DateTime.Now);
+    }
+    <div class="col-xl-2">
+        <div class="col-xl-12">
+            <label class="form-label">ماه</label>
+
+        </div>
+        <div class="col-xl-12">
+            <select class="form-select" id="month_usr">
+                <option value="0">انتخاب کنید  </option>
+
+                <option value="1">فروردین </option>
+                <option value="2">اردیبهشت</option>
+                <option value="3">خرداد</option>
+                <option value="4">تیر</option>
+                <option value="5">مرداد</option>
+                <option value="6">شهریور</option>
+                <option value="7">مهر</option>
+                <option value="8">آبان</option>
+                <option value="9">آذر</option>
+                <option value="10">دی</option>
+                <option value="11">بهمن</option>
+                <option value="12">اسفند</option>
+            </select>
+        </div>
+
+    </div>
+    <div class="col-xl-1">
+        <a href="#" onclick="ShowDialogFile45()" class=" btn btn-outline-info form-control buttonGeneral uploadSummery7788" style="margin-bottom:5px;">
+            <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+            <span class="bGeneral-text">2بارگذاری اطلاعات</span>
+        </a>
+        <input id="summery_file477sabttaeed" style="display:none" type="file" class="form-control" value="" />
+
+    </div>
+    <div class="col-xl-1">
+        <button class="btn form-control buttonGeneral" id="downfish2" style="margin-bottom: 10px !important;">
+            <i class="fa fa-link fa-fw me-1 VecGeneral" style="padding-right: 0px; color: #fff;"></i>
+            <span class="bGeneral-text">لینک پیشخوان مامورین</span>
+        </button>
+    </div>
+
+</div>
+
+
+<script src="~/Scripts/sweetalert2.js" type="text/javascript"></script>
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/src/jquery.md.bootstrap.datetimepicker.js"></script>
+
+<script>
+                var obj125 = new FormData();
+        $(".uploadSummery7788").click(function () {
+    //FK_DDOfTitle = $(this).attr("id").split("_")[2];
+    //ID = $(this).attr("id").split("_")[1];
+            $("#summery_file477sabttaeed").click();
+});
+
+        $("#summery_file477sabttaeed").change(function (e) {
+    $.each(e.target.files, function (index, file) {
+        obj125.append("MyExcelStream", file);
+
+
+    });
+            sendAjax5123('@Url.Action("ImportExcel_Gharardady", "DefFacilitiesEquipment", new { area = "Contracts" })', obj125);
+ });
+
+    function sendAjax5123(url2, fd2)
+        {
+     //obj.append("Basteh", ID);
+
+     $.ajax({
+         url: url2,
+         type: 'POST',
+         data: fd2,
+         processData: false,
+         contentType: false,
+         success: function (resp1) {
+             console.log("okeye");
+             console.log(resp1);
+             $("#loading-message").css("display", "none");
+             fd = new FormData();
+             if (resp1 == "با موفقیت انجام شد") {
+                 alert("با موفقیت ثبت شد");
+                 setTimeout(function () {
+                     location.reload(); // یا می‌توانید از location.reload(true) هم استفاده کنید
+                 }, 4000); // بازه زمانی به میلی‌ثانیه، اینجا 2000 میلی‌ثانیه (یعنی 2 ثانیه)
+             }
+             else {
+                 $("#loading-message").css("display", "none");
+                 console.log("jlk;;kkj");
+                 Toast.fire({
+
+                     icon: 'warning',
+                     background: '#35434A',
+                     color: 'white',
+                     title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                 }).then(() => {
+                     $("#loading-message").css("display", "none");
+                 });
+             }
+
+         },
+         error: function (resp1) {
+             console.log(resp1);
+             console.log("Nokeye");
+             $("#loading-message").css("display", "none");
+             Toast.fire({
+                 icon: 'warning',
+                 background: '#35434A',
+                 color: 'white',
+                 title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+             }).then(() => {
+                 $("#loading-message").css("display", "none");
+             });
+         }
+     });
+ }
+            var obj = new FormData();
+        $(".uploadSummery7").click(function () {
+    //FK_DDOfTitle = $(this).attr("id").split("_")[2];
+    //ID = $(this).attr("id").split("_")[1];
+            $("#summery_file477").click();
+});
+
+        $("#summery_file477").change(function (e) {
+    $.each(e.target.files, function (index, file) {
+        obj.append("MyExcelStream", file);
+
+
+    });
+         sendAjax5('@Url.Action("ImportExcel_ShahrBahrebardari", "DefFacilitiesEquipment", new { area = "Contracts" })', obj);
+ });
+
+        function sendAjax5(url2, fd2)
+        {
+     //obj.append("Basteh", ID);
+
+     $.ajax({
+         url: url2,
+         type: 'POST',
+         data: fd2,
+         processData: false,
+         contentType: false,
+         success: function (resp1) {
+             console.log("okeye");
+             console.log(resp1);
+             $("#loading-message").css("display", "none");
+             fd = new FormData();
+             if (resp1 == "با موفقیت انجام شد") {
+                 alert("با موفقیت ثبت شد");
+                 setTimeout(function () {
+                     location.reload(); // یا می‌توانید از location.reload(true) هم استفاده کنید
+                 }, 4000); // بازه زمانی به میلی‌ثانیه، اینجا 2000 میلی‌ثانیه (یعنی 2 ثانیه)
+             }
+             else {
+                 $("#loading-message").css("display", "none");
+                 console.log("jlk;;kkj");
+                 Toast.fire({
+
+                     icon: 'warning',
+                     background: '#35434A',
+                     color: 'white',
+                     title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                 }).then(() => {
+                     $("#loading-message").css("display", "none");
+                 });
+             }
+
+         },
+         error: function (resp1) {
+             console.log(resp1);
+             console.log("Nokeye");
+             $("#loading-message").css("display", "none");
+             Toast.fire({
+                 icon: 'warning',
+                 background: '#35434A',
+                 color: 'white',
+                 title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+             }).then(() => {
+                 $("#loading-message").css("display", "none");
+             });
+         }
+     });
+ }
+    $(document).ready(function () {
+        $("#downfish2").on('click', function () {
+            var year_usr = $("#year_usr").val();
+            var month_usr = $("#month_usr").val();
+            console.log(month_usr);
+            console.log(year_usr);
+
+            // اعتبارسنجی مقادیر ورودی
+            if (!year_usr || !month_usr || isNaN(year_usr) || isNaN(month_usr)) {
+                alert("Please enter valid year and month.");
+                return;
+            }
+
+            // ذخیره URL در متغیر
+            var url = '@Url.Action("viewmonthyearmahdodat", "RegistrationAndConfirmationProcedures", new { area = "Contracts" })';
+
+            // ارسال درخواست Ajax
+            $.ajax({
+                url: url,
+
+                type: "POST",
+                dataType: "html",
+                success: function (resp) {
+                    // در صورت موفقیت
+                    window.location.replace(url + '?year=' + year_usr + '&month=' + month_usr);
+                },
+                error: function (resp2) {
+                    // در صورت خطا
+                    alert("An error occurred: " + resp2.statusText);
+                    console.error(resp2);
+                }
+            });
+        });
+    });
+</script>

@@ -1,0 +1,851 @@
+﻿@model SaabWebProject.Models.ViewModels.Contracts.Function.FunctionModel
+@using SaabWebProject.Models.DomainModels;
+
+@{ SaabEntities db = new SaabEntities();
+
+    ViewBag.Title = "ثبت ارزیابی ناظرین در چهارچوب محدودیت ها";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+<script src="~/Assets/js/jalalidatepicker.min.js"></script>
+<link href="~/Assets/css/jalalidatepicker.min.css" rel="stylesheet" />
+<script src="~/Assets/js/jalaali.min.js"></script>
+<link href="~/MyStyles/jalalidatepicker.css" rel="stylesheet" />
+<style>
+
+
+    .modal2 {
+        display: none;
+        position: absolute; /* Change this from fixed */
+        z-index: 1000; /* Adjust z-index as needed */
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: auto;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content2 {
+        background-color: black;
+        position: relative; /* Add relative positioning */
+        /*  margin: 15% auto;*/
+        padding: 20px;
+        border: 4px solid aqua;
+        border-radius: 30px;
+        width: 100%;
+        max-height: 100%;
+        overflow-y: auto;
+    }
+
+    .modal3 {
+        display: none;
+        position: absolute; /* Change this from fixed */
+        z-index: 1000; /* Adjust z-index as needed */
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: auto;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content3 {
+        background-color: black;
+        position: relative; /* Add relative positioning */
+        /*  margin: 15% auto;*/
+        padding: 20px;
+        border: 4px solid aqua;
+        border-radius: 30px;
+        width: 100%;
+        max-height: 100%;
+        overflow-y: auto;
+    }
+
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+    .fade-in {
+        animation: fadeIn 1s ease-in-out; /* Adjust duration and timing function as needed */
+    }
+
+    .alert-box {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: var(--bs-tab-content-bg);
+        box-shadow: 0rem 0rem 1rem rgba(var(--bs-inverse-rgb), .35);
+        padding: 23px;
+        border-radius: 10px;
+        text-align: center;
+        z-index: 9999;
+    }
+</style>
+<style>
+    .form-control {
+        padding: .375rem .35rem !important;
+    }
+
+    .tableFish th input {
+        /*        background-color: var(--bs-input-bak) !important;*/
+        margin-bottom: 0px !important;
+        border: 2px solid var(--bs-border-color) !important;
+        color: var(--bs-heading-color) !important;
+        text-align: center
+    }
+
+    .tableFish tr:nth-child(1) th {
+        padding: 5px !important;
+        background: var(--bs-tab-content-bg) !important;
+        font-size: 22px;
+        text-align: right;
+    }
+
+    .tableFish tr th:nth-child(4), .tableFish tr td:nth-child(4) {
+        width: 10% !important; /* تنظیم عرض */
+    }
+
+    .tableFish th, .tableFish td {
+        padding: 0 !important;
+    }
+
+        .tableFish td .picker,
+        .tableFish td [class="form-control"],
+        .tableFish td input,
+        .tableFish td .picker,
+        .tableFish td select.form-select,
+        .tableFish th select.form-select {
+            margin-bottom: 0px !important;
+            border: 2px solid var(--bs-border-color) !important;
+            background-color: #ffffff00 !important;
+            color: var(--bs-heading-color) !important;
+            text-align: center
+        }
+
+        .tableFish th select.form-select {
+            width: 70px !important;
+            padding-right: 9px;
+            text-align: right;
+        }
+
+    /*---------------------------*/
+    .tableSelect th .form-select {
+        margin-bottom: 0px !important;
+    }
+    .tableSelect th {
+        width: 25% !important ;
+        padding: 3px 3px !important;
+    }
+    .tableSelect {
+        margin-bottom: 2px !important;
+    }
+
+    /*---------------------------*/
+    .tableH_Lock1 {
+        max-height: 157px;
+        height: 157px;
+    }
+
+    .tableH_Lock2 {
+        max-height: 147px;
+        height: 147px;
+    }
+
+    thead {
+        position: sticky;
+        top: 0;
+        text-align: center;
+        z-index: 2;
+    }
+
+    .inputFilter {
+        margin-bottom: 0px !important;
+    }
+
+    thead th {
+        vertical-align: middle;
+    }
+    /*--------------------------------*/
+    .form-check-input[type="radio"] {
+        height: 18px !important;
+        width: 18px !important;
+    }
+
+    .iGreen {
+        color: #1ca40c !important;
+        font-size: 18px;
+        padding: 2px !important;
+    }
+
+    .iRed {
+        color: #ff0707 !important;
+        font-size: 18px;
+        padding: 2px !important;
+    }
+
+    .iOrang {
+        color: #ff6c31 !important;
+        font-size: 18px;
+        padding: 2px !important;
+    }
+    /*----------------------------------------------------------------------------------*/
+    .card > :not(.card-arrow):not(.card-img-overlay):not(.card-img):not(.hljs-container) {
+        position: relative;
+        z-index: 1;
+    }
+
+    .card.zoo.bodyDashbord {
+        height: 608px;
+    }
+    /*----------------------------------------------------------------------------------*/
+    .btnFaktor {
+        border-radius: 20px;
+        background-image: linear-gradient(#46b8cd, #10635b);
+        border-color: #ffffff00;
+        width: 97px;
+        height: 40px;
+        margin: 0 6px;
+    }
+
+    .btnFaktor {
+        border-radius: 20px;
+        background-image: linear-gradient(#46b8cd, #10635b);
+        border-color: #ffffff00;
+        color: #fff !important;
+    }
+
+    .alert-box {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: var(--bs-tab-content-bg);
+        box-shadow: 0rem 0rem 1rem rgba(var(--bs-inverse-rgb), .35);
+        padding: 23px;
+        border-radius: 10px;
+        text-align: center;
+        z-index: 9999;
+    }
+
+    .tableH_Lock4 {
+        max-height: 390px;
+        /*height: 352px;*/
+    }
+</style>
+
+
+
+
+
+@using SaabWebProject.Models.DomainModels;
+@using SaabWebProject.Models.Classes;
+@*@{
+        Layout = "~/Views/Shared/_Layout.cshtml";
+
+
+    }*@
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+<link href="~/MyStyles/MyStyle.css" rel="stylesheet" />
+<style>
+    .form-check-input {
+        margin-bottom: 0 !important;
+    }
+
+    .heiBox {
+        max-height: 170px;
+    }
+
+    .btnFaktorN {
+        border-radius: 20px;
+        background-image: linear-gradient(#46b8cd, #10635b);
+        border-color: #ffffff00;
+        color: #fff !important;
+        height: 35px;
+        margin: 0 0px;
+        padding: 0 !important;
+    }
+
+    .rowFaktorN {
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+    }
+
+    h5 {
+        margin-bottom: 0px !important;
+    }
+    .sticky-header {
+        position: sticky;
+        top: 0;
+        text-align: center;
+        z-index: 2;
+    }
+</style>
+
+<div class="tab-content mb-2 p-1" style="border: 2px solid #07c9cc !important; background: #4f708b8a !important;">
+    <div class="tab-pane fade  show active" id="pills-Permissions">
+
+
+        <form>
+            <div class="row">
+                <div class="col-xl-5">
+                    <div class="card">
+                        <div class="card-body p-2">
+
+                            <div class="table-responsive tableH_Lock1">
+                                <table class="table table-hover text-nowrap tableSelect sticky-header">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                <select class="form-select" id="year_usr">
+                                                    <option value="0">سال</option>
+
+                                                    @{
+                                                        System.Globalization.PersianCalendar cs2 = new System.Globalization.PersianCalendar();
+                                                        int currentYear1 = cs2.GetYear(DateTime.Now);
+
+                                                        for (var i = 4; i >= 0; i--)
+                                                        {
+                                                            var s = DateTime.Now.AddYears(-i);
+
+                                                            <option value="@cs2.GetYear(s)">@cs2.GetYear(s)</option>
+                                                        }
+                                                    }
+                                                </select>
+                                            </th>
+                                            <th>
+                                                <select class="form-select" id="month_usr">
+                                                    <option value="0">ماه</option>
+                                                    <option value="1">فروردین </option>
+                                                    <option value="2">اردیبهشت</option>
+                                                    <option value="3">خرداد</option>
+                                                    <option value="4">تیر</option>
+                                                    <option value="5">مرداد</option>
+                                                    <option value="6">شهریور</option>
+                                                    <option value="7">مهر</option>
+                                                    <option value="8">آبان</option>
+                                                    <option value="9">آذر</option>
+                                                    <option value="10">دی</option>
+                                                    <option value="11">بهمن</option>
+                                                    <option value="12">اسفند</option>
+                                                </select>
+                                            </th>
+
+                                            <th>
+                                                <button id="btnSaveEsmahdod45" type="button" class="form-control btnSaveEsmahdod2 btnFaktorN" style="">
+
+                                                    نمایش
+                                                </button>
+                                            </th>
+                                            <th>
+                                                @*<div class="col-xl-4 col-md-2">
+                <button id="btnTaeedDastee" type="button"data-bs-toggle="modal" data-bs-target="#modalLg" class="form-control btnFaktorN btnTaeedDastee">
+
+                    تایید دسته ای
+                </button>
+            </div>*@
+                                            </th>
+
+                                        </tr>
+                                    </thead>
+                                </table>
+                                <table class="table table-hover text-nowrap tableFish">
+
+                                    <tbody>
+                                        @foreach (var it in Model.tickmomahdodat.ToList())
+                                        {
+                                            var yearMonthValue = $"{@Model.year.month}/{@Model.year.month:D2}";
+
+                                            <tr>
+                                                <td>
+
+                                                    <!-- تغییر نوع input به radio -->
+                                                    <input class="form-check-input custom-control-input" type="radio"
+                                                           id="edit22344_@it.IDMOalfeh _@Model.year.month _@Model.year.MoalfeVal_Year"
+                                                           name="groupRadio_@Model.year.month"
+                                                           value="@yearMonthValue" />
+
+                                                </td>
+                                                @if (it.value == 0)
+                                                {
+                                                    @*<label class="custom-control-label" for="edit22344_@it.IDMOalfeh _@Model.year.month _@Model.year.MoalfeVal_Year">
+                                                            - @it.namemoalfeh - @it.nomoalfeh - <i class="fa fa-multiply " style="color:darkred !important"></i>
+                                                        </label>*@
+                                                    <td>@it.namemoalfeh</td>
+                                                    <td>@it.nomoalfeh</td>
+                                                    <td><i class="fa fa-multiply iRed"></i></td>
+                                                }
+                                                else if (it.value == 1)
+                                                {
+                                                    @*<label class="custom-control-label" for="edit22344_@it.IDMOalfeh _@Model.year.month _@Model.year.MoalfeVal_Year">
+                                                            - @it.namemoalfeh - @it.nomoalfeh - <i class="fa fa-check " style="color:darkorange !important"></i>
+                                                        </label>*@
+                                                    <td>@it.namemoalfeh</td>
+                                                    <td>@it.nomoalfeh</td>
+                                                    <td><i class="bi bi-arrow-repeat iOrang"></i></td>
+                                                }
+                                                else if (it.value == 2)
+                                                {
+                                                    @*<label class="custom-control-label" for="edit22344_@it.IDMOalfeh _@Model.year.month _@Model.year.MoalfeVal_Year">
+                                                            - @it.namemoalfeh - @it.nomoalfeh - <i class="fa fa-check " style="color:green !important"></i>
+                                                        </label>*@
+                                                    <td>@it.namemoalfeh</td>
+                                                    <td>@it.nomoalfeh</td>
+                                                    <td><i class="fa fa-check iGreen"></i></td>
+                                                }
+
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+
+                                <div class="col-xl-6 heiBox" style="overflow-y: auto; width: 100%;">
+
+
+                                </div>
+
+
+
+
+
+                                @*</div>
+                                    <div class="col-xl-6">
+                                        <div class="form-group mb-3">
+                                            <label class="form-label"> ماه </label>
+                                            <select class="form-select my_Select" id="Month">
+                                                <option value="0">انتخاب کنید..</option>
+                                                <option value="1">فروردین</option>
+                                                <option value="2">اردیبهشت</option>
+                                                <option value="3">خرداد</option>
+                                                <option value="4">تیر</option>
+                                                <option value="5">مرداد</option>
+                                                <option value="6">شهریور</option>
+                                                <option value="7">مهر</option>
+                                                <option value="8">آبان</option>
+                                                <option value="9">آذر</option>
+                                                <option value="10">دی</option>
+                                                <option value="11">بهمن</option>
+                                                <option value="12">اسفند</option>
+                                            </select>
+                                        </div>
+                                    </div>*@
+
+
+
+                                @*<div class="col-xl-12" id="IsVisibleOrNot" style="margin-top:20px">
+
+                                    </div>*@
+
+                                @*<div class="row">
+                                        <div class="col-xl-9">
+                                        </div>
+                                        <div class="col-xl-3">
+
+                                            <button type="submit" class="btn btn-outline-theme form-control buttonsabt" style="margin-top:30px" id="PermitforSalary">اعمال</button>
+
+                                        </div>
+                                    </div>*@
+
+                            </div>
+
+                        </div>
+                        <div class="card-arrow">
+                            <div class="card-arrow-top-left"></div>
+                            <div class="card-arrow-top-right"></div>
+                            <div class="card-arrow-bottom-left"></div>
+                            <div class="card-arrow-bottom-right"></div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-xl-7">
+                    <div class="card p-2">
+
+
+                        <div class="iddd22">
+                        </div>
+                        <div class="card-arrow">
+                            <div class="card-arrow-top-left"></div>
+                            <div class="card-arrow-top-right"></div>
+                            <div class="card-arrow-bottom-left"></div>
+                            <div class="card-arrow-bottom-right"></div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </form>
+
+
+    </div>
+</div>
+<div class="tab-content p-1">
+    <div class="iddd">
+    </div>
+</div>
+<div id="alertBoxT" class="alert-box" style="display:none;">
+    <p id="alertMessageT" style="color: var(--bs-heading-color) !important; "></p>
+
+
+
+
+
+
+
+</div>
+
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Scripts/popper.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Scripts/sweetalert2.js" type="text/javascript"></script>
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/src/jquery.md.bootstrap.datetimepicker.js"></script>
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+
+<!-- toastr CSS -->
+<!--<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />-->
+<!-- toastr JS -->
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>-->
+<!-- bootbox CSS -->
+<!--<link href="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.min.css" rel="stylesheet" />-->
+<!-- bootbox JS -->
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.min.js"></script>-->
+
+
+@*<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>*@
+<script src="~/Scripts/popper.min.js"></script>
+<script>
+    //$(".btnTaeedDastee").on('click', function () {
+    //    //event.preventDefault(); // جلوگیری از رفتار پیش‌فرض
+    //    //console.log("11111111")
+    //    //// نمایش prompt برای گرفتن شماره سند در div
+    //    //showAlertT("آخرین وضعیت کنترل محدودیت ها");
+
+    //    //// ذخیره کردن شناسه سند برای استفاده بعدی
+    //    //$("#alertBoxT").data('id', 'btnTaeedDastee');
+    //});
+    @*$(".btnTaeedDastee").click(function () {
+    //var idd33 = $(this).attr("id").split("_")[1];
+    //console.log(idd33);
+
+    var url32233 = '@Url.Action("viewmonthyearmahdodatjadid", "RegistrationAndConfirmationProcedures", new { area = "Contracts" })';*@
+    //var queryString2332 = "?id=" + encodeURIComponent(idd33);
+    $(".btnTaeedDastee").on('click', function () {
+        event.preventDefault(); // جلوگیری از رفتار پیش‌فرض
+        console.log("11111111")
+        // نمایش prompt برای گرفتن شماره سند در div
+        showAlertT("تایید گروهی مولفه های محدودیت پذیر");
+
+    $.ajax({
+        url: url32233,
+        type: "GET",
+        success: function (response) {
+            $("#big_modal_body").html(response); // محتوای برگشتی را در modal بارگذاری می‌کنیم
+        //    console.log("Request was successful.");
+        },
+        error: function (xhr, status, error) {
+            console.error("Error: " + error);
+        }
+    });
+});
+    function showAlertT(message) {
+        $("#alertMessageT").text(message); // پیام را تنظیم می‌کنیم
+        $("#alertBoxT").fadeIn(); // نمایش پیام
+    }
+
+    // تابع برای بستن پیام
+    function closeAlertT() {
+        $("#alertBoxT").fadeOut(); // مخفی کردن پیام
+    }
+</script>
+
+<script>
+
+    var
+        filters = {
+            filter01: null,
+            filter02: null,
+            filter03: null,
+        };
+
+    function updateFilters() {
+        $('.task-list-row').hide().filter(function () {
+            var self = $(this),
+                result = true;
+
+            Object.keys(filters).forEach(function (filter) {
+                var filterData = self.data(filter);
+                if (filters[filter] && (filters[filter] != 'None') && (filters[filter] != 'همه')) {
+                    // تبدیل داده به رشته و بررسی مقدار
+                    result = result && (filterData && filterData.toString().indexOf(filters[filter]) !== -1);
+                }
+            });
+
+            return result;
+        }).show();
+    }
+
+    function changeFilter(filterName) {
+        filters[filterName] = this.value;
+        updateFilters();
+    }
+
+    // Assigned User Dropdown Filter
+    $('#filter01-filter').on('input', function () {
+        changeFilter.call(this, 'filter01');
+    });
+    $('#filter02-filter').on('input', function () {
+        changeFilter.call(this, 'filter02');
+    });
+    $('#filter03-filter').on('input', function () {
+        changeFilter.call(this, 'filter03');
+    });
+
+
+</script>
+<script>
+ $("#btnSaveEsmahdod45").click(function () {
+    // پیدا کردن رادیوباکس انتخاب‌شده
+    var selectedRadio = $("input[type='radio'][name^='groupRadio_']:checked");
+    console.log(selectedRadio);
+
+    if (selectedRadio.length === 0) {
+        alert("هیچ موردی انتخاب نشده است!");
+        return;
+    }
+
+    var idParts = selectedRadio.attr("id").split("_");
+    var idd = idParts[1]; // IDMOalfeh
+    var idd1 = idParts[2]; // ماه
+    var idd2 = idParts[3]; // سال
+    var idd4 = $("#month_usr").val();
+    var idd5 = $("#year_usr").val();
+
+    if ($("#month_usr").val() == 0) {
+        alert("لطفا ماه را انتخاب نمایید");
+        return;
+    }
+
+    if ($("#year_usr").val() == 0) {
+        alert("لطفا سال را انتخاب نمایید");
+        return;
+    }
+
+    console.log("adssd");
+
+    // استخراج مقادیر از ID رادیوباکس انتخاب‌شده
+    console.log(idd);
+    console.log(idd1);
+    console.log(idd2);
+
+    // ساختن URL و ارسال اطلاعات
+    var url = '@Url.Content("/Contracts/RegistrationAndConfirmationProcedures/viewmonthyearmahdodatmahdodatasli")';
+    var queryString = "?id=" + encodeURIComponent(idd) +
+        "&month=" + encodeURIComponent(idd4) +
+        "&year=" + encodeURIComponent(idd5);
+    var url2 = '@Url.Content("/Contracts/RegistrationAndConfirmationProcedures/viewmonthyearmahdodatmahdodatasliforkenarsafhe")';
+
+     $("#loading-circle .loadingText1").text("لطفا منتظر نمایش اطلاعات بمانید ...");
+     $("#loading-circle").css("display", "flex");
+
+    // بارگذاری محتوا در بخش‌های موردنظر
+     $(".iddd22").load(url2 + queryString);
+
+    // بارگذاری محتوا برای iddd22 و مخفی کردن لودینگ پس از اتمام بارگذاری
+     $(".iddd").load(url + queryString, function() {
+        // پس از بارگذاری کامل، لودینگ را مخفی می‌کنیم
+         $("#loading-circle").css("display", "none");
+    });
+});
+
+
+    //var options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+    //var dateString = new Date().toLocaleDateString('fa-IR-u-nu-latn', options);
+    //document.getElementById('dateDisplay').textContent = "تاریخ امروز : " + dateString;
+</script>
+<script>
+    jalaliDatepicker.startWatch({
+        time: true,
+        days: ["شنبه", "1شنبه", "2شنبه", "3شنبه", "4شنبه", "5شنبه", "جمعه"],
+        persianDigits: true,
+        autoClose: true,
+        autocomplete: true,
+        showCloseBtn: true,
+        showEmptyBtn: false,
+        showCloseBtn: true,
+        zIndex: 100000,
+    });
+    //-----------------------------------------------------------------
+    var inputs = document.querySelectorAll("[data-jdp-miladi-input]");
+    for (var i = 0; i < inputs.length; i++) {
+        inputs[i].addEventListener("jdp:change", function (e) {
+            var miladiInput = document.getElementById(this.getAttribute("data-jdp-miladi-input"));
+            var date = this.value.replace(' ', '').slice(0, 10).split('/');
+            date = jalaali.toGregorian(parseInt(date[0]), parseInt(date[1]), parseInt(date[2]),)
+            // If it was empty
+            if (!this.value) {
+                date = "";
+            }
+            // If it was only history
+            else if (this.value.replace(' ', '').length < 11) {
+                date = date.gy + '-' + date.gm + '-' + date.gd
+            }
+            // If it was the date and time
+            else {
+                date = date.gy + '-' + date.gm + '-' + date.gd + ' ' + this.value.replace(' ', '').slice(10, 30)
+            }
+            miladiInput.value = date
+            var weekDay = getDayOfWeek(document.querySelector("#datepickerFromEn_usr").value.slice(0, 10))
+            document.querySelector("#weekDay").value = weekDay
+        });
+    }
+    //-----------------------------------------------------------------
+    function getDayOfWeek(gregorianDate) {
+        const [year, month, day] = gregorianDate.split('-').map(Number);
+        const date = new Date(year, month - 1, day);
+        const dayOfWeek = date.getDay();
+        const days = ['یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه', 'شنبه'];
+        return days[dayOfWeek];
+    }
+
+
+
+
+    $("#btnTatilat").click(function () {
+              var Filters  = [];
+          var obj = new Object();
+
+
+         console.log("djkjsdkl");
+        var val2 = $('#vasileh').val();
+        var val22 = $('#nerghnintlink').val();
+        var val232 = $('#numbertaghiz').val();
+
+          //var val24 = $('#weekDay').val();
+          console.log(val22);
+          //console.log(val24);
+          console.log(val2);
+
+        obj.name = val2;
+        obj.nerghnintlink = val22;
+        obj.codmahsol = val232
+          //obj.titr = val24;
+          console.log(obj);
+
+
+
+
+
+
+
+
+          sendAjax('@Url.Action("creatvazvaselh", "FinancialDocuments", new { area = "ManagementAccounting" })', obj);
+
+
+
+       ;
+
+  });
+
+
+
+    function sendAjax(url, data) {
+        console.log(url);
+
+        $.ajax({
+            beforeSend: function () {
+                //============================================[loading...]
+                $("#loading-circle .loadingText1").text('لطفا منتظر ذخیره اطلاعات بمانید ...');
+                $("#loading-circle").css("display", "flex");
+                //============================================[loading...]
+            },
+            url: url,
+            data: data,
+            type: "POST",
+            dataType: "html",
+            success: function (resp) {
+                console.log(resp);
+                //============================================[stop loading...]
+                    $("#loading-circle").css("display", "none");
+                //============================================[stop loading...]
+                if (resp == "True") {
+                    alert("با موفقیت ثبت شد");
+                    location.reload();
+                }
+
+                else {
+                    alert("resp")
+                }
+            },
+            error: function (resp) {
+                //============================================[stop loading...]
+                $("#loading-circle").css("display", "none");
+                //============================================[stop loading...]
+                alert("دچار مشکل شده است ");
+                console.log(resp);
+            }
+        });
+    }
+</script>
+<script>
+    // Convert Gregorian date to jaali in the table
+    var tds = document.querySelectorAll("[cont-date]");
+    var valueD, id, target;
+    var options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    tds.forEach(td => {
+        valueD = new Date(td.textContent).toLocaleDateString('fa-IR-u-nu-latn', options).replace(',', '').replace(" ", "");
+        valueD = valueD.slice(0, 10) + " " + td.textContent.slice(10, 30)
+        id = td.getAttribute("cont-date");
+        target = document.getElementById(id);
+        target.textContent = valueD;
+    });
+</script>
+<script>
+        $(document).ready(function () {
+            // بازگردانی مقادیر ذخیره‌شده
+            const selectedYear = sessionStorage.getItem('selectedYear');
+            const selectedMonth = sessionStorage.getItem('selectedMonth');
+
+            if (selectedYear) {
+                $('#year_usr').val(selectedYear);
+            }
+            if (selectedMonth) {
+                $('#month_usr').val(selectedMonth);
+            }
+
+            // ذخیره مقادیر هنگام تغییر
+            $('#year_usr').change(function () {
+                const yearValue = $(this).val();
+                sessionStorage.setItem('selectedYear', yearValue);
+            });
+
+            $('#month_usr').change(function () {
+                const monthValue = $(this).val();
+                sessionStorage.setItem('selectedMonth', monthValue);
+            });
+
+        });
+
+</script>

@@ -1,0 +1,505 @@
+﻿@*@using SaabWebProject.Models.Classes;
+    @model SaabWebProject.Models.DomainModels.tbBannerSlider*@
+
+@{
+    ViewBag.Title = "OptionBanner_Update";
+    Layout = null;
+}
+
+@model SaabWebProject.Models.DomainModels.tbBannerSlider
+
+<link href="~/Content/installments.css" rel="stylesheet" />
+<link href="~/MyStyles/MyStyle.css" rel="stylesheet" />
+
+
+<style>
+    .modal-lg, .modal-xl {
+        margin-top: 8px !important;
+        max-width: 90% !important;
+    }
+
+    input.form-control {
+        margin-bottom: 0px !important;
+    }
+    .form-check-input {
+        margin-bottom: 6px !important;
+    }
+
+    input.colorPicker {
+        position: absolute;
+        width: 28px;
+        height: 21px;
+        border: 1px solid #ffffff00 !important;
+        margin-bottom: 0px !important;
+        top: 7px;
+        left: 16px;
+        background-color: #fff0 !important;
+        padding: 0px;
+        border-right: 2px solid var(--bs-border-input-color) !important;
+        border-radius: unset !important;
+        padding-right: 6px;
+    }
+    .shadowInput {
+        background: linear-gradient(91deg, var(--bs-border-input-color) -2.5%, var(--bs-tab-content-bg) 10%);
+    }
+    /*=================================================================*/
+    #myOutUpE {
+        font-size: 8px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        margin-top: 0px;
+        font-family: 'A EntezareZohoor B3';
+        margin-right: 4.7%;
+        width: 91%;
+        height: 33.3333%;
+    }
+    #myOutMiE {
+        font-size: 12px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        transform: translateY(62px);
+        font-family: 'A EntezareZohoor B3';
+        width: 73%;
+        margin-right: 13.5%;
+        height: 33.3333%;
+    }
+    #myOutDoE {
+        font-size: 8px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        margin-top: 4px;
+        font-family: 'A EntezareZohoor B3';
+        margin-right: 4.7%;
+        width: 91%;
+        transform: translateY(123px);
+        height: 33.3333%;
+    }
+</style>
+<div class="tab-content">
+
+    @if (Model.ColorDown == "null")
+    {
+        @*================================================================================================================================================*@
+        <div id="DefaultE">
+            <div class="row" style=" text-align: right; align-items: center;">
+                <div class="col-xl-4">
+                    <div class="row ">
+                        <div class="col-xl-12 ">
+                            <button disabled id="upload-button" class="btn form-control " style="background: #39cfaa66; height: 100%; border-radius: 10px 10px 0px 0px; padding: 7px; border: 2px solid var(--bs-border-input-color) !important; border-bottom: #0000 !important; ">
+                                <i class="bi bi-upload  fa-fw " style=" margin-right: -6px; font-size: 18px; filter: blur(0.09rem);"></i>
+                            </button>
+                            <input type="file" id="image-inputE" accept="image/*" style="display: none;">
+                        </div>
+                        <div class="col-xl-12 ">
+                            <img id="image-previewE" alt="عکس آپلود شده" src="/Areas/Reporter/Content/BannerImages/@Model.ImgDir"
+                                 style="width: 100%; height: 193px; border-radius: 0px 0px 10px 10px; border: 2px solid var(--bs-border-input-color) !important; border-top: #0000 !important; padding-right: 0px;">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-6">
+                    <div class="row" style=" margin-top: 20px;">
+                        <div class="col-xl-6" style="margin-bottom: 20px ">
+                            <label class="form-label">از تاریخ</label>
+                            <input data-jdp="" jdp-btn-close="" data-jdp-miladi-input="StartDateE" id="StartDateE_Eq" class="form-control">
+                            <input id="StartDateE" type="hidden" value="@Model.StartDate.Value.ToString("MM/dd/yyyy")">
+                        </div>
+
+                        <div class="col-xl-6" style="margin-bottom: 20px ">
+                            <label class="form-label">تا تاریخ</label>
+                            <input data-jdp="" jdp-btn-close="" data-jdp-miladi-input="EndDateE" id="EndDateE_Eq" class="form-control">
+                            <input id="EndDateE" type="hidden" value="@Model.EndDate.Value.ToString("MM/dd/yyyy")">
+                        </div>
+
+                        <div class="col-xl-12" style="margin-bottom: 20px; filter: blur(0.09rem); position: relative">
+                            <label class="form-label">متن بالا</label>
+                            <input type="text" class="form-control shadowInput" disabled />
+                            <input class="colorPicker form-control-color" type="color" id="">
+                        </div>
+
+                        <div class="col-xl-12" style="margin-bottom: 20px; filter: blur(0.09rem); position: relative">
+                            <label class="form-label">متن وسط</label>
+                            <input type="text" class="form-control shadowInput" disabled />
+                            <input class="colorPicker form-control-color" type="color" id="">
+                        </div>
+
+                        <div class="col-xl-12" style="margin-bottom: 20px; filter: blur(0.09rem); position: relative">
+                            <label class="form-label">متن پایین</label>
+                            <input type="text" class="form-control shadowInput" disabled />
+                            <input class="colorPicker form-control-color" type="color" id="">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-2">
+                    <div class="row">
+                        <div class="col-xl-8"></div>
+                        <div class="col-xl-3">
+                            <button id="btnSaveCompanyE" type="button" class="btnSaveCompany btn form-control buttonsabt">
+                                <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                                <span class="bSabt-text">ثبت</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @*================================================================================================================================================*@
+    }
+    else
+    {
+
+
+@*================================================================================================================================================*@
+
+
+<div id="ManualE" >
+            <div class="row" style=" text-align: right; align-items: center;">
+                <div class="col-xl-4 ">
+                    <div class=" row">
+                        <div class="col-xl-12">
+                            <div class="row" style="background: #39cfaa66; border-radius: 10px 10px 0px 0px; border: 2px solid var(--bs-border-input-color) !important; border-bottom: #0000 !important; margin-right: 0px; margin-left: 0px; padding-top: 8px; ">
+                                <div class="col-xl-4 col-sm-4 col-4">
+                                    <div class="form-check">
+                                        <div class="row">
+                                            <div class="col-xl-1" style="width: 1%;">
+                                                @if (Model.ImgDir == "w.jpg")
+                                                {
+                                                    <input class="form-check-input" name="radiobutton_imgE" type="radio" value="w" id="defaultRadio1" style="display:flex" checked>
+                                                }
+                                                else
+                                                {
+                                                    <input class="form-check-input" name="radiobutton_imgE" type="radio" value="w" id="defaultRadio1" style="display:flex" >
+                                                }
+
+                                            </div>
+                                            <div class="col-xl-10" style="margin-top: 1px; padding-right: 3px; width: 11%;">
+                                                <label class="form-check-label" for="defaultRadio1">عادی</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xl-4 col-sm-4 col-4">
+                                    <div class="form-check">
+                                        <div class="row">
+                                            <div class="col-xl-1" style="width: 1%;">
+                                                @if (Model.ImgDir == "h.jpg")
+                                                {
+                                                    <input class="form-check-input" name="radiobutton_imgE" type="radio" value="h" id="defaultRadio1" style="display:flex" checked>
+                                                }
+                                                else
+                                                {
+                                                    <input class="form-check-input" name="radiobutton_imgE" type="radio" value="h" id="defaultRadio1" style="display:flex">
+                                                }
+                                            </div>
+                                            <div class="col-xl-10" style="margin-top: 1px; padding-right: 3px; width: 11%;">
+                                                <label class="form-check-label" for="defaultRadio1">شادی</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xl-4 col-sm-4 col-4">
+                                    <div class="form-check">
+                                        <div class="row">
+                                            <div class="col-xl-1" style="width: 1%;">
+                                                @if (Model.ImgDir == "b.jpg")
+                                                {
+                                                    <input class="form-check-input" name="radiobutton_imgE" type="radio" value="b" id="defaultRadio1" style="display:flex" checked>
+                                                }
+                                                else
+                                                {
+                                                    <input class="form-check-input" name="radiobutton_imgE" type="radio" value="b" id="defaultRadio1" style="display:flex">
+                                                }
+                                            </div>
+                                            <div class="col-xl-10" style="margin-top: 1px; padding-right: 3px; width: 11%;">
+                                                <label class="form-check-label" for="defaultRadio1">عزا</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-12" style="position:relative">
+                            <div class="card windowBanner" style="position: absolute; color: #8c9098; width: 100%; margin-right: -8px; height: 100%;">
+                                <div id="myOutUpE" style="position: absolute; color: @Model.ColorTop !important">@Model.TextTop</div>
+                                <div id="myOutMiE" style="position: absolute; color:@Model.ColorCenter !important">@Model.TextCenter</div>
+                                <div id="myOutDoE" style="position: absolute; color:@Model.ColorDown !important">@Model.TextDown</div>
+                            </div>
+
+
+                            <img id="image-previewE" alt="عکس آپلود شده" src="/Areas/Reporter/Content/BannerImages/@Model.ImgDir"
+                                 style=" width: 100%; height: 193px; border-radius: 0px 0px 10px 10px; border: 2px solid var(--bs-border-input-color) !important; border-top: #0000 !important; padding-right: 0px;">
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="col-xl-6">
+                    <div class="row" style=" margin-top: 20px;">
+                        <div class="col-xl-6" style="margin-bottom: 20px ">
+                            <label class="form-label">از تاریخ</label>
+                            <input data-jdp="" jdp-btn-close="" data-jdp-miladi-input="StartDateE" id="StartDateE_Eq" class="form-control">
+                            <input id="StartDateE" type="hidden" value="@Model.StartDate.Value.ToString("MM/dd/yyyy")">
+                        </div>
+
+                        <div class="col-xl-6" style="margin-bottom: 20px ">
+                            <label class="form-label">تا تاریخ</label>
+                            <input data-jdp="" jdp-btn-close="" data-jdp-miladi-input="EndDateE" id="EndDateE_Eq" class="form-control">
+                            <input id="EndDateE" type="hidden" value="@Model.EndDate.Value.ToString("MM/dd/yyyy")">
+                        </div>
+
+                        <div class="col-xl-12" style="margin-bottom: 20px; position: relative">
+                            <label class="form-label">متن بالا</label>
+                            <input id="TextTopE" type="text" class="form-control shadowInput" value="@Model.TextTop" />
+                            <input id="ColorTopE" class="colorPicker form-control-color" type="color" value="@Model.ColorTop">
+                        </div>
+
+                        <div class="col-xl-12" style="margin-bottom: 20px ;position:relative">
+                            <label class="form-label">متن وسط</label>
+                            <input id="TextCenterE" type="text" class="form-control shadowInput" value="@Model.TextCenter" />
+                            <input id="ColorCenterE" class="colorPicker form-control-color" type="color" value="@Model.ColorCenter">
+                        </div>
+
+                        <div class="col-xl-12" style="margin-bottom: 20px; position: relative">
+                            <label class="form-label">متن پایین</label>
+                            <input id="TextDownE" type="text" class="form-control shadowInput" value="@Model.TextDown" />
+                            <input id="ColorDownE" class="colorPicker form-control-color" type="color" value="@Model.ColorDown">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-2">
+                    <div class="row">
+                        <div class="col-xl-8"></div>
+                        <div class="col-xl-3">
+                            <button id="btnSaveCompanyE" type="button" class="btnSaveCompany btn form-control buttonsabt">
+                                <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                                <span class="bSabt-text">ثبت</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        @*================================================================================================================================================*@
+
+    }
+
+
+</div>
+
+
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+
+
+
+<script>
+
+    date = document.getElementById("StartDateE").value.replace(" ", "")
+    valueD = new Date(date.slice(0, 10)).toLocaleDateString('fa-IR-u-nu-latn', { year: 'numeric', month: '2-digit', day: '2-digit' })
+    valueD = valueD + " " + date.slice(10, 30)
+    document.getElementById("StartDateE_Eq").value = valueD
+
+    date = document.getElementById("EndDateE").value.replace(" ", "")
+    valueD = new Date(date.slice(0, 10)).toLocaleDateString('fa-IR-u-nu-latn', { year: 'numeric', month: '2-digit', day: '2-digit' })
+    valueD = valueD + " " + date.slice(10, 30)
+    document.getElementById("EndDateE_Eq").value = valueD
+
+    //-----------------------------------------------------------------
+    var inputs = document.querySelectorAll("[data-jdp-miladi-input]");
+    for (var i = 0; i < inputs.length; i++) {
+        inputs[i].addEventListener("jdp:change", function (e) {
+            var miladiInput = document.getElementById(this.getAttribute("data-jdp-miladi-input"));
+            var date = this.value.replace(' ', '').slice(0, 10).split('/');
+            date = jalaali.toGregorian(parseInt(date[0]), parseInt(date[1]), parseInt(date[2]),)
+            // If it was empty
+            if (!this.value) {
+                date = "";
+            }
+            // If it was only history
+            else if (this.value.replace(' ', '').length < 11) {
+                date = date.gy + '-' + date.gm + '-' + date.gd
+            }
+            // If it was the date and time
+            else {
+                date = date.gy + '-' + date.gm + '-' + date.gd + ' ' + this.value.replace(' ', '').slice(10, 30)
+            }
+            miladiInput.value = date
+        });
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+        document.getElementById('ColorTopE').addEventListener('change', function () {
+            const pElementUp = document.getElementById("myOutUpE");
+            pElementUp.style.color = this.value;
+        });
+        document.getElementById('ColorCenterE').addEventListener('change', function () {
+            const pElementMi = document.getElementById("myOutMiE");
+            pElementMi.style.color = this.value;
+        });
+        document.getElementById('ColorDownE').addEventListener('change', function () {
+            const pElementDo = document.getElementById("myOutDoE");
+            pElementDo.style.color = this.value;
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        const inputElementUp = document.getElementById("TextTopE");
+        const inputElementMi = document.getElementById("TextCenterE");
+        const inputElementDo = document.getElementById("TextDownE");
+        const pElementUp = document.getElementById("myOutUpE");
+        const pElementMi = document.getElementById("myOutMiE");
+        const pElementDo = document.getElementById("myOutDoE");
+
+        inputElementUp.addEventListener("input", () => {
+            pElementUp.textContent = inputElementUp.value;
+        });
+        inputElementMi.addEventListener("input", () => {
+            pElementMi.textContent = inputElementMi.value;
+        });
+        inputElementDo.addEventListener("input", () => {
+            pElementDo.textContent = inputElementDo.value;
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+    $('input[type=radio][name=radiobutton_imgE]').change(function () {
+        const imagePreview2 = document.getElementById('image-previewE');
+
+        if (this.value == 'w') {
+            imagePreview2.src = "/Areas/Reporter/Content/BannerImages/w.jpg";
+        }
+        else if (this.value == 'h') {
+            imagePreview2.src = "/Areas/Reporter/Content/BannerImages/h.jpg";
+        }
+        else if (this.value == 'b') {
+            imagePreview2.src = "/Areas/Reporter/Content/BannerImages/b.jpg";
+        }
+    });
+});
+
+</script>
+<script>
+
+
+    //================================================================================
+    var Toast = Swal.mixin({
+        toast: true,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    });
+    function sendAjax3(url2, fd2) {
+        if ( '@Model.ColorTop' == 'null') {
+            //fd2.append("ImgDir", $("#ImgDir").val());
+            fd2.append("ID",@Model.ID)
+            fd2.append("ImgDir", '@Model.ImgDir');
+            fd2.append("StartDate", $("#StartDateE").val());
+            fd2.append("EndDate", $("#EndDateE").val());
+            fd2.append("TextTop", null);
+            fd2.append("TextCenter", null);
+            fd2.append("TextDown", null);
+            fd2.append("ColorTop", null);
+            fd2.append("ColorCenter", null);
+            fd2.append("ColorDown", null);
+            fd2.append("IsActive", true);
+
+        }
+        else  {
+            fd2.append("ImgDir", document.getElementById('image-previewE').src.split('/Areas/Reporter/Content/BannerImages/')[1]);
+            fd2.append("ID",@Model.ID)
+            fd2.append("StartDate", $("#StartDateE").val());
+            fd2.append("EndDate", $("#EndDateE").val());
+            fd2.append("TextTop", $("#TextTopE").val());
+            fd2.append("TextCenter", $("#TextCenterE").val());
+            fd2.append("TextDown", $("#TextDownE").val());
+            fd2.append("ColorTop", $("#ColorTopE").val());
+            fd2.append("ColorCenter", $("#ColorCenterE").val());
+            fd2.append("ColorDown", $("#ColorDownE").val());
+            fd2.append("IsActive", true);
+
+        }
+
+
+        console.log(fd2)
+
+        $.ajax({
+            url: url2,
+            type: 'POST',
+            data: fd2,
+            processData: false,
+            contentType: false,
+            success: function (resp1) {
+                console.log("okeye");
+                console.log(resp1);
+                $("#loading-message").css("display", "none");
+                fd = new FormData();
+                if (resp1 == "True") {
+                    alert("با موفقیت ثبت شد");
+                    location.reload();
+                }
+                else {
+                    $("#loading-message").css("display", "none");
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                    }).then(() => {
+                        $("#loading-message").css("display", "none");
+                    });
+                }
+
+            },
+            error: function (resp1) {
+                console.log(resp1);
+                console.log("Nokeye");
+                $("#loading-message").css("display", "none");
+                Toast.fire({
+                    icon: 'success',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                }).then(() => {
+                    $("#loading-message").css("display", "none");
+                });
+            }
+        });
+    }
+    //================================================================================
+
+
+
+         //----------------------------------------------------------------
+    $("#btnSaveCompanyE").click(function () {
+        var fd2 = new FormData();
+
+           // if ($("#UserName").val().length < 10) {
+           //     alert("نام کار بری حد اقل 10 کاراکتر باید باشد");
+           // }
+           // //else if ($("#UserTitle").val() == '') {
+           // //    alert("لطفا 'عنوان کاربر' را وارد کنید");
+           // //}
+
+           //else {
+        sendAjax3('@Url.Action("EditeUploadAttachmentFile", "Dashboard", new { area = "Reporter" })', fd2);
+           /*};*/
+    });
+
+
+</script>

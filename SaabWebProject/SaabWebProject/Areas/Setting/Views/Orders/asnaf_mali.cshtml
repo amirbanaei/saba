@@ -1,0 +1,797 @@
+﻿@{
+    ViewBag.Title = "جدول مشترکین بدهکار";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using SaabWebProject.Models.Classes;
+
+@model IEnumerable<SaabWebProject.Models.DomainModels.NatigeEshterakBala50>
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>tableNatijeGiri</title>
+
+    <link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+    <style>
+
+        .tableH_Lock {
+            max-height: 100%;
+            width: 100%;
+        }
+
+        thead {
+            position: sticky;
+            top: 0;
+            text-align: center;
+            z-index: 2;
+        }
+
+        .inputFilter {
+            margin-bottom: 0px !important;
+        }
+
+        thead th {
+            vertical-align: middle;
+            width: calc(100%/9);
+        }
+
+        .limit-tooltip {
+            position: absolute;
+            background: var(--bs-tab-content-bg);
+            color: aqua;
+            padding: 2px 5px;
+            border: 1px solid aqua;
+            border-radius: 6px;
+            font-size: 13px;
+            max-width: 500px; /* عرض محدود */
+            z-index: 9999;
+            white-space: normal; /* اجازه رفتن به خط بعد */
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            display: none;
+            line-height: 1.6;
+            font-size: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="tab-content" id="pills-tabContent">
+        <div style="height:535px; width:100%; display:flex;">
+            <div style="height:100%; width:80%;">
+                <div class="table-responsive tableH_Lock">
+                    <table class="table table-hover text-nowrap">
+                        <thead>
+                            <tr style="text-align:center">
+                                <th>
+                                    @Html.DisplayName("نام مشترک")
+                                    <div class="inputWithFilterIcon">
+                                        <input type="text" id="filter01-filter" class="inputFilter form-control" placeholder="" />
+                                        <span><i class="fas fa-filter"></i></span>
+                                    </div>
+                                </th>
+                                <th>
+                                    @Html.DisplayName("شناسه قبض")
+                                    <div class="inputWithFilterIcon">
+                                        <input type="text" id="filter02-filter" class="inputFilter form-control" placeholder="" />
+                                        <span><i class="fas fa-filter"></i></span>
+                                    </div>
+                                </th>
+                                <th>
+                                    @Html.DisplayName("شهرستان")
+                                    <div class="inputWithFilterIcon">
+                                        <input type="text" id="filter03-filter" class="inputFilter form-control" placeholder="" />
+                                        <span><i class="fas fa-filter"></i></span>
+                                    </div>
+                                </th>
+                                <th>
+                                    @Html.DisplayName("بدهکاری ارجاع")
+                                    <div class="inputWithFilterIcon">
+                                        <input type="text" id="filter04-filter" class="inputFilter form-control" placeholder="" />
+                                        <span><i class="fas fa-filter"></i></span>
+                                    </div>
+                                </th>
+                                <th>
+                                    @Html.DisplayName("بدهکاری بروز")
+                                    <div class="inputWithFilterIcon">
+                                        <input type="text" id="filter05-filter" class="inputFilter form-control" placeholder="" />
+                                        <span><i class="fas fa-filter"></i></span>
+                                    </div>
+                                </th>
+                                <th>
+                                    @Html.DisplayName("نتیجه پیگیری")
+                                    <div class="inputWithFilterIcon">
+                                        <input type="text" id="filter06-filter" class="inputFilter form-control" placeholder="" />
+                                        <span><i class="fas fa-filter"></i></span>
+                                    </div>
+                                </th>
+                                <th class="limit-cell">
+                                    @Html.DisplayName("مسئول")
+                                    <div class="inputWithFilterIcon">
+                                        <input type="text" id="filter08-filter" class="inputFilter form-control" placeholder="" />
+                                        <span><i class="fas fa-filter"></i></span>
+                                    </div>
+                                </th>
+                                <th class="limit-cell">
+                                    @Html.DisplayName("شرح")
+                                    <div class="inputWithFilterIcon">
+                                        <input type="text" id="filter07-filter" class="inputFilter form-control" placeholder="" />
+                                        <span><i class="fas fa-filter"></i></span>
+                                    </div>
+                                </th>
+
+
+                            </tr>
+
+
+                            <tr id="sum-row" style="background:#1f2a36;font-weight:bold;text-align:center">
+                                <th colspan="3">جمع فیلتر شده</th>
+                                <th id="sum-erja">0</th>
+                                <th id="sum-beroz">0</th>
+                                <th colspan="4"></th>
+                            </tr>
+
+                        </thead>
+                        @{
+
+                            var natigeMap = new Dictionary<int, string>
+                                                                                    {
+    {1, "وصول کامل"},
+    {2, "تقسیط"},
+    {3, "قطع"},
+    {4, "مهلت (پیگیری مجدد)"},
+    {5, "ادعای قبض اشتباه (پیگیری مجدد)"},
+    {6, "اصلاح شماره تماس (پیگیری مجدد)"},
+    {7, "پرونده حقوقی (پیگیری مجدد)"},
+    {8, "نیاز به پیگیری ستاد"},
+    {9, "عدم پاسخگویی تلفنی"},
+    {10, "عدم تماس یا اعلام مسئول پیگیری"}
+};
+
+
+                        }
+
+                        <tbody style="text-align:center;">
+                            @foreach (var it in Model)
+                            {
+                                <tr class="task-list-row " data-filter01="@it.NameMoshtarak"
+                                    data-filter02="@it.ShenaseGhabz"
+                                    data-filter03="@it.city_name"
+                                    data-filter04="@it.MandeKolErja"
+                                    data-filter05="@it.MandeKolBeroz1"
+                                    data-filter06="@(it.NatigePeygiri.HasValue && natigeMap.ContainsKey(it.NatigePeygiri.Value) ? natigeMap[it.NatigePeygiri.Value] : "")"
+                                    data-filter07="@it.SharhPeygiri"
+                                    data-filter08="@it.value_bi"
+                                    data-erja="@it.MandeKolErja"
+                                    data-beroz="@it.MandeKolBeroz1">
+                                    <td> @it.NameMoshtarak</td>
+                                    <td> @it.ShenaseGhabz</td>
+                                    <td> @it.city_name</td>
+                                    <td> @it.MandeKolErja</td>
+                                    <td>
+                                        @(decimal.TryParse(it.MandeKolBeroz1, out var v)
+    ? v.ToString("N0")
+    : it.MandeKolBeroz1)
+                                    </td>
+
+                                    <td>
+                                        @(it.NatigePeygiri.HasValue && natigeMap.ContainsKey(it.NatigePeygiri.Value)
+    ? natigeMap[it.NatigePeygiri.Value]
+    : "")
+                                    </td>
+                                    <td> @it.value_bi</td>
+
+                                    <td>
+
+                                        @if (it.SharhPeygiri.Length > 20)
+                                        {
+                                            <span title="@it.SharhPeygiri">@it.SharhPeygiri.Substring(0, 20)...</span>
+                                        }
+                                        else
+                                        {
+                                            @it.SharhPeygiri
+                                        }
+                                    </td>
+                                </tr>
+
+                            }
+
+
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+            <div id="pieChart" style="height: 100%; width: 30%;"></div>
+        </div>
+
+        @*<div id="chart-wrapper" style="border-radius: 10px; height: 300px; margin-top: 20px;">
+                <div id="debtRatioChart"></div>
+            </div>*@
+    </div>
+    <script src="~/Assets/plugins/apexcharts/dist/apexcharts.min.js"></script>
+    <script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+    <script src="~/Scripts/jquery-ui.js"></script>
+    <script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+    <script src="~/Scripts/jquery-ui.js"></script>
+    <script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+    @*نمودار دایره ای*@
+    <script>
+        var chart;
+
+        function updateChart() {
+            const statusLabels = [
+                "وصول کامل", "تقسیط", "قطع", "مهلت (پیگیری مجدد)",
+                "ادعای قبض اشتباه (پیگیری مجدد)", "اصلاح شماره تماس (پیگیری مجدد)",
+                "پرونده حقوقی (پیگیری مجدد)", "نیاز به پیگیری ستاد",
+                "عدم پاسخگویی تلفنی", "عدم تماس یا اعلام مسئول پیگیری"
+            ];
+
+            let stats = {};
+            statusLabels.forEach(label => {
+                stats[label] = 0; // فقط مجموع ارجاع
+            });
+
+            let totalErja = 0;
+
+            // جمع کردن ارجاع برای هر سطر visible
+            $('.task-list-row:visible').each(function () {
+                let status = $(this).data('filter06');
+                let erja = parseFloat($(this).data('erja').toString().replace(/,/g, '')) || 0;
+
+                if (status && stats.hasOwnProperty(status)) {
+                    stats[status] += erja;
+                    totalErja += erja;
+                }
+            });
+
+            // حالا داده نهایی = سهم هر وضعیت از کل
+            let finalData = statusLabels.map(label => {
+                if (totalErja === 0) return 0;
+                return parseFloat((stats[label] / totalErja).toFixed(4));
+            });
+
+            if (chart) {
+                chart.updateOptions({
+                    series: finalData,
+                    labels: statusLabels
+                });
+            } else {
+                var options = {
+                    chart: {
+                        type: 'pie',
+                        height: '100%',
+                        width: '100%',
+                        foreColor: '#fff',
+                        fontFamily: 'inherit',
+                        toolbar: { show: false }
+                    },
+                    //colors: ['#e63946', '#f4a261', '#e9c46a', '#2a9d8f', '#4caf50', '#601CE8', '#00E396', '#FEB019', '#FF4560', '#33B2DF'],
+                    colors : [
+                        "#44cc8d", // وصول کامل
+                        "#eeba0b", // تقسیط
+                        "#42a5f5", // قطع
+                        "#4D4D4D", // مهلت
+                        "#B3B3B3", // ادعای قبض اشتباه
+                        "#808080", // اصلاح شماره تماس
+                        "#5d5a5a", // پرونده حقوقی
+                        "#666666", // نیاز به پیگیری ستاد
+                        "#999999", // عدم پاسخگویی تلفنی
+                        "#333333"  // عدم تماس یا اعلام مسئول پیگیری
+                    ],
+                    series: finalData,
+                    labels: statusLabels,
+                    stroke: {
+                        show: true,
+                        width: 1,
+                        colors: ['#1b7a7a']
+                    },
+                    dataLabels: {
+                        enabled: true,
+                        formatter: function (val, opts) {
+                            // val حالا درصد نیست، سهم از کل
+                            let realVal = opts.w.config.series[opts.seriesIndex];
+                            return realVal === 0 ? '' : (realVal * 100).toFixed(2) + '%'; // نمایش درصد
+                        },
+                        style: { fontSize: '10px', fontWeight: 'bold' },
+                        dropShadow: { enabled: true, opacity: 0.6 }
+                    },
+                    legend: {
+                        show: true,
+                        position: 'bottom',
+                        fontSize: '9px',
+                        markers: { width: 8, height: 8 },
+                        itemMargin: { vertical: 2 }
+                    },
+                    tooltip: {
+                        theme: 'dark',
+                        y: {
+                            formatter: (val) => "سهم: " + (val * 100).toFixed(2) + "%"
+                        }
+                    },
+                    title: {
+                        text: 'سهم هر وضعیت از کل ارجاع',
+                        align: 'center',
+                        style: { fontSize: '13px', color: '#fff' }
+                    }
+                };
+
+                chart = new ApexCharts(document.querySelector("#pieChart"), options);
+                chart.render();
+            }
+        }
+
+
+        // لود اولیه
+        $(document).ready(function () {
+            updateChart();
+        });
+    </script>
+    @*نمودار میله ای*@
+    @*<script>
+            var chart;
+
+            function updateChart() {
+                // لیست ثابت ۱۰ وضعیت برای محور افقی
+                const statusLabels = [
+                    "وصول کامل", "تقسیط", "قطع", "مهلت (پیگیری مجدد)",
+                    "ادعای قبض اشتباه (پیگیری مجدد)", "اصلاح شماره تماس (پیگیری مجدد)",
+                    "پرونده حقوقی (پیگیری مجدد)", "نیاز به پیگیری ستاد",
+                    "عدم پاسخگویی تلفنی", "عدم تماس یا اعلام مسئول پیگیری"
+                ];
+
+                let stats = {};
+                statusLabels.forEach(label => {
+                    stats[label] = { sumBeroz: 0, sumErja: 0 };
+                });
+
+                // استخراج دیتا از سطرهای Visible جدول
+                $('.task-list-row:visible').each(function () {
+                    let status = $(this).data('filter06');
+
+                    // تبدیل دیتا به عدد (حذف کاما)
+                    let beroz = parseFloat($(this).data('beroz').toString().replace(/,/g, '')) || 0;
+                    let erja = parseFloat($(this).data('erja').toString().replace(/,/g, '')) || 0;
+
+                    if (status && stats.hasOwnProperty(status)) {
+                        stats[status].sumBeroz += beroz;
+                        stats[status].sumErja += erja;
+                    }
+                });
+
+                // محاسبه حاصل تقسیم با دقت بالا
+                let finalData = statusLabels.map(label => {
+                    let s = stats[label];
+                    if (s.sumErja === 0) return 0;
+                    let result = s.sumBeroz / s.sumErja;
+                    return parseFloat(result.toFixed(4));
+                });
+
+                if (chart) {
+                    chart.updateOptions({
+                        series: [{ name: 'حاصل تقسیم', data: finalData }]
+                    });
+                } else {
+                    var options = {
+                        chart: {
+                            type: 'bar',
+                            height: '100%',
+                            foreColor: '#fff',
+                            fontFamily: 'inherit',
+                            toolbar: { show: false },
+                            zoom: { enabled: false }
+                        },
+                        colors: ['#e63946', '#f4a261', '#e9c46a', '#2a9d8f', '#4caf50', '#601CE8', '#00E396', '#FEB019', '#FF4560', '#33B2DF'],
+                        series: [{ name: 'حاصل تقسیم', data: finalData }],
+                        plotOptions: {
+                            bar: {
+                                horizontal: false,
+                                columnWidth: '55%',
+                                borderRadius: 8,
+                                borderRadiusApplication: 'end',
+                                borderRadiusWhenStacked: 'none',
+                                distributed: true,
+                                dataLabels: {
+                                    position: 'top',
+                                }
+                            }
+                        },
+                        dataLabels: {
+                            enabled: true,
+                            formatter: function (val) {
+                                return val === 0 ? '' : val.toFixed(3);
+                            },
+                            offsetY: -25,
+                            style: {
+                                fontSize: '11px',
+                                fontWeight: 'bold',
+                                colors: ['#fff']
+                            },
+                            dropShadow: {
+                                enabled: true,
+                                top: 1, left: 1, blur: 1, color: '#000', opacity: 0.45
+                            }
+                        },
+                        grid: {
+                            borderColor: '#1b7a7a66',
+                            strokeDashArray: 3,
+                            xaxis: { lines: { show: false } },
+                            yaxis: { lines: { show: true } }
+                        },
+                        xaxis: {
+                            categories: statusLabels,
+                            labels: {
+                                rotate: 90,
+                                rotateAlways: true,
+                                style: { colors: '#fff', fontSize: '8px' }
+                            },
+                            axisBorder: { show: true, color: '#fff' },
+                            axisTicks: { show: false }
+                        },
+                        yaxis: {
+                            min: 0,
+                            forceNiceScale: true,
+                            max: function (max) { return max * 1.2 },
+                            labels: {
+                                offsetX: -20, // همون مقداری که خودت تنظیم کردی
+                                style: { colors: '#fff' },
+                                formatter: (val) => val.toFixed(2)
+                            }
+                        },
+                        tooltip: {
+                            theme: 'dark',
+                            y: {
+                                formatter: (val) => val.toFixed(4)
+                            }
+                        },
+                        legend: { show: false },
+                        title: {
+                            offsetY: 20,
+                            text: 'نمودار حاصل تقسیم (بروز / ارجاع)',
+                            align: 'center',
+                            style: { fontSize: '16px', color: '#fff' }
+                        }
+                    };
+
+                    chart = new ApexCharts(document.querySelector("#debtRatioChart"), options);
+                    chart.render();
+                }
+            }
+
+            // این خط رو حتماً بذار که در لود اولیه نمودار پر بشه
+            $(document).ready(function () {
+                updateChart();
+            });
+            //var chart;
+
+            //function updateChart() {
+            //    // لیست ثابت ۱۰ وضعیت برای محور افقی
+            //    const statusLabels = [
+            //        "وصول کامل", "تقسیط", "قطع", "مهلت (پیگیری مجدد)",
+            //        "ادعای قبض اشتباه (پیگیری مجدد)", "اصلاح شماره تماس (پیگیری مجدد)",
+            //        "پرونده حقوقی (پیگیری مجدد)", "نیاز به پیگیری ستاد",
+            //        "عدم پاسخگویی تلفنی", "عدم تماس یا اعلام مسئول پیگیری"
+            //    ];
+
+            //    let stats = {};
+            //    statusLabels.forEach(label => {
+            //        stats[label] = { sumBeroz: 0, sumErja: 0 };
+            //    });
+
+            //    // استخراج دیتا از سطرهای Visible جدول
+            //    $('.task-list-row:visible').each(function () {
+            //        let status = $(this).data('filter06');
+
+            //        // تبدیل دیتا به عدد (حذف کاما)
+            //        let beroz = parseFloat($(this).data('beroz').toString().replace(/,/g, '')) || 0;
+            //        let erja = parseFloat($(this).data('erja').toString().replace(/,/g, '')) || 0;
+
+            //        if (status && stats.hasOwnProperty(status)) {
+            //            stats[status].sumBeroz += beroz;
+            //            stats[status].sumErja += erja;
+            //        }
+            //    });
+
+            //    // محاسبه حاصل تقسیم (مثلاً 4 تقسیم بر 2 مساوی 2)
+            //    let finalData = statusLabels.map(label => {
+            //        let s = stats[label];
+            //        if (s.sumErja === 0) return 0;
+            //        let result = s.sumBeroz / s.sumErja;
+            //        // خروجی رو تا ۲ رقم اعشار می‌گیریم که اگه رند نبود هم دقیق باشه
+            //        return parseFloat(result.toFixed(2));
+            //    });
+
+            //    if (chart) {
+            //        chart.updateOptions({
+            //            series: [{ name: 'حاصل تقسیم', data: finalData }]
+            //        });
+            //    } else {
+            //        var options = {
+            //            chart: {
+            //                type: 'bar',
+            //                height: 450,
+            //                foreColor: '#fff',
+            //                fontFamily: 'inherit',
+            //                toolbar: { show: false },
+            //                zoom: { enabled: false }
+            //            },
+            //            colors: ['#e63946', '#f4a261', '#e9c46a', '#2a9d8f', '#4caf50', '#601CE8', '#00E396', '#FEB019', '#FF4560', '#33B2DF'],
+            //            series: [{ name: 'حاصل تقسیم', data: finalData }],
+            //            plotOptions: {
+            //                bar: {
+            //                    horizontal: false,
+            //                    columnWidth: '55%',
+            //                    borderRadius: 8,
+            //                    borderRadiusApplication: 'end',
+            //                    borderRadiusWhenStacked: 'none',
+            //                    distributed: true,
+            //                    dataLabels: {
+            //                        position: 'top',
+            //                    }
+            //                }
+            //            },
+            //            dataLabels: {
+            //                enabled: true,
+            //                formatter: function (val) {
+            //                    return val === 0 ? '' : val; // نمایش حاصل تقسیم (مثل 2 یا 1.5)
+            //                },
+            //                offsetY: -25,
+            //                style: {
+            //                    fontSize: '11px',
+            //                    fontWeight: 'bold',
+            //                    colors: ['#fff']
+            //                },
+            //                dropShadow: {
+            //                    enabled: true,
+            //                    top: 1, left: 1, blur: 1, color: '#000', opacity: 0.45
+            //                }
+            //            },
+            //            grid: {
+            //                borderColor: '#1b7a7a66',
+            //                strokeDashArray: 3,
+            //                xaxis: { lines: { show: false } },
+            //                yaxis: { lines: { show: true } }
+            //            },
+            //            xaxis: {
+            //                categories: statusLabels,
+            //                labels: {
+            //                    rotate: 90,
+            //                    rotateAlways: true,
+            //                    style: { colors: '#fff', fontSize: '8px' }
+            //                },
+            //                axisBorder: { show: true, color: '#fff' },
+            //                axisTicks: { show: false }
+            //            },
+            //            yaxis: {
+            //                min: 0,
+            //                forceNiceScale: true,
+            //                max: function (max) { return max * 1.2 },
+            //                labels: {
+            //                    style: { colors: '#fff' },
+            //                    formatter: (val) => val // نمایش عدد ساده در محور Y
+            //                }
+            //            },
+            //            tooltip: {
+            //                theme: 'dark',
+            //                y: {
+            //                    formatter: (val) => val
+            //                }
+            //            },
+            //            legend: { show: false },
+            //            title: {
+            //                offsetY: 20,
+            //                text: 'نمودار حاصل تقسیم (بروز / ارجاع)',
+            //                align: 'center',
+            //                style: { fontSize: '16px', color: '#fff' }
+            //            }
+            //        };
+
+            //        chart = new ApexCharts(document.querySelector("#debtRatioChart"), options);
+            //        chart.render();
+            //    }
+            //}
+        </script>*@
+    <script>
+        $(document).ready(function () {
+            function formatThousandsInput(el) {
+
+                let v = el.value;
+
+                if (!v) return;
+
+                // جدا کردن اپراتور
+                let op = "";
+                if (v.startsWith(">=") || v.startsWith("<=")) {
+                    op = v.substring(0, 2);
+                    v = v.substring(2);
+                } else if (v.startsWith(">") || v.startsWith("<") || v.startsWith("=")) {
+                    op = v.substring(0, 1);
+                    v = v.substring(1);
+                }
+
+                // حذف همه چیز غیر عدد
+                v = v.replace(/[^\d]/g, '');
+
+                if (!v) {
+                    el.value = op;
+                    return;
+                }
+
+                // هزارگان
+                v = parseInt(v, 10).toLocaleString('en-US');
+
+                el.value = op + v;
+            }
+            $('#filter04-filter, #filter05-filter').on('input', function () {
+                formatThousandsInput(this);
+            });
+
+            function parseNumberFilter(expr, value) {
+
+                if (!expr) return true;
+
+                expr = expr.replace(/,/g, '').toLowerCase().trim();
+
+                let num = parseFloat(expr.replace(/[<>=]/g, ''));
+                if (isNaN(num)) return true;
+
+                value = value.toString().replace(/,/g, ''); // ✅ مهم
+                value = parseFloat(value) || 0;
+
+                if (expr.startsWith(">=")) return value >= num;
+                if (expr.startsWith("<=")) return value <= num;
+                if (expr.startsWith(">")) return value > num;
+                if (expr.startsWith("<")) return value < num;
+                if (expr.startsWith("=")) return value == num;
+
+                return value == num;
+            }
+            function updateSums() {
+
+                let sumErja = 0;
+                let sumBeroz = 0;
+
+                $('.task-list-row:visible').each(function () {
+
+                    let erja = $(this).data('erja') || 0;
+                    let beroz = $(this).data('beroz') || 0;
+
+                    erja = parseInt(erja.toString().replace(/,/g, '')) || 0;
+                    beroz = parseInt(beroz.toString().replace(/,/g, '')) || 0;
+
+                    sumErja += erja;
+                    sumBeroz += beroz;
+                });
+
+                // 👇 بدون اعشار + هزارگان
+                $('#sum-erja').text(sumErja.toLocaleString('en-US', { maximumFractionDigits: 0 }));
+                $('#sum-beroz').text(sumBeroz.toLocaleString('en-US', { maximumFractionDigits: 0 }));
+            }
+
+
+
+            filters = {
+                filter01: null,
+                filter02: null,
+                filter03: null,
+                filter04: null, filter05: null,
+                filter06: null,
+                filter07: null,
+                filter08: null,
+
+            };
+            function updateFilters() {
+                $('.task-list-row').hide().filter(function () {
+                    var self = $(this),
+                        result = true;
+
+                    Object.keys(filters).forEach(function (filter) {
+                        var filterData = self.data(filter);
+                        if (filters[filter] && (filters[filter] != 'None') && (filters[filter] != 'همه')) {
+                            // تبدیل داده به رشته و بررسی مقدار
+                            if (filter === 'filter04' || filter === 'filter05') {
+
+                                let numericValue = self.data(filter === 'filter04' ? 'erja' : 'beroz');
+                                result = result && parseNumberFilter(filters[filter], numericValue);
+
+                            } else {
+
+                                result = result && (filterData && filterData.toString().indexOf(filters[filter]) !== -1);
+
+                            }
+                        }
+                    });
+
+                    return result;
+                }).show();
+                updateSums();
+                updateChart();
+
+            }
+
+
+            function changeFilter(filterName) {
+                filters[filterName] = this.value;
+                updateFilters();
+            }
+
+            $('#filter01-filter').on('input', function () {
+                changeFilter.call(this, 'filter01');
+            });
+            $('#filter02-filter').on('input', function () {
+                changeFilter.call(this, 'filter02');
+            });
+            $('#filter03-filter').on('input', function () {
+                changeFilter.call(this, 'filter03');
+            });
+            $('#filter04-filter').on('input', function () {
+                changeFilter.call(this, 'filter04');
+            });
+            $('#filter05-filter').on('input', function () {
+                changeFilter.call(this, 'filter05');
+            });
+            $('#filter06-filter').on('input', function () {
+                changeFilter.call(this, 'filter06');
+            }); $('#filter07-filter').on('input', function () {
+                changeFilter.call(this, 'filter07');
+            });
+            $('#filter08-filter').on('input', function () {
+                changeFilter.call(this, 'filter08');
+            });
+            document.addEventListener("DOMContentLoaded", function () {
+
+                const maxLength = 30;
+
+                document.querySelectorAll(".limit-cell").forEach(cell => {
+
+                    // فقط یک بار متن کامل رو ذخیره کن
+                    if (!cell.dataset.fullText) {
+                        cell.dataset.fullText = cell.innerText.trim();
+                    }
+
+                    const fullText = cell.dataset.fullText;
+
+                    if (fullText.length > maxLength) {
+                        cell.innerText = fullText.substring(0, maxLength) + "...";
+                    }
+
+                    let tooltip = null;
+
+                    cell.addEventListener("mouseenter", function () {
+
+                        if (fullText.length <= maxLength) return;
+
+                        tooltip = document.createElement("div");
+                        tooltip.className = "limit-tooltip";
+                        tooltip.innerText = fullText;
+                        document.body.appendChild(tooltip);
+
+                        const rect = cell.getBoundingClientRect();
+
+                        tooltip.style.left = rect.left + window.scrollX + "px";
+                        tooltip.style.top =
+                            rect.top + window.scrollY - tooltip.offsetHeight + 30 + "px";
+
+                        tooltip.style.display = "block";
+                    });
+
+                    cell.addEventListener("mouseleave", function () {
+                        if (tooltip) {
+                            tooltip.remove();
+                            tooltip = null;
+                        }
+                    });
+                });
+
+            });
+            updateSums();
+
+        });
+    </script>
+</body>
+</html>

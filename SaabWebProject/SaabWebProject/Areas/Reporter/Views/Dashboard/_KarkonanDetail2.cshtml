@@ -1,0 +1,88 @@
+﻿@model IEnumerable<SaabWebProject.Models.DomainModels.tbMoalefeValuePishkhan>
+
+
+
+<div class="d-flex">
+    <div class="col-xl-6 d-flex flex-column">
+        <div class="d-flex">
+            @if (Model.Where(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-وضعیت قرارداد").Select(p => p.mlfval_Value).FirstOrDefault() == "0")
+            {
+
+                <span>وضعیت قرارداد: </span>
+                <svg class="w-6 h-6 NotAcceptedSvg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            }
+            else
+            {
+
+                <span>وضعیت قرارداد: </span>
+                <svg class="w-6 h-6 AcceptedSvg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            }
+
+        </div>
+   
+    </div>
+    <div class="col-xl-6">
+        <div class="d-flex flex-column" style="font-size:12px">
+          
+            <div class="d-flex justify-content-between ">
+
+                    @{ int x = Convert.ToInt32(Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-مانده مطالبات").mlfval_Value);
+                        int y = Convert.ToInt32(Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-مانده ذخایر").mlfval_Value);
+                        int z = Convert.ToInt32(Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-مانده اقساط").mlfval_Value);
+                        int l = Convert.ToInt32(Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-مانده پاداش و جرایم").mlfval_Value);
+                        int f = Convert.ToInt32(@Model.FirstOrDefault(p => p.tbContractMoalefeDastmozdi.md_Title == "پیشخوان-مامورین-مانده مشارکت").mlfval_Value);
+                    }
+
+                    @if (Convert.ToInt32(x + y + z + f + l) > 0)
+                    {
+                        <div class="d-flex justify-content-end align-items-center" style="margin-bottom:-20px">
+
+                            بستانکار
+                            <span class="mx-2 number" style="color:#90e2ee;font-size:15px">
+                                @Convert.ToInt32(x + y + z + l + f)
+
+
+                            </span>
+                        </div>
+
+                    }
+                    else
+                    {
+                        <div class="d-flex justify-content-end align-items-center" style="margin-bottom:-20px">
+
+                            <span class="mx-2 number" style="color:#90e2ee;font-size:11px">
+
+                                @Convert.ToInt32(Convert.ToInt32(x + y + z + l + f) * -1)
+                            </span>
+
+                        </div>
+                    }
+
+
+            </div>
+           
+        </div>
+    </div>
+
+</div>
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+
+<script>
+
+    $(function () {
+        $.each($(".number"), function (index, item) {
+
+            var amount = $(this).text().replace(/[\D\s\._\-]+/g, "");
+
+            amount = amount ? parseInt(amount, 10) : 0;
+            $(this).text(function () {
+                return (amount === 0) ? "0" : amount.toLocaleString("en-US");
+            });
+        });
+
+    });
+</script>

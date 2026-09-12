@@ -1,0 +1,233 @@
+﻿
+@{
+    ViewBag.Title = "پله های مالیاتی";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Form</title>
+    <!-- Add jQuery library -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+</head>
+<body>
+
+    <div id="formContainer">
+        <div class="row" id="rowTemplate">
+            <div class="col-xl-2">
+                <label class="form-label">شماره پله</label>
+                <input class="form-control numberstep" value="1" id="numberstep_1" />
+            </div>
+            <div class="col-xl-2">
+                <label class="form-label">از مبلغ</label>
+                <input class="form-control fronamount" id="fronamount_1" oninput="formatCurrency(this)" />
+            </div>
+            <div class="col-xl-2">
+                <label class="form-label">تامبلغ</label>
+                <input class="form-control toamount" id="toamount_1" oninput="formatCurrency(this)" />
+            </div>
+            <div class="col-xl-2">
+                <label class="form-label">درصد</label>
+                <input class="form-control Percent" id="Percent_1" />
+            </div>
+            <div class="col-xl-2">
+                <button class="btn form-control buttonGeneral buttonsabt2" style="font-size:10px;" onclick="addNewFields(this)">
+                    <i class="fa fa-plus VecGeneral"></i>
+                </button>
+                <button class="btn form-control buttonGeneral buttonsabt2" style="font-size:10px;" onclick="removeFields(this)">
+                    <i class="fa fa-minus VecGeneral"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="margin-top:20px; margin-bottom:20px">
+        <div class="col-xl-10">
+        </div>
+
+        <div class="col-xl-2">
+            <button class="btn form-control buttonsabt" id="btnCreate1">
+                <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                <span class="bSabt-text">ثبت</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Add the process button -->
+   <script>
+
+
+
+$("#btnCreate1").click(function () {
+    var Filters = [];
+    console.log("ok");
+
+    for (var i = 1; i <= count; i++) {
+        var obj = new Object();
+
+        var inputString = $("#fronamount_" + i).val();
+        var resultString = inputString.replace(/,/g, '');
+        obj.Fromamount = resultString;
+
+        var inputString2 = $('#toamount_' + i).val();
+        var resultString2 = (inputString2 ?? '').replace(/,/g, '');
+        obj.Toamount = resultString2;
+
+        obj.Percent_amount = $('#Percent_' + i).val();
+        obj.number = $('#numberstep_' + i).val();
+
+        // Do something with the 'obj' here, e.g., push it into an array
+        Filters.push(obj);
+    }
+
+
+
+
+
+
+
+
+
+
+
+    console.log(Filters);
+
+    sendAjax('@Url.Action("tb_Step_tax_Creat", "Formula", new { area = "Salaries" })', Filters);
+});
+
+
+
+    function sendAjax(url, data) {
+        console.log(url);
+
+        $.ajax({
+            beforeSend: function () {
+                document.getElementById("loading-message").style.display = "block";
+            },
+            url: url,
+            data: { Filters: data },
+            type: "POST",
+            dataType: "html",
+            success: function (resp) {
+                console.log(resp);
+                document.getElementById("loading-message").style.display = "none";
+                if (resp == "True") {
+                    alert("با موفقیت ثبت شد");
+                    location.reload();
+                } else {
+                    alert("در ثبت دچار خطا شده ایم ! لطفا بعدا تلاش نمائید")
+                }
+            },
+            error: function (resp) {
+                document.getElementById("loading-message").style.display = "none";
+                alert("دچار مشکل شده است ");
+                console.log(resp);
+            }
+        });
+    }
+    </script>
+    <script>
+        function formatCurrency(input) {
+            // حذف همه کاراکترهای غیر از اعداد و "." (جداکننده اعشاری)
+            let value = input.value.replace(/[^\d.]/g, '');
+
+            // تبدیل مقدار به عدد اعشاری
+            let number = parseFloat(value);
+
+            // اگر عدد معتبر باشد، آن را به صورت سه رقمی جداکنده کنید
+            if (!isNaN(number)) {
+                let formattedValue = number.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+                // قرار دادن مقدار فرمت شده در ورودی
+                input.value = formattedValue;
+
+            }
+        }
+        //var debtorCreditValue = $("#pestenka").val();
+        //var resultString = debtorCreditValue.replace(/,/g, '');
+        //fd2.append("Creditor", resultString);
+        //var debtorCreditValue2 = $("#bdehkar").val();
+
+
+
+        //console.log(resultString)
+        //var resultString2 = debtorCreditValue2.replace(/,/g, '');
+        //console.log(resultString2)
+        //console.log(resultString2)
+    </script>
+    <script>
+        var count = 1;
+
+        $(document).on('input', '.toamount', function () {
+
+            var changedId = $(this).attr('id');
+
+
+            var index = changedId.split('_')[1];
+
+
+            var targetId = '#fronamount_' + (parseInt(index) + 1);
+
+
+            var changedValue = $(this).val();
+
+
+            $(targetId).val(changedValue);
+        });
+
+
+        function addNewFields(button) {
+            count++;
+
+
+            var clonedRow = $('#rowTemplate').clone();
+
+
+            var uniqueId = 'row_' + count;
+            clonedRow.attr('id', uniqueId);
+
+            clonedRow.find('.numberstep').val(count);
+
+
+            clonedRow.find('.fronamount').attr('id', 'fronamount_' + count);
+            clonedRow.find('.toamount').attr('id', 'toamount_' + count);
+            clonedRow.find('.Percent').attr('id', 'Percent_' + count);
+            clonedRow.find('.numberstep').attr('id', 'numberstep_' + count);
+
+
+            clonedRow.find('.fronamount').val($('#toamount_' + (count - 1)).val());
+
+            // Clear the input values in the other cloned fields
+            clonedRow.find('.toamount, .Percent').val('');
+
+            // Remove the ID from the cloned row to avoid duplicate IDs
+            clonedRow.removeAttr('id');
+
+            // Add event listeners for the buttons in the cloned row
+            clonedRow.find('.buttonsabt2').eq(0).text('+').attr('onclick', 'addNewFields(this)');
+            clonedRow.find('.buttonsabt2').eq(1).text('-').attr('onclick', 'removeFields(this)');
+
+            // Append the cloned row with new IDs to the formContainer
+            $('#formContainer').append(clonedRow);
+        }
+
+
+        function removeFields(button) {
+            // Remove the corresponding row when "-" button is clicked
+            count--;
+            $(button).closest('.row').remove();
+        }
+
+
+    </script>
+
+</body>
+</html>
+
+
+
+
+
+

@@ -1,0 +1,139 @@
+﻿@using SaabWebProject.Models.Classes;
+@{
+    Layout = null;
+}
+@model SaabWebProject.Models.DomainModels.TbDescriptionDetail
+<div class="row mt-5">
+
+    <div class="col-xl-2" id="countdays">
+        <label class="form-label"> مقدار</label>
+        <input class="form-control sdad"id="dksj" value="@Model.value" />
+    </div>
+    <div class="col-xl-4" id="titlee">
+        <label class="form-label"> شرح</label>
+        <input class="form-control" />
+    </div>
+    <div class="col-xl-2 ">
+        <label class="form-label">نوع عملیات</label>
+        <select class="form-select" id="bed">
+            <option value="0">کسر</option>
+            <option value="1">افزودن</option>
+        </select>
+    </div>
+    <div class="col-xl-3">
+
+    </div>
+    <div class="col-xl-1">
+        <button class="btn form-control buttonsabt" id="sabt">
+            <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+            <span class="bSabt-text">ثبت</span>
+        </button>
+    </div>
+
+
+</div>
+
+<script>
+    //$(document).ready(function () {
+    //    const ivalueElements = document.getElementsByClassName("sdad");
+
+    //    for (const ivalueElement of ivalueElements) {
+    //        const value = ivalueElement.textContent;
+
+    //        // تبدیل مقدار به عدد
+    //        const number = Number(value);
+
+    //        // تبدیل عدد به رشته با جداکننده
+    //        const formattedNumber = number.toLocaleString("fa-IR");
+
+    //        // تنظیم مقدار td با عدد جدا شده
+    //        ivalueElement.textContent = formattedNumber;
+    //    }
+    //});
+       $("#sabt").click(function () {
+    var idd = @Model.ID;
+           var idd2 = $('#titlee').val();
+           var idd3 = $('#dksj').val();
+           var idd4 = $('#bed').val();
+   /*    var idd5 = $('#Sorat').val();*/
+
+       console.log(idd3);
+           console.log(idd4);
+
+    var fd2 = new FormData();
+       var Filter = [];
+
+    $.ajax({
+        url: '@Url.Action("edittaeed", "Statment", new { area = "Statments" })?id=' + idd + '&titlee=' + idd2 + '&value=' + idd3 +'&idd4='+idd4,
+        type: 'POST',
+        processData: false,
+        contentType: false,
+        success: function (resp1) {
+            console.log("okeye");
+            console.log(resp1);
+            $("#loading-message").css("display", "none");
+            if (resp1 == "true") {
+                alert("با موفقیت ثبت شد");
+            }
+            @*fd2 = new FormData();
+
+            $('.installmentAmountInputManually').each(function (i, obj) {
+                let count = 0;
+
+                if ($(this).attr("id").split("_").length == 2) {
+                    var obj = new Object();
+                    count++;
+                    console.log($(this).attr("id"));
+                    var parts = $(this).attr("id").split("_"); // Corrected line                    var inputString = $(this).val();
+                    console.log($(this).val());
+
+                    var Year_id = "bestankar_" + parts[1];
+                    var ttt = "bed_" + parts[1];
+                    var Monthid = "bedehkar_" + parts[1];
+                    var inputString2 = $("#" + Year_id).val().replace(/,/g, '');
+                    var inputString = $("#" + Monthid).val();
+                    var y = $("#" + ttt).val()
+                    console.log(y);
+                    console.log(Year_id);
+
+                    console.log(Monthid);
+
+                    console.log(inputString2);
+
+                    obj.value = inputString2;
+                    obj.numbersorat = idd5;
+                    obj.Descriptionn = inputString;
+                    obj.Fk_Description = resp1;
+                    if (y == 1) {
+                        obj.type = true;
+
+                    }
+                    else {
+                        obj.type = false;
+
+                    }
+                    console.log(obj);
+                    Filter.push(obj);
+                    console.log(Filter);
+                }
+            });
+            sendAjax('@Url.Action("createdetail", "Statment", new { area = "Statments" })', Filter);*@
+
+        },
+        error: function (resp1) {
+            console.log(resp1);
+            console.log("Nokeye");
+            $("#loading-message").css("display", "none");
+            Toast.fire({
+                icon: 'success',
+                background: '#35434A',
+                color: 'white',
+                title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+            }).then(() => {
+                $("#loading-message").css("display", "none");
+            });
+        }
+    });
+});
+
+</script>

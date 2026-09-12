@@ -1,0 +1,382 @@
+﻿@model SaabWebProject.Models.ViewModels.Contracts.Function.FunctionModel
+@using SaabWebProject.Models.DomainModels;
+@{
+    SaabEntities db = new SaabEntities();
+    Layout = null;
+}
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+@using System.Globalization
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>ModiriatStedad</title>
+
+    <style>
+        @@media (max-width: 768px) {
+            /* ستون اول ثابت */
+            .sticky-col {
+                position: sticky;
+                right: 0; /* ستون سمت چپ */
+                background: #fff; /* پس‌زمینه ثابت */
+                z-index: 2000; /* زیر هدر، بالاتر از بقیه سلول‌ها */
+                min-width: 120px; /* جلوگیری از قاطی شدن متن */
+            }
+            /* هدر ستون اول بالاتر از سلول‌ها */
+            .sticky-col-header {
+                z-index: 3;
+            }
+
+            table {
+                overflow-x: auto !important;
+            }
+
+
+
+            .title {
+                padding-right: 0 !important;
+                flex-direction: column !important;
+                gap: 10px !important;
+            }
+
+            .title-page {
+                display: none !important;
+            }
+
+            .lebel-title {
+                font-size: 10px;
+                margin-right: 10px;
+            }
+
+            #SaatKhateme, #SaatShoroo {
+                width: 80px;
+            }
+        }
+
+
+
+
+        input[type="radio"] {
+            margin-bottom: 0 !important;
+            margin-top: 4px;
+        }
+
+        .time-input {
+            margin-bottom: 0 !important;
+            width: 100px;
+            margin: auto;
+        }
+
+        .select-eyb {
+            margin-top: 5px !important;
+            margin-bottom: 5px !important;
+            width: 100px;
+            margin: auto;
+        }
+
+        .inputWithFilterIcon {
+            width: 100px;
+            margin: auto;
+        }
+
+
+        .TextCenter {
+            align-content: center;
+            align-items: center;
+            justify-content: center;
+            border-left: 1px solid white;
+        }
+
+
+
+        tbody tr td:first-child {
+            border-top-right-radius: 0px !important;
+            border-bottom-right-radius: 0px !important;
+            border-left: 1px solid white;
+            border-bottom: 1px solid white !important;
+        }
+
+        .position {
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px !important;
+        }
+
+        .title-page {
+            display: flex;
+            height: 100%;
+            width: 220px;
+            background: var(--bs-Meno-color);
+            align-content: center;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            padding: 0px !important;
+        }
+
+        .title {
+            border-width: 2px;
+            margin-bottom: 50px;
+            display: flex;
+            gap: 20px;
+            padding-right: 900px;
+        }
+
+            .title div {
+                display: flex;
+                gap: 5px;
+                align-content: center;
+                align-items: baseline;
+            }
+
+        .thwidth {
+            width: 60px;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="tab-content" id="pills-tabContent" style="padding:20px; background:#f7f7f7;">
+
+        @*<div class="row">
+                <div class="col-xl-12">
+
+                    <div class="form-control title position " style="padding:0 !important;">
+                        <div class="title-page">
+                            <label class="lebel-title">تعریف مشخصات خودرو</label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>*@
+
+        @*<div class="row">
+                <div class="col-xl-2">
+
+                    <label class="form-label">تاریخ ثبت</label>
+                    <input data-jdp jdp-btn-close data-jdp-miladi-input="miladi_date1" id="datepickerFrom_shw1" class="form-control pdate" name="datepickerFrom_shw1">
+                    <input id="miladi_date1" type="hidden" />
+                </div>
+            </div>*@
+
+        <div class="tab-pane fade show active" id="allTab">
+            <div class="table-responsive tableH_Lock" style="overflow-x:auto; height:300px;">
+                <table class="table table-hover" style="text-align:center; border-radius:10px; ">
+                    <thead>
+                        <tr>
+                            <th class="TextCenter sticky-col sticky-col-header" rowspan="4" style="border-bottom-right-radius: 0px !important; border-bottom-left-radius: 0px !important; border-top-left-radius: 0px !important; ">
+                                نام و نام خانوادگی
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter05-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+
+                                </div>
+                            </th>
+                            @*<th class="TextCenter sticky-col sticky-col-header" rowspan="3" style="border-bottom-right-radius:0px !important;">
+                                     کد پرسنلی
+                                    <div class="inputWithFilterIcon">
+                                        <input type="text" id="filter05-filter" class="inputFilter form-control" placeholder="">
+                                        <span><i class="fas fa-filter"></i></span>
+
+                                    </div>
+                                </th>*@
+                            @*<th colspan="13" style="border-bottom-left-radius:0px !important;border-bottom:1px solid white !important;  ">وضعیت حضور و غیاب</th>*@
+                        </tr>
+                        <tr>
+                            <th rowspan="3" class="TextCenter thwidth" style="border-radius:0px !important;">
+                                عدم حضور
+                            </th>
+
+                            <th colspan="3" class="TextCenter" style="border-radius: 0px !important; border-bottom: 1px solid white !important;">
+                                زمان کارکرد
+                            </th>
+                            <th rowspan="3" class="TextCenter thwidth" style="border-radius: 0px !important; border-bottom: 1px solid white !important;">
+                                کیلومتر خارج از محدوده
+                            </th>
+                            <th rowspan="3" class="TextCenter thwidth" style="border-radius: 0px !important; border-bottom: 1px solid white !important; ">
+                                نوع عملیات
+
+                            </th>
+                            <th colspan="3" class="TextCenter" style="border-bottom: 1px solid white !important;">
+                                آمادگی خودرو
+
+                            </th>
+
+                            <th rowspan="2" class="TextCenter" style="border-top-left-radius: 0px !important; border-bottom-left-radius:0px !important ; border-left:0px !important;">
+                                توضیحات
+
+                            </th>
+
+                        </tr>
+                        <tr>
+
+
+
+                            <th rowspan="3" class="TextCenter thwidth" style="border-radius:0px !important;">
+                                حاضر
+                            </th>
+                            <th style="border-radius:0px !important;" class="TextCenter thwidth">ساعت شروع</th>
+                            <th style="border-radius:0px !important;" class="TextCenter thwidth">ساعت خاتمه</th>
+
+                            <th rowspan="2" class="TextCenter thwidth">سالم</th>
+                            <th rowspan="2" class="TextCenter thwidth">معیوب</th>
+                            <th rowspan="2" class="TextCenter thwidth " style=" border-bottom-left-radius: 0px !important; border-top-left-radius: 0px !important;">نوع عیب</th>
+
+
+
+
+
+
+                        </tr>
+                        <tr>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            var rowIndex = 0;
+                        }
+                        @foreach (var item in Model.tbSabtEstedadKhodro)
+                        {
+                            rowIndex++;
+                            string groupName = $"attendance_{rowIndex}";
+                            string nam = "";
+                            if (item.Table_Khodro.PelakDakhel != null)
+                            {
+                                nam = item.Table_Khodro.PelakDakhel;
+                            }
+                            else
+                            {
+                                nam = item.Table_Khodro.PelakKharej;
+                            }
+                            @*<tr>*@
+                            @*<td class="sticky-col" style="background-color: var(--bs-table-th-bg)">@item.tbUsers.FullName _(@item.tbUsers.usr_Personal_ID)</td>*@
+                            <tr data-userid="@item.FK_" class="task-list-row234234" data-filter05="  @nam">
+                                <td class="sticky-col" style="background-color: var(--bs-table-th-bg)">
+                                    @nam
+                                </td>
+
+                                <td><input type="radio" name="btn1_@rowIndex" value="1" @(item.VaziatHozor == 1 ? "checked" : "") /></td>
+                                <td><input type="radio" name="btn1_@rowIndex" value="2" @(item.VaziatHozor == 2 ? "checked" : "") /></td>
+                                <td>
+                                    <input id="SaatShoroo" name="start_@rowIndex"
+                                           value="@item.SaatShoro"
+                                           class="time-input form-control"
+                                           placeholder="وارد کنید"
+                                           pattern="^([01]\d|2[0-3]):([0-5]\d)$"
+                                           title="فرمت ساعت باید مثل 7:00 تا 24:00 باشد" />
+                                </td>
+                                <td>
+                                    <input id="SaatKhateme" name="end_@rowIndex"
+                                           value="@item.SaatKhateme"
+                                           class="time-input form-control"
+                                           placeholder="وارد کنید"
+                                           pattern="^([01]\d|2[0-3]):([0-5]\d)$"
+                                           title="فرمت ساعت باید مثل 7:00 تا 24:00 باشد" />
+                                </td>
+                                <!--<td>-->
+                                @*<input id="kilometr" name="start_@rowIndex"
+                class="time-input form-control" />*@
+
+                                <!--</td>-->
+                                <td>
+                                    <input class="kilometr-input time-input form-control" name="end_@rowIndex" value="@item.Kilometr" />
+
+                                </td>
+
+                                <td>
+                                    <select name="owner_name_select" class="form-select select-eyb" id="selct_namen">
+                                        <option class="option-name" value="">انتخاب کنید</option>
+                                        <option value="نصب" @(item.NoeAmaliat == 1 ? "selected" : "")>نصب</option>
+                                        <option value="اصلاح" @(item.NoeAmaliat == 2 ? "selected" : "")>اصلاح</option>
+                                        <option value="تست کنتور" @(item.NoeAmaliat == 3 ? "selected" : "")>تست کنتور</option>
+                                        <option value="قراعت" @(item.NoeAmaliat == 4 ? "selected" : "")>قراعت</option>
+                                        <option value="تهیه کروکی" @(item.NoeAmaliat == 5 ? "selected" : "")>تهیه کروکی</option>
+                                        <option value="پلیس برق" @(item.NoeAmaliat == 6 ? "selected" : "")>پلیس برق</option>
+                                        <option value="بهره برداری" @(item.NoeAmaliat == 7 ? "selected" : "")>بهره برداری</option>
+
+
+                                    </select>
+                                </td>
+
+                                <td>
+                                    <input type="radio" name="btn2_@rowIndex" value="7" @(item.VaziatKhodro == 7 ? "checked" : "") />
+                                </td>
+                                <td>
+                                    <input type="radio" name="btn2_@rowIndex" value="8" @(item.VaziatKhodro == 8 ? "checked" : "") />
+                                </td>
+
+
+
+                                <td>
+
+
+                                    <select name="owner_name_select" class="form-select select-eyb select-noaeyb" id="selct_namen">
+                                        <option class="option-name" value="">انتخاب کنید</option>
+                                        @foreach (var it in db.createmoshkelmashin.ToList())
+                                        {
+
+                                            <option value="@it.ID" @(item.NoeEyb == it.ID ? "selected" : "")>@it.name</option>
+
+
+                                        }
+
+                                    </select>
+
+                                </td>
+                                <td>
+                                    <input id="Sharh" name="end_@rowIndex"
+                                           value="@item.Sharh"
+                                           class="time-input form-control"
+                                           placeholder="وارد کنید"
+                                           style="width:250px;" />
+                                </td>
+                                <!-- ساعت ورود -->
+
+                            </tr>
+                        }
+                    </tbody>
+
+
+
+
+                </table>
+            </div>
+            <div class="row">
+                <div class="col-xl-11"></div>
+                <div class="col-xl-1">
+                    <a href="#" class=" btn form-control buttonGeneral" id="Send">
+                        <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                        <span class="bGeneral-text">ثبت</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+
+
+    <script src="~/Assets/js/jalalidatepicker.min.js"></script>
+    <link href="~/Assets/css/jalalidatepicker.min.css" rel="stylesheet" />
+    <script src="~/Assets/js/jalaali.min.js"></script>
+    <link href="~/MyStyles/jalalidatepicker.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+    @*جدیدا رو اینجا بزن*@
+
+
+
+        
+    
+
+</body>
+</html>

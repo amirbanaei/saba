@@ -1,0 +1,719 @@
+﻿@model SaabWebProject.Models.DomainModels.tbresultpishkansehnaght
+
+@{
+    Layout = null;
+}
+
+
+<style>
+    /*-------------------------------*/
+    /* حاشیه های دور نمودار ها */
+    .apexcharts-bar-area {
+        stroke: #ffffff59;
+    }
+    /*-------------------------------*/
+    /* خط های افقی پشت نمودار */
+    .apexcharts-gridline, g line {
+        stroke: var(--bs-border-color-translucent);
+    }
+    /*-------------------------------*/
+    /*    .apexcharts-xaxis-tick {
+        transform: translateY(-39px);
+    }*/
+
+    .apexcharts-legend-series .apexcharts-legend-text {
+        /*color: var(--bs-heading-color) !important;*/
+        color: var(--bs-body-color) !important;
+        font-family: var(--bs-body-font-family) !important;
+    }
+
+    text.apexcharts-xaxis-label tspan,
+    text.apexcharts-yaxis-label tspan {
+        fill: var(--bs-body-color) !important;
+        font-family: var(--bs-body-font-family) !important;
+        font-size: 10px;
+    }
+
+    .apexcharts-tooltip.apexcharts-theme-light {
+        transform: translateY(-36px) !important;
+        direction: rtl;
+        text-align: center;
+    }
+    /*===============Gage===============================================*/
+    #barOverflow barOverflow .apexcharts-datalabel, .apexcharts-datalabel-label, .apexcharts-datalabel-value, .apexcharts-datalabels, .apexcharts-pie-label {
+        font-family: var(--bs-body-font-family) !important;
+        fill: var(--bs-app-sidebar-menu-link-color) !important;
+        opacity: 1;
+        font-size: 23px !important;
+        transform: translateY(-15px);
+    }
+
+    #barOverflow .apexcharts-canvas {
+        transform: translateY(-51px);
+        margin-bottom: -70px !important;
+    }
+    /*===============    ===============================================*/
+    .apexcharts-toolbar {
+        display: none;
+    }
+
+    .apexcharts-marker {
+        stroke: var(--bs-body-color);
+        stroke-width: 1px;
+    }
+</style>
+
+<style>
+
+
+    table th, table td {
+        vertical-align: middle;
+    }
+
+    th, td {
+        padding: 3px 6px !important;
+    }
+
+    .WTH {
+        width: 30.33%;
+        padding: 0 !important;
+    }
+
+    select.form-select, input.form-control {
+        margin-bottom: 0 !important;
+    }
+
+    input.form-control {
+        border-width: 1px !important;
+        width: 80% !important;
+    }
+
+    .btn {
+        margin-bottom: 10px !important;
+    }
+
+    .TitelL {
+        border-radius: 10px;
+        background-color: #146792 !important;
+    }
+    .TitelL2 {
+        border-radius: 10px;
+        background-color: #4c98fa !important;
+    }
+    .TitelL2L {
+        border-radius: 10px;
+        background-color: #4c98faad !important;
+    }
+    .TitelL3 {
+        border-radius: 10px;
+        background-color: #00b379 !important;
+    }
+    .TitelL3L {
+        border-radius: 10px;
+        background-color: #00b379a3 !important;
+    }
+
+    .TitelC {
+        border-radius: 0 10px 10px 0;
+        background-color: #146792 !important;
+    }
+
+    .Titel3 {
+        border-radius: 10px 0 0 10px;
+        background-color: #146792 !important;
+    }
+
+    .Titel1 {
+        border-radius: 10px;
+        background-color: #1469a18f !important;
+    }
+
+    .Titel2 {
+        border-radius: 0 10px 10px 0;
+        background-color: #1469a18f !important;
+    }
+
+    .Titel4 {
+        border-radius: 10px;
+        background-color: #1469a18f !important;
+    }
+
+    .Titel5 {
+        border-radius: 10px;
+        background-color: #00eaff7d !important;
+    }
+
+    tbody, td, tfoot, th, thead, tr {
+        border-color: var(--bs-tab-content-bg) !important;
+        border-style: solid !important;
+        border-width: 1px !important;
+        text-align: center
+    }
+
+ 
+</style>
+<style>
+    .modal-dialog {
+        max-width: 80% !important;
+    }
+
+
+    .modal2 {
+        display: none;
+        position: absolute; /* Change this from fixed */
+        z-index: 1000; /* Adjust z-index as needed */
+        left: 0;
+        top: 0;
+        width: 65%;
+        height: auto;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content2 {
+        background-color: black;
+        position: relative; /* Add relative positioning */
+        /*  margin: 15% auto;*/
+        padding: 20px;
+        border: 4px solid aqua;
+        border-radius: 30px;
+        width: 100%;
+        max-height: 100%;
+        overflow-y: auto;
+    }
+
+    .modal3 {
+        display: none;
+        position: absolute; /* Change this from fixed */
+        z-index: 1000; /* Adjust z-index as needed */
+        left: 0;
+        top: 0;
+        width: 65%;
+        height: auto;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content3 {
+        background-color: black;
+        position: relative; /* Add relative positioning */
+        margin: 65% auto;
+        padding: 20px;
+        border: 4px solid aqua;
+        border-radius: 30px;
+        width: 100%;
+        max-height: 100%;
+        overflow-y: auto;
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+    .fade-in {
+        animation: fadeIn 1s ease-in-out; /* Adjust duration and timing function as needed */
+    }
+</style>
+<style>
+    #chartdiv {
+        width: 100%;
+        height: 250px
+    }
+
+    #chartdiv22 {
+        width: 100%;
+        height: 250px
+    }
+
+    .modal-lg, .modal-xl {
+        margin-top: 8px;
+        max-width: 100% !important;
+    }
+    .clk {
+
+        height: 100%;
+    }
+    g[aria-labelledby="id-61-title"], g[aria-labelledby="id-221-title"] {
+        display: none;
+    }
+    .tttbl th, .tttbl td {
+        font-size: 12px;
+    }
+    .tttbl {
+        margin-bottom:0;
+    }
+</style>
+
+<div class="card p-2">
+    <div class="card-body">
+        <div class="row">
+            <h5>اطلاعات پایه و تعهدی</h5>
+        </div>
+        <div class="row" style="">
+            <div class="col-xl-4">
+                <div class="clk "><div id="chartdiv22"></div></div>
+
+            </div>
+            <div class="col-xl-3" style="text-align: center;">
+                <div class="clk ">
+                    <h4 style="color: #888">نیروی انسانی</h4>
+                    <img src="~/Areas/Reporter/Content/download (5).svg" style="height:188px" />
+                    <h4 style="color: #888">@Model.count_person نفر</h4>
+                </div>
+
+            </div>
+            <div class="col-xl-5">
+                <div class="clk "><div id="chartdiv"></div></div>
+
+            </div>
+        </div>
+
+
+
+
+        <!--<div class="row">
+
+        <div class="col-xl-3">
+            <table class="table1 table table-bordered">
+                <tr style="text-align:center;margin:auto">
+                    <th class="TitelL" colspan="7" rowspan="1">تعداد نیروی انسانی موجود</th>
+
+                </tr>
+                <tr style="text-align:center;margin:auto">
+                    <td class="TitelL" colspan="2" rowspan="1">@Model.count_person</td>
+
+                </tr>
+                <tr style="text-align:center;margin:auto">
+                    <th class="TitelL" colspan="7" rowspan="1">کمبود نیروی انسانی ( در تخصص اصلی )</th>
+
+                </tr>
+                <tr style="text-align:center;margin:auto">
+                    <td class="TitelL" colspan="1" rowspan="1">@string.Format("{0:N0}", Model.count_tagsoso_littel)</td>
+                    <td class="TitelL" colspan="1" rowspan="1">@string.Format("{0:N0}", Model.persent_tagsoso_littel)</td>
+
+                </tr>
+                <tr style="text-align:center;margin:auto">
+                    <th class="TitelL" colspan="7" rowspan="1">تورم نیروی کار (درتخصص اصلی)</th>
+
+                </tr>
+                <tr style="text-align:center;margin:auto">
+                    <td class="TitelL" colspan="1" rowspan="1">@string.Format("{0:N0}", Model.count_person_tavarom)</td>
+                    <td class="TitelL" colspan="1" rowspan="1">@string.Format("{0:N0}", Model.persent_person_tavarom)</td>
+
+                </tr>
+                <tr style="text-align:center;margin:auto">
+                    <th class="TitelL" colspan="7" rowspan="1">امکان جبران کسری از تورم (درحالت ایده آل)</th>
+
+                </tr>
+                <tr style="text-align:center;margin:auto">
+                    <td class="TitelL" colspan="1" rowspan="1">@string.Format("{0:N0}", Model.count_person_jobran)</td>
+                    <td class="TitelL" colspan="1" rowspan="1">@string.Format("{0:N0}", Model.persent_person_jobran)</td>
+
+                </tr>-->
+        @*<tr style="text-align:center;margin:auto">
+            <th class="WTH"></th>
+            <th class="WTH"></th>
+            <th class="WTH"></th>
+        </tr>
+        <tr style="text-align:center;margin:auto">
+            <td colspan="1" rowspan="1"><input class="form-control" /></td>
+            <td colspan="1" rowspan="1"><input class="form-control" /></td>
+            <td colspan="1" rowspan="1"><input class="form-control" /></td>
+        </tr>*@
+        <!--</table>
+        </div>
+        @{
+            var v1 = Model.count_need_person + Model.count_tagsoso_littel + Model.count_person_tavarom;
+            var v11 = Model.count_need_person / v1 * 100;
+            var v12 = Model.count_tagsoso_littel / v1 * 100;
+            var v13 = Model.count_person_tavarom / v1 * 100;
+
+
+        }
+        <div class="col-xl-9">
+
+        </div>
+
+    </div>-->
+
+
+        <hr />
+        <div class="clk ">
+        <div class="row">
+            <div class="col-xl-4">
+                <table class="table1 table table-bordered tttbl">
+                    <thead>
+                        <tr style="text-align:center;margin:auto">
+                            <th class="TitelL" colspan="1" rowspan="1">خلاصه نتایج تامین نیروی انسانی مورد نیاز (میلیارد ریال)</th>
+                            <th class="TitelL2" colspan="1" rowspan="1">سناریو اول :جذب و استخدام نیروی جدید</th>
+                            <th class="TitelL3" colspan="1" rowspan="1">سناریو دوم : بهره گیری از امکان اضافه کاری برای نیروهای موجود</th>
+                        </tr>
+                        <tr style="text-align:center;margin:auto">
+                            <th class="WTH"></th>
+                            <th class="WTH"></th>
+                            <th class="WTH"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="text-align:center;margin:auto">
+                            <td class="" colspan="1" rowspan="1">موجود</td>
+                            <td class="" colspan="1" rowspan="1">@string.Format("{0:N0}", Model.Condition1_mojod)</td>
+                            <td class="" colspan="1" rowspan="1">@string.Format("{0:N0}", Model.Condition2_mojod)</td>
+
+                        </tr>
+                        <tr style="text-align:center;margin:auto">
+                            <td class="" colspan="1" rowspan="1">جبران کمبودهای وضع موجود </td>
+                            <td class="" colspan="1" rowspan="1">@string.Format("{0:N0}", Model.Condition1_jobran)</td>
+                            <td class="" colspan="1" rowspan="1">
+                                @string.Format("{0:N0}", Model.Condition2_jobran)
+                            </td>
+
+                        </tr>
+
+                        <tr style="text-align:center;margin:auto">
+
+                            <td class="" colspan="1" rowspan="1">شرایط بهینه (حداکثر استفاده از توان نیروها)</td>
+                            <td class="" colspan="1" rowspan="1">@string.Format("{0:N0}", Model.Condition1_beheneh)</td>
+                            <td class="" colspan="1" rowspan="1">@string.Format("{0:N0}", Model.Condition2_beheneh)</td>
+
+                        </tr>
+                        <tr style="text-align:center;margin:auto">
+                            <td class="" colspan="1" rowspan="1">ایده آل (استقرار کامل مهارت در سطح کارکنان)</td>
+                            <td class="" colspan="1" rowspan="1">@string.Format("{0:N0}", Model.Condition1_edehal)</td>
+                            <td class="" colspan="1" rowspan="1">@string.Format("{0:N0}", Model.Condition2_edehal)</td>
+
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+            <div class="col-xl-8">
+                <div class="chartsty" id="chartdiv123"></div>
+
+            </div>
+
+        </div>
+        </div>
+
+
+    </div>
+
+        <div class="card-arrow">
+            <div class="card-arrow-top-left"></div>
+            <div class="card-arrow-top-right"></div>
+            <div class="card-arrow-bottom-left"></div>
+            <div class="card-arrow-bottom-right"></div>
+        </div>
+
+
+    </div>
+
+
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+
+<script src="~/Scripts/sweetalert2.js"></script>
+<script src="~/Scripts/jqueryMouseWheel.js"></script>
+<link href="~/Assets/plugins/BootstrapPersianDateTimePicker/src/jquery.md.bootstrap.datetimepicker.style.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Assets/plugins/apexcharts/dist/apexcharts.min.js"></script>
+<script>
+    var options = {
+        series: [
+            {
+                name: 'سناریو اول :جذب و استخدام نیروی جدید: ',
+                data: [@Model.Condition1_mojod, @Model.Condition1_edehal, @Model.Condition1_beheneh, @Model.Condition1_jobran]
+            },
+            {
+                name: 'سناریو دوم : بهره گیری از امکان اضافه کاری برای نیروهای موجود: ',
+                data: [@Model.Condition2_mojod, @Model.Condition2_edehal, @Model.Condition2_beheneh, @Model.Condition2_jobran]
+            }
+        ],
+        chart: {
+            height: 240,
+            type: 'area',
+            zoom: {
+                enabled: false
+            }
+        },
+        colors: ["#4c98fa", "#00b379"],
+        fill: {
+            type: "gradient",
+            gradient: {
+                shadeIntensity: 1,
+                inverseColors: false,
+                opacityFrom: 0.5,
+                opacityTo: 0,
+                stops: [0, 90, 100]
+            }
+        },
+        markers: {
+            size: 4,
+        },
+        dataLabels: {
+            enabled: false
+        },
+        stroke: {
+            curve: 'straight',
+            width: 3
+        },
+        grid: {},
+        xaxis: {
+            categories: [
+                'موجود', 'ایده آل', 'شرایط بهینه', 'دیجبران کمبودهای وضع موجود',
+            ],
+        }
+    };
+
+    var chart = new ApexCharts(document.querySelector("#chartdiv123"), options);
+    chart.render();
+</script>
+@*======================================================================*@
+
+<script src="~/Scripts/amcharts_4.10.39/themes/animated.js"></script>
+<script src="~/Scripts/amcharts_4.10.39/themes/dark.js"></script>
+<script src="~/Scripts/amcharts_4.10.39/core.js"></script>
+<script src="~/Scripts/amcharts_4.10.39/charts.js"></script>
+<script>
+    var options1 = {
+        series: [{
+            name: " نیروی انسانی",
+            data: [@Model.count_person_tavarom,
+                   @Model.count_tagsoso_littel,
+                   @Model.count_person_jobran
+            ]
+        }],
+        chart: {
+            height: 230,
+            type: 'bar',
+            events: {
+                click: function (chart, w, e) {
+                    // console.log(chart, w, e)
+                }
+            }
+        },
+        colors: ["#1679ab", "#52d3d8", "#38419d"],
+        plotOptions: {
+            bar: {
+                columnWidth: '45%',
+                borderRadius: 10,
+                distributed: true,
+            }
+        },
+        dataLabels: {
+            enabled: false
+        },
+        legend: {
+            show: false
+        },
+        xaxis: {
+            categories: [
+                "تورم",
+                "کمبود",
+                "جبران کسری از تورم",
+
+            ],
+
+            labels: {
+                //offsetY: -20,
+                style: {
+                    colors: ["#1679ab", "#52d3d8", "#38419d"],
+                    fontSize: '12px',
+                    fontWeight: 800
+                }
+            }
+        },
+        yaxis: {
+            title: {
+                text: 'نیروی انسانی',
+                offsetX: -65,
+                offsetY: 0,
+                style: {
+                    color: "#888888",
+                    fontSize: '12px',
+                    fontWeight: 800,
+                    fontFamily: 'var(--bs-body-font-family)',
+                },
+            },
+
+        },
+
+    };
+
+    var chart1 = new ApexCharts(document.querySelector("#chartdiv22"), options1);
+    chart1.render();
+</script>
+<script>
+
+    @*$(document).ready(function () {
+        // Themes begin
+        am4core.useTheme(am4themes_dark);
+        //am4core.useTheme(am4themes_animated);
+        // Themes end
+
+        // Create chart instance
+        var chart = am4core.create("chartdiv22", am4charts.XYChart3D);
+        //chart.paddingBottom = 30;
+        chart.angle = 30;
+        //chart.plotContainer.background.stroke = "#888";
+        //chart.plotContainer.background.strokeOpacity = .7;
+
+
+
+        // Add data
+        chart.data = [{
+                "country": "تورم",
+                "visits": @Model.count_person_tavarom,
+            }, {
+                "country": "کمبود",
+                "visits": @Model.count_tagsoso_littel,
+            }, {
+                "country": "جبران کسری",
+                "visits": @Model.count_person_jobran,
+            }
+        ];
+
+
+        // Create axes
+        var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+        categoryAxis.dataFields.category = "country";
+        categoryAxis.renderer.grid.template.location = 0;
+        categoryAxis.renderer.minGridDistance = 20;
+        categoryAxis.renderer.grid.template.disabled = false; // فعال کردن خطوط گرید
+        categoryAxis.renderer.grid.template.stroke = am4core.color("#888"); // تغییر رنگ خطوط گرید محور X به قرمز
+        categoryAxis.renderer.grid.template.strokeOpacity = .7; // تنظیم اوپَسیتی به 1 (کاملاً پررنگ)
+        categoryAxis.renderer.labels.template.fill = am4core.color("#888"); // تغییر رنگ نوشته های محور X به خاکستری
+        
+        
+        let labelTemplate = categoryAxis.renderer.labels.template;
+        labelTemplate.dy = -30;
+        labelTemplate.inside = false;
+        labelTemplate.rotation = -40; // چرخاندن نوشته‌های محور X به حالت عمودی
+
+
+
+        var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+        valueAxis.renderer.grid.template.stroke = am4core.color("#888"); // تغییر رنگ خطوط گرید محور Y به قرمز
+        valueAxis.renderer.grid.template.strokeOpacity = .7; // تنظیم اوپَسیتی به 1 (کاملاً پررنگ)
+        valueAxis.renderer.labels.template.fill = am4core.color("#888"); // تغییر رنگ نوشته های محور Y به خاکستری
+        valueAxis.title.text = "نیروی انسانی";
+        valueAxis.title.fill = am4core.color("#888");
+        valueAxis.title.dy = -80;
+        valueAxis.title.paddingBottom = 20;
+
+
+
+
+        // Create series
+        var series = chart.series.push(new am4charts.ColumnSeries3D());
+        series.dataFields.valueY = "visits";
+        series.dataFields.categoryX = "country";
+        series.name = "visits";
+        series.columns.template.propertyFields.fill = "color";
+        series.columns.template.tooltipText = "{valueY}";
+        
+
+
+
+        var columnTemplate = series.columns.template;
+        columnTemplate.adapter.add("fill", function (fill, target) {
+            return chart.colors.getIndex(target.dataItem.index);
+        })
+
+        columnTemplate.adapter.add("stroke", function (stroke, target) {
+            return chart.colors.getIndex(target.dataItem.index);
+        })
+
+
+
+    });*@
+
+</script>
+
+
+<script>
+    var eueuValue = 6;
+
+    var eueuValue2 = 88;
+    var eueuValue3 = 6;
+
+    am4core.ready(function () {
+        // Themes begin
+        am4core.useTheme(am4themes_animated);
+        // Themes end
+
+        var chartP = am4core.create("chartdiv", am4charts.PieChart3D);
+        chartP.hiddenState.properties.opacity = 1; // this creates initial fade-in
+
+        chartP.data = [
+            {
+                country: "تورم",
+                litres: eueuValue3,
+                color: am4core.color("#52d3d8")
+
+            },
+            {
+                country: "کمبود",
+                litres: eueuValue,
+                color: am4core.color("#1679ab")
+            },
+            {
+                country: "کل نیروی",
+                litres: eueuValue2,
+
+                color: am4core.color("#38419d")
+
+            }
+        ];
+
+        chartP.innerRadius = am4core.percent(40);
+        chartP.depth = 20; // عمق ثابت برای تمام بخش‌ها
+        chartP.angle = 40;
+        chartP.startAngle = 450; // شروع از بالای چارت
+        chartP.endAngle = 450 + 360; // نمایش کامل چارت
+        chartP.legend = new am4charts.Legend();
+        chartP.legend.disabled = true;
+
+        var seriesP = chartP.series.push(new am4charts.PieSeries3D());
+        seriesP.dataFields.value = "litres";
+        seriesP.dataFields.category = "country";
+        seriesP.slices.template.propertyFields.fill = "color";
+        seriesP.slices.template.cornerRadius = 20;
+
+        seriesP.tooltip.getFillFromObject = false;
+        seriesP.tooltip.background.fill = am4core.color("transparent");
+        seriesP.tooltip.background.strokeOpacity = 0;
+        seriesP.tooltip.disabled = true;
+
+        seriesP.labels.template.fill = am4core.color("#888");
+        //seriesP.labels.template.fontSize = 12;
+        //seriesP.labels.template.fontWeight = "bold";
+        /*        seriesP.labels.template.fontFamily = "BNazanin";*/
+        seriesP.labels.template.adapter.add("rotation", function (rotation, target) {
+            return 0;
+        });
+
+        seriesP.labels.template.adapter.add("radius", function (radius, target) {
+            return -20;
+        });
+
+        //seriesP.labels.template.adapter.add("radiusChange", function (radiusChange, target) {
+        //    return -50;
+        //});
+
+        seriesP.ticks.template.stroke = am4core.color("#888");
+        seriesP.ticks.template.strokeWidth = 2;
+        seriesP.labels.template.bent = true;
+        seriesP.labels.template.padding(0, 0, 0, 0);
+
+    }); // end am4core.ready()
+</script>

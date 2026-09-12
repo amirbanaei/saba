@@ -1,0 +1,734 @@
+﻿@{
+    ViewBag.Title = "تنظیمات فیش ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+<style>
+    .alert-box {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: var(--bs-tab-content-bg);
+        box-shadow: 0rem 0rem 1rem rgba(var(--bs-inverse-rgb), .35);
+        padding: 23px;
+        border-radius: 10px;
+        text-align: center;
+        z-index: 9999;
+        max-width: 460px;
+    }
+    /*---------------------------------------------------------------*/
+    .vBottom {
+        vertical-align: bottom !important;
+    }
+
+    .btnFaktor {
+        border-radius: 20px;
+        background-image: linear-gradient(#46b8cd, #10635b);
+        border-color: #ffffff00;
+        width: 97px;
+        height: 40px;
+        margin: 0 6px;
+    }
+
+    .btnFaktorE {
+        border-radius: 20px;
+        background-image: linear-gradient(#46b8cd, #10635b);
+        border-color: #ffffff00;
+        width: 120px;
+        height: 40px;
+        margin: 0 6px;
+    }
+
+    .btnFaktor, .btnFaktorE {
+        border-radius: 20px;
+        background-image: linear-gradient(#46b8cd, #10635b);
+        border-color: #ffffff00;
+        color: #fff !important;
+        height: 37px;
+    }
+
+    .rowFaktorE {
+        display: flex;
+        justify-content: flex-end;
+    }
+    /*---------------------------------------------------------------*/
+</style>
+<style>
+    .responsive {
+        font-size: 10px !important;
+        padding: 9px
+    }
+
+    @@media (min-width: 1270px) and (max-width: 1500px) {
+        .responsive {
+            font-size: 12px;
+            padding: 11px
+        }
+    }
+
+    .Le {
+        border-left: 1px solid var(--bs-border-input-color) !important;
+    }
+
+    .Ri {
+        border-right: 1px solid var(--bs-border-input-color) !important;
+    }
+
+    .To {
+        border-top: 1px solid var(--bs-border-input-color) !important;
+    }
+
+    .Bo {
+        border-bottom: 1px solid var(--bs-border-input-color) !important;
+    }
+
+    th {
+        vertical-align: middle;
+    }
+
+    .picker, .form-select, .row input {
+        margin-bottom: 10px !important;
+    }
+
+    .tableH_Lock {
+        max-height: 323px;
+    }
+
+    .inputFilter {
+        min-width: 60px !important;
+    }
+</style>
+
+<div class="">
+    <ul class="nav nav-tabs nav-tabs-v2 ps-4 pe-4" id="pills-tab" style="margin-bottom:30px">
+        <li class="nav-item me-3">
+            <a href="#SabteMoalefeJanebi" class="nav-link active" data-bs-toggle="tab">
+                <button class=" nav-btn">ثبت مولفه های جانبی کارکرد کارکنان</button>
+            </a>
+        </li>
+        <li class="nav-item me-3">
+            <a href="#TrifZaribShahrestan" class="nav-link" data-bs-toggle="tab">
+                <button class=" nav-btn">تعریف ضریب شهرستان</button>
+            </a>
+        </li>
+        <li class="nav-item me-3">
+            <a href="#TanzimTedadRozeKriMofid" class="nav-link" data-bs-toggle="tab">
+                <button class=" nav-btn">تنظیم تعداد روز کاری مفید</button>
+            </a>
+        </li>
+    </ul>
+
+
+
+
+    <div class="tab-content p-2">
+        @*--------------------------------------------------------------------------------------------------------*@
+        @*===============================<|  ثبت مولفه های جانبی کارکرد کارکنان  |>===============================*@
+        <div class="tab-pane fade show active" id="SabteMoalefeJanebi">
+            <div class="row mt-10px">
+                <div class="col-xl-2">
+                    <select class="form-select" id="year_usr">
+                        <option value="0">سال</option>
+
+                        @{
+                            System.Globalization.PersianCalendar cs2 = new System.Globalization.PersianCalendar();
+                            int currentYear1 = cs2.GetYear(DateTime.Now);
+
+                            for (var i = 4; i >= 0; i--)
+                            {
+                                var s = DateTime.Now.AddYears(-i);
+
+                                <option value="@cs2.GetYear(s)">@cs2.GetYear(s)</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-xl-2">
+                    <select class="form-select" id="month_usr">
+                        <option value="0">ماه</option>
+                        <option value="1">فروردین </option>
+                        <option value="2">اردیبهشت</option>
+                        <option value="3">خرداد</option>
+                        <option value="4">تیر</option>
+                        <option value="5">مرداد</option>
+                        <option value="6">شهریور</option>
+                        <option value="7">مهر</option>
+                        <option value="8">آبان</option>
+                        <option value="9">آذر</option>
+                        <option value="10">دی</option>
+                        <option value="11">بهمن</option>
+                        <option value="12">اسفند</option>
+                    </select>
+                </div>
+                <div class="col-xl-7"></div>
+                <div class="col-xl-1">
+                    <button class="btn form-control buttonGeneral" id="showSettingJ">
+                        <i class="fa fa-eye fa-fw me-1 VecGeneral"></i>
+                        <span class="bGeneral-text">نمایش</span>
+                    </button>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body p-2">
+                    <div class="table-responsive tableH_Lock">
+                        <table class="table table-hover text-nowrap tableSelect sticky-header">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        نام و نام خانوادگی
+                                        <div class="inputWithFilterIcon">
+                                            <input type="text" id="filter01-filter" class="inputFilter form-control" placeholder="">
+                                            <span><i class="fas fa-filter"></i></span>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        پیمان
+                                        <div class="inputWithFilterIcon">
+                                            <input type="text" id="filter02-filter" class="inputFilter form-control" placeholder="">
+                                            <span><i class="fas fa-filter"></i></span>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        شهرستان
+                                        <div class="inputWithFilterIcon">
+                                            <input type="text" id="filter03-filter" class="inputFilter form-control" placeholder="">
+                                            <span><i class="fas fa-filter"></i></span>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        حوزه فعالیت
+                                        <div class="inputWithFilterIcon">
+                                            <input type="text" id="filter04-filter" class="inputFilter form-control" placeholder="">
+                                            <span><i class="fas fa-filter"></i></span>
+                                        </div>
+                                    </th>
+                                    <th>مرخصی استحقاقی(روز)</th>
+                                    <th>مرخصی استعلاجی(روز)</th>
+                                    <th>غیبت(روز)</th>
+                                    <th>ساعت حضور(خروجی تایم کارت)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="task-list-row "
+                                    data-filter01=""
+                                    data-filter02=""
+                                    data-filter03=""
+                                    data-filter04="">
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                    <td>---</td>
+                                </tr>
+                                <tr><td>علی احمدی</td><td>کارگزاری فردوس</td><td>فردوس</td><td>تست کنتور</td><td>1</td><td></td><td></td><td>210</td></tr>
+                                <tr><td>علی احمدی</td><td>کارگزاری فردوس</td><td>فردوس</td><td>تست کنتور</td><td></td><td>3</td><td></td><td>210</td></tr>
+                                <tr><td>علی احمدی</td><td>کارگزاری فردوس</td><td>فردوس</td><td>تست کنتور</td><td>1</td><td>2</td><td></td><td>210</td></tr>
+                                <tr><td>علی احمدی</td><td>کارگزاری فردوس</td><td>فردوس</td><td>تست کنتور</td><td>1</td><td></td><td></td><td>210</td></tr>
+                                <tr><td>علی احمدی</td><td>کارگزاری فردوس</td><td>فردوس</td><td>تست کنتور</td><td>1</td><td></td><td>1</td><td>210</td></tr>
+                                <tr><td>علی احمدی</td><td>کارگزاری فردوس</td><td>فردوس</td><td>تست کنتور</td><td>1</td><td>2</td><td></td><td>210</td></tr>
+                                <tr><td>علی احمدی</td><td>کارگزاری فردوس</td><td>فردوس</td><td>تست کنتور</td><td>1</td><td></td><td></td><td>210</td></tr>
+                                <tr><td>علی احمدی</td><td>کارگزاری فردوس</td><td>فردوس</td><td>تست کنتور</td><td></td><td>3</td><td></td><td>210</td></tr>
+                                <tr><td>علی احمدی</td><td>کارگزاری فردوس</td><td>فردوس</td><td>تست کنتور</td><td></td><td></td><td>1</td><td>210</td></tr>
+                                <tr><td>علی احمدی</td><td>کارگزاری فردوس</td><td>فردوس</td><td>تست کنتور</td><td></td><td>2</td><td>1</td><td>210</td></tr>
+                                <tr><td>علی احمدی</td><td>کارگزاری فردوس</td><td>فردوس</td><td>تست کنتور</td><td>1</td><td></td><td></td><td>210</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-arrow">
+                    <div class="card-arrow-top-left"></div>
+                    <div class="card-arrow-top-right"></div>
+                    <div class="card-arrow-bottom-left"></div>
+                    <div class="card-arrow-bottom-right"></div>
+                </div>
+            </div>
+            <div class="row mt-10px">
+                <div class="col-xl-9"></div>
+                <div class="col-xl-1">
+                    <a href="" id="" class="btn form-control buttonGeneral">
+                        <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                        <span class="bGeneral-text">دانلود فایل نمونه</span>
+                    </a>
+                </div>
+                <div class="col-xl-1">
+                    <a href="" id="" class="btn form-control buttonGeneral">
+                        <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                        <span class="bGeneral-text">دانلود فایل نمونه</span>
+                    </a>
+                </div>
+                <div class="col-xl-1">
+                    <button id="btnSave" type="button" class="btn form-control buttonsabt btnSave01">
+                        <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                        <span class="bSabt-text">ثبت</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        @*--------------------------------------------------------------------------------------------------------*@
+        @*===============================<|          تعریف ضریب شهرستان          |>===============================*@
+        <div class="tab-pane " id="TrifZaribShahrestan">
+            <div class="row mt-10px">
+                <div class="col-xl-2">
+                    <label class="form-label">شهرستان</label>
+                    @Html.Action("_Cities_Select", "Users", new { area = "Users" })
+                </div>
+                <div class="col-xl-2">
+                    <select class="form-select" id="year_usr1">
+                        <option value="0">سال</option>
+
+                        @{
+
+                            for (var i = 4; i >= 0; i--)
+                            {
+                                var s = DateTime.Now.AddYears(-i);
+
+                                <option value="@cs2.GetYear(s)">@cs2.GetYear(s)</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-xl-2">
+                    <select class="form-select" id="month_usr1">
+                        <option value="0">ماه</option>
+                        <option value="1">فروردین </option>
+                        <option value="2">اردیبهشت</option>
+                        <option value="3">خرداد</option>
+                        <option value="4">تیر</option>
+                        <option value="5">مرداد</option>
+                        <option value="6">شهریور</option>
+                        <option value="7">مهر</option>
+                        <option value="8">آبان</option>
+                        <option value="9">آذر</option>
+                        <option value="10">دی</option>
+                        <option value="11">بهمن</option>
+                        <option value="12">اسفند</option>
+                    </select>
+                </div>
+
+                <div class="col-xl-2">
+                    <label class="form-label">درج ضریب</label>
+                    <input class="form-control" id="DarjeZarib" name="DarjeZarib" value="" />
+                </div>
+                <div class="col-xl-3"></div>
+                <div class="col-xl-1">
+                    <button id="btnSave01" type="button" class="btn form-control buttonsabt btnSave01">
+                        <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                        <span class="bSabt-text">ثبت</span>
+                    </button>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body p-2">
+                    <div class="table-responsive tableH_Lock">
+                        <table class="table table-hover text-nowrap tableSelect sticky-header">
+                            <thead>
+                                <tr>
+                                    <th rowspan="2" style="vertical-align: bottom;" class="Le">
+                                        نام شهرستان
+                                        <div class="inputWithFilterIcon">
+                                            <input type="text" id="filter05-filter" class="inputFilter form-control" placeholder="">
+                                            <span><i class="fas fa-filter"></i></span>
+                                        </div>
+                                    </th>
+                                    <th rowspan="1" colspan="12" style="border-bottom-left-radius: 0px !important;">
+                                        ضریب شهرستان
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th rowspan="1" class="To" style=" border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important;">
+                                        فروردین
+                                        <div class="inputWithFilterIcon">
+                                            <input type="text" id="filter06-filter" class="inputFilter form-control" placeholder="">
+                                            <span><i class="fas fa-filter"></i></span>
+                                        </div>
+                                    </th>
+                                    <th rowspan="1" class="To">
+                                        اردیبهشت
+                                        <div class="inputWithFilterIcon">
+                                            <input type="text" id="filter07-filter" class="inputFilter form-control" placeholder="">
+                                            <span><i class="fas fa-filter"></i></span>
+                                        </div>
+                                    </th>
+                                    <th rowspan="1" class="To">
+                                        خرداد
+                                        <div class="inputWithFilterIcon">
+                                            <input type="text" id="filter08-filter" class="inputFilter form-control" placeholder="">
+                                            <span><i class="fas fa-filter"></i></span>
+                                        </div>
+                                    </th>
+                                    <th rowspan="1" class="To">
+                                        تیر
+                                        <div class="inputWithFilterIcon">
+                                            <input type="text" id="filter09-filter" class="inputFilter form-control" placeholder="">
+                                            <span><i class="fas fa-filter"></i></span>
+                                        </div>
+                                    </th>
+                                    <th rowspan="1" class="To">
+                                        مرداد
+                                        <div class="inputWithFilterIcon">
+                                            <input type="text" id="filter10-filter" class="inputFilter form-control" placeholder="">
+                                            <span><i class="fas fa-filter"></i></span>
+                                        </div>
+                                    </th>
+                                    <th rowspan="1" class="To">
+                                        شهریور
+                                        <div class="inputWithFilterIcon">
+                                            <input type="text" id="filter11-filter" class="inputFilter form-control" placeholder="">
+                                            <span><i class="fas fa-filter"></i></span>
+                                        </div>
+                                    </th>
+                                    <th rowspan="1" class="To">
+                                        مهر
+                                        <div class="inputWithFilterIcon">
+                                            <input type="text" id="filter12-filter" class="inputFilter form-control" placeholder="">
+                                            <span><i class="fas fa-filter"></i></span>
+                                        </div>
+                                    </th>
+                                    <th rowspan="1" class="To">
+                                        آبان
+                                        <div class="inputWithFilterIcon">
+                                            <input type="text" id="filter13-filter" class="inputFilter form-control" placeholder="">
+                                            <span><i class="fas fa-filter"></i></span>
+                                        </div>
+                                    </th>
+                                    <th rowspan="1" class="To">
+                                        آذر
+                                        <div class="inputWithFilterIcon">
+                                            <input type="text" id="filter14-filter" class="inputFilter form-control" placeholder="">
+                                            <span><i class="fas fa-filter"></i></span>
+                                        </div>
+                                    </th>
+                                    <th rowspan="1" class="To">
+                                        دی
+                                        <div class="inputWithFilterIcon">
+                                            <input type="text" id="filter15-filter" class="inputFilter form-control" placeholder="">
+                                            <span><i class="fas fa-filter"></i></span>
+                                        </div>
+                                    </th>
+                                    <th rowspan="1" class="To">
+                                        بهمن
+                                        <div class="inputWithFilterIcon">
+                                            <input type="text" id="filter16-filter" class="inputFilter form-control" placeholder="">
+                                            <span><i class="fas fa-filter"></i></span>
+                                        </div>
+                                    </th>
+                                    <th rowspan="1" class="To" style="border-top-left-radius: 0px !important;">
+                                        اسفند
+                                        <div class="inputWithFilterIcon">
+                                            <input type="text" id="filter17-filter" class="inputFilter form-control" placeholder="">
+                                            <span><i class="fas fa-filter"></i></span>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="task-list-row1"
+                                    data-filter05="" data-filter12=""
+                                    data-filter06="" data-filter13=""
+                                    data-filter07="" data-filter14=""
+                                    data-filter08="" data-filter15=""
+                                    data-filter09="" data-filter16=""
+                                    data-filter10="" data-filter17=""
+                                    data-filter11="">
+                                    <td>فروس</td>
+                                    <td>9.99</td>
+                                    <td>9.99</td>
+                                    <td>9.99</td>
+                                    <td>9.99</td>
+                                    <td>9.99</td>
+                                    <td>9.99</td>
+                                    <td>9.99</td>
+                                    <td>9.99</td>
+                                    <td>9.99</td>
+                                    <td>9.99</td>
+                                    <td>9.99</td>
+                                    <td>9.99</td>
+                                </tr>
+                                <tr><td>مشهد</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td></tr>
+                                <tr><td>مشهد</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td></tr>
+                                <tr><td>مشهد</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td></tr>
+                                <tr><td>مشهد</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td></tr>
+                                <tr><td>مشهد</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td></tr>
+                                <tr><td>مشهد</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td></tr>
+                                <tr><td>مشهد</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td></tr>
+                                <tr><td>مشهد</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td></tr>
+                                <tr><td>مشهد</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td></tr>
+                                <tr><td>مشهد</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td></tr>
+                                <tr><td>مشهد</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td></tr>
+                                <tr><td>مشهد</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td></tr>
+                                <tr><td>مشهد</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td></tr>
+                                <tr><td>مشهد</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td></tr>
+                                <tr><td>مشهد</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td><td>9.99</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-arrow">
+                    <div class="card-arrow-top-left"></div>
+                    <div class="card-arrow-top-right"></div>
+                    <div class="card-arrow-bottom-left"></div>
+                    <div class="card-arrow-bottom-right"></div>
+                </div>
+            </div>
+            <div class="row mt-10px">
+                <div class="col-xl-10"></div>
+                <div class="col-xl-1">
+                    <a href="" id="" class="btn form-control buttonGeneral">
+                        <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                        <span class="bGeneral-text">دانلود فایل نمونه</span>
+                    </a>
+                </div>
+                <div class="col-xl-1">
+                    <button id="btnSave02" class="btn form-control buttonGeneral btnSave02">
+                        <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                        <span class="bGeneral-text">آپلود فایل نمونه</span>
+                    </button>
+                </div>
+            </div>
+
+            @*----------------------------------------------------------------------------------------------*@
+
+        </div>
+        @*--------------------------------------------------------------------------------------------------------*@
+        @*===============================<|      تنظیم تعداد روز کاری مفید       |>===============================*@
+
+    <div class="tab-pane " id="TanzimTedadRozeKriMofid">
+        <div class="row mt-10px">
+            <div class="col-xl-2">
+                <select class="form-select" id="year_usr">
+                    <option value="0">سال</option>
+
+                    @{
+                        for (var i = 4; i >= 0; i--)
+                        {
+                            var s = DateTime.Now.AddYears(-i);
+
+                            <option value="@cs2.GetYear(s)">@cs2.GetYear(s)</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="col-xl-9"></div>
+            <div class="col-xl-1">
+                <button class="btn form-control buttonGeneral" id="showSettingJ">
+                    <i class="fa fa-eye fa-fw me-1 VecGeneral"></i>
+                    <span class="bGeneral-text">نمایش</span>
+                </button>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body p-2">
+                <div class="table-responsive tableH_Lock">
+                    <table class="table table-hover text-nowrap tableSelect sticky-header">
+                        <thead>
+                            <tr>
+                                <th colspan="6" style=" border-bottom-right-radius: 0 !important; border-bottom-left-radius: 0 !important;">سال 1403</th>
+                            </tr>
+                            <tr>
+                                <th class="To" style="border-top-right-radius: 0 !important;">ماه</th>
+                                <th class="To">تعداد روز ماه/بازه گزارشگیری</th>
+                                <th class="To">تعداد روز تعطیلی جمعه</th>
+                                <th class="To">تعداد روز تعطیلی غیر جمعه</th>
+                                <th class="To">تعداد روز تعطیلی خاص</th>
+                                <th class="To" style=" border-top-left-radius: 0 !important; ">تعداد روز مفید کاری</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr> <td>فروردین</td>   <td>31</td>  <td>5</td>  <td>2</td>  <td>1</td>  <td>23</td>  </tr>
+                            <tr> <td>اردیبهشت</td>  <td>31</td>  <td>4</td>  <td>1</td>  <td></td>   <td>26</td>  </tr>
+                            <tr> <td>خرداد</td>     <td>31</td>  <td>5</td>  <td>3</td>  <td>3</td>  <td>20</td>  </tr>
+                            <tr> <td>تیر</td>       <td>31</td>  <td>5</td>  <td>2</td>  <td></td>   <td>24</td>  </tr>
+                            <tr> <td>مرداد</td>     <td>31</td>  <td>4</td>  <td>4</td>  <td></td>   <td>23</td>  </tr>
+                            <tr> <td>شهریور</td>    <td>31</td>  <td>5</td>  <td>2</td>  <td>2</td>  <td>20</td>  </tr>
+                            <tr> <td>مهر</td>       <td>30</td>  <td>5</td>  <td>2</td>  <td>3</td>  <td>20</td>  </tr>
+                            <tr> <td>آبان</td>      <td>30</td>  <td>4</td>  <td>5</td>  <td>2</td>  <td>19</td>  </tr>
+                            <tr> <td>آذر</td>       <td>30</td>  <td>4</td>  <td>6</td>  <td></td>   <td>20</td>  </tr>
+                            <tr> <td>دی</td>        <td>30</td>  <td>5</td>  <td>3</td>  <td></td>   <td>22</td>  </tr>
+                            <tr> <td>بهمن</td>      <td>30</td>  <td>4</td>  <td>3</td>  <td>1</td>  <td>22</td>  </tr>
+                            <tr> <td>اسفند</td>     <td>29</td>  <td>5</td>  <td>1</td>  <td></td>   <td>23</td>  </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-arrow">
+                <div class="card-arrow-top-left"></div>
+                <div class="card-arrow-top-right"></div>
+                <div class="card-arrow-bottom-left"></div>
+                <div class="card-arrow-bottom-right"></div>
+            </div>
+        </div>
+        <div class="row mt-10px">
+            <div class="col-xl-11"></div>
+            <div class="col-xl-1">
+                <button id="savebtn" type="button" class="btn form-control buttonsabt">
+                    <i class="bi bi-pencil-square fa-fw me-1 VecGeneral"></i>
+                    <span class="bSabt-text">ویرایش</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+
+
+<div id="alertBox01" class="alert-box" style="display:none;">
+    <h4 class="mb-0" id="alertMessage01" style="color: #ff6c31; "></h4>
+    <hr />
+    <div>
+        <p>شهرستان بیرجند</p>
+        <p>اردیبهشت ماه</p>
+        <p>سال 1403</p>
+        <div style="display: flex; justify-content: space-around;">
+            <span>مقدار قبلی: 1.2</span>
+            <span>مقدار جدید: 1.43</span>
+        </div>
+    </div>
+
+    <div class="mt-2" style="color: #ff6c31 !important; font-weight: bold; padding: 11px 22px; border: 1px solid #ff6c31; border-radius: 10px; ">
+        <span>آیا میخواهید مقدار جدید با مقدار قبلی جایگزین شود؟</span>
+
+        <hr />
+        <div class="rowFaktor mt-1" style="display: flex; justify-content: center;">
+            <button id="" onclick="submitData()" class="form-control btnFaktor">
+                تایید
+            </button>
+            <button id="" onclick="closeAlert()" class="form-control btnFaktor" style=" background-image: linear-gradient(#ff6c31, #f80707) !important;">
+                بستن
+            </button>
+        </div>
+    </div>
+
+</div>
+<div id="alertBox02" class="alert-box" style="display:none;">
+    <h4 class="mb-0" id="alertMessage02" style="color: #ff6c31; "></h4>
+    <hr />
+    <div>
+        <p>در ثبت یا ویرایش اطلاعات به صورت گروهی، اطلاعات ارسالی جایگزین اطلاعات ثبت شده قبلی خواهند شد</p>
+
+    </div>
+
+    <div class="mt-2" style="color: #ff6c31 !important; font-weight: bold; padding: 11px 22px; border: 1px solid #ff6c31; border-radius: 10px; ">
+        <span>آیا میخواهید مقدار جدید با مقدار قبلی جایگزین شود؟</span>
+
+        <hr />
+        <div class="rowFaktor mt-1" style="display: flex; justify-content: center;">
+            @*<button id="" onclick="submitData()" class="form-control btnFaktor">
+                    تایید
+                </button>*@
+            <a href="" id="" onclick="submitData()" class="form-control btnFaktor">
+                تایید
+            </a>
+            <button id="" onclick="closeAlert()" class="form-control btnFaktor" style=" background-image: linear-gradient(#ff6c31, #f80707) !important;">
+                بستن
+            </button>
+        </div>
+    </div>
+
+
+</div>
+<div id="alertBox03" class="alert-box" style="display:none;max-width:unset">
+    <h4 class="mb-0" id="alertMessage03" style="color: #ff6c31; "></h4>
+    <hr />
+
+</div>
+<div id="alertBox04" class="alert-box" style="display:none;"></div>
+
+
+
+<script src="/Scripts/sweetalert2.js" type="text/javascript"></script>
+<script src="/Areas/Users/Scripts/Companies/Companies.js" type="text/javascript"></script>
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.js" type="text/javascript"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/sweetalert2.js"></script>
+<script>
+    $(".btnSave01").on('click', function () {
+        console.log("11111111");
+        // نمایش prompt برای گرفتن شماره سند در div
+        showAlert("هشدار!");
+
+        // ذخیره کردن شناسه سند برای استفاده بعدی
+        $("#alertBox01").data('id', 'btnSave01');
+    });
+
+    function showAlert(message) {
+        $("#alertMessage01").text(message); // پیام را تنظیم می‌کنیم
+        $("#alertBox01").fadeIn(); // نمایش پیام
+    }
+
+    // تابع برای بستن پیام
+    function closeAlert() {
+        $("#alertBox01").fadeOut(); // مخفی کردن پیام
+    }
+    //--------------------------------------------------------------
+    $(".btnSave02").on('click', function () {
+        console.log("22222222");
+        // نمایش prompt برای گرفتن شماره سند در div
+        showAlert("هشدار!");
+
+        // ذخیره کردن شناسه سند برای استفاده بعدی
+        $("#alertBox02").data('id', 'btnSave02');
+    });
+
+    function showAlert(message) {
+        $("#alertMessage02").text(message); // پیام را تنظیم می‌کنیم
+        $("#alertBox02").fadeIn(); // نمایش پیام
+    }
+
+    // تابع برای بستن پیام
+    function closeAlert() {
+        $("#alertBox02").fadeOut(); // مخفی کردن پیام
+    }
+</script>
+
+<script>
+
+    var
+        filters = {
+            filter01: null,
+            filter02: null,
+            filter03: null,
+            filter04: null,
+        };
+
+    function updateFilters() {
+        $('.task-list-row').hide().filter(function () {
+            var self = $(this),
+                result = true;
+
+            Object.keys(filters).forEach(function (filter) {
+                var filterData = self.data(filter);
+                if (filters[filter] && (filters[filter] != 'None') && (filters[filter] != 'همه')) {
+                    // تبدیل داده به رشته و بررسی مقدار
+                    result = result && (filterData && filterData.toString().indexOf(filters[filter]) !== -1);
+                }
+            });
+
+            return result;
+        }).show();
+    }
+
+    function changeFilter(filterName) {
+        filters[filterName] = this.value;
+        updateFilters();
+    }
+
+    // Assigned User Dropdown Filter
+    $('#filter01-filter').on('input', function () {
+        changeFilter.call(this, 'filter01');
+    });
+    $('#filter02-filter').on('input', function () {
+        changeFilter.call(this, 'filter02');
+    });
+    $('#filter03-filter').on('input', function () {
+        changeFilter.call(this, 'filter03');
+    });
+    $('#filter04-filter').on('input', function () {
+        changeFilter.call(this, 'filter04');
+    });
+
+</script>

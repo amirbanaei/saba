@@ -1,0 +1,132 @@
+﻿@* اگر مدل خاصی ندارید این خط را بگذارید بماند یا حذف کنید *@
+@* @model IEnumerable<SaabWebProject.Models.DomainModels.tbTarifAbzarKar1> *@
+@using SaabWebProject.Models.DomainModels;
+
+@{ SaabEntities db = new SaabEntities();
+
+    ViewBag.Title = "تعریف نام فرم  جدید";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+
+<style>
+    .title-page-custom {
+        display: flex;
+        height: 100%;
+        width: 250px;
+        background: var(--bs-Meno-color);
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        padding: 10px;
+        border-radius: 5px;
+        color: white;
+    }
+
+    #titleInput {
+        text-align: right;
+        direction: rtl;
+    }
+</style>
+
+<div class="tab-content" style="padding:20px; background:#f7f7f7; border-radius:10px; margin-top:20px;">
+
+    @* ۱. توکن امنیتی اجباری *@
+    @Html.AntiForgeryToken()
+
+    <div class="row">
+        <div class="col-xl-2 ">
+            <label class="form-label" for="titleInput">عنوان فرم</label>
+            <input id="titleInput" class="form-control" type="text" />
+        </div>
+        <div class="col-xl-2">
+            <label class="form-label">نوع شاخه</label>
+
+            <select id="year_Eq11" name="year_Eq11" class="form-select">
+                <option value="0">انتخاب کنید</option>
+
+                @{
+
+
+                    foreach (var it in db.otamasoin1_createshagheh.ToList())
+                    {
+
+                        <option value="@it.ID">@it.name</option>
+                    }
+                }
+            </select>
+
+        </div>
+        <div class="col-xl-1 col-2">
+            <button type="button" class="btn form-control buttonGeneral" id="Send2">
+                <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text">ثبت</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-xl-11 col-10"></div>
+     
+    </div>
+</div>
+
+<div id="ListUsers">
+    @Html.Action("view_typelist", "Orders", new { area = "Setting" })
+</div>
+@section Scripts {
+    @* اسکریپت‌ها را در بخش Scripts قرار دهید تا بعد از jQuery لود شوند *@
+    <script>
+    $(document).ready(function () {
+        $("#Send2").on("click", function (e) {
+            e.preventDefault();
+
+            var titleVal = $("#titleInput").val().trim();
+            var shaghehId = $("#year_Eq11").val(); // گرفتن مقدار سلکت باکس
+
+            // اعتبارسنجی
+            if (titleVal === "") {
+                alert("لطفاً عنوان را وارد کنید.");
+                return;
+            }
+            if (shaghehId == "0") {
+                alert("لطفاً نوع شاخه را انتخاب کنید.");
+                return;
+            }
+
+            var $btn = $(this);
+            $btn.prop("disabled", true);
+
+            var token = $('input[name="__RequestVerificationToken"]').val();
+
+            $.ajax({
+                // آدرس اکشن جدید
+                url: '@Url.Action("AddCretType", "Orders", new { area = "Setting" })',
+                type: 'POST',
+                data: {
+                    __RequestVerificationToken: token,
+                    name: titleVal,
+                    fkShagheh: shaghehId
+                },
+                success: function (response) {
+                    if (response.success) {
+                        alert(response.message);
+                        $("#titleInput").val("");
+                        $("#year_Eq11").val("0"); // ریست کردن سلکت باکس
+                    } else {
+                        alert("خطا: " + response.message);
+                    }
+                },
+                error: function (xhr) {
+                    alert("خطا در برقراری ارتباط.");
+                },
+                complete: function () {
+                    $btn.prop("disabled", false);
+                }
+            });
+        });
+    });
+    </script>
+
+}

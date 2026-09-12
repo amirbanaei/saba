@@ -1,0 +1,41 @@
+﻿@*@model SaabWebProject.Models.ViewModels.Contracts.Function.FunctionModel*@
+@using SaabWebProject.Models.DomainModels;
+
+@{ SaabEntities db = new SaabEntities();
+
+    ViewBag.Title = "گزارش کارها";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@*@{
+        ViewBag.Title = "Generate Script";
+    }*@
+@model SaabWebProject.Models.DomainModels.ControlVersions
+
+@{
+    ViewBag.Title = "ایجاد اسکریپت";
+}
+
+
+<h2>ایجاد اسکریپت</h2>
+
+@if (ViewBag.Message != null)
+{
+    <div class="alert alert-info">
+        @ViewBag.Message
+    </div>
+}
+
+@using (Html.BeginForm("GenerateScript", "Formula", new { area = "Salaries" }, FormMethod.Post))
+{
+    <div class="form-group">
+        <label for="Name">نام ورژن:</label>
+        @Html.TextBoxFor(m => m.Name, new { @class = "form-control", placeholder = "نام ورژن" })
+    </div>
+    <div class="form-group">
+        <label for="FileName">نام فایل اسکریپت:</label>
+        @Html.TextBoxFor(m => m.FileName, new { @class = "form-control", placeholder = "نام فایل" })
+    </div>
+
+    <button type="submit" class="btn btn-primary">ایجاد اسکریپت</button>
+}
+

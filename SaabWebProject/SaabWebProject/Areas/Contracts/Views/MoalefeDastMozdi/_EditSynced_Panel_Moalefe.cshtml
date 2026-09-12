@@ -1,0 +1,93 @@
+﻿@model IEnumerable<SaabWebProject.Models.DomainModels.tbControllyPanel>
+<link href="~/Content/bootstrap-select.css" rel="stylesheet" />
+
+
+
+<div class="card mt-3" style="width: 100%">
+    <div class="tab-content p-4">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group mb-3">
+                    <label class="form-label"> پنل مورد نظر </label>
+                    <div id="sectionPanelsEdit">
+
+                    </div>
+                    @*@Html.Action("PanelMoalefeList", "MoalefeDastmozdi", new { area = "Contracts" })*@
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="form-group mb-3" id="sectionControllyMoalefeEdit">
+                    <label class="form-label">مولفه کنترلی</label>
+                    @Html.Action("ControllyMoalefeList", "MoalefeDastmozdi", new { area = "Contracts" })
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-end">
+            <button type="button" onclick="SubmitProjectEdit()" class="btn form-control buttonsabt py-2 px-3">
+                <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                <span class="bSabt-text">ثبت</span>
+            </button>
+        </div>
+    </div>
+</div>
+@*<input class="d-none" value="@Model.ProjectCode" id="ProjectCode1" />*@
+
+<div class="card-arrow">
+    <div class="card-arrow-top-left"></div>
+    <div class="card-arrow-top-right"></div>
+    <div class="card-arrow-bottom-left"></div>
+    <div class="card-arrow-bottom-right"></div>
+</div>
+
+<script>
+
+    $("#sectionPanelsEdit").load('@Url.Content("/Contracts/MoalefeDastmozdi/PanelMoalefeList")', function () {
+        $("#sectionPanelsEdit > #select_moalefe").attr("id", "select_moalefeEdit");
+        $("#sectionControllyMoalefeEdit > #ControllyMoalefe1").attr("id", "ControllyMoalefe1Edit");
+
+        $("#select_moalefeEdit").picker('set', @Model.First().tbContractPanels.Id);
+
+        var myArray = [];
+        @foreach (var d in Model)
+        {
+            @:myArray.push(@d.tbContractMoalefeDastmozdi.md_ID);
+        }
+            myArray.forEach((x) => $("#ControllyMoalefe1Edit").picker('set', x));
+        });
+</script>
+
+@*<script>
+        $("#sectionCities" ).load('@Url.Content("/Users/Users/_Cities_Select")',function(){
+                   $("#sectionCities > #cities").attr("id", "citiesEdit");
+            });
+    </script>*@
+
+@*<script>
+        function SubmitProjectEdit() {
+
+            var dataO = {
+                ProjectCode: $("#ProjectCodeE").val(),
+                ProjectTitle: $("#ProjectTitleE").val(),
+                FK_PeymanContracts: $("#select_peymanEdit").val(),
+                City_Id: $("#citiesEdit").val(),
+                DateOfDefinitionCommodityProject: $("#DateOfDefinitionCommodityProjectE").val(),
+                FK_PeymanContracts: $("#select_peymanEdit").val(),
+                ProjectCode1: $("#ProjectCode1").val()
+            };
+            var json = JSON.stringify(dataO);
+            $.ajax({
+                type: "POST",
+                url: "/WareHouse/WareHouse/_ManageProjects",
+                data: json,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    alert('In Ajax');
+                }
+            });
+        }
+    </script>*@
+
+
+

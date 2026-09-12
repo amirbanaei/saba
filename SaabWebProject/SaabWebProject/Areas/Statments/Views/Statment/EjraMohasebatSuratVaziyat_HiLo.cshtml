@@ -1,0 +1,114 @@
+﻿@{
+    ViewBag.Title = "";
+    Layout = null;
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="card">
+    <div class="card-body pb-2">
+
+        <div class="row" style="margin-top:10px">
+            <div class="col-xl-3">
+                <label class="form-label"> ردیف اعتباری  </label>
+                <select class="form-select installmentAmountInputManually" id="creditlineHiLo">
+                    <option>انتخاب کنید</option>
+                    @Html.Action("_ListAllCreditIndicatior", "CreditLine", new { area = "Budget" })
+                </select>
+            </div>
+
+            <div class="col-xl-3">
+                <label class="form-label">شماره صورت وضعیت</label>
+                <select class="form-select my_Select" id="numberSuratVaziyat">
+                    <option value="0">انتخاب مورد</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+             
+                    <option value="13">13</option>
+                    <option value="14">14</option>
+                    <option value="15">15</option>
+                    <option value="16">16</option>
+                    <option value="17">17</option>
+                    <option value="18">18</option>
+                    <option value="19">19</option>
+                    <option value="20">20</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xl-11"></div>
+            <div class="col-xl-1">
+                <button id="btnShowHiLo" type="button" class="btn form-control buttonGeneral">
+                    <i class="fa fa-eye fa-fw me-1 VecGeneral"></i>
+                    <span class="bGeneral-text">نمایش</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script>
+
+        $("#btnShowHiLo").click(function () {
+
+            var creditline = $("#creditlineHiLo").val();
+            var nSuratVaziyat = $("#numberSuratVaziyat").val();
+
+            if ($("#creditlineHiLo").val() == 0) {
+                alert("لطفا ردیف اعتباری را انتخاب کنید");
+            }
+            else if ($("#numberSuratVaziyat").val() == 0) {
+                alert("لطفا شماره صورت وضعیت را انتخاب کنید");
+            }
+
+            else {
+
+                $.ajax({
+                    url: "@Url.Action("show_Hialosorat", "Statment", new { area = "Statments" })",
+                    type: "Post",
+                    dataType: "html",
+                    data: { fksabad: creditline, numbersorat:nSuratVaziyat},
+                    success: function (res) {
+                        document.getElementById("loading-message").style.display = "none";
+                        $("#big_modal_body").html(res)
+                        $("#modalLg").modal('show')
+
+                    },
+                    error: function (res) {
+                        console.log(res);
+
+                        document.getElementById("loading-message").style.display = "none";
+                        Toast.fire({
+                            icon: 'error',
+                            background: '#35434A',
+                            color: 'white',
+                            title: "عملیات  با خطا مواجه شد"
+                        });
+                        return false;
+                    }
+                });
+            }
+        });
+
+</script>

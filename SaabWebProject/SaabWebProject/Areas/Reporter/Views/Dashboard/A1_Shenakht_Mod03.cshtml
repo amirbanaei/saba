@@ -1,0 +1,339 @@
+﻿@using SaabWebProject.Models.Classes;
+@using SaabWebProject.Models.DomainModels;
+@model SaabWebProject.Models.DomainModels.tbNamshnaght
+
+@{
+    SaabEntities db = new SaabEntities();
+    Layout = null;
+}
+
+@{
+    var items = db.dbTitletahod.Where(p=>p.Fk_NAME==Model.ID).ToList();
+    double L = items.Count();
+    var Per = Math.Round(100 / (L + 5), 2);
+    //string WTH = Convert.ToString(Per) + "%";
+    var LW = (L + 5) * 90;
+    string WTH = Convert.ToString(LW) + "px !important";
+    var cont1 = 0;
+}
+<style>
+    .modal-lg, .modal-xl {
+        margin-top: 8px;
+        max-width: 100% !important;
+    }
+    .table-container {
+        overflow: auto;
+        border: 1px solid #616871a6;
+        /* white-space: nowrap; */
+        height: 485px;
+        border-radius: 4px;
+    }
+
+    table {
+        border-collapse: collapse;
+        width: @WTH;
+        margin-bottom:1px!important
+    }
+
+    table th, table td {
+        vertical-align: middle;
+        /*width: 100px ;*/
+    }
+
+    th, td {
+        padding: 3px 6px !important;
+    }
+
+    .WTH {
+        width: 90px !important;
+        padding: 0 !important;
+    }
+    .WTV {
+        padding: 0 !important;
+        width: 10px !important;
+    }
+
+    select.form-select, input.form-control {
+        margin-bottom: 0 !important;
+    }
+
+    input.form-control {
+        border-width: 1px !important;
+        text-align: center;
+    }
+
+    .btn {
+        margin-bottom: 10px !important;
+    }
+
+    .TitelL {
+        border-radius: 10px;
+        background-color: #146792 !important;
+    }
+
+    .TitelC {
+        border-radius: 0 10px 10px 0;
+        background-color: #146792 !important;
+    }
+
+    .Titel3 {
+        border-radius: 10px 0 0 10px;
+        background-color: #146792 !important;
+    }
+
+    .Titel1 {
+        border-radius: 10px;
+        background-color: #1469a18f !important;
+    }
+
+    .Titel2 {
+        border-radius: 0 10px 10px 0;
+        background-color: #1469a18f !important;
+    }
+
+    .Titel4 {
+        border-radius: 10px;
+        background-color: #1469a18f !important;
+    }
+
+    .Titel5 {
+        border-radius: 10px;
+        background-color: #00eaff7d !important;
+    }
+
+    tbody, td, tfoot, th, thead, tr {
+        border-color: var(--bs-tab-content-bg) !important;
+        border-style: solid !important;
+        border-width: 1px !important;
+        text-align: center
+    }
+    .ddd {
+        background-color: var(--bs-tab-content-bg) !important;
+    }
+
+
+</style>
+
+
+<div class="card p-2">
+    <div class="card-body">
+        <div class="row ">
+            <p><span style="font-size:14px;font-weight:bold">تعداد نیروی کار موجود</span> >> @Model.Name</p>
+        </div>
+        <hr />
+
+        <div class="row" style="margin-top:20px">
+            <div class="col-xl-12 table-container">
+                <table class="table table-bordered" id="table_First">
+                    @if (db.tbBannerSlider.ToList() != null)
+                    {
+
+                        <thead>
+
+                            <tr>
+                                <th class="TitelL" colspan="1" rowspan="2">ردیف</th>
+                                <th class="TitelL" colspan="3" rowspan="2">شغل اصلی نیروی کار</th>
+                                <th class="TitelL" colspan="1" rowspan="2">تعداد نیروی کار</th>
+                                <th class="" colspan="1" rowspan="2"></th>
+                                <th class="TitelL" colspan="@L" rowspan="1">امکان کار در سایر مشاغل</th>
+                            </tr>
+                            <tr>
+
+                                @foreach (var item in items)
+                                {
+                                    <th class="TitelL" colspan="1" rowspan="1">@item.Title</th>
+                                }
+                            </tr>
+                            <tr>
+                                <th class="WTH"></th>
+                                <th class="WTH"></th>
+                                <th class="WTH"></th>
+                                <th class="WTH"></th>
+                                <th class="WTH"></th>
+                                <th class="WTV"></th>
+                                @foreach (var item in items)
+                                {
+                                    <th class="WTH"></th>
+                                }
+
+                            </tr>
+                        </thead>
+                        <tbody style="text-align:center">
+                            @{
+                                var i = 1;
+                                var j = 1;
+                                var Conti = 1;
+
+                                foreach (var item1 in items)
+                                {
+                                    var it = db.tbNero.Where(p => p.FKtitel == item1.ID && p.FkTitlerelat == null && p.Estandard != null).Select(s => s.Estandard).FirstOrDefault();
+                                    <tr>
+                                        <td class="" colspan="1" rowspan="1">@i</td>
+                                        <td class="" colspan="3" rowspan="1">@item1.Title</td>
+                                        <td class="" colspan="1" rowspan="1"><input class="form-control form-control3" id="kl_@item1.ID" value="@it" /></td>
+                                        <td class="ddd" colspan="1" rowspan="1"></td>
+
+                                        @foreach (var item2 in items)
+                                        {
+                                            if (i == j)
+                                            {
+                                                <td class="" colspan="1" rowspan="1"><input class="form-control form-control4" id="@item1.ID _@item1.ID" oninput="compareValues(this)" style="display:none" value="0" />...</td>
+                                            }
+                                            else
+                                            {
+                                                var it2 = db.tbNero.Where(p => p.FKtitel == item1.ID && p.FkTitlerelat == item2.ID && p.Estandard == null).Select(s => s.value).FirstOrDefault();
+
+                                                <td class="" colspan="1" rowspan="1"><input class="form-control form-control4" id="@item2.ID _@item1.ID" oninput="compareValues(this)" value="@it2" /></td>
+                                            }
+
+                                            j += 1;
+                                        }
+
+                                    </tr>
+                                    j = 1;
+                                    i += 1;
+
+                                }
+                            }
+
+                        </tbody>
+                        <tfoot>
+                            <tr style=" height: 48px;">
+                                <td class="Titel1" colspan="4" rowspan="1">جمع کل نیروهای موجود</td>
+                                <td class="Titel1" colspan="1" rowspan="1" id="sum"></td>
+                            </tr>
+                        </tfoot>
+                    }
+
+                </table>
+
+            </div>
+        </div>
+        <div class="col-xl-2"></div>
+        <hr />
+    </div>
+    <div class="row">
+        <div class="col-xl-11"></div>
+        <div class="col-xl-1">
+            <button id="btnSaveTe" type="button" class="btn form-control buttonsabt">
+                <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                <span class="bSabt-text">ثبت</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+
+
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+
+<script>
+    $(document).ready(function () {
+        var sum = 0;
+        $("tbody tr td:nth-child(3) input").on('change keyup', updateSum);
+        function updateSum() {
+            sum = 0;
+            $("tbody tr td:nth-child(3) input").each(function () {
+                sum += parseInt($(this).val());
+            });
+            $("tfoot tr td:nth-child(2)").text(sum);
+        }
+    });
+    $(document).ready(function () {
+        var sum = 0;
+        $("tbody tr td:nth-child(3) input").each(function () {
+            sum += parseInt($(this).val());
+        });
+        $("tfoot tr td:nth-child(2)").text(sum);
+    });
+</script>
+<script>
+    function compareValues(input) {
+        const row = input.closest('tr');
+        const referenceValue = parseFloat(row.cells[2].querySelector('input').value);
+        const inputValue = parseFloat(input.value);
+        if (!isNaN(inputValue) && inputValue > referenceValue) {
+            alert('مقدار وارد شده باید از مقدار "تعداد نیروی کار" هر سطر کمتر باشد');
+            input.value = '';
+        }
+    }
+</script>
+
+
+
+<script>
+    $("#btnSaveTe").click(function () {
+        // جمع‌آوری داده‌ها
+        var dataList = []; // ایجاد یک آرایه برای ذخیره تمام داده‌ها
+        var dataList2 = []; // ایجاد یک آرایه برای ذخیره تمام داده‌ها
+
+        $("input.form-control3").each(function () {
+            var inputId = $(this).attr("id");
+            var value = $(this).val();
+
+            if (value) { // اگر ورودی پر شده است
+                var parts = inputId.split('_'); // تقسیم ID به اجزا
+                var type = parts[0];   // مثلا 'fardi'
+                // مثلا 'shahri'
+                var id = parts[1];     // ID رکورد در دیتابیس
+                dataList.push({
+                    id: id,
+                    Estandard: value,
+                    FkTitlerelat: 0,
+                    value: 0
+                });
+                // ارسال داده‌ها به سرور
+            }
+        });
+
+        $("input.form-control4").each(function () {
+            var inputId = $(this).attr("id");
+            var value = $(this).val();
+
+            if (value) { // اگر ورودی پر شده است
+                var parts = inputId.split('_'); // تقسیم ID به اجزا
+                var area = parts[0];   // مثلا 'shahri'
+                var id = parts[1];     // ID رکورد در دیتابیس
+                dataList.push({
+                    id: id,
+                    Estandard: 0,
+                    FkTitlerelat: area,
+                    value: value
+                });
+                // ارسال داده‌ها به سرور
+            }
+        });
+        if (dataList.length > 0) {
+            updateDatabase(dataList);
+            console.log(dataList);
+        }
+    });
+    function updateDatabase(dataList) {
+        $.ajax({
+            url: '/Reporter/Dashboard/UpdateRecord4', // آدرس اکشن کنترلر شما
+            method: 'POST',
+            data: JSON.stringify(dataList), // ارسال آرایه به سرور
+
+            contentType: 'application/json',
+            success: function (response) {
+                console.log("Record updated successfully.");
+                if (response == "true") {
+                    alert("با موفقیت ثبت شد");
+                    location.reload();
+
+                }
+            },
+            error: function (error) {
+                console.error("Error updating record:", error);
+            }
+        });
+    }
+
+</script>
+

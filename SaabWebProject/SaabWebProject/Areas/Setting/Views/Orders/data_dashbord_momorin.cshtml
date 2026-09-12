@@ -1,0 +1,226 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "بارگزاری  اطلاعات داشبور مامورین ";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>ViewTarikh</title>
+</head>
+<body>
+    <div class="tab-content" id="pills-tabContent">
+        <div class="row">
+            <div class="col-xl-2">
+
+                <label class="form-label">از تاریخ</label>
+                <input data-jdp jdp-btn-close data-jdp-miladi-input="astime" id="datepickerFrom_shw2" class="form-control pdate" name="datepickerFrom_shw2">
+                <input id="astime" type="hidden" />
+            </div>
+            <div class="col-xl-2">
+
+                <label class="form-label">تا تاریخ</label>
+                <input data-jdp jdp-btn-close data-jdp-miladi-input="tatime" id="datepickerFrom_shw3" class="form-control pdate" name="datepickerFrom_shw3">
+                <input id="tatime" type="hidden" />
+            </div>
+            <div class="col-xl-1">
+                <a href="#" class=" btn form-control buttonGeneral" id="dwn">
+                    <i class="bi bi-download  fa-fw me-1 VecGeneral"></i>
+                    <span class="bGeneral-text">دانلود فایل نمونه</span>
+                </a>
+            </div>
+            <div class="col-xl-1">
+                <a class="btn form-control buttonGeneral" id="upload112332" style="font-size:10px;margin-bottom:10px;">
+                    <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                    <span class="bGeneral-text">بارگزاری دیتا</span>
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+    <script src="~/Assets/js/jalalidatepicker.min.js"></script>
+    <link href="~/Assets/css/jalalidatepicker.min.css" rel="stylesheet" />
+    <script src="~/Assets/js/jalaali.min.js"></script>
+    <link href="~/MyStyles/jalalidatepicker.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+    <script src="~/Scripts/jquery-ui.js"></script>
+    <script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+    <script src="~/Scripts/jquery-ui.js"></script>
+    <script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+    <script src="@Url.Content("~/Scripts/jquery-3.3.1.js")"></script>
+    <script src="@Url.Content("~/Scripts/jquery-ui.js")"></script>
+    <script src="@Url.Content("~/Assets/plugins/select-picker/dist/picker.min.js")"></script>
+    <script src="@Url.Content("~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js")"></script>
+    <input id="summery_file10" style="display:none" type="file" class="form-control" value="" />
+    <input id="summery_file11" style="display:none" type="file" class="form-control" value="" />
+    <input id="summery_file112" style="display:none" type="file" class="form-control" value="" />
+    <input id="summery_file1123" style="display:none" type="file" class="form-control" value="" />
+    <input id="summery_file1123344" style="display:none" type="file" class="form-control" value="" />
+    <input id="idupl3332" style="display:none" type="file" class="form-control" value="" />
+    <input id="idpymn" style="display:none" type="file" class="form-control" value="" />
+    <input id="ghst" style="display:none" type="file" class="form-control" value="" />
+    <input id="idupl3335442" style="display:none" type="file" class="form-control" value="" />
+
+    <input id="bod" style="display:none" type="file" class="form-control" value="" />
+    <script>
+                           fd555 = new FormData();
+
+
+        $("#upload112332").click(function () {
+
+
+
+
+
+            $("#summery_file1123").click();
+
+       });
+
+        $("#summery_file1123").change(function (e) {
+            $.each(e.target.files, function (index, file) {
+                var fromDate = $("#astime").val();
+                var toDate = $("#tatime").val();
+                fd555.append("fromDate", fromDate);
+                fd555.append("toDate", toDate);
+
+                 fd555.append("MyExcelStream", file);
+             });
+            @*sendAjax1555555('@Url.Action("ImportExcel_soratvaziat234", "Orders", new { area = "Setting" })', fd555);*@
+                        sendAjax1555555('@Url.Action("ImportExcel_mamor", "Orders", new { area = "Setting" })', fd555);
+
+});
+
+
+
+
+      function sendAjax1555555(url2, fd2) {
+
+
+
+      $.ajax({
+          url: url2,
+          type: 'POST',
+          data: fd2,
+          processData: false,
+          contentType: false,
+          success: function (res) {
+              $("#loading-circle").css("display", "none");
+              fd = new FormData();
+              console.log(res);
+              console.log("jj");
+
+              if (res == "True") {
+                  alert("با موفقیت ثبت شد ");
+              }
+               @*$("#table_div").load('@Url.Content("../defFacilitiesEquipment/_ListEquipmentMoalefeValue")');*@
+
+
+
+   },
+          error: function (res) {
+              $("#loading-circle").css("display", "none");
+              console.log(res);
+              console.log("jj");
+              Toast.fire({
+                  icon: 'success',
+                  background: '#35434A',
+                  color: 'white',
+                  title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+              }).then(() => {
+                  $("#loading-circle").css("display", "none");
+              });
+          }
+      });
+  }
+        jalaliDatepicker.startWatch({
+            time: false,
+            days: ["شنبه", "1شنبه", "2شنبه", "3شنبه", "4شنبه", "5شنبه", "جمعه"],
+            persianDigits: true,
+            autoClose: true,
+            autocomplete: true,
+            showEmptyBtn: false,
+            showCloseBtn: true,
+            zIndex: 100000,
+        });
+
+        var inputs = document.querySelectorAll("[data-jdp-miladi-input]");
+        for (var i = 0; i < inputs.length; i++) {
+            inputs[i].addEventListener("jdp:change", function (e) {
+                var miladiInput = document.getElementById(this.getAttribute("data-jdp-miladi-input"));
+                var date = this.value.replace(' ', '').slice(0, 10).split('/');
+                date = jalaali.toGregorian(parseInt(date[0]), parseInt(date[1]), parseInt(date[2]));
+                if (!this.value) {
+                    date = "";
+                } else if (this.value.replace(' ', '').length < 11) {
+                    date = date.gy + '-' + date.gm + '-' + date.gd;
+                } else {
+                    date = date.gy + '-' + date.gm + '-' + date.gd + ' ' + this.value.replace(' ', '').slice(10, 30);
+                }
+                miladiInput.value = date;
+            });
+        }
+        var fd = new FormData();
+
+    </script>
+    <script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$(document).ready(function() {
+    // تمام کدهای شما که از $ استفاده می‌کنند اینجا قرار می‌گیرد
+    $("#dwn").click(function () {
+        var fromDate = $("#astime").val();
+        var toDate   = $("#tatime").val();
+
+        if (!fromDate || !toDate) {
+            alert("لطفاً بازه تاریخ را انتخاب کنید");
+            return;
+        }
+
+        window.location =
+            '@Url.Action("SetDataExcel_Moalefe175411132", "Moalefe", new { area = "Salaries" })'
+            + '?fromDate=' + fromDate
+            + '&toDate=' + toDate;
+    });
+
+
+});
+
+
+
+
+
+
+function UploadedFile(result) {
+Toast.fire({
+background: '#35434A',
+color: 'white',
+title: result
+}).then(function () {
+location.reload();
+});
+}
+    </script>
+</body>
+</html>
+

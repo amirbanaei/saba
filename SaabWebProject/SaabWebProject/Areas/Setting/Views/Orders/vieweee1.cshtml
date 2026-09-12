@@ -1,0 +1,346 @@
+﻿
+
+@{
+    ViewBag.Title = "نقشه راه گزارش ها";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>NaghsheGozaresh</title>
+    <style>
+        .cls-1 {
+            fill: #1d2734;
+            stroke-width: 9.04px;
+        }
+
+        .cls-1, .cls-2 {
+            stroke-miterlimit: 10;
+        }
+
+        .cls-1, .cls-3 {
+            stroke: #2af4db;
+        }
+
+        .cls-2 {
+            stroke: #293b46;
+            stroke-width: 25px;
+        }
+
+        .cls-2, .cls-3 {
+            fill: none;
+        }
+
+        .cls-3 {
+            stroke-dasharray: 0 0 0 0 0 0 0 8 0 8 0 8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-width: 2px;
+        }
+
+        .cls-4 {
+            fill: #2af4db;
+            stroke-width: 0px;
+        }
+
+        .naghshe {
+            height: 600px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+        }
+
+        .circle {
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-color: #1d2734;
+            height: 50px;
+            width: 50px;
+            border-radius: 50%;
+            box-shadow: inset 0 0 16px 0px #00ffff, 0px 0px 5px 1px #00ffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+
+
+        .red {
+            box-shadow: inset 0 0 16px 0px #ff0000, 0px 0px 5px 1px #ff0000;
+        }
+
+        .green {
+            box-shadow: inset 0 0 16px 0px #04ff00, 0px 0px 5px 1px #00ff37;
+        }
+
+        .yellow {
+            box-shadow: inset 0 0 16px 0px #ccff00, 0px 0px 5px 1px #ccff00;
+        }
+
+        .circle i {
+            font-size: 20px;
+            color: white;
+        }
+
+        .box {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            height: 165px;
+            width: 215px !important;
+            z-index: 1000;
+            justify-content: center;
+            border-radius: 15px;
+            border: 1px dashed aqua;
+        }
+
+        .title-box {
+            width: 100%;
+            height: 20%;
+            background: #113e5e;
+            justify-content: center;
+            display: flex;
+            border-radius: 10px 10px 0 0;
+            transform: scaleX(1.01) scaleY(1.06);
+            border: 1px solid aqua;
+        }
+
+            .title-box p {
+                height: 100%;
+                text-align: center;
+                align-content: center;
+                color: white;
+                font-weight: bold;
+            }
+
+        .body-box {
+            width: 100%;
+            height: 80%;
+            justify-content: center;
+            display: flex;
+        }
+
+
+        .box2 {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            height: 119px;
+            width: 206px !important;
+            z-index: 1000;
+            justify-content: center;
+            border-radius: 15px;
+            border: 1px dashed aqua;
+        }
+
+        .title-box2 {
+            margin: auto;
+            position: absolute;
+            top: -20px;
+            right: 40%;
+            width: 40px;
+            height: 40px;
+            border-radius: 99%;
+            background: #1d2734;
+            justify-content: center;
+            display: flex;
+            align-items: center;
+            border: 1px dashed aqua;
+        }
+
+            .title-box2 i {
+                font-size: 20px;
+                color: white;
+            }
+
+        .body-box2 {
+            width: 100%;
+            height: 100%;
+            justify-content: center;
+            display: flex;
+        }
+
+
+        .modal3 {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            padding-top: 50px;
+            overflow-x: hidden;
+            overflow-y: hidden;
+        }
+
+        .modal-content2 {
+            background-color: #082D59;
+            margin: 5% auto;
+            padding: 20px;
+            border: 2px solid #00CAFC;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 800px;
+            max-height: 800px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .close-icon {
+            color: #00CAFC;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            position: absolute;
+            top: 15px;
+            left: 20px;
+        }
+
+            .close-icon:hover {
+                color: darkred;
+            }
+    </style>
+</head>
+<body>
+    <div class="tab-content" id="pills-tabContent">
+        <div class="row" style="margin-top:20px;">
+            <div class="col-xl-2">
+
+                <label class="form-label">از تاریخ</label>
+                <input data-jdp jdp-btn-close data-jdp-miladi-input="astime" id="datepickerFrom_shw2" class="form-control pdate" name="datepickerFrom_shw2">
+                <input id="astime" type="hidden" />
+            </div>
+            <div class="col-xl-2">
+
+                <label class="form-label">تا تاریخ</label>
+                <input data-jdp jdp-btn-close data-jdp-miladi-input="tatime" id="datepickerFrom_shw3" class="form-control pdate" name="datepickerFrom_shw3">
+                <input id="tatime" type="hidden" />
+            </div>
+
+            <div class="col-xl-1"></div>
+            <div class="col-xl-1">
+                <a href="#" class=" btn form-control buttonGeneral" id="dwn" onclick="DownloadExcel23() ">
+                    <i class="bi bi-eye fa-fw me-1 VecGeneral"></i>
+                    <span class="bGeneral-text">مشاهده</span>
+                </a>
+            </div>
+            <div class="col-xl-1">
+                <button id="btnModalGozaresh" type="button" class="btn form-control buttonGeneral">
+                    <i class="fa fa-calculator fa-fw me-1 VecGeneral"></i>
+                    <span class="bGeneral-text">اجرای محاسبات قطعی</span>
+                </button>
+            </div>
+            <div class="col-xl-1">
+                <button id="" type="button" class="btn form-control buttonsabt">
+                    <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                    <span class="bSabt-text">ثبت</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="test2">
+
+        </div>
+
+    </div>
+
+
+
+    <div id="mymodal3" class="modal3">
+        <div class="modal-content2">
+            <i class="close-icon fa fa-window-close"></i>
+            <div id="ss"></div>
+        </div>
+    </div>
+
+
+
+    <script src="~/Scripts/jquery-3.3.1.js"></script>
+    <link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+    <script src="~/Assets/js/jalalidatepicker.min.js"></script>
+    <link href="~/Assets/css/jalalidatepicker.min.css" rel="stylesheet" />
+    <script src="~/Assets/js/jalaali.min.js"></script>
+    <link href="~/MyStyles/jalalidatepicker.css" rel="stylesheet" />
+
+    <script>
+        jalaliDatepicker.startWatch({
+            time: false,
+            days: ["شنبه", "1شنبه", "2شنبه", "3شنبه", "4شنبه", "5شنبه", "جمعه"],
+            persianDigits: true,
+            autoClose: true,
+            autocomplete: true,
+            showEmptyBtn: false,
+            showCloseBtn: true,
+            zIndex: 100000,
+        });
+
+        var inputs = document.querySelectorAll("[data-jdp-miladi-input]");
+        for (var i = 0; i < inputs.length; i++) {
+            inputs[i].addEventListener("jdp:change", function (e) {
+                var miladiInput = document.getElementById(this.getAttribute("data-jdp-miladi-input"));
+                var date = this.value.replace(' ', '').slice(0, 10).split('/');
+                date = jalaali.toGregorian(parseInt(date[0]), parseInt(date[1]), parseInt(date[2]));
+                if (!this.value) {
+                    date = "";
+                } else if (this.value.replace(' ', '').length < 11) {
+                    date = date.gy + '-' + date.gm + '-' + date.gd;
+                } else {
+                    date = date.gy + '-' + date.gm + '-' + date.gd + ' ' + this.value.replace(' ', '').slice(10, 30);
+                }
+                miladiInput.value = date;
+            });
+        }
+        var fd = new FormData();
+
+        $(".uploadSummery2").click(function () {
+            $("#summery_file2").click();
+        });
+
+        $("#summery_file2").change(function (e) {
+            $.each(e.target.files, function (index, file) {
+                fd.append("MyExcelStream", file);
+            });
+        });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="~/Scripts/jquery-ui.js"></script>
+    <script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+    <script>
+
+function DownloadExcel23() {
+    //var month = $("#Month2").val();
+    //var year = $("#select_peyman").val();
+
+    document.getElementById("loading-circle").style.display = "none";
+
+    //if ( year == 0) {
+    //    alert("لطفاً ماه و سال را انتخاب کنید.");
+    //    return;
+    //}
+
+    $.ajax({
+        url: '@Url.Action("NaghsheRah", "Orders", new { area = "Setting" })',
+        type: "GET",
+        data: {},
+        success: function (result) {
+            document.getElementById("loading-circle").style.display = "none";
+
+            $("#test2").html(result);
+        },
+        error: function () {
+            alert("خطا در بارگذاری اطلاعات.");
+        }
+    });
+}
+    </script>
+
+
+</body>
+</html>
+  

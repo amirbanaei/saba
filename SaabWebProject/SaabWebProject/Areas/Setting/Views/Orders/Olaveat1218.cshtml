@@ -1,0 +1,588 @@
+﻿@model IEnumerable<SaabWebProject.Models.DomainModels.olaviat_1218_alsil>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "اولویت بندی شروط ";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Gozaresh1218</title>
+
+    <style>
+        .row {
+            height: 50px;
+            align-content: center;
+            align-items: center;
+            transition: .5s;
+            border-radius: 8px;
+        }
+
+
+        .drag:hover {
+            border: 1px solid aqua;
+            cursor: pointer;
+        }
+
+        .row p {
+            font-weight: bold;
+            user-select: none;
+        }
+
+        .row p,
+        .row input {
+            margin: 0px !important;
+        }
+
+        .modal3 {
+            display: none;
+            position: fixed; /* حفظ مودال مرکزی */
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            /*        overflow: auto;*/
+            padding-top: 50px;
+        }
+
+        .modal-content2 {
+            background-color: #082D59;
+            margin: 5% auto; /* مرکزی شدن محتوا */
+            padding: 20px;
+            border: 2px solid #00CAFC;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 800px; /* حداکثر پهنا برای مودال */
+            height: auto;
+            max-height: 400px;
+/*            overflow-y: auto;
+*/            position: relative;
+        }
+
+        /* ترکیب دو کلاس close و close-icon */
+        .close-icon,
+        .close {
+            color: #00CAFC;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            /* تنظیمات absolute برای موقعیت‌دهی در گوشه بالا چپ */
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            z-index: 1001;
+        }
+
+            .close-icon:hover,
+            .close-icon:focus,
+            .close:hover,
+            .close:focus {
+                color: darkred;
+                text-decoration: none;
+                cursor: pointer;
+            }
+
+
+
+
+
+        .drag-ghost {
+            opacity: 0.4;
+            background: #d0d0d0;
+        }
+
+        .num-shart {
+            position: absolute;
+            right: 40px;
+            width: 20px;
+        }
+
+        .drag {
+            position: relative;
+        }
+
+            .drag.show-tooltip::after {
+                content: "برای جا به جایی بگیرید و بکشید";
+                position: absolute;
+                top: -5px;
+                left: 0;
+                transform: translateY(-100%);
+                background: #333;
+                color: aqua;
+                padding: 4px 10px;
+                font-size: 12px;
+                border-radius: 6px;
+                white-space: nowrap;
+                z-index: 999;
+                opacity: 0.95;
+            }
+
+        .picker {
+            margin-bottom: 0px !important;
+        }
+    </style>
+</head>
+<body>
+    @*<div class="row mb-3">
+            <div class="col-xl-12">
+                <button type="button" class="btn btn-secondary" id="backButton">
+                    <i class="bi bi-arrow-left"></i> بازگشت
+                </button>
+            </div>
+        </div>*@
+
+    <div class="tab-content" id="pills-tabContent" style="padding:20px;  background:#f7f7f7;">
+
+
+        @{
+            int counter = 1;
+        }
+
+        <div id="drag-wrapper">
+
+            <div class="num-shart">
+                @foreach (var item in Model.OrderBy(s => s.olavait).ToArray())
+                {
+                    <div class="row">@counter</div>
+                    counter++;
+                }
+            </div>
+
+            @foreach (var item in Model.OrderBy(s => s.olavait).ToArray())
+            {
+                <div class="row drag" data-id="@item.ID" style="padding-right: 70px;">
+                    <div class="col-xl-2">
+                        <p>@item.name</p>
+                    </div>
+
+                    <div class="col-xl-1">
+                        <input class="form-check-input chk-item"
+                               type="checkbox"
+                               @(item.vaziat == 1 ? "checked" : "") />
+                    </div>
+
+                    <div class="col-xl-1"></div>
+
+                    <div class="col-xl-1">
+                        <button type="button"
+                                class="btn form-control buttonsabt click2"
+                                data-id="@item.ID">
+                            <i class="bi bi-gear fa-fw me-1 VecGeneral"></i>
+                            <span class="bSabt-text">ست کردن</span>
+                        </button>
+                    </div>
+                    <div class="col-xl-1">
+                        <button type="button"
+                                class="btn form-control buttonsabt click3"
+                                data-id="@item.ID">
+                            <i class="bi bi-eye fa-fw me-1 VecGeneral"></i>
+                            <span class="bSabt-text">نمایش</span>
+                        </button>
+                    </div>
+                    <div class="col-xl-1">
+                        <button type="button"
+                                class="btn form-control buttonsabt click4"
+                                data-id="@item.ID">
+                            <i class="bi bi-trash fa-fw me-1 VecGeneral"></i>
+                            <span class="bSabt-text">حذف</span>
+                        </button>
+                    </div>
+
+
+                </div>
+            }
+
+        </div>
+
+
+
+        <input type="hidden" id="hiddenID" />
+
+        <div class="row">
+            <div class="col-xl-11"></div>
+            <div class="col-xl-1">
+                <button id="SayerShoroot" type="button" class="btn form-control buttonsabt">
+                    <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                    <span class="bSabt-text">ذخیره نهایی</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    @*==========================================مودال=========================================*@
+    <div id="mymodal3" class="modal3">
+        <div class="modal-content2">
+            <i class="close-icon fa fa-window-close"></i>
+            <div id="ss">
+            </div>
+        </div>
+    </div>
+    @*==========================================مودال=========================================*@
+
+
+
+
+
+    @*==========================================مودال افزودن شرط=========================================*@
+
+
+    <script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+    <script src="~/Scripts/jquery-ui.js"></script>
+    <script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+    <script src="~/Scripts/jquery-ui.js"></script>
+    <script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+    @*================================اسکریپت جا به جایی المان ها==============================*@
+    <script src="~/Scripts/Sortable.min.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            $(".click4").click(function () {
+                var idd = $(this).data("id");
+
+                if (confirm("آیا از حذف این مورد مطمئن هستید؟")) {
+
+                    $.ajax({
+                        url: '/Setting/Orders/Olaveat12182_delete',
+                        type: 'POST',
+                        data: { id: idd },
+                        success: function (res) {
+                            if (res === "True") {
+                                alert("با موفقیت حذف شد ✔");
+
+                                // اگر خواستی فقط همان ردیف حذف شود:
+                                // $(this).closest('.drag').remove();
+
+                                location.reload();
+                            } else {
+                                alert("حذف انجام نشد ❌");
+                            }
+                        },
+                        error: function () {
+                            alert("خطا در ارتباط با سرور ❌");
+                        }
+                    });
+
+                }
+            });
+
+        });
+    </script>
+
+    <script>
+    document.getElementById("backButton").addEventListener("click", function() {
+        // برگرداندن به صفحه قبلی
+        window.history.back();
+
+        // یا اگر می‌خواهید مستقیماً به URL مشخصی برگردد:
+        // window.location.href = '@Url.Content("~/Setting/Orders/Olaveat1218")';
+    });
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            var container = document.querySelector("#drag-wrapper");
+
+            Sortable.create(container, {
+                animation: 150,
+                draggable: ".drag",
+                handle: ".drag",
+                ghostClass: "drag-ghost",
+
+                onEnd: function () {
+
+                    let order = [];
+
+                    container.querySelectorAll(".drag").forEach(row => {
+                        order.push(row.dataset.id);
+                    });
+
+                    console.log("ترتیب جدید:", order);
+
+
+
+                }
+            });
+
+        });
+    </script>
+
+
+    @*================================اسکریپت جا به جایی المان ها==============================*@
+
+
+    @*======================================نمایش پیام هاور====================================*@
+    <script>
+        document.querySelectorAll('.drag').forEach(function (item) {
+
+            let timer;
+
+            item.addEventListener('mouseenter', function () {
+                timer = setTimeout(() => {
+                    item.classList.add('show-tooltip');
+                }, 3000); // ⏳ پنج ثانیه
+            });
+
+            item.addEventListener('mouseleave', function () {
+                clearTimeout(timer);
+                item.classList.remove('show-tooltip');
+            });
+
+        });
+    </script>
+    @*======================================نمایش پیام هاور====================================*@
+    @*<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+    <script src="~/Scripts/jquery-ui.js"></script>
+    <script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+    <script src="~/Scripts/jquery-ui.js"></script>
+    <script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>*@
+
+    @*======================================مودال ثبت اولویت====================================*@
+    <script>
+
+    $(document).ready(function () {
+
+        // وقتی روی هر سلول یا دکمه click2 کلیک شد، مودال باز بشه
+        $(".click2").click(function () {
+            var $this = $(this);
+
+            // موقعیت المان کلیک‌شده
+            var offset = $this.offset();
+            var elementHeight = $this.outerHeight();
+            $("#hiddenID").val(idd);
+            // نمایش مودال
+            $("#mymodal3")
+                .addClass("fade-in")
+                .css({
+                    "display": "block",
+                    "position": "absolute",   // لازم
+                    "top": offset.top - elementHeight - 100 + "px", // ۵px فاصله پایین المان
+                });
+
+            // گرفتن data-id یا هر چیزی که نیاز داری
+            var idd = $this.data("id");
+            console.log("Clicked ID:", idd);
+                         @*$("#ss").load('@Url.Content("/Setting/Orders/modal_Olaveat1218_SayerShoroot_sahrt")?id=' + idd);*@
+            $("#ss").load('@Url.Content("/Setting/Orders/modal_Olaveat1218_SayerShoroot2_edit")?id=' + idd);
+
+            // لود محتوا
+            @*$("#ss").load('@Url.Content("/Setting/Orders/modal_Olaveat1218_SayerShoroot2")?id=' + idd);*@
+        });
+
+        // بستن مودال با آیکون
+        $(".close-icon").click(function () {
+            $("#mymodal3").fadeOut();
+        });
+
+        // بستن مودال وقتی روی بک‌گراند کلیک شد
+        $("#mymodal3").click(function (e) {
+            if (e.target === this) {
+                $(this).fadeOut();
+            }
+        });
+
+    });
+    $(document).ready(function () {
+        $("#expandButton2").click(function () {
+            $("#mymodal3").addClass("fade-in"); // Add the fade-in class
+            $("#mymodal3").css("display", "block");
+        });
+
+        $(".close").click(function () {
+            $("#mymodal3").removeClass("fade-in"); // Remove the fade-in class
+            $("#mymodal3").css("display", "none");
+            location.reload();
+        });
+
+        $(window).click(function (event) {
+            if (event.target == $("#mymodal3")[0]) {
+                $("#mymodal3").removeClass("fade-in"); // Remove the fade-in class
+                $("#mymodal3").css("display", "none");
+            }
+        });
+    })
+    // بستن مودال با آیکون
+    $(".close-icon").click(function () {
+        $("#mymodal3").fadeOut(200, function () {
+            location.reload();
+        });
+    });
+
+    // بستن مودال با کلیک روی بک‌گراند
+    $("#mymodal3").click(function (e) {
+        if (e.target === this) {
+            $(this).fadeOut(200, function () {
+                location.reload();
+            });
+        }
+    });
+
+    </script>
+    @*======================================مودال ثبت اولویت====================================*@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    @*======================================مودال برگشت اولویت====================================*@
+    <script>
+
+    $(document).ready(function () {
+
+        // وقتی روی هر سلول یا دکمه click2 کلیک شد، مودال باز بشه
+        $(".click3").click(function () {
+            var $this = $(this);
+
+            // موقعیت المان کلیک‌شده
+            var offset = $this.offset();
+            var elementHeight = $this.outerHeight();
+            $("#hiddenID").val(idd);
+            // نمایش مودال
+            $("#mymodal3")
+                .addClass("fade-in")
+                .css({
+                    "display": "block",
+                    "position": "absolute",   // لازم
+                    "top": offset.top - elementHeight - 100 + "px", // ۵px فاصله پایین المان
+                });
+
+            // گرفتن data-id یا هر چیزی که نیاز داری
+            var idd = $this.data("id");
+            console.log("Clicked ID:", idd);
+
+            // لود محتوا
+            @*$("#ss").load('@Url.Content("/Setting/Orders/modal_BargashtOlaveat1218")?id=' + idd);*@
+             $("#ss").load('@Url.Content("/Setting/Orders/Olaveat12182_edit0rdelete")?id=' + idd);
+
+        });
+
+        // بستن مودال با آیکون
+        $(".close-icon").click(function () {
+            $("#mymodal3").fadeOut();
+        });
+
+        // بستن مودال وقتی روی بک‌گراند کلیک شد
+        $("#mymodal3").click(function (e) {
+            if (e.target === this) {
+                $(this).fadeOut();
+            }
+        });
+
+    });
+    $(document).ready(function () {
+        $("#expandButton2").click(function () {
+            $("#mymodal3").addClass("fade-in"); // Add the fade-in class
+            $("#mymodal3").css("display", "block");
+        });
+
+        $(".close").click(function () {
+            $("#mymodal3").removeClass("fade-in"); // Remove the fade-in class
+            $("#mymodal3").css("display", "none");
+            location.reload();
+        });
+
+        $(window).click(function (event) {
+            if (event.target == $("#mymodal3")[0]) {
+                $("#mymodal3").removeClass("fade-in"); // Remove the fade-in class
+                $("#mymodal3").css("display", "none");
+            }
+        });
+    })
+    // بستن مودال با آیکون
+    $(".close-icon").click(function () {
+        $("#mymodal3").fadeOut(200, function () {
+            location.reload();
+        });
+    });
+
+    // بستن مودال با کلیک روی بک‌گراند
+    $("#mymodal3").click(function (e) {
+        if (e.target === this) {
+            $(this).fadeOut(200, function () {
+                location.reload();
+            });
+        }
+    });
+
+    </script>
+    @*======================================مودال برگشت اولویت====================================*@
+
+
+
+
+
+
+
+
+
+
+    <script>
+        $("#SayerShoroot").click(function () {
+
+            let order = [];
+            $("#drag-wrapper .drag").each(function () {
+                order.push($(this).data("id"));
+            });
+
+            let checkboxStates = [];
+            $("#drag-wrapper .drag").each(function () {
+                checkboxStates.push({
+                    id: $(this).data("id"),
+                    vaziat: $(this).find(".chk-item").is(":checked") ? 1 : 0
+                });
+            });
+
+            $.ajax({
+                url: "/Setting/Orders/SaveNahayeOlaviat1218",
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({ order: order, checkboxStates: checkboxStates }),
+                success: function (msg) {
+                    alert("با موفقیت ذخیره شد ✔");
+                },
+                error: function () {
+                    alert("خطا در ذخیره اطلاعات ❌");
+                }
+            });
+        });
+
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
+
+

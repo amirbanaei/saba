@@ -1,0 +1,144 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="paymentReceiptModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="tbFish">
+          <Key>
+            <PropertyRef Name="fsh_ID" />
+          </Key>
+          <Property Name="fsh_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FK_User" Type="int" />
+          <Property Name="fsh_DateTime" Type="datetime" />
+        </EntityType>
+        <EntityType Name="tbKarkard">
+          <Key>
+            <PropertyRef Name="krkrd_ID" />
+          </Key>
+          <Property Name="krkrd_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FK_ProjectID" Type="int" />
+          <Property Name="krkrd_Title" Type="nvarchar" MaxLength="200" />
+          <Property Name="krkrd_Duration" Type="int" />
+          <Property Name="krkrd_StandardValue" Type="float" />
+        </EntityType>
+        <EntityType Name="tbTax">
+          <Key>
+            <PropertyRef Name="tx_ID" />
+          </Key>
+          <Property Name="tx_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="tx_Step" Type="int" />
+          <Property Name="tx_MaximumYearSalary" Type="float" />
+          <Property Name="tx_MaximumMonthSalary" Type="float" />
+          <Property Name="tx_TaxRatio" Type="float" />
+          <Property Name="tx_YearTaxValue" Type="float" />
+          <Property Name="tx_MonthTaxValue" Type="float" />
+        </EntityType>
+        <EntityContainer Name="paymentReceiptModelStoreContainer">
+          <EntitySet Name="tbFish" EntityType="Self.tbFish" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbKarkard" EntityType="Self.tbKarkard" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbTax" EntityType="Self.tbTax" Schema="dbo" store:Type="Tables" />
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="paymentReceiptModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="paymentReceiptEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="tbFish" EntityType="paymentReceiptModel.tbFish" />
+          <EntitySet Name="tbKarkard" EntityType="paymentReceiptModel.tbKarkard" />
+          <EntitySet Name="tbTax" EntityType="paymentReceiptModel.tbTax" />
+        </EntityContainer>
+        <EntityType Name="tbFish">
+          <Key>
+            <PropertyRef Name="fsh_ID" />
+          </Key>
+          <Property Name="fsh_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FK_User" Type="Int32" />
+          <Property Name="fsh_DateTime" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="tbKarkard">
+          <Key>
+            <PropertyRef Name="krkrd_ID" />
+          </Key>
+          <Property Name="krkrd_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FK_ProjectID" Type="Int32" />
+          <Property Name="krkrd_Title" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="krkrd_Duration" Type="Int32" />
+          <Property Name="krkrd_StandardValue" Type="Double" />
+        </EntityType>
+        <EntityType Name="tbTax">
+          <Key>
+            <PropertyRef Name="tx_ID" />
+          </Key>
+          <Property Name="tx_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="tx_Step" Type="Int32" />
+          <Property Name="tx_MaximumYearSalary" Type="Double" />
+          <Property Name="tx_MaximumMonthSalary" Type="Double" />
+          <Property Name="tx_TaxRatio" Type="Double" />
+          <Property Name="tx_YearTaxValue" Type="Double" />
+          <Property Name="tx_MonthTaxValue" Type="Double" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="paymentReceiptModelStoreContainer" CdmEntityContainer="paymentReceiptEntities">
+          <EntitySetMapping Name="tbFish">
+            <EntityTypeMapping TypeName="paymentReceiptModel.tbFish">
+              <MappingFragment StoreEntitySet="tbFish">
+                <ScalarProperty Name="fsh_DateTime" ColumnName="fsh_DateTime" />
+                <ScalarProperty Name="FK_User" ColumnName="FK_User" />
+                <ScalarProperty Name="fsh_ID" ColumnName="fsh_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbKarkard">
+            <EntityTypeMapping TypeName="paymentReceiptModel.tbKarkard">
+              <MappingFragment StoreEntitySet="tbKarkard">
+                <ScalarProperty Name="krkrd_StandardValue" ColumnName="krkrd_StandardValue" />
+                <ScalarProperty Name="krkrd_Duration" ColumnName="krkrd_Duration" />
+                <ScalarProperty Name="krkrd_Title" ColumnName="krkrd_Title" />
+                <ScalarProperty Name="FK_ProjectID" ColumnName="FK_ProjectID" />
+                <ScalarProperty Name="krkrd_ID" ColumnName="krkrd_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbTax">
+            <EntityTypeMapping TypeName="paymentReceiptModel.tbTax">
+              <MappingFragment StoreEntitySet="tbTax">
+                <ScalarProperty Name="tx_MonthTaxValue" ColumnName="tx_MonthTaxValue" />
+                <ScalarProperty Name="tx_YearTaxValue" ColumnName="tx_YearTaxValue" />
+                <ScalarProperty Name="tx_TaxRatio" ColumnName="tx_TaxRatio" />
+                <ScalarProperty Name="tx_MaximumMonthSalary" ColumnName="tx_MaximumMonthSalary" />
+                <ScalarProperty Name="tx_MaximumYearSalary" ColumnName="tx_MaximumYearSalary" />
+                <ScalarProperty Name="tx_Step" ColumnName="tx_Step" />
+                <ScalarProperty Name="tx_ID" ColumnName="tx_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

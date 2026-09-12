@@ -1,0 +1,340 @@
+﻿@using SaabWebProject.Models.DomainModels
+@{
+    Layout = null;
+
+
+}
+
+@model Dictionary<string, int>
+<style>
+    td input, td input[class="form-control"] {
+        margin-bottom: 0 !important;
+    }
+    td .picker, td .form-select {
+        margin-bottom: 0 !important;
+    }
+</style>
+<div class="table-responsive">
+    <table class="table table-hover" style="text-align:center;">
+        <thead >
+            <tr>
+                <th>ردیف</th>
+                <th style="width:30%">عنوان بسته</th>
+                <th style="width:30%">مولفه های قابل ثبت </th>
+                <th>افراد مجاز</th>
+                <th style="width:10%">روز شروع عملیات در ماه</th>
+                <th style="width:10%">حداکثر مهلت(روز)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                if (Model["IsFor"] == 1)
+                {
+
+                    for (int i = 0; i < Model["count"]; i++)
+                    {
+                        var radif = i + 1;
+                        if (radif == 1)
+                        {
+                            <tr>
+                                <td>@radif</td>
+                                <td><input class="form-control" max="31" min="1" id="title_@radif" /></td>
+                                <td class="td_MoalefeDatMozdi"></td>
+                                <td class="td_users"></td>
+                                <td><input class="form-control" type="number" max="31" min="1" id="StartDaysInMonth_@radif" /></td>
+                                <td><input class="form-control count_Perdays" type="number" max="31" min="1" id="DeadLine_@radif" /></td>
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr>
+                                <td>@radif</td>
+                                <td><input class="form-control" max="31" min="1" id="title_@radif" /></td>
+                                <td class="td_MoalefeDatMozdi"></td>
+                                <td class="td_users"></td>
+                                <td><input class="form-control" type="number" max="31" min="1" id="StartDaysInMonth_@radif" /></td>
+                                <td><input class="form-control count_Perdays" type="number" max="31" min="1" id="DeadLine_@radif" /></td>
+                            </tr>
+                        }
+
+                    }
+                }
+                else
+                {
+                    SaabEntities db = new SaabEntities();
+
+                    string name = "";
+                    if (Model.TryGetValue("pymn", out int pymnValue))
+                    {
+                        int pymn = (int)pymnValue;
+
+                        name = db.tbPeymanContracts
+                            .Where(x => x.pec_ID == pymn)
+                            .Select(p => p.pec_Title)
+                            .FirstOrDefault();
+                    }
+                    if (Model["IsFor"] == 4)
+                    {
+                        var radif = 1;
+                        <tr>
+                            <td>@radif</td>
+                            <td><input class="form-control" max="31" min="1" id="title_@radif" value="بسته ابزار _@name " readonly /></td>
+                            <td class="td_MoalefeDatMozdi"></td>
+                            <td class="td_users"></td>
+                            <td><input class="form-control" type="number" max="31" min="1" id="StartDaysInMonth_@radif" /></td>
+                            <td><input class="form-control count_Perdays" type="number" max="31" min="1" id="DeadLine_@radif" /></td>
+                        </tr>
+                    }
+                    else if (Model["IsFor"] == 3)
+                    {
+                        var radif = 1;
+                        <tr>
+                            <td>@radif</td>
+                            <td><input class="form-control" max="31" min="1" id="title_@radif" value=" بسته ماشین آلات _@name " readonly /></td>
+                            <td class="td_MoalefeDatMozdi"> </td>
+                            <td class="td_users"></td>
+                            <td><input class="form-control" type="number" max="31" min="1" id="StartDaysInMonth_@radif" /></td>
+                            <td><input class="form-control count_Perdays" type="number" max="31" min="1" id="DeadLine_@radif" /></td>
+                        </tr>
+                    }
+                    else if (Model["IsFor"] == 6)
+                    {
+                        var radif = 1;
+                        <tr>
+                            <td>@radif</td>
+                            <td><input class="form-control" max="31" min="1" id="title_@radif" value=" بسته پروژه کالایی _@name " readonly /></td>
+                            <td class="td_MoalefeDatMozdi"> </td>
+                            <td class="td_users"></td>
+                            <td><input class="form-control" type="number" max="31" min="1" id="StartDaysInMonth_@radif" /></td>
+                            <td><input class="form-control count_Perdays" type="number" max="31" min="1" id="DeadLine_@radif" /></td>
+                        </tr>
+                    }
+                    else if (Model["IsFor"] == 5)
+                    {
+                        var radif = 1;
+                        <tr>
+                            <td>@radif</td>
+                            <td><input class="form-control" max="31" min="1" id="title_@radif" value=" بسته صورت وضعیت _@name " readonly /></td>
+                            <td class="td_MoalefeDatMozdi"> </td>
+                            <td class="td_users"></td>
+                            <td><input class="form-control" type="number" max="31" min="1" id="StartDaysInMonth_@radif" /></td>
+                            <td><input class="form-control count_Perdays" type="number" max="31" min="1" id="DeadLine_@radif" /></td>
+                        </tr>
+                    }
+                    else if (Model["IsFor"] == 7)
+                    {
+                        var radif = 1;
+                        <tr>
+                            <td>@radif</td>
+                            <td><input class="form-control" max="31" min="1" id="title_@radif" value=" بسته فیش _@name " readonly /></td>
+                            <td class="td_MoalefeDatMozdi"> </td>
+                            <td class="td_users"></td>
+                            <td><input class="form-control" type="number" max="31" min="1" id="StartDaysInMonth_@radif" /></td>
+                            <td><input class="form-control count_Perdays" type="number" max="31" min="1" id="DeadLine_@radif" /></td>
+                        </tr>
+                    }
+                    else
+                    {
+                        var ty = Model["IsFor"];
+                        var n = db.tbmarahelsabt.Where(p => p.ID == ty).FirstOrDefault();
+                        var ne = "";
+                        if (n != null)
+                        {
+                            ne = n.Name;
+                        }
+                        var radif = 1;
+                        <tr>
+                            <td>@radif</td>
+                            <td><input class="form-control" max="31" min="1" id="title_@radif" value=" @ne _@name " readonly /></td>
+                            <td class="td_MoalefeDatMozdi"> </td>
+                            <td class="td_users"></td>
+                            <td><input class="form-control" type="number" max="31" min="1" id="StartDaysInMonth_@radif" /></td>
+                            <td><input class="form-control count_Perdays" type="number" max="31" min="1" id="DeadLine_@radif" /></td>
+                        </tr>
+                    }
+
+                }
+            }
+
+        </tbody>
+
+    </table>
+</div>
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+
+<script>
+    $("#marahelTaed").css("display", "block");
+    $("#startmonth_div").css("display", "block");
+    $("#btnsabt").css("display", "block");
+</script>
+
+<script>
+    //مالتی سلکت مولفه ها
+    if (@Model["IsFor"] == 1) {
+        var counter2 = -1;
+        $.each($(".td_MoalefeDatMozdi"), function (index, item) {
+            $(this).load('@Url.Content("/../Contracts/MoalefeDastMozdi/AllMoalefeList_MultiSelect")', function () {
+                counter2++;
+                console.log(counter2);
+                $("#select_Allmoalefe").attr("id", "select_Allmoalefe_" + counter2);
+                // $("#select_Allmoalefe_"+counter2).attr("multiple", "multiple");
+                $('#select_Allmoalefe_' + counter2).picker({ search: true });
+                $('#select_Allmoalefe_' + counter2).on('sp-change', function () {
+                });
+
+            });
+        });
+
+    }
+    else if (@Model["IsFor"] == 4) {
+        var counter2 = -1;
+
+        $.each($(".td_MoalefeDatMozdi"), function (index, item) {
+
+
+
+            $(this).load('@Url.Content("/../Contracts/MoalefeDastMozdi/AllMoalefeList_MultiSelectForTOOl")?IsFor=4', function () {
+       counter2++;
+       console.log(counter2);
+       $("#select_Allmoalefe").attr("id", "select_Allmoalefe_" + counter2);
+       // $("#select_Allmoalefe_"+counter2).attr("multiple", "multiple");
+       $('#select_Allmoalefe_' + counter2).picker({ search: true });
+       $('#select_Allmoalefe_' + counter2).on('sp-change', function () {
+       });
+
+   });
+
+           // $("#select_Allmoalefe_"+counter2).attr("multiple", "multiple");
+
+
+
+
+
+    });
+    }
+    else if (@Model["IsFor"] == 3) {
+        $.each($(".td_MoalefeDatMozdi"), function (index, item) {
+            var counter2 = -1;
+
+
+        $(this).load('@Url.Content("~/Contracts/MoalefeDastMozdi/AllMoalefeList_MultiSelectForTOOl")?IsFor=3', function () {
+            counter2++;
+       console.log(counter2);
+       $("#select_Allmoalefe").attr("id", "select_Allmoalefe_" + counter2);
+       // $("#select_Allmoalefe_"+counter2).attr("multiple", "multiple");
+       $('#select_Allmoalefe_' + counter2).picker({ search: true });
+       $('#select_Allmoalefe_' + counter2).on('sp-change', function () {
+       });
+
+   });
+
+           });
+         }
+    else if (@Model["IsFor"] == 6) {
+        var counter2 = -1;
+
+     $.each($(".td_MoalefeDatMozdi"), function (index, item) {
+
+     $(this).load('@Url.Content("~/Contracts/MoalefeDastMozdi/AllMoalefeList_MultiSelectForproje")?IsFor=6', function () {
+         counter2++;
+    console.log(counter2);
+    $("#select_Allmoalefe").attr("id", "select_Allmoalefe_" + counter2);
+    // $("#select_Allmoalefe_"+counter2).attr("multiple", "multiple");
+    $('#select_Allmoalefe_' + counter2).picker({ search: true });
+    $('#select_Allmoalefe_' + counter2).on('sp-change', function () {
+    });
+
+});
+
+        });
+    }
+    else if (@Model["IsFor"] == 5) {
+        var counter2 = -1;
+
+     $.each($(".td_MoalefeDatMozdi"), function (index, item) {
+
+     $(this).load('@Url.Content("~/Contracts/MoalefeDastMozdi/AllMoalefeList_MultiSelect")', function () {
+         counter2++;
+    console.log(counter2);
+    $("#select_Allmoalefe").attr("id", "select_Allmoalefe_" + counter2);
+    // $("#select_Allmoalefe_"+counter2).attr("multiple", "multiple");
+    $('#select_Allmoalefe_' + counter2).picker({ search: true });
+    $('#select_Allmoalefe_' + counter2).on('sp-change', function () {
+    });
+
+});
+
+        });
+      }
+
+          else if (@Model["IsFor"] == 7) {
+        var counter2 = -1;
+
+     $.each($(".td_MoalefeDatMozdi"), function (index, item) {
+
+     $(this).load('@Url.Content("~/Contracts/MoalefeDastMozdi/AllMoalefeList_MultiSelectForproje")?IsFor=7', function () {
+         counter2++;
+    console.log(counter2);
+    $("#select_Allmoalefe").attr("id", "select_Allmoalefe_" + counter2);
+    // $("#select_Allmoalefe_"+counter2).attr("multiple", "multiple");
+    $('#select_Allmoalefe_' + counter2).picker({ search: true });
+    $('#select_Allmoalefe_' + counter2).on('sp-change', function () {
+    });
+
+});
+
+        });
+      }
+          else{
+        $.each($(".td_MoalefeDatMozdi"), function (index, item) {
+            var counter2 = -1;
+
+
+        $(this).load('@Url.Content("~/Contracts/MoalefeDastMozdi/AllMoalefeList_MultiSelectForTOOl")?IsFor=3', function () {
+            counter2++;
+       console.log(counter2);
+       $("#select_Allmoalefe").attr("id", "select_Allmoalefe_" + counter2);
+       // $("#select_Allmoalefe_"+counter2).attr("multiple", "multiple");
+       $('#select_Allmoalefe_' + counter2).picker({ search: true });
+       $('#select_Allmoalefe_' + counter2).on('sp-change', function () {
+       });
+
+   });
+
+           });
+         }
+</script>
+<script>
+    var counter1 = -1 ;
+
+    //مالتی سلکت کاربران حقیقی
+
+    if(@Model["TypeOfUser"] == 1)// حقیقی
+    {
+       $.each($(".td_users"), function (index, item) {
+          $(this).load('@Url.Content("/../Users/Users/_GetAllHaghighiUsers_Select")',function(){
+                  counter1++;
+                  console.log(counter1);
+                   $("#select_users1").attr("id", "select_users_"+counter1);
+                   $('#select_users_'+counter1).attr("multiple", "multiple");
+                   $('#select_users_' + counter1).picker({ search: true });
+                   $('#select_users_' + counter1).on('sp-change', function () {});
+          });
+      });
+    } else {
+
+      $.each($(".td_users"), function (index, item) {
+          $(this).load('@Url.Content("/../Users/Users/_GetAllHoghooghiUsers_Select")',function(){
+                  counter1++;
+                  console.log(counter1);
+                   $("#select_users").attr("id", "select_users_"+counter1);
+                   $('#select_users_'+counter1).attr("multiple", "multiple");
+                   $('#select_users_' + counter1).picker({ search: true });
+                   $('#select_users_' + counter1).on('sp-change', function () {});
+          });
+      });
+    }
+
+</script>
+

@@ -1,0 +1,246 @@
+﻿@using SaabWebProject.Models.DomainModels;
+
+@{
+    Layout = null;
+    SaabEntities db = new SaabEntities();
+
+}
+<link href="~/MyStyles/MyStyle.css" rel="stylesheet" />
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+<div class="">
+
+    <div class="card">
+        <div class="card-body pb-2">
+
+            <div class="row" style="margin-top:20px">
+                <div class="col-xl-2">
+                    <label class="form-label">جهت</label>
+                    <select class="form-select" id="IsFor">
+                        <option value="0">انتخاب نمایید..</option>
+                        @foreach (var it in db.tbmarahelsabt.ToList())
+                        {
+                            <option value="@it.ID">@it.Name</option>
+
+                        }
+                    </select>
+                </div>
+
+
+                <div class="col-xl-2">
+                    <div class="form-group mb-3">
+                        <label class="form-label"> حداکثر تعداد روز برای انجام </label>
+                        <input class="form-control" id="MaxDaysForAccept1" />
+                    </div>
+                </div>
+                <div class="col-xl-1">
+                    <div class="form-group mb-3">
+                        <label class="form-label"> تعداد مراحل </label>
+                        <input class="form-control" id="CountLevels1" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-11">
+                    <div class="row" id="dynamicContent">
+
+
+                    </div>
+                </div>
+
+                <div class="col-xl-1">
+                    <div class="form-group mb-3">
+                        <button class="btn form-control buttonGeneralPlus" id="Submit2">
+                            <i class="fa fa-arrow-alt-circle-left fa-fw me-1 VecGeneral" style="font-size:large"></i>
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" id="table_basteh" style="overflow-y:scroll;height:300px;"></div>
+            <div class="row" id="showornot" style="margin-top:30px;display:none">
+                <div class="col-xl-8">
+
+                </div>
+                <div class="col-xl-3">
+                    <label class="form-label"> نمایش روز اتمام کلیه مراحل </label>
+                    <input class="form-control" id="EndDayAllLevels" />
+                </div>
+                <div class="col-xl-1">
+                    <button class="btn form-control buttonsabt" id="btn_saveAccept">
+                        <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                        <span class="bSabt-text">ثبت</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-arrow">
+            <div class="card-arrow-top-left"></div>
+            <div class="card-arrow-top-right"></div>
+            <div class="card-arrow-bottom-left"></div>
+            <div class="card-arrow-bottom-right"></div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+
+<script>
+
+    $(document).ready(function () {
+        $('#IsFor').change(function () {
+            // Check the selected value
+            if ($(this).val() == '1') {
+
+                $('#dynamicContent').load('/RegistrationAndConfirmationProcedures/ReffrenceSaveGetPeymansThatHasForisforone');
+
+            } else {
+
+                console.log("Selected value is not 1");
+                $('#dynamicContent').html('<div id="peyman5"></div>');
+                $("#peyman5").load('@Url.Content("/RegistrationAndConfirmationProcedures/ReffrenceSaveGetPeymansfortool")?isFor=' + $("#IsFor").val(), function () { });
+                /*select_peyman1*/
+            }
+        });
+    });
+
+</script>
+<script>
+        $(function(){
+           //ویو بسته
+           //$('#basteh').picker({ search: true });
+            //پیمان ها
+           $("#peyman1").load('@Url.Content("/../Contracts/Peyman/_GetAllListPeymans_SingleSelect")',function(){
+               $("#select_peyman1").attr("id", "select_peyman2");
+               $("#select_peyman2").removeAttr("multiple");
+           });
+        });
+
+        //نمایش مراحل تایید
+       $("#Submit2").click(function () {
+          $("#table_basteh").load('@Url.Content("/RegistrationAndConfirmationProcedures/ReffrenceAcceptListMaraheleTaeed")?count=' + $("#CountLevels1").val());
+          $("#showornot").css("display", "flex")
+      });
+</script>
+
+<script>
+    //ثبت اطلاعات
+    $("#btn_saveAccept").click(function () {
+        if ($("#IsFor").val() == '1') {
+            console.log($("#baste_peyman2").val().split('_')[0]);
+            console.log($("#baste_peyman2").val())
+            if ($("#baste_peyman2").val().split('_')[0] == 0) {
+                alert("پیمان را انتخاب نمایید");
+            } else if ($("#basteOfPeyman").val() == 0) {
+                alert("بسته را انتخاب نمایید")
+            } else if ($("#MaxDaysForAccept1").val() == 0) {
+                alert("حداکثر تعداد روز برای عملیات تایید را وارد نمایید")
+            } else if ($("#CountLevels1").val() == 0) {
+                alert("تعداد مراحل را وارد نمایید")
+            } else {
+                var Total = new Object();
+                Total.FK_PeymanID = $("#baste_peyman2").val().split('_')[0];
+                Total.FK_ReffrenceSaveLevel = $("#basteOfPeyman").val();
+                Total.MaxDaysForAccept = $("#MaxDaysForAccept1").val();
+                Total.CountLevels = $("#CountLevels1").val();
+                Total.EndDayAllLevels = $("#EndDayAllLevels").val();
+                let levelArr = []; // ارایه ذخیره سازی  همه سطوح تایید
+                let counter = 0;
+                $.each($(".count_Perdays1"), function (index, item) {
+                    var id = $(this).attr("id").split("_")[1];
+                    var obj = new Object();
+                    obj.StartDayInMonth = $("#StartDayInMonth_" + id).val();
+                    obj.Duration = $("#Duration_" + id).val();
+                    //ارایه ذخیره افراد هر سطر
+                    var UsersArr = [];
+                    $.each($("#select_usersTaeed_" + counter).val().toString().split(","), function (index, item) {
+                        if (item != "") {
+                            var user_obj = new Object();
+                            user_obj.FK_User = item;
+                            UsersArr.push(user_obj);
+                        }
+
+                    });
+                    obj.tbReffrenceAcceptLevelUsers = UsersArr;
+
+                    counter++;
+                    levelArr.push(obj);
+                });
+                Total.tbReffrenceAcceptLevel = levelArr;
+
+                sendAjax('@Url.Action("SaveReffrenceAccept", "RegistrationAndConfirmationProcedures", new { area = "Contracts" })', Total)
+            }
+        }
+        else {
+            var Total = new Object();
+            var a = $("#Select_pymn_tool").val().split('_')[0]
+            console.log(a);
+            console.log($("#Select_pymn_tool").val().split('_')[1]); // چاپ مقدار FK_PeymanID در کنسول
+            console.log($("#Select_pymn_tool").val().split('_')[0]); // چاپ مقدار FK_tbReffrenceSave در کنسول
+
+            Total.FK_PeymanID = $("#Select_pymn_tool").val().split('_')[1];
+            Total.FK_ReffrenceSaveLevel =a;
+
+   Total.MaxDaysForAccept = $("#MaxDaysForAccept1").val();
+   Total.CountLevels = $("#CountLevels1").val();
+   Total.EndDayAllLevels = $("#EndDayAllLevels").val();
+            let levelArr = []; // ارایه ذخیره سازی  همه سطوح تایید
+            let counter = 0;
+            $.each($(".count_Perdays1"), function (index, item) {
+                var id = $(this).attr("id").split("_")[1];
+                var obj = new Object();
+                console.log("kjklj");
+                obj.StartDayInMonth = $("#StartDayInMonth_" + id).val();
+                obj.Duration = $("#Duration_" + id).val();
+                //ارایه ذخیره افراد هر سطر
+                var UsersArr = [];
+                $.each($("#select_usersTaeed_" + counter).val().toString().split(","), function (index, item) {
+                    if (item != "") {
+                        var user_obj = new Object();
+                        user_obj.FK_User = item;
+                        UsersArr.push(user_obj);
+                        console.log("kjklj");
+                    }
+
+                });
+                obj.tbReffrenceAcceptLevelUsers = UsersArr;
+
+                counter++;
+                levelArr.push(obj);
+            });
+            Total.tbReffrenceAcceptLevel = levelArr;
+
+   sendAjax('@Url.Action("SaveReffrenceAccept", "RegistrationAndConfirmationProcedures", new { area = "Contracts" })', Total)
+        }
+    });
+</script>
+@* ajax code *@
+<script>
+    function sendAjax(url, data) {
+        $.ajax({
+            beforeSend: function () {
+                document.getElementById("loading-message").style.display = "block";
+            },
+            url: url,
+            data: { Total: data },
+            type: "Post",
+            dataType: "html",
+            success: function (resp) {
+                document.getElementById("loading-message").style.display = "none";
+                console.log(resp);
+                if (resp == "True") {
+                    alert("با موفقیت ثبت شد..");
+                    location.reload();
+                }
+            },
+            error: function (resp) {
+                document.getElementById("loading-message").style.display = "none";
+                alert("دچار مشکل شده است ");
+                console.log(resp);
+                alert("دچار خطا شده است");
+            }
+        });
+    }
+</script>

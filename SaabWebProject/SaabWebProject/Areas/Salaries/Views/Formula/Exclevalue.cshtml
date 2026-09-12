@@ -1,0 +1,381 @@
+﻿@using SaabWebProject.Models.DomainModels;
+
+@{
+    //ViewBag.Title = "اکسل";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = null;
+}
+@{
+
+}
+<div class="">
+    <div class="row mt-10px">
+        @*<div class="col-xl-4">
+            <label class="form-label">انتخاب نوع تجهیز</label>
+            @Html.Action("_ListGroup", "DefFacilitiesEquipment")
+        </div>*@
+        <div class="col-xl-6">
+            <label class="form-label"> پیمان </label>
+
+            @Html.Action("_GetAllListPeymans_SingleSelecforFishsabt3", "Peyman", new { area = "Contracts" })
+        </div>
+
+        <div class="col-xl-4"></div>
+        <div class="col-xl-1">
+            <a class="btn form-control buttonGeneral" id="upload112" style="font-size:10px;margin-bottom:10px;">
+                <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text"> بارگذاری اطلاعات</span>
+            </a>
+        </div>
+        <div class="col-xl-1">
+            <a href="#" class=" btn form-control buttonGeneral" style="" id="dwn" onclick="DownloadExcel22999922()">
+                <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text">دانلود فایل نمونه</span>
+            </a>
+        </div>
+
+        @*<a href="~/Content/ExcelFiles/MoalefeahFish.xlsx" class="btn btn-outline-info" style="border-radius:20px;  color: white;background-color: #0d3244;border-color: #7bedf8;">
+            <i class="bi bi-download"></i>
+            دانلود فایل اکسل نمونه
+        </a>*@                                  <input id="summery_file112" style="display:none" type="file" class="form-control" value="" name="fishhhhh"/>
+
+        <input id="summery_file10" style="display:none" type="file" class="form-control" value="" />
+
+        <input name="MyExcelStream1231" type="file" style="display:none" />
+        @*<div class="col-xl-1">
+            <a href="#" onclick="ShowDialogFile14441()" class="btn form-control buttonGeneral" style="">
+                <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text"> بارگذاری اطلاعات</span>
+            </a>
+        </div>*@
+    </div>
+
+    <div id="myTable5">
+
+    </div>
+</div>
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Scripts/sweetalert2.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+@*<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>*@
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+
+<script src="~/Scripts/popper.min.js"></script>
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Scripts/sweetalert2.js"></script>
+@*<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>*@
+
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script>
+        $("#myTable5").load('@Url.Content("/Contracts/Functions/ListFIsh")');
+    // دسترسی به عنصر با استفاده از id قبلی
+    //var element = document.getElementById('baste_peyman7');
+
+    //// بررسی آیا عنصر با این id وجود دارد
+    //if (element) {
+    //    // تغییر id به مقدار جدید
+    //    element.id = 'baste_peyman10';
+    //}
+
+    function DownloadExcel22999922() {
+        var selectedValue = $("#baste_peyman2333333").val();
+        var parts = selectedValue.split('_');
+        var FK_Baste = parts[1];
+        var pymnID = parts[0];
+
+        $.ajax({
+            beforeSend: function () {
+                document.getElementById("loading-message").style.display = "block";
+            },
+            type: 'GET',
+            dataType: 'html',
+            success: function (res) {
+                document.getElementById("loading-message").style.display = "none";
+                window.location = '@Url.Action("ExportMoalefeExcelformoalfefish", "Moalefe", new { area = "Salaries" })?PeymanID=' + pymnID;
+            },
+            error: function (res) {
+                alert("An error occurred");
+                console.log(res);
+            }
+        });
+    }
+
+    var Toast2 = Swal.mixin({
+        toast: true,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer);
+            toast.addEventListener('mouseleave', Swal.resumeTimer);
+        }
+    });
+</script>
+<script>
+
+
+
+
+
+
+    var Toast2 = Swal.mixin({
+        toast: true,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    });
+
+    $(function () {
+        $("#myTable").load('@Url.Content("/MoalefeDastMozdi/_PartialListMoalefeDastMozdi")');
+    });
+    $("#createMoalefeButtonModal").click(function () {
+            $("#big_modal_body").load('@Url.Content("/MoalefeDastMozdi/_PartialCreateMoalefeDastMozdi")');
+    });
+    var Temp = "@TempData["Message"]";
+    if (Temp != "") {
+
+        Toast2.fire({
+            icon: 'success',
+            background: '#35434A',
+            color: 'white',
+            title: Temp
+        });
+
+    }
+    $("#btn_submit").click(function () {
+        $("#submit_input").click();
+    });
+    $("#submit_input").click(function () {
+        $("#send").click();
+    });
+</script>
+<script>
+    $("#summery_file10").change(function () {
+                  console.log("ldsaksda0");
+        console.log("123454");
+
+        var file = this.files[0];
+        var ext = file.name.split('.')[1];
+        if (ext == "xlsx" || ext == "xls") {
+
+            var obj = new FormData();
+            var selectedValue = $("#baste_peyman2333333").val();
+            var parts = selectedValue.split('_');
+            var FK_Baste = parts[1];
+            var pymnID = parts[0];
+
+            obj.append("MyExcelStream", file);
+
+            console.log(file);
+            $.ajax({
+            beforeSend:function (){
+              document.getElementById("loading-message").style.display = "block";
+            },
+                url: "@Url.Action("sabtexcel", "Formula", new { area = "Salaries" })?PeymanID=" + pymnID + "&FKBasteh=" + FK_Baste,
+               type: "post",
+               contentType: false,
+               data: obj,
+               processData: false,
+               cache: false,
+                success: function (res) {
+                    if (res == "True") {
+                        console.log(FK_Baste);
+                        $.ajax({
+         beforeSend:function (){
+           document.getElementById("loading-message").style.display = "block";
+         },
+url: "@Url.Action("ImportExcel_AddFish", "Formula", new { area = "Salaries" })",
+type: "post",
+
+            contentType: false,
+            data: obj,
+            processData: false,
+            cache: false,
+            success: function (res) {
+                document.getElementById("loading-message").style.display = "none";
+                Swal.fire({
+                    icon: 'success',
+                    background: 'rgb(29,40,52)',
+                    color: 'white',
+                    confirmButtonText: 'باشه',
+                    title: 'آپلود اکسل',
+                    text: res,
+                });
+                location.reload();
+
+            },
+            error: function (res) {
+                console.log(res);
+            }
+        });
+                    }
+
+                    else {
+                        console.log(res);
+                    }
+                   //document.getElementById("loading-message").style.display = "none";
+                   //Swal.fire({
+                   //    icon: 'success',
+                   //    background: 'rgb(29,40,52)',
+                   //    color: 'white',
+                   //    confirmButtonText: 'باشه',
+                   //    title: 'آپلود اکسل',
+                   //    text: res,
+                   //});
+
+               },
+               error: function (res) {
+                   console.log(res);
+               }
+           });
+        }
+        else {
+
+            Swal.fire({
+                icon: 'warning',
+                background: 'rgb(29,40,52)',
+                color: 'white',
+                confirmButtonText: 'باشه',
+                title: 'نوع فایل',
+                text: 'لطفا فایلی با پسوند اکسل وارد کنید',
+            });
+            return false;
+        }
+
+    });
+    /// Open Dialog File
+
+</script>
+<script>
+    function ShowDialogFile14441() {
+        console.log("ShowDialogFile14441");
+        $("#summery_file10").click();
+
+    }
+            $("#upload112").click(function () {
+                try {
+                    var inputElement = document.querySelector("input[name='fishhhhh']");
+                    if (inputElement) {
+                        inputElement.value = null;
+                        console.log("Input value cleared");
+
+                        setTimeout(function () {
+                            console.log("Attempting to click input element");
+                            inputElement.click();
+                            console.log("Input clicked");
+                        }, 100);
+                    } else {
+                        console.error("Input element not found");
+                    }
+
+                } catch (error) {
+                    console.error("Error in uploasfddfsljlf function: ", error);
+                }
+
+
+
+
+
+       });
+
+    $("input[name='fishhhhh']").change(function (e) {
+                         console.log("ldsaksda0");
+        console.log("123454");
+
+        var file = this.files[0];
+        var ext = file.name.split('.')[1];
+        if (ext == "xlsx" || ext == "xls") {
+
+            var obj = new FormData();
+            var selectedValue = $("#baste_peyman2333333").val();
+            var parts = selectedValue.split('_');
+            var FK_Baste = parts[1];
+            var pymnID = parts[0];
+
+            obj.append("MyExcelStream", file);
+
+            console.log(file);
+            $.ajax({
+            beforeSend:function (){
+              document.getElementById("loading-message").style.display = "block";
+            },
+                url: "@Url.Action("sabtexcel", "Formula", new { area = "Salaries" })?PeymanID=" + pymnID + "&FKBasteh=" + FK_Baste,
+               type: "post",
+               contentType: false,
+               data: obj,
+               processData: false,
+               cache: false,
+                success: function (res) {
+                    if (res == "True") {
+                        console.log(FK_Baste);
+                        $.ajax({
+         beforeSend:function (){
+           document.getElementById("loading-message").style.display = "block";
+         },
+url: "@Url.Action("ImportExcel_AddFish", "Formula", new { area = "Salaries" })",
+type: "post",
+
+            contentType: false,
+            data: obj,
+            processData: false,
+            cache: false,
+            success: function (res) {
+                document.getElementById("loading-message").style.display = "none";
+                Swal.fire({
+                    icon: 'success',
+                    background: 'rgb(29,40,52)',
+                    color: 'white',
+                    confirmButtonText: 'باشه',
+                    title: 'آپلود اکسل',
+                    text: res,
+                });
+                location.reload();
+
+            },
+            error: function (res) {
+                console.log(res);
+            }
+        });
+                    }
+
+                    else {
+                        console.log(res);
+                    }
+                   //document.getElementById("loading-message").style.display = "none";
+                   //Swal.fire({
+                   //    icon: 'success',
+                   //    background: 'rgb(29,40,52)',
+                   //    color: 'white',
+                   //    confirmButtonText: 'باشه',
+                   //    title: 'آپلود اکسل',
+                   //    text: res,
+                   //});
+
+               },
+               error: function (res) {
+                   console.log(res);
+               }
+           });
+        }
+        else {
+
+            Swal.fire({
+                icon: 'warning',
+                background: 'rgb(29,40,52)',
+                color: 'white',
+                confirmButtonText: 'باشه',
+                title: 'نوع فایل',
+                text: 'لطفا فایلی با پسوند اکسل وارد کنید',
+            });
+            return false;
+        }
+});
+</script>

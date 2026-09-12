@@ -1,0 +1,82 @@
+﻿@model Int64
+<div class="col-xl-3" >
+    <label class="form-label mx-4"> مبلغ قسط (ریال) ماه 1 </label>
+    <div class="d-flex align-items-center">
+        <input class="form-control AmountInput installmentAmountInputManually" onchange="InputInstallmentManuallyChange(this)" id="installmentInput_1" />
+    </div>
+</div>
+
+<div class="col-xl-2" >
+    <label class="form-label  mx-4">سال</label>
+    <select id="Year_1" name="year_Eq" class="form-select">
+        @{
+            System.Globalization.PersianCalendar cs2 = new System.Globalization.PersianCalendar();
+
+            for (var i = 4; i >= 0; i--)
+            {
+
+                var s = DateTime.Now.AddYears(-i + 2);
+                <option selected="selected" value="@cs2.GetYear(s)">@cs2.GetYear(s)</option>
+            }
+        }
+    </select>
+
+</div>
+
+<div class="col-xl-2"><label class="form-label">ماه</label>
+    <select id="Month_1" name="month_Eq" class="form-select">
+        @{
+            for (var i = 1; i <= 12; i++)
+            {
+                <option selected="selected" value="@i">@i</option>
+            }
+        }
+    </select>
+</div>
+
+
+ 
+
+<div class="col-xl-1 justify-content-center ">
+    <button id="btnPlusInput" onclick="plusInputInstallmentManually(this)" class="btn form-control buttonGeneralPlus">
+        <i class="fa fa-plus fa-fw me-1  VecGeneral"></i>
+    </button>
+</div>
+<input class="d-none TAmountManually" value="@Model" id="TAmountManually" />
+<div class="col-xl-4 justify-content-center " >
+    <label class="form-label">مانده:</label>
+    <input class="form-control" value="@Model" id="inputTotalManuallyInstall" onclick="InsManuRemainingClicked(this)" type="button" class="btn" style=" color: #03bb03; box-shadow: none; font-size: large;" />
+</div>
+
+
+
+
+
+@* Inputs Gets Comma On Changing *@
+<script>
+    $(".AmountInput").on("keyup", function (event) {
+
+        // کاربر متنی انتخابی انتخاب میکند
+        var selection = window.getSelection().toString();
+        if (selection !== '') {
+            return;
+        }
+
+        // زمانی که جهت ها کلیک میشوند
+        if ($.inArray(event.keyCode, [38, 40, 37, 39]) !== -1) {
+            return;
+        }
+
+        var $this = $(this);
+
+        // گرفتن مقدار
+        var input = $this.val();
+
+        var input = input.replace(/[\D\s\._\-]+/g, "");
+        input = input ? parseInt(input, 10) : 0;
+
+        $this.val(function () {
+            return (input === 0) ? "" : input.toLocaleString("en-US");
+        });
+    });
+</script>

@@ -1,0 +1,342 @@
+﻿@using SaabWebProject.Models.Classes;
+@{
+    Layout = null;
+}
+@model IEnumerable<SaabWebProject.Models.DomainModels.FinancialDocuments>
+
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+
+<div class="card">
+    <div class="table-content p-4">
+        <div class="tab-pane fade show active" id="allTab">
+            <div class="table-responsive">
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr style="text-align:center">
+                            @if (UserStuf.PosID == "9")
+                            {
+                                <th>
+                                    @Html.DisplayName("فعالیت")
+                                </th>
+                            }
+
+                            <th>
+                                @Html.DisplayName("#")
+                            </th>
+                            <th>
+                                @Html.DisplayName("کاربر حقوقی")
+                            </th>
+                            <th>
+                                @Html.DisplayName("کاربر حقیقی  ")
+                            </th>
+                            <th>
+                                @Html.DisplayName("پیوست مدرک")
+                            </th>
+                            <th>
+                                @Html.DisplayName("مرکز هزینه ")
+                            </th>
+
+                            <th>
+                                @Html.DisplayName("شرح")
+                            </th>
+                            <th>
+                                @Html.DisplayName("تاریخ سند ")
+                            </th>
+                            <th>
+                                @Html.DisplayName("بستانکار(ریال)")
+                            </th>
+                            <th>
+                                @Html.DisplayName("بدهکار(ریال)")
+                            </th>
+
+
+
+                        </tr>
+
+
+
+                    </thead>
+                    <tbody style="text-align:center">
+
+                        @if (Model != null)
+                        {
+
+                            var i = 0;
+                            foreach (var item in Model)
+                            {
+                                if (item != null)
+                                {
+
+
+                                    i++;
+                        <tr>
+
+                            @if (UserStuf.PosID == "9")
+                            {
+                                <td>
+                                    <div class="ms-sm-4 mt-sm-0 mt-2 dropdown-toggle">
+                                        <a href="#" data-bs-toggle="dropdown" class="text-white text-opacity-75 text-decoration-none">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                        <div class="dropdown-menu">
+
+                                            <a data-bs-toggle="modal" data-bs-target="#modalLg1" class="dropdown-item edit" id="Edit_@item.ID">ویرایش</a>
+                                            <a class="dropdown-item Delete" id="Delete_@item.ID">حذف</a>
+
+                                            <a data-bs-toggle="modal" data-bs-target="#modalLg1" class="dropdown-item Details" id="Detail_@item.ID">جزئیات</a>
+
+                                            @*<a data-bs-toggle="modal" data-bs-target="#modalLg" class="dropdown-item edit" id="Edit_@item.ID">ویرایش</a>
+                        <a data-bs-toggle="modal" data-bs-target="#modalLg" class="dropdown-item Details">جزئیات</a>
+                        <a class="dropdown-item Delete" id="Delete_@item.ID">حذف</a>*@
+
+
+                                        </div>
+                                    </div>
+                                </td>
+                            }
+                            else if (UserStuf.PosID == "2175")
+                            {
+                                <td>
+                                    <div class="ms-sm-4 mt-sm-0 mt-2 dropdown-toggle">
+                                        <a href="#" data-bs-toggle="dropdown" class="text-white text-opacity-75 text-decoration-none">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                        <div class="dropdown-menu">
+
+                                            <a data-bs-toggle="modal" data-bs-target="#modalLg1" class="dropdown-item edit" id="Edit_@item.ID">ویرایش</a>
+
+
+
+                                            @*<a data-bs-toggle="modal" data-bs-target="#modalLg" class="dropdown-item edit" id="Edit_@item.ID">ویرایش</a>
+                        <a data-bs-toggle="modal" data-bs-target="#modalLg" class="dropdown-item Details">جزئیات</a>
+                        <a class="dropdown-item Delete" id="Delete_@item.ID">حذف</a>*@
+
+
+                                        </div>
+                                    </div>
+                                </td>
+                            }
+                            <td>
+                                @i
+                            </td>
+                            @if (item.Peyman_ID == null)
+                            {
+                                <td>
+
+                                    -------------
+
+                                </td>
+                            }
+                            else
+                            {
+                                <td>
+                                    @item.tbPeymanContracts.pec_BriefTitle
+                                </td>
+                            }
+
+                            @if (item.User_ID == null)
+                            {
+                                <td>
+
+                                    -------------
+
+                                </td>
+                            }
+                            else
+                            {
+                                <td>
+
+                                    @item.tbUsers.FullName
+
+                                </td>
+                            }
+
+
+
+                            @if (item.File_SystemName != null)
+                            {
+                                <td style="color:green">
+                                    <a target="_blank" href="~/Areas/ManagementAccounting/Contents/RegistrationDucumentAttachmentsFile/@item.File_SystemName">
+                                        دانلود
+                                    </a>
+                                </td>
+                            }
+                            else
+                            {
+                                <td>ذخیره نشده</td>
+                            }
+
+
+
+                            @if (item.Creditlamdicatros_ID == null && item.Detailedtitle_ID == null)
+                            {
+                                <td>
+
+                                    -----
+                                </td>
+                            }
+                            else if (item.Creditlamdicatros_ID == null)
+                            {
+                                <td>
+
+                                    @item.tbDetailedtitle.Detailedtitle
+
+                                </td>
+                            }
+                            else if (item.Detailedtitle_ID == null)
+                            {
+                                <td>
+
+                                    @item.tbCreditIndicators.Title
+
+                                </td>
+                            }
+
+
+
+                            <td>
+                                @if (item.Title.Length > 40)
+                                {
+                                    <span title="@item.Title">@item.Title.Substring(0, 40)...</span>
+                                }
+                                else
+                                {
+                                    @item.Title
+                                }
+                            </td>
+
+                            <td cont-date="dateS_@i" hidden>
+                                @if (item.DataDocument.HasValue)
+                                {
+                                    @item.DataDocument.Value.ToString("MM/dd/yyyy")
+                                }
+                            </td>
+                            <td id="dateS_@i"></td>
+                            <td>
+                                @string.Format("{0:N0}", item.Creditor)
+
+
+                            </td>
+                            <td>
+                                @string.Format("{0:N0}", item.Debtore)
+
+                            </td>
+
+                        </tr>
+                                }
+                                else
+                                {
+                                    i++;
+                                    <tr>
+                                        <td>
+                                            <div class="ms-sm-4 mt-sm-0 mt-2 dropdown-toggle">
+                                                <a href="#" data-bs-toggle="dropdown" class="text-white text-opacity-75 text-decoration-none">
+                                                    <i class="fa fa-edit"></i>
+                                                </a>
+                                                <div class="dropdown-menu">
+                                                    <a data-bs-toggle="modal" data-bs-target="#modalLg" class="dropdown-item edit" id="Edit_@item.ID">ویرایش</a>
+                                                    <a data-bs-toggle="modal" data-bs-target="#modalLg" class="dropdown-item Details">جزئیات</a>
+                                                    <a class="dropdown-item Delete" id="Delete_@item.ID">حذف</a>
+
+
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            @i
+                                        </td>
+                                        <td>
+                                            @item.tbPeymanContracts.pec_Title
+                                        </td>
+
+                                        <td>
+                                            @item.tbUsers.FullName
+                                        </td>
+
+
+                                        @if (item.Creditlamdicatros_ID == null)
+                                        {
+                                            <td>
+
+                                                @item.tbDetailedtitle.Detailedtitle
+
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            <td>
+
+                                                @item.tbCreditIndicators.Title
+
+                                            </td>
+                                        }
+                                        <td>
+
+                                            @item.DataDocument
+                                        </td>
+                                        <td>
+
+                                            @item.Creditor
+                                        </td>
+                                        <td>
+
+                                            @item.Debtore
+                                        </td>
+
+                                    </tr>
+                                }
+                            }
+
+                            // Your foreach loop code here
+                        }
+
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+<script>
+    // Convert Gregorian date to jaali in the table
+    var tds = document.querySelectorAll("[cont-date]");
+    var valueD, id, target;
+    var options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    tds.forEach(td => {
+        valueD = new Date(td.textContent).toLocaleDateString('fa-IR-u-nu-latn', options).replace(',', '').replace(" ", "");
+        valueD = valueD.slice(0, 10) + " " + td.textContent.slice(10, 30)
+        id = td.getAttribute("cont-date");
+        target = document.getElementById(id);
+        target.textContent = valueD;
+    });
+</script>
+<script>
+
+$(".edit").click(function () {
+    var idd = $(this).attr("id").split("_")[1];
+    console.log(idd);
+
+    var url = "/FinancialDocuments/_EditFinnail?id=" + idd;
+    $("#big_modal_body1").load(url);
+});
+
+    $(".Details").click(function () {
+
+        var idd = $(this).attr("id").split("_")[1];
+        console.log(idd);
+
+        var url = "/FinancialDocuments/Detail?id=" + idd;
+        $("#big_modal_body1").load(url)
+        @*var idd = $(this).attr("id").split("_")[1];
+$("#big_modal_body1").load('@Url.Content("/FinancialDocuments/Detail")?id=' + idd);*@
+    });
+</script>
+
+
+

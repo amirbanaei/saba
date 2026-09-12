@@ -1,0 +1,253 @@
+﻿
+@{
+    ViewBag.TitleLargModal = " پیمان ها جدید";
+    Layout = null;
+}
+<link href="~/MyStyles/MyStyle.css" rel="stylesheet" />
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div id="formControls" class="">
+
+        <div class="card">
+            <div class="card-body pb-2">
+                <form>
+                    <div class="row">
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> پیمان </label>
+                                <div id="div_peyman2"></div>
+
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3">
+                            <div class="form-group mb-4">
+                                <label class="form-label" > عنوان </label>
+                                <input class="form-control" id="Title" @*placeholder="متن را وارد نشده "*@   />
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> نوع مدک </label>
+                                <Select class="form-select" id="TypeOfDocument">
+                                    <option value="0">انتخاب نوع مدرک...</option>
+                                    <option value="1">صورت وضعیت</option>
+                                    <option value="2">حقوقودستمزد</option>
+
+                                    <option value="3">استاد سیستمی</option>
+                                    <option value="4">پیشخوان</option>
+
+                                </Select>
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> مولفه کنترلی </label>
+                                @Html.Action("ControllyMoalefeList_SingleSelect", "MoalefeDastMozdi", new { area = "Contracts" })
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-3">
+                            <label class="form-label"> نوع کنترل </label>
+                            <Select class="form-select" id="TypeOfControl">
+                                <option value="0">انتخاب نوع کنترل...</option>
+                                <option value="1">دستی</option>
+                                <option value="2">مکانیزه</option>
+
+                            </Select>
+                        </div>
+                        <div class="col-xl-3">
+                            <label class="form-label"> قابلیت ثبت خلاصه مدرک </label>
+                            <Select class="form-select" id="AbleToSetSummery">
+                                <option value="true">دارد</option>
+                                <option value="false">ندارد</option>
+                            </Select>
+                        </div>
+                        <div class="col-xl-6">
+                            <label class="form-label"> شرح </label>
+                            <input class="form-control" id="Description" @*placeholder="متن را وارد نشده"*@  />
+                        </div>
+
+                    </div>
+                    <div class="row">
+
+                        <div class="col-xl-11">
+
+                        </div>
+
+                        <div class="col-xl-1" >
+                            <div class="form-group mb-3">
+                                <button id="btnCreate" type="button" class="btn form-control buttonsabt">
+                                    <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                                    <span class="bSabt-text">ثبت</span>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+
+                </form>
+            </div>
+
+            <div class="card-arrow">
+                <div class="card-arrow-top-left"></div>
+                <div class="card-arrow-top-right"></div>
+                <div class="card-arrow-bottom-left"></div>
+                <div class="card-arrow-bottom-right"></div>
+            </div>
+        </div>
+    </div>
+}
+<script src="script.js"></script>
+
+<script>
+            $("#div_peyman2").load('@Url.Content("/../Contracts/RegistrationDocument/GetPeymansForThisUserAth")',function(){
+                $("#select_peyman").attr("id", "select_peyman2");
+                $("#select_peyman2").picker({ search: true });
+            });
+</script>
+
+
+<script>
+
+    //var titleInput = $("#Title");
+    //var descriptionInput = $("#Description");
+
+    //titleInput.on("input", function() {
+    //    var inputValue = $(this).val();
+    //    if (inputValue === "") {
+    //        titleInput.css("color", "green");
+    //        titleInput.val("عنوان لم يتم إدخاله بعد.");
+    //    } else if (inputValue === "خطأ") {
+    //        titleInput.css("color", "red");
+    //        titleInput.val("");
+    //        titleInput.attr("placeholder", "تم إدخال نص خاطئ.");
+    //    } else {
+    //        titleInput.css("color", "orange");
+    //        titleInput.val("أنت تقوم بالكتابة: " + inputValue);
+    //    }
+    //});
+
+    //descriptionInput.on("input", function() {
+    //    var inputValue = $(this).val();
+    //    if (inputValue === "") {
+    //        descriptionInput.css("color", "green");
+    //        descriptionInput.attr("placeholder", "No text entered");
+    //    } else if (inputValue === "wrong") {
+    //        descriptionInput.css("color", "red");
+    //        descriptionInput.val("");
+    //        descriptionInput.attr("placeholder", "Wrong text has been entered.");
+    //    } else {
+    //        descriptionInput.css("color", "orange");
+    //        descriptionInput.attr("placeholder", "You are typing: " + inputValue);
+    //    }
+    //});
+
+
+
+
+
+    $("#btnCreate").click(function () {
+        if ($("#title").val() == 0) {
+            alert("کاربران را انتخاب نمایید");
+
+        }  else {
+           var users = $("#users1").val();
+            var things = [];
+            console.log($("#select_peyman2").val());
+           //for(let i =0 ; i<$("#select_peyman2").val().length;i++){
+           for(let i =0 ; i<1;i++){
+               var obj =new Object();
+                obj.FK_PeymanID = $("#select_peyman2").val();
+                obj.Title = $("#Title").val();
+                obj.TypeOfDocument = $("#TypeOfDocument").val();
+                obj.FK_MoalefeControll = $("#ControllyMoalefe1").val();
+                obj.TypeOfControl = $("#TypeOfControl").val();
+                obj.Description = $("#Description").val();
+                obj.AbleToSetSummery = $("#AbleToSetSummery").val();
+                things.push(obj);
+           }
+            console.log(things);
+           // return false;
+           things = JSON.stringify({ 'things': things });
+           sendAjax('@Url.Action("DefinitionOfDocumentTitles_Save", "RegistrationDocument",new { area = "Contracts" })',things);
+        }
+    });
+</script>
+
+<script>
+    var Toast = Swal.mixin({
+        toast: true,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    });
+</script>
+
+<script>
+    function sendAjax(url, things) {
+        $("#loading-message").css("display", "block");
+        $.ajax({
+            contentType: 'application/json; charset=utf-8',
+            // dataType: 'json',
+            type: 'POST',
+            url: url,
+            data: things,
+            success: function (resp1) {
+                console.log(resp1);
+                $("#loading-message").css("display", "none");
+
+                if (resp1 == "True") {
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "اطلاعات با موفقیت ذخیره شد"
+                    }).then(() => {
+                        location.reload();
+                    });
+                } else {
+                    $("#loading-message").css("display", "none");
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                    }).then(() => {
+                        $("#loading-message").css("display", "none");
+                    });
+
+                }
+
+            },
+            error: function (resp1) {
+                console.log(resp1);
+
+                $("#loading-message").css("display", "none");
+                Toast.fire({
+                    icon: 'success',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                }).then(() => {
+                    $("#loading-message").css("display", "none");
+                });
+            }
+        });
+
+
+    }
+
+
+</script>

@@ -1,0 +1,383 @@
+﻿
+@{
+    ViewBag.Title = "افزودن کالا ها";
+    Layout = null;
+}
+
+<div class="mb-5">
+    <div class="card">
+        <div class="card-body pb-2">
+            <div class="row">
+                <div class="col-xl-3">
+                    <div class="form-group mb-3">
+                        <label class="form-label"> پیمان </label>
+                        @Html.Action("_GetAllListPeymans_SingleSelect", "Peyman", new { area = "Contracts" })
+
+                    </div>
+                </div>
+                <div class="col-xl-3">
+                    <div class="form-group mb-3">
+                        <label class="form-label"> کدپروژه </label>
+                        <input class="form-control" id="ProjectCode" />
+                    </div>
+                </div>
+                <div class="col-xl-3">
+                    <div class="form-group mb-3">
+                        <label class="form-label"> شهرستان /امور </label>
+                        @Html.Action("_Cities_Select", "Users", new { area = "Users" })
+                    </div>
+                </div>
+                <div class="col-xl-3">
+                    <div class="form-group mb-3">
+                        <label class="form-label"> تاریخ تعریف پروژه کالایی </label>
+                        <div class="col-xl-12">
+                            <input class="form-control" id="datepickerFrom_Eq" />
+                            <input class="form-control" type="hidden" id="datepickerFromEn_Eq" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-3">
+                    <div class="form-group mb-3">
+                        <label class="form-label"> مبلغ کل  </label>
+                        <input class="form-control" id="Totalnumber" />
+                    </div>
+                </div>
+                <div class="col-xl-9">
+                    <label class="form-label"> عنوان پروژه  </label>
+                    <input class="form-control" id="ProjectTitle" />
+                </div>
+
+
+            </div>
+
+
+
+            <div class="row" style="margin-top:20px">
+                <style>
+                    .cssss:before {
+                        content: '';
+                        position: absolute;
+                        top: 0;
+                        right: 0;
+                        bottom: 0;
+                        left: 0;
+                        z-index: -1;
+                        margin: -2px;
+                        border-radius: inherit;
+                        background: linear-gradient(to bottom, #7bf1f5, #2559ad);
+                    }
+                </style>
+                <div class="col-xl-5"></div>
+
+                <div class="col-xl-2">
+
+                    <button class="btn btn-outline-theme buttonsabt" id="btnCreate1">
+                        <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                        <span class="bSabt-text">ثبت</span>
+                    </button>
+                </div>
+
+                <div class="col-xl-5">
+                    <button class="btn form-control uploadSummery1 buttonGeneral" style="float:left;">
+                        <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                        <span class="bGeneral-text">بارگذاری پیوست</span>
+                        
+                    </button>
+                    <input id="summery_file1" style="display:none" type="file" class="form-control" value="" />
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+
+
+</div>
+
+
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+    <script src="~/Scripts/jquery-ui.js"></script>
+    <script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+
+    @* DatePicker *@
+    <script>
+
+        $(function () {
+            $('#year_Eq').picker({ search: true });
+            $('#month_Eq').picker({ search: true });
+
+            $('#datepickerFrom_Eq').MdPersianDateTimePicker({
+                targetTextSelector: '#datepickerFrom_Eq',
+                targetDateSelector: '#datepickerFromEn_Eq',
+                dateFormat: 'yyyy-MM-dd',
+                isGregorian: false,
+                enableTimePicker: true,
+                disableBeforeToday: false
+            });
+
+            $('#datepickerTo_Eq').MdPersianDateTimePicker({
+                targetTextSelector: '#datepickerTo_Eq',
+                targetDateSelector: '#datepickerToEn_Eq',
+                dateFormat: 'yyyy-MM-dd',
+                isGregorian: false,
+                enableTimePicker: true,
+                disableBeforeToday: false
+            });
+
+        });
+
+    </script>
+
+    @* submitCommodityProject *@
+    <script>
+    function submitCommodityProject() {
+        var arguments = {};
+        arguments.Peymans = $("#select_peyman").val();
+        arguments.ProjectCode = $("#ProjectCode").val();
+        arguments.City_Id = $("#cities").val();
+        arguments.DateOfDefinitionCommodityProject = $("#datepickerFromEn_Eq").val();
+        arguments.ProjectTitle = $("#ProjectTitle").val();
+
+        document.getElementById("loading-message").style.display = "block";
+        $.ajax({
+            type: "Post",
+            url: "@Url.Action("SubmitCommodityProject","WareHouse")",
+            dataType: 'text',
+            contentType: 'application/json',
+            traditional: true,
+            data: JSON.stringify(arguments),
+            success: function (data) {
+                document.getElementById("loading-message").style.display = "none";
+                if (data == "1") {
+                    alert('اطلاعات ثبت شد')
+                    window.location.reload();
+                }
+            },
+            error: (error) => {
+                console.log(error);
+            }
+        });
+    }
+    </script>
+
+
+
+    <script>
+
+
+
+        var Toast = Swal.mixin({
+            toast: true,
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+        var fd = new FormData();
+        function sendAjax2(url2, fd2) {
+
+
+
+            fd2.append("FK_PeymanContracts", $("#select_peyman").val());
+
+            fd2.append("ProjectCode", $("#ProjectCode").val());
+            fd2.append("City_Id", $("#cities").val());
+            fd2.append("DateOfDefinitionCommodityProject", $("#datepickerFromEn_Eq").val());
+            fd2.append("ProjectTitle", $("#ProjectTitle").val());
+
+
+            fd2.append("Totalnumber", $("#Totalnumber").val());
+
+
+
+            console.log(fd2);
+
+            $.ajax({
+                url: url2,
+                type: 'POST',
+                data: fd2,
+                processData: false,
+                contentType: false,
+                success: function (resp1) {
+                    console.log("okeye");
+                    console.log(resp1);
+                    $("#loading-message").css("display", "none");
+                    fd = new FormData();
+                    if (resp1 == "True") {
+                        alert("با موفقیت ثبت شد");
+                        location.reload();
+                    }
+                    else {
+                        $("#loading-message").css("display", "none");
+                        Toast.fire({
+                            icon: 'success',
+                            background: '#35434A',
+                            color: 'white',
+                            title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                        }).then(() => {
+                            $("#loading-message").css("display", "none");
+                        });
+
+
+                    }
+
+                },
+                error: function (resp1) {
+                    console.log(resp1);
+                    console.log("Nokeye");
+                    $("#loading-message").css("display", "none");
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                    }).then(() => {
+                        $("#loading-message").css("display", "none");
+                    });
+                }
+            });
+        }
+    </script>
+
+
+    <script>
+        $(".uploadSummery11").click(function () {
+            console.log("lfsd;k");
+            $("#summery_file1").click();
+               console.log("l22k");
+           });
+
+            $("#summery_file1").change(function (e) {
+                   $.each(e.target.files, function (index, file) {
+                      fd.append("files", file);
+                   });
+            });
+        $("#btnCreate1").click(function () {
+
+            if ($("#select_peyman").val() == 0) {
+                alert("لطفا عنوان را انتخاب نمائید");
+            }
+            if (($("#ProjectCode").val() == 0))
+                 {
+                alert("لطفا عنوان را وارد  نمائید");
+            }
+               if (($("#cities").val() == null))
+                 {
+                alert("لطفا پیمان را انتخاب نمائید");
+               }
+
+
+              else {
+
+                                     sendAjax2('@Url.Action("UploadAttachmentFile", "WareHouse",new { area = "WareHouse" })', fd);
+
+
+                }
+              ;
+
+    });
+
+
+         //function sendAjax(url, data) {
+         //       console.log(url);
+
+         //       $.ajax({
+         //           beforeSend: function () {
+         //               document.getElementById("loading-message").style.display = "block";
+         //           },
+         //           url: url,
+         //           data: { Filters: data },
+         //           type: "POST",
+         //           dataType: "html",
+         //           success: function (resp) {
+         //               console.log(resp);
+         //               document.getElementById("loading-message").style.display = "none";
+         //               if (resp == "True") {
+         //                   alert("با موفقیت ثبت شد");
+         //               } else {
+         //                   alert("در ثبت دچار خطا شده ایم ! لطفا بعدا تلاش نمائید")
+         //               }
+         //           },
+         //           error: function (resp) {
+         //               document.getElementById("loading-message").style.display = "none";
+         //               alert("دچار مشکل شده است ");
+         //               console.log(resp);
+         //           }
+         //       });
+         //   }
+
+
+
+    </script>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script>
+
+        function EnableProject(e) {
+            var argumentEnableProject = {}
+            argumentEnableProject.id = e.id;
+            $.ajax({
+                type: "Post",
+                url: "@Url.Action("EnableProject","WareHouse")",
+                dataType: 'text',
+                contentType: 'application/json',
+                traditional: true,
+                data: JSON.stringify(argumentEnableProject),
+                success: function (data) {
+                    window.location.reload();
+                },
+                error: function () {
+                    alert(-1)
+                }
+            });
+        }
+        function DisableProject(e) {
+            var argumentDisableProject = {}
+            argumentDisableProject.id = e.id;
+            $.ajax({
+                type: "Post",
+                url: "@Url.Action("DisableProject","WareHouse")",
+                dataType: 'text',
+                contentType: 'application/json',
+                traditional: true,
+                data: JSON.stringify(argumentDisableProject),
+                success: function (data) {
+                    window.location.reload();
+                },
+                error: function () {
+                    alert(-1)
+                }
+            });
+        }
+    </script>
+

@@ -1,0 +1,205 @@
+﻿@model System.Text.StringBuilder
+@{
+    Layout = null;
+}
+<div class="md:flex flex-col md:flex-row md:min-h-screen w-full max-w-screen-xl mx-auto" style="height:1000px">
+
+    <script src="~/Areas/Users/Scripts/BusinessSide/go.js"></script>
+    <div id="allSampleContent" class="p-4 w-full" style="height:100%">
+
+        <link rel="stylesheet" href="~/Areas/Users/Styles/Positions/DataInspector.css" />
+        <script src="~/Areas/Users/Scripts/BusinessSide/DataInspector.js"></script>
+
+        <script id="code">
+            function init() {
+
+                const $ = go.GraphObject.make;  // for conciseness in defining templates
+
+                myDiagram =
+                    $(go.Diagram, "myDiagramDiv", // must be the ID or reference to div
+                        {
+                            layout:
+                                $(go.TreeLayout,
+                                    {
+                                        treeStyle: go.TreeLayout.StyleLastParents,
+                                        arrangement: go.TreeLayout.ArrangementHorizontal,
+                                        // properties for most of the tree:
+                                        angle: 90,
+                                        layerSpacing: 35,
+                                        // properties for the "last parents":
+                                        alternateAngle: 90,
+                                        alternateLayerSpacing: 35,
+                                        alternateAlignment: go.TreeLayout.AlignmentBus,
+                                        alternateNodeSpacing: 20
+                                    }),
+                            // enable undo & redo
+                        });
+
+
+                const levelColors = ["#CFD0CF"];
+
+                // override TreeLayout.commitNodes to also modify the background brush based on the tree depth level
+                myDiagram.layout.commitNodes = function () {
+                    go.TreeLayout.prototype.commitNodes.call(this);  // do the standard behavior
+                    // then go through all of the vertexes and set their corresponding node's Shape.fill
+                    // to a brush dependent on the TreeVertex.level value
+                    myDiagram.layout.network.vertexes.each(v => {
+                        if (v.node) {
+                            const level = v.level % (levelColors.length);
+                            const color = levelColors[level];
+                            const shape = v.node.findObject("SHAPE");
+                            if (shape) shape.stroke = $(go.Brush, "Linear", { 0: color, 1: go.Brush.lightenBy(color, 0.05), start: go.Spot.Left, end: go.Spot.Right });
+                        }
+                    });
+                };
+
+                // this is used to determine feedback during drags
+                function mayWorkFor(node1, node2) {
+                    if (!(node1 instanceof go.Node)) return false;  // must be a Node
+                    if (node1 === node2) return false;  // cannot work for yourself
+                    if (node2.isInTreeOf(node1)) return false;  // cannot work for someone who works for you
+                    return true;
+                }
+
+                // This function provides a common style for most of the TextBlocks.
+                // Some of these values may be overridden in a particular TextBlock.
+                function textStyle() {
+                    return { font: "9pt  Segoe UI,sans-serif", stroke: "white" };
+                }
+
+                // This converter is used by the Picture.
+                function findHeadShot(pic) {
+                    if (!pic) return "../../../../Assets/img/user/icons8-male-user-96.png"; // There are only 16 images on the server
+                    return "../../../../Assets/img/user/" + pic;
+                }
+
+                // define the Node template
+                myDiagram.nodeTemplate =
+                    $(go.Node, "Spot",
+                        {
+                            selectionObjectName: "BODY",
+                            mouseEnter: (e, node) => node.findObject("BUTTON").opacity = node.findObject("BUTTONX").opacity = 1,
+                            mouseLeave: (e, node) => node.findObject("BUTTON").opacity = node.findObject("BUTTONX").opacity = 0,
+                            // handle dragging a Node onto a Node to (maybe) change the reporting relationship
+                            mouseDragLeave: (e, node, next) => {
+                                const shape = node.findObject("SHAPE");
+                                if (shape && shape._prevFill) {
+                                    shape.fill = shape._prevFill;  // restore the original brush
+                                }
+                            },
+                            mouseDrop: (e, node) => {
+                                const diagram = node.diagram;
+                                const selnode = diagram.selection.first();  // assume just one Node in selection
+                                if (mayWorkFor(selnode, node)) {
+                                    // find any existing link into the selected node
+                                    const link = selnode.findTreeParentLink();
+                                    if (link !== null) {  // reconnect any existing link
+                                        link.fromNode = node;
+                                    } else {  // else create a new link
+                                        diagram.toolManager.linkingTool.insertLink(node, node.port, selnode, selnode.port);
+                                    }
+                                }
+                            }
+                        },
+                        $(go.Panel, "Auto",
+                            { name: "BODY" },
+                            // define the node's outer shape
+                            $(go.Shape, "Rectangle",
+                                { name: "SHAPE", fill: "#333333", stroke: 'black', strokeWidth: 0, portId: "" }),
+                            $(go.Panel, "Horizontal",
+                                $(go.Picture,
+                                    {
+                                        name: "Picture",
+                                        desiredSize: new go.Size(70, 70),
+                                        margin: 1.5,
+                                        source: "images/HSnopic.png"  // the default image
+                                    },
+                                    new go.Binding("source", "pic", findHeadShot)),
+                                // define the panel where the text will appear
+                                $(go.Panel, "Table",
+                                    {
+                                        minSize: new go.Size(130, NaN),
+                                        maxSize: new go.Size(300, NaN),
+                                        margin: new go.Margin(6, 10, 0, 6),
+                                        defaultAlignment: go.Spot.Right
+                                    },
+                                    $(go.RowColumnDefinition, { column: 2, width: 4 }),
+                                    $(go.TextBlock, textStyle(),  // the name
+                                        {
+                                            name: "NAMETB",
+                                            row: 0, column: 4, columnSpan: 4,
+                                            font: "12pt IranYekan,sans-serif",
+                                            editable: false, isMultiline: false,
+                                            minSize: new go.Size(50, 16),
+                                            maxSize: new go.Size(300, NaN)
+                                        },
+                                        new go.Binding("text", "name").makeTwoWay()),
+                                    $(go.TextBlock, "", textStyle(),
+                                        { row: 1, column: 0 }),
+                                    $(go.TextBlock, textStyle(),
+                                        {
+                                            row: 2, column: 1, columnSpan: 4,
+                                            editable: false, isMultiline: false,
+                                            minSize: new go.Size(50, 14),
+                                            font: "10pt IranYekan,sans-serif",
+                                            margin: new go.Margin(0, 0, 0, 8)
+                                        },
+                                        new go.Binding("text", "title").makeTwoWay()),
+                                    //$(go.TextBlock, textStyle(),
+                                    //    { row: 2, column: 0 },
+                                    //    new go.Binding("text", "key", v => "ID: " + v)),
+                                ) // end Table Panel
+                            )
+                        ),
+
+                        new go.Binding("isTreeExpanded").makeTwoWay(),
+                        $("TreeExpanderButton",
+                            {
+                                name: "BUTTONX", alignment: go.Spot.Bottom, opacity: 0,  // initially not visible
+                                "_treeExpandedFigure": "TriangleUp",
+                                "_treeCollapsedFigure": "TriangleDown"
+                            },
+                            // button is visible either when node is selected or on mouse-over
+                            new go.Binding("opacity", "isSelected", s => s ? 1 : 0).ofObject()
+                        )
+                    );  // end Node, a Spot Panel
+
+                myDiagram.nodeTemplate.contextMenu =
+                    $("ContextMenu");
+
+                // define the Link template
+                myDiagram.linkTemplate =
+                    $(go.Link, go.Link.Orthogonal,
+                        { layerName: "Background", corner: 5 },
+                        $(go.Shape, { strokeWidth: 1.5, stroke: "#F5F5F5" }));  // the link shape
+
+                // read in the JSON-format data from the "mySavedModel" element
+                load();
+            } // end init
+            function load() {
+                myDiagram.model = go.Model.fromJson(document.getElementById("mySavedModel").value);
+                // make sure new data keys are unique positive integers
+                let lastkey = 1;
+                myDiagram.model.makeUniqueKeyFunction = (model, data) => {
+                    let k = data.key || lastkey;
+                    while (model.findNodeDataForKey(k)) k++;
+                    data.key = lastkey = k;
+                    return k;
+                };
+            }
+
+            window.addEventListener('DOMContentLoaded', init);
+        </script>
+        <a></a>
+        <div id="sample" style="height:90%">
+            <div id="myDiagramDiv" style="background-color: none; border:none; height: 100%;"></div>
+            <textarea id="mySavedModel" style="width:100%; height:270px;display:none;">
+{ "class": "go.TreeModel",
+  "nodeDataArray": [
+@Model
+ ]
+}
+    </textarea>
+        </div>
+    </div>
+</div>

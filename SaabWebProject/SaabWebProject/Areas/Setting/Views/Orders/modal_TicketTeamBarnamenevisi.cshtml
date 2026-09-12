@@ -1,0 +1,254 @@
+﻿@model SaabWebProject.Models.ViewModels.Contracts.Function.FunctionModel
+@{
+    Layout = null;
+}
+<style>
+    .btn-delete {
+        background-image: linear-gradient(#cd4646, #631010);
+    }
+
+
+    .row {
+        display: flex;
+        align-items: center;
+        margin: 20px 0px
+    }
+
+        .row input {
+            margin-bottom: 0px !important;
+        }
+
+        .row div {
+            position: relative;
+        }
+
+            .row div form-label {
+                position: absolute;
+            }
+
+    .input-check {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 2px;
+    }
+</style>
+
+<div class="tab-content" id="pills-tabContent" style="margin-top:30px; max-height:400px;overflow-y:auto">
+    <div class="row" style="margin-bottom: 20px; margin-top: 10px;">
+        <div class="col-xl-3">
+            <label class="form-label">عنوان درخواست</label>
+            <input class="form-control"
+                   id="OnvanDarkhast"
+                   readonly
+                   value="@(Model.Ticket_motaghazi11.OnvanDarkhast == 1 ? "رفع باگ" :
+            Model.Ticket_motaghazi11.OnvanDarkhast == 2 ? "رفع خطا" :
+            Model.Ticket_motaghazi11.OnvanDarkhast== 3 ? "بهبود خدمات" :
+            Model.Ticket_motaghazi11.OnvanDarkhast== 4 ? "تولید گزارش جدید" :
+            Model.Ticket_motaghazi11.OnvanDarkhast== 5 ? "نیاز به راهنما" :
+            Model.Ticket_motaghazi11.OnvanDarkhast== 6 ? "سایر" :
+            "نامشخص")" />
+        </div>
+
+
+        <div class="col-xl-3">
+            <label class="form-label">شرح دلیل آنچه مورد نیاز است</label>
+            <input class="form-control" id="Dalil" value="@Model.Ticket_motaghazi11.Sharh" readonly />
+        </div>
+        <div class="col-xl-3">
+            <label class="form-label">علت بروز مشکل یا ریشه پیشنهاد</label>
+            <input class="form-control" id="Ellat" value="@Model.Ticket_motaghazi11.ElatYaRishe" readonly />
+        </div>
+        <div class="col-xl-3">
+            <label class="form-label">میزان بهبود کارایی نرم‌افزار ( درصد)</label>
+            <input class="form-control" id="Behbood" value="@Model.Ticket_motaghazi11.BehbodKarayi" readonly />
+        </div>
+
+    </div>
+    <div class="row" style="margin-bottom:20px;">
+        <div class="col-xl-3">
+            <label class="form-label">به چه بخش های دیگری کمک میکند</label>
+            <input class="form-control" id="Komak" value="@Model.Ticket_motaghazi11.KomakBeSayerBakhshHa" readonly />
+        </div>
+        <div class="col-xl-3">
+            <label class="form-label">اولویت</label>
+            <input class="form-control" id="Olaviyat" value="@(Model.Ticket_motaghazi11.OnvanDarkhast == 1 ? "اضطراری" :
+                               Model.Ticket_motaghazi11.OnvanDarkhast== 2 ? "بالا" :
+                               Model.Ticket_motaghazi11.OnvanDarkhast== 3 ? "متوسط" :
+                               Model.Ticket_motaghazi11.OnvanDarkhast== 4 ? "پایین" :
+                               "نامشخص")" readonly />
+        </div>
+
+        <div class="col-xl-3">
+            <label class="form-label">حداکثر مهلت انجام درخواست (تاریخ)</label>
+            <input class="form-control" id="Mohlat" value="@Model.Ticket_motaghazi11.ZamanAnjam" readonly />
+        </div>
+        <div class="col-xl-3">
+            <label class="form-label">فرآیند انجام کار</label>
+            <input class="form-control limit-cell" id="Farayand" value="@Model.Ticket_motaghazi11.Farayand" readonly />
+        </div>
+    </div>
+    <div class="row" style="display: flex; justify-content: center; height: fit-content; font-weight: bold; font-size: 20px;">
+        <h4 style="margin-bottom:5px;">مدیر IT</h4>
+        <hr style="color:aqua;" />
+    </div>
+    <div class="row  ">
+        <div class="col-xl-3">
+            <label class="form-label">نحوه انجام کار</label>
+            <input class="form-control"
+                   id=""
+                   value="@(Model.Ticket_IT_2.Select(s => s.Anjamdahande).FirstOrDefault() == 1 ? "برون سپاری" :
+                Model.Ticket_IT_2.Select(s => s.Anjamdahande).FirstOrDefault() == 2 ? "توسط کارشناس" : "")"
+                   readonly />
+
+        </div>
+    </div>
+
+    <div style="max-height:300px; overflow-y:auto; ">
+        @{
+            var counter = 1;
+        }
+
+
+
+        @foreach (var item in Model.Ticket_IT_2)
+        {
+            <div class="row">
+                <div class="col-xl-3 field-expert" style="position:relative">
+                    <label class="form-label" style="position:absolute;">
+                        نام کارشناس @counter
+                    </label>
+                    <input class="form-control" name="NamKarshenas[]" value="@item.AfradAnjamdahande" readonly />
+                </div>
+
+                <div class="col-xl-3 field-expert" style="position:relative">
+                    <label class="form-label" style="position:absolute;">
+                        تعیین زمان انجام کار @counter
+                    </label>
+                    <input class="form-control" name="ZamanKarshenas[]" value="@item.zamanKar" readonly />
+                </div>
+            </div>
+
+
+
+            counter++;
+
+
+        }
+    </div>
+
+
+
+    <div class="row  ">
+        <div class="col-xl-3">
+            <label class="form-label">اولویت انجام کار</label>
+            <input class="form-control" id="" value="@Model.Ticket_IT_2.Select(s=>s.Olaviat).FirstOrDefault()" readonly />
+        </div>
+
+        <div class="col-xl-3">
+            <label class="form-label">هزینه انجام کار</label>
+            <input class="form-control" id="" value="@Model.Ticket_IT_2.Select(s=>s.Hazine).FirstOrDefault()" readonly />
+        </div>
+
+        <div class="col-xl-3">
+            <label class="form-label">بررسی فرآیند درخواست</label>
+            <input class="form-control" id="" value="@Model.Ticket_IT_2.Select(s=>s.BarasiFarayand).FirstOrDefault()" readonly />
+        </div>
+    </div>
+    <div class="row  ">
+        <div class="col-xl-9">
+            <label class="form-label">سایر توضیحات</label>
+            <input class="form-control" id="" value="@Model.Ticket_IT_2.Select(s=>s.SayerToziihat).FirstOrDefault()" readonly />
+        </div>
+    </div>
+
+
+
+    <div class="row" style="display: flex; justify-content: center; height: fit-content; font-weight: bold; font-size: 20px;">
+        <h4 style="margin-bottom:5px;">مدیر برنامه ریزی</h4>
+        <hr style="color:aqua;" />
+    </div>
+    <div class="row  ">
+        <div class="col-xl-3">
+            <label class="form-label">آيا انجام درخواست ضرورت دارد</label>
+            <input class="form-control" id="" value="@Model.Ticket_Barnamerizi3.Select(s=>s.ZaroratAnjam).FirstOrDefault()" readonly />
+        </div>
+
+        <div class="col-xl-3">
+            <label class="form-label">تعیین اولویت انجام درخواست ها</label>
+            <input class="form-control" id="" value="@Model.Ticket_Barnamerizi3.Select(s=>s.Olaviat).FirstOrDefault()" readonly />
+        </div>
+
+        <div class="col-xl-3">
+            <label class="form-label">سایر توضیحات</label>
+            <input class="form-control" id="" value="@Model.Ticket_Barnamerizi3.Select(s=>s.SayerTozihat).FirstOrDefault()" readonly />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-3 input-check">
+            <label>در دستور کار قرار گرفته</label>
+            <input class="form-check-input chk-item" id="check1" type="checkbox" />
+        </div>
+
+        <div class="col-xl-2 input-check">
+            <label>انجام شده</label>
+            <input class="form-check-input chk-item" id="check2" type="checkbox" />
+        </div>
+
+        <div class="col-xl-4">
+            <label class="form-label">اصلاح فرآیند</label>
+            <textarea class="form-control" id="farayand" style="height:35px;margin-bottom:0px !important"></textarea>
+        </div>
+    </div>
+
+
+
+    <div class="row">
+        <div class="col-xl-11"></div>
+        <div class="col-xl-1">
+            <button id="Sabt-Team" type="button" class="btn form-control buttonsabt">
+                <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                <span class="bSabt-text">ثبت</span>
+            </button>
+        </div>
+    </div>
+
+
+
+
+
+</div>
+
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script>
+    $("#Sabt-Team").on("click", function () {
+
+        var data = {
+            Fk_Ticket_Barnamerizi3: $("#TicketItId").val(),
+            Fk_Ticket_motaghazi1: $("#TicketItId2").val(),
+            DarDastorKar: $("#check1-barname").is(":checked"),
+            AnjamShode: $("#check2-barname").is(":checked"),
+            EslahFarayand: $("#farayand-barname").val()
+        };
+
+        $.ajax({
+            url: '@Url.Action("SaveBarnameNavisi", "Orders")', // ← اسم کنترلر رو چک کن
+            type: 'POST',
+            data: data,
+            success: function (res) {
+                if (res.success) {
+                    alert(res.message);
+                    // اگه خواستی:
+                    // location.reload();
+                } else {
+                    alert(res.message);
+                }
+            },
+            error: function () {
+                alert("خطا در ارتباط با سرور");
+            }
+        });
+    });
+</script>
+
+

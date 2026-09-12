@@ -1,0 +1,69 @@
+﻿@model List<SaabWebProject.Areas.Contracts.Models.Classes.ListOfMoalefeha>
+<style>
+    .td-moalefe {
+        padding: 15px;
+        width: 364px;
+    }
+
+    .tr-moalefe {
+        margin-top: 5px;
+        cursor: pointer;
+    }
+</style>
+<div class="border" style="width:100%;margin-top:21px;padding:10px;height:564px">
+    <label class="text-green-400" style="margin-top: 10px;padding: 12px;width: 100%;">مولفه های دستمزدی</label>
+
+    <input class="form-control search-input" onkeyup="myFunction()" id="myInput" type="search" style="margin-bottom:10px;" placeholder="جستجو" autocomplete="off">
+    <table class="table table-hover" id="myTable" style="width:100%;height:421px;" data-toggle="table" data-sort-class="table-active" data-sortable="true" data-search="true" data-pagination="true" data-show-refresh="true" data-show-columns="true" data-show-fullscreen="true" data-height="460">
+        <tbody style="overflow-y: scroll;
+      display: block;
+      height: 421px;">
+            @foreach (var item in Model)
+            {
+                if (item.Type == 0)
+                {
+                    <tr class="tr-moalefe">
+                        <td class="td-moalefe" id="@item.GharardadColoumnName">@item.variablePersianName</td>
+                    </tr>
+                }
+                else
+                {
+                    <tr class="tr-moalefe">
+                        @{var s = item.Type + "_" + item.ID;}
+                        <td class="td-moalefe" id="@s">@item.variablePersianName
+                           @if (item.ExistsFormula)
+                           {
+                               <i class="fa fa-file-excel text-green-400" style="float: left"></i>
+                           }
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    //Search Script Table
+    function myFunction() {
+        // Declare variables
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("myInput");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("myTable");
+        tr = table.getElementsByTagName("tr");
+
+        // Loop through all table rows, and hide those who don't match the search query
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+</script>

@@ -1,0 +1,563 @@
+﻿@model SaabWebProject.Models.ViewModels.Contracts.Function.FunctionModel
+@using SaabWebProject.Models.DomainModels;
+@using System.Globalization
+
+@{
+    Layout = null;
+    SaabEntities db = new SaabEntities();
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>viewModalIcon</title>
+    <style>
+        @@media (max-width: 768px) {
+            .text-small {
+                font-size: 10px !important;
+                width: fit-content;
+            }
+
+            .text-information {
+                font-size: 10px;
+                margin-bottom: 5px;
+            }
+        }
+
+        .row {
+            margin-bottom: 20px;
+        }
+
+        .title-hidden {
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+        }
+
+        .hidden-box {
+            margin-top: 20px;
+        }
+
+        .hidden {
+            display: flex;
+            flex-direction: column;
+            padding: 30px 10px;
+            border-radius: 8px;
+            gap: 20px;
+            background-color: #1d2835;
+            width: 100%;
+        }
+
+        .part-hidden {
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .btn-small i {
+            font-size: 12px;
+        }
+
+        .form-check-input {
+            margin: 0 !important;
+        }
+
+        .text-small {
+            font-size: 14px;
+            width: fit-content;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="row" style="background-color: var(--bs-tab-content-bg); border-radius: 8px; padding: 5px; align-items: baseline; position: relative; margin-top: 10px; border: 1px solid white; ">
+        @{
+            long IDID = 0;
+            long FK_us = 0;
+            long vaziat = 0;
+            long vaziat2 = 0;
+        }
+
+        @foreach (var item1 in Model.detailjob1)
+        {
+            IDID = item1.ID;
+            FK_us = item1.FK_usr;
+            vaziat = item1.vaziat;
+            vaziat2 = item1.vaziat - 1;
+
+            <div class="row">
+                @foreach (var item in Model.detailjob.Where(s => s.IDst == item1.IDst))
+                {
+                    <div class="col-xl-4 text-information">@item.name:@item.detal</div>
+                }
+            </div>
+        }
+
+        <hr />
+
+        <div class="row" style="gap: 15px; display: flex; flex-direction: column;">
+
+            @foreach (var item in Model.erja_omomi_edit)
+            {
+
+                var findval = db.erja_sabt_usr
+                .FirstOrDefault(s => s.FK_usr == FK_us && s.FK_omomi == IDID && s.FK_erja_omomi_edit == item.ID && s.vaziat == vaziat2);
+
+                var dependencies = db.erja_omomi_edit_link_link
+                .Where(d => d.FK_erja_omomi_edit == item.ID && d.active == 1)
+                .ToList();
+
+                var hasDependency = dependencies.Any();
+
+                string parentIds = "";
+                string parentValues = "";
+
+                if (hasDependency)
+                {
+                    parentIds = string.Join(",", dependencies.Select(d => d.FK_erja_omomi_edit_2));
+                    parentValues = string.Join(",", dependencies.Select(d => d.number));
+                }
+
+                var initialStyle = hasDependency ? "display:none;" : "";
+
+                <div class="dependency-item"
+                     style="@initialStyle"
+                     data-item-id="@item.ID"
+                     data-parent-ids="@parentIds"
+                     data-parent-values="@parentValues">
+
+                    @if (item.Type == 0)
+                    {
+                        var isChecked = findval != null && findval.value_cheek == true;
+
+                        <div class="part-hidden">
+
+                            <input type="checkbox"
+                                   id="@item.ID"
+                                   class="form-check-input form-check-input1 dependency-control @(item.asli == 1 ? "required-check" : "")"
+                                   @(isChecked ? "checked" : "") />
+
+                            <label class="text-small" for="@item.ID">
+                                @item.Nam
+                                @if (item.asli == 1)
+                                {<span style="color:red">*</span>}
+                            </label>
+
+                        </div>
+                    }
+
+                    @if (item.Type == 1)
+                    {
+                        <div class="col-xl-3">
+
+                            <label class="form-label" for="@item.ID">
+                                @item.Nam
+                                @if (item.asli == 1)
+                                {<span style="color:red">*</span>}
+                            </label>
+
+                            @if (item.Model == 0)
+                            {
+                                var val = findval?.value_str ?? "";
+
+                                <input id="@item.ID"
+                                       value="@val"
+                                       class="form-control form-control1 dependency-control @(item.asli == 1 ? "required-field" : "")"
+                                       type="text" />
+                            }
+
+                            else if (item.Model == 1)
+                            {
+                                var val = findval?.value_int?.ToString("N0", CultureInfo.InvariantCulture) ?? "";
+
+                                <input id="@item.ID"
+                                       value="@val"
+                                       class="form-control form-control1 number dependency-control @(item.asli == 1 ? "required-field" : "")"
+                                       type="text" />
+                            }
+
+                            else if (item.Model == 2)
+                            {
+
+                                string shamsiDate = "";
+
+                                if (findval?.value_time != null)
+                                {
+                                    var pc = new PersianCalendar();
+                                    var miladi = Convert.ToDateTime(findval.value_time);
+                                    shamsiDate = $"{pc.GetYear(miladi):0000}/{pc.GetMonth(miladi):00}/{pc.GetDayOfMonth(miladi):00}";
+                                }
+
+                                <input data-jdp
+                                       jdp-btn-close
+                                       data-jdp-miladi-input="miladi_@item.ID"
+                                       id="@item.ID"
+                                       value="@shamsiDate"
+                                       class="form-control form-control1 pdate dependency-control @(item.asli == 1 ? "required-field" : "")" />
+
+                                <input id="miladi_@item.ID" type="hidden" value="@findval?.value_time" />
+
+                            }
+
+                            else
+                            {
+
+                                <select id="@item.ID"
+                                        class="form-select form-control1 select-int dependency-control @(item.asli == 1 ? "required-field" : "")">
+
+                                    <option value="-1">انتخاب کنید</option>
+
+                                    @foreach (var it in db.erja_omomi_edit_link.Where(s => s.FK_erja_omomi_edit == item.ID))
+                                    {
+                                        <option value="@it.numeber" @(findval?.value_int == it.numeber ? "selected" : "")>
+                                            @it.value
+                                        </option>
+                                    }
+
+                                </select>
+
+                            }
+
+                        </div>
+                    }
+
+                    @if (item.Type == 4)
+                    {
+
+                        var selectedVal = findval?.value_int ?? -1;
+
+                        <div class="col-xl-3">
+
+                            <label class="form-label" for="@item.ID">
+                                @item.Nam
+                                @if (item.asli == 1)
+                                {<span style="color:red">*</span>}
+                            </label>
+
+                            <select id="@item.ID"
+                                    class="form-select form-control1 select-int dependency-control @(item.asli == 1 ? "required-field" : "")">
+
+                                <option value="-1">انتخاب کنید</option>
+
+                                @foreach (var it in db.erja_omomi_edit_link.Where(s => s.FK_erja_omomi_edit == item.ID))
+                                {
+                                    <option value="@it.numeber" @(selectedVal == it.numeber ? "selected" : "")>
+                                        @it.value
+                                    </option>
+                                }
+
+                            </select>
+
+                        </div>
+                    }
+
+                </div>
+
+            }
+
+        </div>
+    </div>
+
+    @if (vaziat != 3)
+    {
+        <button id="btnInsert" class="btn btn-success">ثبت اطلاعات</button>
+        if (vaziat == 2)
+        {
+            <button id="btnInsert2" class="btn btn-success">ذخیره</button>
+        }
+    }
+    <script src="~/Scripts/jquery-ui.js"></script>
+    <script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+    <script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+    <script src="~/Scripts/popper.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+    <script src="~/Scripts/jquery-ui.js"></script>
+    <script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+    <script src="~/Assets/js/jalalidatepicker.min.js"></script>
+    <link href="~/Assets/css/jalalidatepicker.min.css" rel="stylesheet" />
+    <script src="~/Assets/js/jalaali.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            evaluateDependencies(false);
+        });
+        function isElementVisible(el) {
+            return el && el.offsetParent !== null;
+        }
+
+        function getControlValue(control) {
+            if (!control) return null;
+            if (control.type === "checkbox") return control.checked ? "1" : "0";
+            if (control.classList.contains("select-int")) return control.value;
+            if (control.classList.contains("number")) return control.value.replace(/,/g, '');
+            return control.value ? control.value.trim() : "";
+        }
+
+        function clearWrapperValues(wrapper) {
+            wrapper.querySelectorAll("input, select, textarea").forEach(el => {
+                if (el.type === "hidden") return;
+
+                if (el.type === "checkbox") el.checked = false;
+                else if (el.tagName === "SELECT") el.value = "-1";
+                else el.value = "";
+
+                el.style.border = "";
+                if (el.parentElement) el.parentElement.style.color = "";
+            });
+
+            wrapper.querySelectorAll('input[type="hidden"]').forEach(h => h.value = "");
+        }
+
+        function setItemState(wrapper, show, clearOnHide) {
+            wrapper.style.display = show ? "" : "none";
+            if (!show && clearOnHide) clearWrapperValues(wrapper);
+        }
+
+        function evaluateDependencies(clearOnHide = true) {
+
+            let changed = true, guard = 0;
+
+            while (changed && guard < 10) {
+
+                changed = false;
+                guard++;
+
+                document.querySelectorAll(".dependency-item").forEach(wrapper => {
+
+                    const parentIds = wrapper.dataset.parentIds;
+                    const parentValues = wrapper.dataset.parentValues;
+
+                    let show = true;
+
+                    if (parentIds && parentIds !== "") {
+
+                        let ids = parentIds.split(",");
+                        let vals = parentValues.split(",");
+
+                        for (let i = 0; i < ids.length; i++) {
+
+                            const pCtrl = document.getElementById(ids[i]);
+
+                            if (!pCtrl || !isElementVisible(pCtrl)) {
+                                show = false;
+                                break;
+                            }
+
+                            const val = getControlValue(pCtrl);
+
+                            if (vals[i] !== "") {
+
+                                if (val != vals[i]) {
+                                    show = false;
+                                    break;
+                                }
+
+                            } else {
+
+                                if (pCtrl.type === "checkbox") {
+                                    if (!pCtrl.checked) {
+                                        show = false;
+                                        break;
+                                    }
+                                }
+                                else if (!val || val === "-1") {
+                                    show = false;
+                                    break;
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                    const currentlyVisible = wrapper.style.display !== "none";
+
+                    if (currentlyVisible !== show) {
+                        setItemState(wrapper, show, clearOnHide);
+                        changed = true;
+                    }
+
+                });
+
+            }
+        }
+
+
+
+        function validateRequired() {
+            let valid = true;
+
+            document.querySelectorAll(".required-field").forEach(el => {
+                if (!isElementVisible(el)) {
+                    el.style.border = "";
+                    return;
+                }
+
+                if (el.tagName === "SELECT") {
+                    if (el.value === "-1" || el.value === "" || el.value == null) {
+                        el.style.border = "2px solid red";
+                        valid = false;
+                    } else {
+                        el.style.border = "";
+                    }
+                } else {
+                    if (!el.value || el.value.trim() === "") {
+                        el.style.border = "2px solid red";
+                        valid = false;
+                    } else {
+                        el.style.border = "";
+                    }
+                }
+            });
+
+            document.querySelectorAll(".required-check").forEach(el => {
+                if (!isElementVisible(el)) {
+                    if (el.parentElement) el.parentElement.style.color = "";
+                    return;
+                }
+
+                if (!el.checked) {
+                    if (el.parentElement) el.parentElement.style.color = "red";
+                    valid = false;
+                } else {
+                    if (el.parentElement) el.parentElement.style.color = "";
+                }
+            });
+
+            return valid;
+        }
+
+        function buildDataList(vaziatValue) {
+            const dataList = [];
+
+            document.querySelectorAll(".dependency-control, .form-check-input1").forEach(el => {
+                if (el.offsetParent === null) return;
+
+                const obj = {};
+                obj.FK_erja_omomi_edit = el.id;
+
+                if (el.classList.contains("form-check-input1")) {
+                    obj.value_cheek = el.checked;
+                }
+                else if (el.classList.contains("pdate")) {
+                    const hiddenId = el.getAttribute("data-jdp-miladi-input");
+                    const miladi = document.getElementById(hiddenId);
+                    obj.value_time = miladi ? miladi.value : "";
+                }
+                else if (el.classList.contains("number")) {
+                    obj.value_int = el.value ? el.value.replace(/,/g, "") : null;
+                }
+                else if (el.classList.contains("select-int")) {
+                    obj.value_int = (el.value && el.value !== "-1") ? parseInt(el.value) : null;
+                }
+                else {
+                    obj.value_str = el.value;
+                }
+
+                obj.FK_omomi = @IDID;
+                obj.unic = "";
+                obj.vaziat = vaziatValue;
+
+                dataList.push(obj);
+            });
+
+            return dataList;
+        }
+
+        document.addEventListener("change", e => {
+            if (e.target.matches(".dependency-control, .form-check-input1")) {
+                evaluateDependencies(true);
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+            evaluateDependencies(false);
+        });
+
+        jalaliDatepicker.startWatch({
+            autoClose: true,
+            showCloseBtn: true,
+            zIndex: 100000
+        });
+
+        document.querySelectorAll("[data-jdp-miladi-input]").forEach(inp => {
+            inp.addEventListener("jdp:change", function () {
+                var miladiInput = document.getElementById(this.getAttribute("data-jdp-miladi-input"));
+                if (!this.value) {
+                    miladiInput.value = "";
+                    return;
+                }
+
+                var d = this.value.replace(' ', '').slice(0, 10).split('/');
+                var g = jalaali.toGregorian(+d[0], +d[1], +d[2]);
+                miladiInput.value = `${g.gy}-${g.gm}-${g.gd}`;
+            });
+        });
+
+        document.querySelectorAll(".number").forEach(input => {
+            input.addEventListener("input", function () {
+                let v = this.value.replace(/\D/g, "");
+                this.value = v ? v.replace(/\B(?=(\d{3})+(?!\d))/g, ",") : "";
+            });
+        });
+
+        const btnInsert = document.getElementById("btnInsert");
+        if (btnInsert) {
+            btnInsert.addEventListener("click", function () {
+                if (!validateRequired()) {
+                    alert("لطفا فیلدهای ستاره دار را تکمیل کنید");
+                    return;
+                }
+
+                const dataList = buildDataList(@vaziat);
+
+                fetch('/Setting/Orders/InsertErjaSabtUsr', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dataList)
+                })
+                .then(res => {
+                    if (!res.ok) throw new Error('خطا در ارسال داده');
+                    return res.json();
+                })
+                .then(result => {
+                    alert('ثبت با موفقیت انجام شد');
+                    console.log(result);
+                })
+                .catch(err => alert('خطا: ' + err.message));
+            });
+        }
+
+        const btnInsert2 = document.getElementById("btnInsert2");
+        if (btnInsert2) {
+            btnInsert2.addEventListener("click", function () {
+                if (!validateRequired()) {
+                    alert("لطفا فیلدهای ستاره دار را تکمیل کنید");
+                    return;
+                }
+
+                const dataList = buildDataList(1);
+
+                fetch('/Setting/Orders/InsertErjaSabtUsr_update', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dataList)
+                })
+                .then(res => {
+                    if (!res.ok) throw new Error('خطا در ارسال داده');
+                    return res.json();
+                })
+                .then(result => {
+                    alert('ثبت با موفقیت انجام شد');
+                    console.log(result);
+                })
+                .catch(err => alert('خطا: ' + err.message));
+            });
+        }
+    </script>
+</body>
+</html>

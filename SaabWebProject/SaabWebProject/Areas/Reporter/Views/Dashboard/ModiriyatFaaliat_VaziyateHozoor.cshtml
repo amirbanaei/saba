@@ -1,0 +1,662 @@
+﻿@using SaabWebProject.Models.DomainModels;
+
+@{
+    ViewBag.Title = "وضعیت حضور";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    SaabEntities db = new SaabEntities();
+
+}
+@model SaabWebProject.Models.DomainModels.tbUserContracts
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+
+<script src="/Assets/js/jalalidatepicker.min.js"></script>
+<link href="/Assets/css/jalalidatepicker.min.css" rel="stylesheet">
+<script src="/Assets/js/jalaali.min.js"></script>
+<link href="/MyStyles/jalalidatepicker.css" rel="stylesheet">
+<style>
+    .WTH {
+        width: 14.28%;
+        padding: 0 !important;
+    }
+
+    .inputFilter {
+        margin-bottom: 0px !important;
+    }
+
+    thead tr th:first-child {
+        border-radius: 0 !important;
+    }
+
+    thead tr:first-child th:first-child {
+        border-top-right-radius: 10px !important;
+        border-bottom-right-radius: 10px !important;
+    }
+
+    thead tr th:last-child {
+        border-radius: 0 !important;
+    }
+
+    thead tr:first-child th:last-child {
+        border-top-left-radius: 10px !important;
+    }
+
+    .Le {
+        border-left: 1px solid var(--bs-border-input-color) !important;
+    }
+
+    .Ri {
+        border-right: 1px solid var(--bs-border-input-color) !important;
+    }
+
+    .To {
+        border-top: 1px solid var(--bs-border-input-color) !important;
+    }
+
+    .Bo {
+        border-bottom: 1px solid var(--bs-border-input-color) !important;
+    }
+
+    .table > :not(:first-child) {
+        border-top: 2px solid var(--bs-border-input-color) !important;
+    }
+
+    #dateDisplay {
+        float: left;
+    }
+
+    h5 {
+        margin-bottom: 0;
+    }
+
+    table td input.form-control {
+        margin-bottom: 0 !important;
+    }
+
+    .tableDate td {
+        padding: 2px 4px !important;
+    }
+
+    .tableDate {
+        margin-bottom: 0 !important;
+    }
+
+    .headTo {
+        position: sticky;
+        top: 0;
+        text-align: center;
+        z-index: 2;
+        border-radius: 15px;
+    }
+    .tableH_Lock {
+        max-height: 260px;
+    }
+
+    thead {
+        position: sticky;
+        top: 0;
+        text-align: center;
+        z-index: 2;
+    }
+    .inputFilter {
+        margin-bottom: 0px !important;
+    }
+
+    thead th {
+        vertical-align:bottom;
+    }
+</style>
+
+<div class="tab-content">
+
+    <div class="row p-2">
+        <div class="col-xl-8">
+            <h5>تعریف میزان عدم همکاری کاربران</h5>
+        </div>
+        <div class="col-xl-4">
+            <h5 id="dateDisplay"></h5>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-xl-12">
+            <label class="form-label">نام کاربر/کاربران ر انتخاب نمایید :</label>
+            <span id="div_users1"></span>
+        </div>
+    </div>
+    <div class="card">
+
+        <div class="table-content p-4">
+            <div class="table-responsive" style="margin-bottom: 5px; height: 167px; overflow: auto;">
+                <table class="table table-hover text-nowrap" id="tableVaziyat">
+                    <thead class="headTo" style="vertical-align:middle !important">
+                        <tr>
+                            <th colspan="1" rowspan="2" class="Le">تاریخ</th>
+                            <th colspan="3" rowspan="1" class="Le">مرحله اول</th>
+                            <th colspan="3" rowspan="1" class="  ">مرحله دوم</th>
+                        </tr>
+                        <tr>
+                            <th colspan="1" rowspan="1" class="Le To">از ساعت</th>
+                            <th colspan="1" rowspan="1" class="Le To">تا ساعت</th>
+                            <th colspan="1" rowspan="1" class="Le To">نوع عدم همکاری</th>
+                            <th colspan="1" rowspan="1" class="Le To">از ساعت</th>
+                            <th colspan="1" rowspan="1" class="Le To">تا ساعت</th>
+                            <th colspan="1" rowspan="1" class="To" style="border-bottom-left-radius:10px !important">نوع عدم همکاری</th>
+                        </tr>
+                        <tr>
+                            <th class="WTH"></th>
+                            <th class="WTH"></th>
+                            <th class="WTH"></th>
+                            <th class="WTH"></th>
+                            <th class="WTH"></th>
+                            <th class="WTH"></th>
+                            <th class="WTH"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-arrow">
+            <div class="card-arrow-top-left"></div>
+            <div class="card-arrow-top-right"></div>
+            <div class="card-arrow-bottom-left"></div>
+            <div class="card-arrow-bottom-right"></div>
+        </div>
+    </div>
+    <div class="row mt-10px" style="text-align: -webkit-center">
+        @*<div class="col-xl-1">
+            <button id="btn_SaveMovaqat" class="btn form-control buttonGeneralPlus">
+                <i class="fa fa-plus VecGeneral" style="font-size:1rem"></i>
+            </button>
+        </div>*@
+        <div class="col-xl-1">
+                <button id="btnPlusInput" onclick="plusInputInstallmentManually(this)" class="btn form-control buttonGeneralPlus">
+                    <i class="fa fa-plus fa-fw me-1  VecGeneral"></i>
+                </button>
+        </div>
+        <div class="col-xl-10"></div>
+        <div class="col-xl-1">
+            <button id="btnSaveContract" type="button" class="btn form-control buttonsabt">
+                <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                <span class="bSabt-text">ثبت</span>
+            </button>
+        </div>
+    </div>
+    <hr />
+
+    <div class="card">
+        <div class="table-content p-4">
+            <div class="table-responsive tableH_Lock">
+                <table class="table table-hover text-nowrap ">
+                    <thead style="vertical-align:middle !important">
+                        <tr>
+                            <th colspan="1" rowspan="2" class="Le" style="width: 3% !important; vertical-align: middle">فعالیت
+                            </th>
+                            <th colspan="1" rowspan="2" class="Le">
+                                نام کاربر
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter01-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            <th colspan="1" rowspan="2" class="Le">
+                                تاریخ
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter02-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            <th colspan="2" rowspan="1" class="Le">مرحله اول</th>
+                            <th colspan="2" rowspan="1" class="Le">مرحله دوم</th>
+                            <th colspan="1" rowspan="2" class="" style="border-bottom-left-radius: 10px !important">جمع عدم کارکرد
+                                <input type="text" id="filter07-filter" class="inputFilter form-control" placeholder="">
+                            </th>
+                        </tr>
+                        <tr>
+                            <th colspan="1" rowspan="1" class="Le To">
+                                زمان
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter03-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            <th colspan="1" rowspan="1" class="Le To">
+                                علت
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter04-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            <th colspan="1" rowspan="1" class="Le To">
+                                زمان
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter05-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            <th colspan="1" rowspan="1" class="Le To">
+                                علت
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter06-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int II = 0;
+                        }
+                        @foreach (var shift in db.dbvaziathozor.ToList())
+                        {
+                            string name = "";
+                            string elat1 = "مشخص نیست"; // Default value
+                            string elat2 = "مشخص نیست"; // Default value
+
+                            TimeSpan? totalTimeDifference1 = TimeSpan.Zero;
+                            TimeSpan? totalTimeDifference2 = TimeSpan.Zero;
+                            TimeSpan? totalTimeDifference3 = TimeSpan.Zero;
+
+                            // Process shifts for level_time == 1
+
+                            if (shift.start_clock.HasValue && shift.end_clock.HasValue && shift.level_time == 1)
+                            {
+                                totalTimeDifference1 += (shift.end_clock - shift.start_clock);
+                                if (shift.end_clock != null)
+                                {
+                                    totalTimeDifference3 += (shift.end_clock - shift.start_clock);
+
+                                }
+                                if (shift.end_clock2 != null)
+                                {
+                                    totalTimeDifference3 += (shift.end_clock2 - shift.start_clock2);
+
+                                }
+                                totalTimeDifference2 += (shift.end_clock2 - shift.start_clock2);
+                            }
+                            if (shift.end_clock != null)
+                            {
+                                switch (shift.type_notwork)
+                                {
+                                    case 1: elat1 = "غیبت"; break;
+                                    case 2: elat1 = "مرخصی استحقاقی"; break;
+                                    case 3: elat1 = "مرخصی استعلاجی"; break;
+                                    case 4: elat1 = "ماموریت کاری"; break;
+                                    default: elat1 = "مشخص نیست"; break;
+                                }
+                            }
+
+                            if (totalTimeDifference1 == TimeSpan.Zero)
+                            {
+                                elat1 = "";
+                            }
+                            name = shift.tbUsers.FullName; // Set user's name
+
+
+                            // Process shifts for level_time == 2
+
+                            //if (shift.start_clock2.HasValue && shift.end_clock2.HasValue && shift.level_time == 2)
+                            //{
+                            //    totalTimeDifference2 += (shift.end_clock2 - shift.start_clock2);
+                            //    totalTimeDifference3 += (shift.end_clock2 - shift.start_clock2);
+                            //}
+                            if (shift.end_clock2 != null)
+                            {
+                                switch (shift.type_notwork2)
+                                {
+                                    case 1: elat2 = "غیبت"; break;
+                                    case 2: elat2 = "مرخصی استحقاقی"; break;
+                                    case 3: elat2 = "مرخصی استعلاجی"; break;
+                                    case 4: elat2 = "ماموریت کاری"; break;
+                                    default: elat2 = "مشخص نیست"; break;
+                                }
+                            }
+
+
+                            if (totalTimeDifference2 == TimeSpan.Zero)
+                            {
+                                elat2 = "";
+                            }
+                            if (shift.end_clock2 == null)
+                            {
+                                elat2 = "";
+
+                            }
+                            if (shift.end_clock == null)
+                            {
+                                elat1 = "";
+
+                            }
+
+                            name = shift.tbUsers.FullName; // Set user's name (if not already set)
+
+                            II++;
+
+                            <tr class="task-list-row dateS_@II"
+                                data-filter01=@name"
+                                data-filter02=""
+                                data-filter03="@totalTimeDifference1"
+                                data-filter04="@elat1
+                                data-filter05="@totalTimeDifference2"
+                                data-filter06="@elat2"
+                                data-filter07="@totalTimeDifference3"
+                                >
+
+                                <td colspan="1" rowspan="1">
+
+                                    <div class="ms-sm-4 mt-sm-0 mt-2 dropdown-toggle">
+                                        <a href="#" data-bs-toggle="dropdown" class="text-white text-opacity-75 text-decoration-none">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                        <div class="dropdown-menu">
+                                            <a data-bs-toggle="modal" data-bs-target="#modalLg1" class="dropdown-item Erja" id="Erja_@shift.ID">ویرایش</a>
+
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>@name</td>
+                                <td cont-date="dateS_@II" hidden>
+
+                                    @((shift.datattime != null) ? shift.datattime.Value.ToString("MM / dd / yyyy") : null)
+
+                                </td>
+                                <td id="dateS_@II"></td>
+                                <td>@totalTimeDifference1</td>
+                                <td>@elat1</td>
+                                <td>@totalTimeDifference2</td>
+                                <td>@elat2</td>
+                                <td>@totalTimeDifference3</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-arrow">
+            <div class="card-arrow-top-left"></div>
+            <div class="card-arrow-top-right"></div>
+            <div class="card-arrow-bottom-left"></div>
+            <div class="card-arrow-bottom-right"></div>
+        </div>
+    </div>
+
+</div>
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Scripts/sweetalert2.js"></script>
+<script>
+
+    var
+        filters = {
+            filter01: null,
+            filter02: null,
+            filter03: null,
+            filter04: null,
+            filter05: null,
+            filter06: null,
+            filter07: null,
+        };
+
+    function updateFilters() {
+        $('.task-list-row').hide().filter(function () {
+            var self = $(this),
+                result = true;
+
+            Object.keys(filters).forEach(function (filter) {
+                var filterData = self.data(filter);
+                if (filters[filter] && (filters[filter] != 'None') && (filters[filter] != 'همه')) {
+                    // تبدیل داده به رشته و بررسی مقدار
+                    result = result && (filterData && filterData.toString().indexOf(filters[filter]) !== -1);
+                }
+            });
+
+            return result;
+        }).show();
+    }
+
+    function changeFilter(filterName) {
+        filters[filterName] = this.value;
+        updateFilters();
+    }
+
+    // Assigned User Dropdown Filter
+    $('#filter01-filter').on('input', function () {
+        changeFilter.call(this, 'filter01');
+    });
+    $('#filter02-filter').on('input', function () {
+        changeFilter.call(this, 'filter02');
+    });
+    $('#filter03-filter').on('input', function () {
+        changeFilter.call(this, 'filter03');
+    });
+    $('#filter04-filter').on('input', function () {
+        changeFilter.call(this, 'filter04');
+    });
+    $('#filter05-filter').on('input', function () {
+        changeFilter.call(this, 'filter05');
+    });
+    $('#filter06-filter').on('input', function () {
+        changeFilter.call(this, 'filter06');
+    });
+    $('#filter07-filter').on('input', function () {
+        changeFilter.call(this, 'filter07');
+    });
+
+
+</script>
+<script>
+    // Convert Gregorian date to jaali in the table
+    var tds = document.querySelectorAll("[cont-date]");
+    var valueD, id, target;
+    var options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    cont = 1
+    tds.forEach(td => {
+        valueD = new Date(td.textContent).toLocaleDateString('fa-IR-u-nu-latn', options).replace(',', '').replace(" ", "");
+        valueD = valueD.slice(0, 10) + " " + td.textContent.slice(10, 30)
+        id = td.getAttribute("cont-date");
+        target = document.getElementById(id);
+        target.textContent = valueD;
+        let row = document.querySelector('.task-list-row.dateS_' + cont);
+        row.setAttribute('data-filter02', valueD);
+        cont += 1
+    });
+
+</script>
+<script>
+    let nodesLength = 0; 
+    function plusInputInstallmentManually(e) {
+        var a = 1;
+        nodesLength++;
+        a++;
+
+
+        $("#tableVaziyat tbody").append(`
+             <tr>
+                <td colspan="1">
+                    <input data-jdp="" jdp-btn-close="" data-jdp-miladi-input="datepickerFromEn_${nodesLength}" class="form-control " style="margin-bottom: 0px !important;">
+                    <input id="datepickerFromEn_${nodesLength}" type="hidden"  data-Hozoor="">
+                </td>
+                <td colspan="1">
+                    <input class="form-control " type="text" data-jdp="" data-jdp-only-time="" style="margin-bottom: 0px !important;">
+                </td>
+                <td colspan="1">
+                    <input class="form-control " type="text" data-jdp="" data-jdp-only-time="" style="margin-bottom: 0px !important;">
+                </td>
+                <td colspan="1">
+                    <select class="form-select " style="margin-bottom: 0px !important;">
+                        <option value="1">غیبت</option>
+                        <option value="2">مرخصی استحقاقی</option>
+                        <option value="3"> مرخصی استعلاجی</option>
+                        <option value="4"> ماموریت کاری</option>
+                    </select>
+                </td>
+                <td colspan="1">
+                    <input class="form-control" type="text" data-jdp="" data-jdp-only-time="">
+                </td>
+                <td colspan="1">
+                    <input class="form-control " type="text" data-jdp="" data-jdp-only-time="" style="margin-bottom: 0px !important;">
+                </td>
+                <td colspan="1">
+                        <select class="form-select " style="margin-bottom: 0px !important;">
+                        <option value="1">غیبت</option>
+                        <option value="2">مرخصی استحقاقی</option>
+                        <option value="3"> مرخصی استعلاجی</option>
+                        <option value="4"> ماموریت کاری</option>
+                    </select>
+                </td>
+                </tr>
+
+        `);
+        jalaliDatepicker.startWatch({
+            time: false,
+            days: ["شنبه", "1شنبه", "2شنبه", "3شنبه", "4شنبه", "5شنبه", "جمعه"],
+            persianDigits: true,
+            autoClose: true,
+            //autocomplete: true,
+            showCloseBtn: true,
+            showEmptyBtn: false,
+            showCloseBtn: true,
+            zIndex: 100000,
+        });
+
+        //-----------------------------------------------------------------
+        $(document).ready(function () {
+            var inputs = document.querySelectorAll("[data-jdp-miladi-input]");
+            for (var i = 0; i < inputs.length; i++) {
+                inputs[i].addEventListener("jdp:change", function (e) {
+                    console.log(111111)
+                    var miladiInput = document.getElementById(this.getAttribute("data-jdp-miladi-input"));
+                    var date = this.value.replace(' ', '').slice(0, 10).split('/');
+                    date = jalaali.toGregorian(parseInt(date[0]), parseInt(date[1]), parseInt(date[2]),)
+                    // If it was empty
+                    if (!this.value) {
+                        date = "";
+                    }
+                    // If it was only history
+                    else if (this.value.replace(' ', '').length < 11) {
+                        date = date.gy + '-' + date.gm + '-' + date.gd
+                    }
+                    // If it was the date and time
+                    else {
+                        date = date.gy + '-' + date.gm + '-' + date.gd + ' ' + this.value.replace(' ', '').slice(10, 30)
+                    }
+                    miladiInput.value = date
+
+                });
+            }
+        });
+
+    }
+</script>
+<script>
+    var options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+    var dateString = new Date().toLocaleDateString('fa-IR-u-nu-latn', options);
+    document.getElementById('dateDisplay').textContent = "تاریخ امروز : " + dateString;
+</script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script>
+            $("#div_users1").load('@Url.Content("/../Users/Users/_PartialViewUsersListWithSearchAndMultiple")', function () {
+            $("#select_users1").attr("id", "users");
+            $("#users").picker({ search: true });
+            $("#users").picker();
+            $('#users').picker({ search: true });
+            });
+
+</script>
+<script>
+
+            $(".Erja").click(function () {
+var idd = $(this).attr("id").split("_")[1];
+console.log(idd);
+    $("#big_modal_body1").load('@Url.Content("/Reporter/Dashboard/ModiriyatFaaliat_VaziyateHozooredit")?id='+idd);
+});
+</script>
+
+
+<script>
+    // Convert Gregorian date to jaali in the table
+    var tds = document.querySelectorAll("[cont-date]");
+    var valueD, id, target;
+    var options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    tds.forEach(td => {
+        valueD = new Date(td.textContent).toLocaleDateString('fa-IR-u-nu-latn', options).replace(',', '').replace(" ", "");
+        valueD = valueD.slice(0, 10) + " " + td.textContent.slice(10, 30)
+        id = td.getAttribute("cont-date");
+        target = document.getElementById(id);
+        target.textContent = valueD;
+    });
+</script>
+<script>
+
+$("#btnSaveContract").click(function () {
+    var userIds = [];        // فرض می‌کنیم ID کاربران در جدولی باشد که باید اضافه کنیم
+    var dates = [];
+    var startTimes1 = [];
+    var endTimes1 = [];
+    var typeNotWork1s = [];
+    var startTimes2 = [];
+    var endTimes2 = [];
+    var typeNotWork2s = [];
+    var PeymanArr = [];
+    $.each($("#users").val().toString().split(","), function (index, item) {
+        if (item !== "") {
+            if (item != 'Select') {
+                PeymanArr.push(item);
+                console.log(item);
+
+    // پیمایش بر روی ردیف‌های جدول و جمع‌آوری داده‌ها
+    $("#tableVaziyat tbody tr").each(function () {
+        var row = $(this);
+        userIds.push(item); // به فرض که یک انتخابگر کاربر دارید
+
+        // اضافه کردن شناسه کاربر به آرایه (می‌توانید از طریق هر روشی شناسه کاربر را بگیرید)
+        //userIds.push($("#users").val()); // به فرض که یک انتخابگر کاربر دارید
+
+        // جمع‌آوری داده‌ها برای هر فیلد
+        dates.push(row.find("input[data-Hozoor]").val());
+        startTimes1.push(row.find("input[type='text']").eq(0).val());
+        endTimes1.push(row.find("input[type='text']").eq(1).val());
+        typeNotWork1s.push(row.find("select").eq(0).val());
+        startTimes2.push(row.find("input[type='text']").eq(2).val());
+        endTimes2.push(row.find("input[type='text']").eq(3).val());
+        typeNotWork2s.push(row.find("select").eq(1).val());
+    });
+            }
+        }
+    });
+    // آماده کردن داده‌ها برای ارسال به سرور
+    var data = {
+        userId: userIds,
+        Date: dates,
+        StartTime1: startTimes1,
+        EndTime1: endTimes1,
+        TypeNotWork1: typeNotWork1s,
+        StartTime2: startTimes2,
+        EndTime2: endTimes2,
+        TypeNotWork2: typeNotWork2s
+    };
+    console.log(data);
+
+    //console.log(data);
+
+    // فراخوانی AJAX برای ارسال داده‌ها به سمت سرور
+    $.ajax({
+        url: '@Url.Action("SaveVaziyat", "Orders", new { area = "Setting" })',  // مسیر درست برای کنترلر
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(data),  // تبدیل داده‌ها به JSON برای ارسال
+        success: function (response) {
+            if (response.success) {
+                alert("Data saved successfully!");
+            } else {
+                alert("Error saving data!");
+            }
+        },
+        error: function () {
+            alert("Error saving data!");
+        }
+    });
+});
+
+</script>

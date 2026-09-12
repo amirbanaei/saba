@@ -1,0 +1,913 @@
+﻿@using SaabWebProject.Models.DomainModels;
+@{
+    Layout = null;
+}
+@model SaabWebProject.Models.DomainModels.tbUserContracts
+
+@{
+    List<tbCities> city = new List<tbCities>();
+    using (SaabEntities db = new SaabWebProject.Models.DomainModels.SaabEntities())
+    {
+        city = db.tbCities.ToList();
+    }
+}
+
+<link href="~/Assets/plugins/BootstrapPersianDateTimePicker/src/jquery.md.bootstrap.datetimepicker.style.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+<style>
+    @@media print {
+        .zoo {
+            display: none;
+        }
+
+        * {
+            margin-top: 1px !important;
+            margin-bottom: 0px !important;
+            font-size: 10px !important;
+            color: #000000 !important;
+            background-color: #fff !important;
+            /*            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact; */
+        }
+
+        .cardPrint {
+            border: 1px solid #000;
+            border-radius: 16px;
+            overflow: hidden;
+            padding: 5px
+        }
+
+        .HeadePageDiv {
+            margin-bottom: 10px !important
+        }
+
+        .TitelGharardad {
+            border: 2px solid var(--bs-table-th-bg) !important;
+            width: 230px !important;
+            margin-top: -12px !important;
+            margin-right: 0px !important;
+            border-top: unset !important;
+            border-right: unset !important;
+            border-left: unset !important;
+            padding: 4px 10px !important;
+        }
+
+        td {
+            font-size: 9px !important;
+        }
+
+            td span {
+                font-size: 8px !important;
+            }
+
+        .longText {
+            font-size: 7.5px !important;
+        }
+
+        .TableDiv {
+            padding: 6px 10px 6px 10px !important;
+            border: unset !important;
+        }
+
+        .buttonGeneral, #header, #sidebar, #content, .app-footer, #loading-overlay, .app-theme-panel, #printPageButton {
+            display: none !important;
+        }
+
+
+        #modalLg1 {
+            overflow: visible;
+            page-break-inside: avoid;
+            position: relative;
+            z-index: 100000000;
+            margin-top: -20px !important;
+            top: 0px !important;
+        }
+
+        .modal.show .modal-dialog {
+            margin-top: 0 !important;
+            margin-right: -10px !important;
+        }
+
+        td, th {
+            padding: 0 !important
+        }
+
+        .modal-body, .card-body {
+            padding: 0 !important;
+        }
+
+        @@page {
+            size: A4 portrait;
+            page-break-inside: avoid;
+            margin: 0px; /* حذف فوتر و هدر */
+            margin-right: 0 !important; /* حذف فوتر و هدر */
+            width: 95%
+        }
+    }
+</style>
+@{
+    var ttt = 0;
+}
+@foreach (var ite in Model.tbUserContractsAndMoalefeGhararDadi.ToList())
+{
+    ttt += ite.Value ?? 0;
+
+}
+@*<a href="#" class="btn btn-outline-theme" onclick="DownloadPDF()" style="margin-bottom:20px;">
+        <i class="bi bi-download fa-fw me-1"></i>
+
+    </a>*@
+@using (Html.BeginForm())
+{
+@Html.AntiForgeryToken()
+    var res = Html.Action("_Cities_Select", "Users", new { area = "Users" });
+
+
+
+<style>
+
+    .longText {
+        font-size: 10px
+    }
+
+    .TitelGharardad {
+        border-radius: 15px 0 0 0;
+        display: inline-block !important;
+        padding: 4px 6px;
+        width: 312px;
+        background: var(--bs-table-th-bg) !important;
+        margin-top: -1px;
+        margin-right: 0;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        margin-bottom: 0px !important;
+    }
+
+    .TableGharardad {
+        width: 100%;
+        text-align: justify !important;
+        padding: 3px;
+    }
+
+        .TableGharardad tr:nth-child(even) {
+            /* border-radius: 40px !important; */
+            background-color: unset !important;
+        }
+
+        .TableGharardad td {
+            padding: 1px 0 2px 0;
+            font-size: 11px;
+        }
+
+    @@media(max-width: 992px) {
+        .TableGharardad td {
+            font-size: 10px;
+        }
+    }
+
+    .TableGharardad span {
+        font-weight: bold;
+        color: var(--bs-table-th-bg-ghar);
+    }
+
+    .TableDiv {
+        padding: 0px 4px 2px 4px;
+        border: 2px solid var(--bs-table-th-bg);
+        border-radius: 15px 0 15px 0;
+        border-top: #fff0;
+        margin-bottom: 12px;
+    }
+
+    .HeadePageDiv {
+        padding: 8px 10px 8px 10px;
+        border: 2px solid var(--bs-table-th-bg);
+        border-radius: 15px;
+        border-top: #fff0;
+        margin-bottom: 20px
+    }
+</style>
+
+
+<div id="formControls">
+
+    <div class="cardPrint">
+
+        <form>
+            <div class="HeadePageDiv">
+                <div class="row">
+                    <div class="col-xl-4"></div>
+                    <div class="col-xl-4" style="text-align:center;">
+                        بسم الله الرحمن الرحیم
+                    </div>
+                    <div class="col-xl-4"></div>
+                </div>
+                <br />
+                <div class="row">
+                    <div class="col-xl-10" style="text-align: center;">
+                        @*<span style="text-align: center; font-weight: bold;"> قرارداد کار شماره : @Model.usc_ContractNumber</span>*@
+                        <span style="text-align: center; font-weight: bold;">قـرارداد همکـاری کارمزدی ( مزد در قبال انجام کار) - منطبق بر طرح طبقه بنـدی مشاغـل - شماره : @Model.usc_ContractNumber</span>
+
+                    </div>
+                    <div class="col-xl-1">
+                        <button class="btn form-control buttonGeneral" id="printPageButton" onclick="window.print(); return false;">
+                            <i class="fa fa-print fa-fw me-1 VecGeneral"></i>
+                            <span class="bGeneral-text">پرینت</span>
+                        </button>
+                    </div>
+                    @*<div class="col-xl-1">
+                        <a href="~/Areas/Contracts/Contents/ContractsFile/Forum77.pdf" class="button btn form-control buttonGeneral" style="color:white; padding:12px;">
+                            <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                            <span class="bGeneral-text">دریافت قرار داد</span>
+                        </a>
+                    </div>*@
+                </div>
+            </div>
+
+            <h6 class="TitelGharardad">
+                الف:مشخصات کارگر
+            </h6>
+
+            <div class="TableDiv">
+                <table class="TableGharardad">
+                    <tbody>
+                        <tr>
+                            <td style="width:33.3%"> <span>نام و نام خانوادگی :</span> @Model.tbUsers.FullName</td>
+                            <td style="width:33.3%"><span>شماره شناسنامه :</span> @Model.tbUsers.usr_SHCode</td>
+                            <td style="width:33.3%"><span>نام پدر :</span> @Model.tbUsers.usr_FatherName</td>
+                        </tr>
+                        <tr>
+                            <td><span>تاریخ تولد :</span> @Model.tbUsers.shamsiDateOfBirth</td>
+                                                        @*<td><span>تاریخ تولد :</span> </td>*@
+
+                            @if (@city.Where(p => p.ID == Model.tbUsers.usr_PlaceOfBrith).FirstOrDefault() != null)
+                                    {
+                            <td><span>محل تولد :</span> @city.Where(p => p.ID == Model.tbUsers.usr_PlaceOfBrith).FirstOrDefault().Name</td>
+                                    }
+                                    else
+                                    {
+                            <td><span>محل تولد :</span> </td>
+                                    }
+                            @if (@city.Where(p => p.ID == Model.tbUsers.usr_PlaceOfIssue).FirstOrDefault() != null)
+                                    {
+
+                            <td><span>محل صدور شناسنامه :</span> @city.Where(p => p.ID == Model.tbUsers.usr_PlaceOfIssue).FirstOrDefault().Name</td>
+                                    }
+                                    else
+                                    {
+                            <td><span>محل صدور شناسنامه :</span> </td>
+                                    }
+
+                        </tr>
+                        <tr>
+                            @if (Model.tbUsers.usr_MaritaIStatus == 1)
+                                    {
+                            <td><span>وضعیت تاهل :</span> متاهل</td>
+                                    }
+                                    else
+                                    {
+                            <td><span>وضعیت تاهل :</span> مجرد</td>
+                                    }
+                            <td><span>تعداد اولاد مشمول بیمه :</span> @Model.tbUsers.usr_Child_Allowance</td>
+
+                            @switch (Model.tbUsers.usr_Dutysystem)
+                                    {
+
+                                        case 1:
+                            <td><span>وضعیت نظام وظیفه :</span> مشمول</td>
+                                            break;
+                                        case 2:
+                            <td><span>وضعیت نظام وظیفه :</span> پایان خدمت</td>
+                                            break;
+                                        case 3:
+                            <td><span>وضعیت نظام وظیفه :</span> معافیت دائم</td>
+                                            break;
+                                        case 4:
+                            <td><span>وضعیت نظام وظیفه :</span> معافیت موقت</td>
+                                            break;
+                                        case 5:
+                            <td><span>وضعیت نظام وظیفه :</span> غایب</td>
+                                            break;
+                                        case 6:
+                            <td><span>وضعیت نظام وظیفه :</span> خانم</td>
+                                            break;
+                                        default:
+                            <td><span>وضعیت نظام وظیفه :</span> نامعلوم</td>
+                                            break;
+                                    }
+
+                        </tr>
+                        <tr>
+                            <td><span>شماره ملی / پرسنلی :</span> @Model.tbUsers.usr_NationalCode / @Model.tbUsers.usr_Personal_ID</td>
+                            @if (Model.tbUsers.usr_Degree != null)
+                                    {
+                                        switch (Model.tbUsers.usr_Degree)
+                                        {
+
+                                            case 1:
+                            <td><span>آخرین مدرک و رشته تحصیلی :</span> بیسواد</td>
+                                                break;
+                                            case 2:
+                            <td><span>آخرین مدرک و رشته تحصیلی :</span> سیکل</td>
+                                                break;
+                                            case 3:
+                            <td><span>آخرین مدرک و رشته تحصیلی :</span> دیپلم</td>
+                                                break;
+                                            case 4:
+                            <td><span>آخرین مدرک و رشته تحصیلی :</span> کاردانی</td>
+                                                break;
+                                            case 5:
+                            <td><span>آخرین مدرک و رشته تحصیلی :</span> کارشناسی</td>
+                                                break;
+                                            case 6:
+                            <td><span>آخرین مدرک و رشته تحصیلی :</span> کارشناسی ارشد</td>
+                                                break;
+
+                                            case 8:
+                            <td><span>آخرین مدرک و رشته تحصیلی :</span> دکتری</td>
+                                                break;
+                                            default:
+                            <td><span>آخرین مدرک و رشته تحصیلی :</span> نامعلوم</td>
+                                                break;
+                                        }
+                                    }
+                                    else
+                                    {
+
+                            <td><span>آخرین مدرک و رشته تحصیلی :</span> نامعلوم</td>
+                                    }
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <h6 class="TitelGharardad">
+                ب:مشخصات پیمانکار
+            </h6>
+
+            <div class="TableDiv">
+                <table class="TableGharardad">
+                    <tbody>
+                        <tr>
+                            <td width="50%"><span>نام شرکت :</span> @Model.tbCompanies.CompanyName</td>
+                            <td><span>شماره ثبت :</span> @Model.tbCompanies.RegistrationNumber</td>
+                        </tr>
+                        <tr>
+                            <td><span>نام و نام خانوادگی مدیر عامل شرکت :</span> @Model.tbCompanies.tbUsers.FullName</td>
+                            <td><span>محل ثبت شرکت :</span> @city.Where(p => p.ID == @Model.tbCompanies.PlaceOfRegister).FirstOrDefault().Name</td>
+                        </tr>
+                        <tr>
+                            <td><span>نشانی قانونی :</span> @Model.tbCompanies.Company_Address</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h6 class="TitelGharardad">
+                ج:مشخصات شغل
+            </h6>
+
+            <div class="TableDiv">
+                <table class="TableGharardad">
+                    <tbody>
+                        <tr>
+                            @if (Model.tbUsers.tbjob == null)
+                                    {
+                            <td style="width:33.3%">
+                                <span>عنوان شغل کارگر :</span> مامور خدمات مشترکین
+                            </td>
+
+
+                                    }
+                                    else
+                                    {
+                            <td style="width:33.3%"><span>عنوان شغل کارگر :</span> @Model.tbUsers.tbjob.Name</td>
+
+
+
+                                    }
+
+                            <td style="width:33.3%"><span>کد شغل :</span> @Model.usc_JobCode</td>
+                            <td style="width:33.3%"><span>گروه شغل :</span> @Model.FK_JobGroup</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h6 class="TitelGharardad">
+                مشخصات کارفرمای پیمانکار (کارفرمای اصلی )
+            </h6>
+
+            <div class="TableDiv">
+                <table class="TableGharardad">
+                    <tbody>
+                        @if (Model.tbCompanies1 != null)
+                                {
+                        <tr>
+                            <td width="50%"><span>نام واحد یا سازمان محل خدمت :</span> @Model.tbCompanies1.CompanyName</td>
+                            <td><span>به مدیریت :</span> @Model.tbCompanies1.tbUsers.FullName</td>
+                        </tr>
+                        <tr>
+                            <td><span>نشانی کامل :</span> @Model.tbCompanies1.Company_Address</td>
+                            <td></td>
+                        </tr>
+                                }
+                    </tbody>
+                </table>
+            </div>
+
+            <h6 class="TitelGharardad">
+                ساعت و مدت قرارداد
+            </h6>
+            <div class="TableDiv">
+                <table class="TableGharardad">
+                    <tbody>
+                        <tr>
+                            <td>
+                                @*مدت قرارداد از تاریخ @Model.usc_ShmasiStartTime لغایت @Model.usc_ShmasiENDTime به مدت (@Model.usc_EndTime - @Model.usc_StartTime) روز میباشد که مدت 0 روز آن از تاریخ شروع قرارداد، به عنوان دوره آموزشی تلقی خواهد شد . این قرارداد برای سال بعد در صورت توافق طرفین و بر حسب مولفه های حقوقی جدید قانون کار قابل تمدید میباشد.*@
+                                مدت قرارداد 12 ماه  از تاریخ : @Model.usc_ShmasiStartTime  لغایت: @Model.usc_ShmasiENDTime  به مدت 0 ماه آزمایشی و با در نظر گرفتن 44 ساعت موظفی کار در هفته و با احتساب روز جمعه بعنوان روز تعطیل هفته و زمان کاری در هر روز از ساعت 07:00 الی 14:20
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+
+            <h6 class="TitelGharardad">
+                شرح وظایف کارگر
+            </h6>
+            <div class="TableDiv">
+                <table class="TableGharardad ">
+                    <tbody style="margin-top:20px">
+                        @*<tr>
+                                @if (model.usc_typeofcontract == false)
+                                {
+
+                                        <td width="33.3%"><span>نوع قرارداد :</span> وقت مزدی</td>
+                                }
+                                else
+                                {
+                                        <td width="33.3%"><span>نوع قرارداد :</span> کار مزدی</td>
+                                }
+                            </tr>*@
+                        <tr>
+                            <td colspan="2" class="longText">
+                                <span>شرح وظایف :</span>
+                              @Model.Sharhvazayf
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <hr />
+                <div class="row">
+                    <div class="col-xl-7 col-md-7 col-sm-7" style="border-left:1px #39414d solid !important; margin-bottom:10px">
+                        <table style="width:100%" class="table table-hover text-nowrap">
+                            <thead>
+                                <tr style="text-align:center">
+                                    <th>
+                                        @Html.DisplayName("مزد مبنا")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("روزانه - ریال ")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("ماهیانه (سی روز) - ریال")
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="text-align:center;">
+                                    <td>مزد گروه (شغل)</td>
+                                    <td class="numbers">@Model.jobgroup_ValueMozdGroup</td>
+                                    <td class="number">@{var f = Convert.ToInt32(Model.jobgroup_ValueMozdGroup) * 30;} @f</td>
+                                </tr>
+                                <tr style="text-align: center; ">
+                                    <td>مزد سنوات</td>
+                                    <td class="number"> @Model.jobgroup_ValueSanavat</td>
+                                    <td class="number">@{var sd = Convert.ToInt32(Model.jobgroup_ValueSanavat) * 30;} @sd</td>
+                                </tr>
+                                <tr style="text-align:center;">
+                                    <td>سایر</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                </tr>
+                                <tr style="text-align:center;">
+                                    <td>جمع مزد مبنا</td>
+                                    <td class="number">@{var s1 = Convert.ToInt32(Model.jobgroup_ValueMozdGroup) + Convert.ToInt32(Model.jobgroup_ValueSanavat);} @s1</td>
+                                    <td class="number">@{var s2 = (Convert.ToInt32(Model.jobgroup_ValueMozdGroup) * 30) + (Convert.ToInt32(Model.jobgroup_ValueSanavat) * 30);} @s2</td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-xl-5 col-md-5 col-sm-5">
+                        <table class="table table-hover text-nowrap" style="width:100%">
+                            <thead>
+                                <tr style="text-align:center">
+                                    <th rowspan="3">
+                                        @Html.DisplayName("مزایا ماهیانه 30 روز")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("ماهیانه (سی روز) - ریال")
+                                    </th>
+
+
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                <tr style="text-align:center;">
+                                    <td>کمک هزینه مسکن</td>
+                                    <td class="numbers">@Model.jobgroup_HagheMaskan</td>
+
+                                </tr>
+                                <tr style="text-align:center;">
+                                    <td>کمک هزینه اقلام مصرفی</td>
+                                    <td class="numbers">@Model.jobgroup_KharoBar</td>
+
+                                </tr>
+                                <tr style="text-align:center;">
+                                    <td>حق اولاد</td>
+                                    <td class="numbers">@Model.jobgroup_HagheOlad</td>
+
+                                </tr>
+
+                                @foreach (var ite in Model.tbUserContractsAndMoalefeGhararDadi.ToList())
+                                {
+                                    @*@ttt+= @ite.Value;*@
+
+
+                                    <tr style="text-align:center;">
+                                        <td>@ite.tbContractMoalefeDastmozdi.md_Title</td>
+                                        <td class="number">@ite.Value</td>
+                                        @*<td class="number">@{var tt2 = (Convert.ToInt32(ite.Value) * 30);} @tt2</td>*@
+                                    </tr>
+                                }
+                                <tr style="text-align:center;">
+                                    <td>جمع کل ناخالص مزایای ماهیانه </td>
+                                    @{ var jame = Convert.ToInt32(Model.jobgroup_HagheOlad) + Convert.ToInt32(Model.jobgroup_KharoBar) + Convert.ToInt32(Model.jobgroup_HagheMaskan) + Convert.ToInt32(ttt);
+                                        var jam2 = jame + s2;
+
+                                        }
+                                    <td class="numbers">@jame</td>
+
+                                </tr>
+                                <tr style="text-align:center;">
+                                    <td>جمع کل ناخالص حقوق و مزایای ماهیانه </td>
+                                    <td class="numbers">@jam2</td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+            <h6 class="TitelGharardad">توضیحات</h6>
+            <div class="TableDiv">
+                <table class="TableGharardad">
+                    <tbody>
+                        <tr>
+                            <td class="longText">
+                   @Model.sharh
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h6 class="TitelGharardad">
+                شرایط اتمام قرارداد
+            </h6>
+            <div class="TableDiv">
+                <table class="TableGharardad">
+                    <tbody>
+                        <tr>
+                            <td class="longText">
+
+       @Model.shraytfasgh
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="row">
+                    <hr class="mt-10px mb-10px" />
+                    <div class="col-xl-6 col-md-6 col-sm-6 mb-10px" style="vertical-align: middle; font-weight: bolder; align-content: center; text-align: center;">
+                        مهر و امضای پيمانکار:
+                    </div>
+                    <div class="col-xl-6 col-md-6 col-sm-6 mb-10px" style="vertical-align: middle; font-weight: bolder; align-content: center; text-align: center;">
+                        امضا و اثر انگشت کارگر:
+                    </div>
+                </div>
+
+
+            </div>
+
+        </form>
+    </div>
+
+
+
+</div>
+}
+<script src="~/Scripts/sweetalert2.js" type="text/javascript"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/src/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Scripts/popper.min.js"></script>
+@*<script src="~/Scripts/html2canvas.js"></script>*@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+<script>
+
+    $(function () {
+        $.each($(".number"), function (index, item) {
+
+            var amount = $(this).text().replace(/[\D\s\._\-]+/g, "");
+
+            amount = amount ? parseInt(amount, 10) : 0;
+            $(this).text(function () {
+                return (amount === 0) ? "" : amount.toLocaleString("en-US");
+            });
+        });
+
+    });
+</script>
+<script>
+
+    var i = 1;
+      function FloatNumber_to_digited_format(input){
+         if(input.toString().split(".").length ==
+             2){
+             var amount = input.toString().split(".")[0].toString().replace(/[\D\s\._\-]+/g, "");
+             amount = amount ? parseInt(amount, 10) : 0;
+             return ( amount === 0 ) ? "0."+input.toString().split(".")[1] : amount.toLocaleString("en-US")+"."+input.toString().split(".")[1];
+          }else{
+             var amount = input.toString().replace(/[\D\s\._\-]+/g, "");
+             amount = amount ? parseInt(amount, 10) : 0;
+             return ( amount === 0 ) ? "" : amount.toLocaleString("en-US");
+
+          }
+    }
+
+    $(function () {
+        $(".numbers").each(function () {
+            $(this).val(FloatNumber_to_digited_format($(this).val()));
+        });
+        $("#span_karfarmayan").load('@Url.Content("/../Users/Company/_PartialListCompaniesInDropDown")', function () {
+            $("#companies").attr("id", "FK_KarfarmaID");
+            $('#FK_KarfarmaID').val(@Model.FK_KarfarmaID);
+
+        });
+        });
+    //$("#cities").val(@Model.tbUsers.usr_City_Dutysystem);
+    $(".PlaceOf")[0].value = 247;
+    $(".PlaceOf")[0].disabled = true;
+    $(".PlaceOf")[1].value = 247;
+    $(".PlaceOf")[1].disabled = true;
+        //$("#cities").attr("disabled","disabled");
+
+        $("#select_position").removeAttr("multiple");
+        $('#select_position').change(function () {
+             var x = $("#select_position").val();
+             $("#div_users1").load('@Url.Content("/../Users/Users/_PartialViewUsersListWithSearchAndMultiple")' , { positions: x }  , function () {
+                $("#select_users1").attr("id", "users");
+                $("#users").picker({ search: true });
+                $("#users").picker();
+                $('#users').picker({ search: true });
+            });
+
+       $("cities").attr("id","usr_PlaceOfBrith");
+
+       $("#usr_PlaceOfBrith").val(@Model.tbUsers.usr_PlaceOfBrith);
+    });
+
+    $("#FK_JobGroup").on("change",function () {
+        upload_formula_and_jobgroup_information();
+    });
+
+    $("#usc_TedadSalSanavat").on("change", function () {
+        upload_formula_and_jobgroup_information();
+    });
+
+    function upload_formula_and_jobgroup_information() {
+        if ($("#FK_JobGroup").val() != 0 && $("#usc_TedadSalSanavat").val().trim().length != 0) {
+                   $("#loading-message").css("display", "block");
+                       $.ajax({
+                           url: '@Url.Action("_PartialGetJobGroupMoalefeForContracts", "JobGroups", new { area = "Contracts" })',
+                           data: { groupNumber: $("#FK_JobGroup").val(), sanavatYear: $("#usc_TedadSalSanavat").val()},
+                            type: "Post",
+                            dataType: "html",
+                           success: function (resp) {
+                               $("#loading-message").css("display", "none");
+                               $("#FromJobGroups").html(resp);
+                            },
+                            error: function (resp) {
+                                console.log(resp);
+                                console.log("nashod");
+                                Toast.fire({
+                                    icon: 'success',
+                                    background: '#35434A',
+                                    color: 'white',
+                                    title: "عملیات با خطا مواجه شده است"
+                                }).then(() => {
+                                });
+                             $("#loading-message").css("display", "none");
+
+                            }
+                       });
+
+            $("#FromMoalefe").load('@Url.Content("/../Contracts/MoalefeDastMozdi/_PartialViewGetGhararDadiMoalefeForGharardadProject")',
+                function () {
+                    $("#roww").attr("id", "roww_1");
+                    $("#minu").attr("id", "minu_1");
+                    $("#moalefe").attr("id", "moalefe_1");
+                    $("#valueMoalefe").attr("id", "valueMoalefe_1");
+                    $("#NextRow").attr("id", "NextRow_2");
+                    $(".minus_class").on("click", function () {
+                        var id = $(this).attr("id").split("_")[1];
+                        $("#roww_" + id).remove();
+                    });
+                });
+
+        }
+    }
+
+    $("#Plus").click(function () {
+            i++;
+           $("#NextRow_" + i).load('@Url.Content("/../Contracts/MoalefeDastMozdi/_PartialViewGetGhararDadiMoalefeForGharardadProject")', function () {
+               $("#roww").attr("id", "roww_"+i);
+               $("#minu").attr("id", "minu_"+i);
+               $("#moalefe").attr("id", "moalefe_"+i);
+               $("#valueMoalefe").attr("id", "valueMoalefe_"+i);
+               $("#NextRow").attr("id", "NextRow_" + (i + 1));
+               $(".minus_class").on("click", function () {
+                   var id = $(this).attr("id").split("_")[1];
+                   $("#roww_" + id).remove();
+               });
+           });
+    });
+
+    $("#btnSaveContract").click(function () {
+        if ($("#users").val().toString().split(',').length == 0) {
+            alert("کاربران را انتخاب نمایید");
+        } else if ($("#usc_TypeOfContract").val() == -1) {
+            alert("نوع قرارداد را انتخاب نمایید");
+        } else if ($("#FK_KarfarmaID").val() == -1) {
+            alert("کارفرما را انتخاب نمایید");
+        } else if ($("#FK_JobGroup").val() == 0) {
+            alert("گروه شغلی را انتخاب نمایید");
+        } else if ($("#usc_TedadSalSanavat").val() > 40 || $("#usc_TedadSalSanavat").val() < 0 || $("#usc_TedadSalSanavat").val().trim().length == 0) {
+            alert("تعداد سال سنوات را صحیح پر نمایید");
+        } else if ($("#ShamsiStartTime_day").val() == 0) {
+            alert("روز شروع را انتخاب نمایید");
+        } else if ($("#ShamsiStartTime_month").val() == 0) {
+            alert("ماه شروع را انتخاب نمایید");
+        } else if ($("#ShamsiStartTime_year").val() == 0) {
+            alert("سال شروع را انتخاب نمایید");
+        } else if ($("#ShamsiENDTime_day").val() == 0) {
+            alert("روز پایان را انتخاب نمایید");
+        } else if ($("#ShamsiENDTime_month").val() == 0) {
+            alert("ماه پایان را انتخاب نمایید");
+        } else if ($("#ShamsiENDTime_year").val() == 0) {
+            alert("سال پایان را انتخاب نمایید");
+        } else if ($("#ValueMozdGroup").val() == 0) {
+            alert("مزد گروه را وارد نمایید");
+        } else if ($("#ValueSanavat").val().trim().length == 0) {
+            alert("مقدار سنوات را وارد نمایید");
+        } else if ($("#jg_HagheOlad").val().trim().length == 0) {
+            alert("حق اولاد را وارد نمایید");
+        } else if ($("#jg_HagheMaskan").val().trim().length == 0) {
+            alert("حق مسکن را وارد نمایید");
+        } else if ($("#jg_KharoBar").val().trim().length == 0) {
+            alert("خوار و بار را وارد نمایید");
+        } else {
+            var Filters = new Object();
+        var Total = new Object();
+        Total.list_usersIDs = $("#users").val();
+        Filters.usc_TypeOfContract = $("#usc_TypeOfContract").val();
+        Filters.FK_KarfarmaID = $("#FK_KarfarmaID").val();
+        Filters.FK_JobGroup = $("#FK_JobGroup").val();
+        Filters.usc_TedadSalSanavat = $("#usc_TedadSalSanavat").val();
+        Filters.usc_JobCode = $("#usc_JobCode").val();
+        Filters.usc_Jobtitle = $("#usc_Jobtitle").val();
+        Filters.ShamsiStartTime_day = $("#ShamsiStartTime_day").val();
+        Filters.ShamsiStartTime_month = $("#ShamsiStartTime_month").val();
+        Filters.ShamsiStartTime_year = $("#ShamsiStartTime_year").val();
+        Filters.ShamsiENDTime_day = $("#ShamsiENDTime_day").val();
+        Filters.ShamsiENDTime_month = $("#ShamsiENDTime_month").val();
+        Filters.ShamsiENDTime_year = $("#ShamsiENDTime_year").val();
+        Filters.jobgroup_ValueMozdGroup = $("#ValueMozdGroup").val();
+        Filters.jobgroup_ValueSanavat = $("#ValueSanavat").val();
+        Filters.jobgroup_HagheOlad = $("#jg_HagheOlad").val();
+        Filters.jobgroup_HagheMaskan = $("#jg_HagheMaskan").val();
+        Filters.jobgroup_KharoBar = $("#jg_KharoBar").val();
+
+        let barArray = [];
+        var flag = true;
+        var counter = 0;
+        $('.Contract_row_class').each(function (i, obj) {
+            counter++;
+            var id = $(this).attr("id").split("_")[1];
+            var obj = new Object();
+            if ($("#moalefe_" + id).val() != 0 && $("#valueMoalefe_" + id).val().trim().length == 0) {
+                alert("مولفه" + counter + "را انتخاب نمایید");
+                flag = false;
+
+            } else if ($("#moalefe_" + id).val() != 0 && $("#valueMoalefe_" + id).val().trim().length != 0) {
+                console.log("here");
+                console.log($("#valueMoalefe_" + id).val().trim().length);
+                console.log($("#moalefe_" + id).val());
+                obj.Value = $("#valueMoalefe_" + id).val();
+                obj.FKMoalefeGhararDadi = $("#moalefe_" + id).val();
+                barArray.push(obj);
+            }
+
+        });
+        Filters.tbUserContractsAndMoalefeGhararDadi = barArray;
+        Total.obj_tbuserContracts = Filters;
+
+        if (flag == false) {
+            return false;
+        }
+
+        sendAjax('@Url.Action("UserContract_Save", "UserContract", new { area = "Contracts" })', Total);
+        }
+
+    });
+
+    function sendAjax(url, data) {
+
+        $.ajax({
+            beforeSend: function () {
+                document.getElementById("loading-message").style.display = "block";
+            },
+            url: url,
+            data: { obj_ContractsListViewModel: data },
+            type: "Post",
+            dataType: "html",
+            success: function (resp) {
+                document.getElementById("loading-message").style.display = "none";
+                console.log(resp);
+                if (resp.split("_")[0] == "Falsee") {
+                    alert("یکی از کاربران انتخاب شده این تاریخ قرارداد دیگری دارد");
+                } else if (resp == "Falsee_WithoutUser") {
+                    alert("کاربری انتخاب نشده است");
+                } else if (resp == "False") {
+                    alert("دچار مشکل شده است ");
+                } else {
+                    alert("با موفقیت ثبت شد");
+                }
+            },
+            error: function (resp) {
+                document.getElementById("loading-message").style.display = "none";
+                alert("دچار مشکل شده است ");
+                console.log(resp);
+            }
+        });
+
+    }
+
+
+     function DownloadPDF() {
+
+         alert("قراردادی آپلود نشده است ");
+
+                    @*$.ajax({
+                        beforeSend: function () {
+                            document.getElementById("loading-message").style.display = "block";
+                        },
+                        url: '@Url.Action("DownloadPDF","UserContract",new {area="Contracts"})',
+                        type: 'Post',
+                        dataType: 'html',
+
+                        success: function (res) {
+                            document.getElementById("loading-message").style.display = "none";
+                            window.location='@Url.Action("DownloadPDF", "UserContract", new { area = "Contracts" })'
+
+                       },
+                       error: function (res) {
+                           console.log(res);
+                       }
+                   });*@
+            }
+
+
+</script>
+<script>
+
+    $(function () {
+        $.each($(".numbers"), function (index, item) {
+
+            var amount = $(this).text().replace(/[\D\s\._\-]+/g, "-");
+
+            amount = amount ? parseInt(amount, 10) : 0;
+            $(this).text(function () {
+                return (amount === 0) ? "0 " : amount.toLocaleString("fa-IR") + " " + "";
+            });
+        });
+
+    });
+</script>
+

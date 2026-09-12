@@ -1,0 +1,172 @@
+﻿@using SaabWebProject.Models.DomainModels;
+
+@{
+    ViewBag.TitleLargModal = " کاربران مجاز";
+    Layout = null;
+    SaabEntities db = new SaabEntities();
+
+}
+<link href="~/MyStyles/MyStyle.css" rel="stylesheet" />
+@model SaabWebProject.Models.DomainModels.dbrelatinperson
+
+
+@using (Html.BeginForm())
+{
+
+    <div id="formControls">
+
+        <div class="card">
+            <div class="card-body pb-2">
+                <form>
+                    <div class="row">
+                     
+                        <div class="col-xl-7">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> افراد مجاز </label>
+                                <span id="div_users13456"></span>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-11">
+
+                        </div>
+                        <div class="col-xl-1" style="margin-top:30px;">
+                            <div class="form-group mb-3">
+                                <button id="btnCreate" type="button" class="btn form-control buttonsabt">
+                                    <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                                    <span class="bSabt-text">ثبت</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </form>
+            </div>
+
+            <div class="card-arrow">
+                <div class="card-arrow-top-left"></div>
+                <div class="card-arrow-top-right"></div>
+                <div class="card-arrow-bottom-left"></div>
+                <div class="card-arrow-bottom-right"></div>
+            </div>
+        </div>
+    </div>
+}
+@{
+
+    //var fi = db.tbReffrenceSaveLevel.Where(p => p.ID == Model.ID).FirstOrDefault();
+    var t = db.dbrelatinperson.Where(p => p.FK_person == Model.FK_person).ToList();
+}
+<script>
+    $("#div_users13456").load('@Url.Content("/../Users/Users/editafrad2")', function () {
+             $("#select_users1111").attr("id", "users122");
+             $("#users122").picker({ search: true });
+             $("#users122").picker();
+             $('#users122').picker({ search: true });
+
+            var myArray = [];
+
+            @foreach (var d in t)
+            {
+                @:myArray.push(@d.FK_usr);
+            }
+
+             myArray.forEach((x) => $("#users122").picker('set', x));
+        });
+
+</script>
+<script>
+    var fd = new FormData();
+    var Obj_fd = new Object();
+
+
+    $("#btnCreate").click(function () {
+        if ($("#title").val() == 0) {
+            alert("کاربران را انتخاب نمایید");
+        } else {
+            var users = $("#users122").val();
+           var things = [];
+            for (let i = 0; i < $("#users122").val().length;i++){
+               var obj =new Object();
+                obj.FK_usr = $("#users122").val()[i];
+                obj.FK_person = @Model.FK_person;
+                things.push(obj);
+           }
+           console.log(things);
+           things = JSON.stringify({ 'things': things });
+           sendAjax('@Url.Action("ebatat_Edit", "Dashboard", new { area = "Reporter" })',things);
+        }
+    });
+</script>
+<script>
+    var Toast = Swal.mixin({
+        toast: true,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    });
+</script>
+<script>
+    function sendAjax(url, things) {
+        $("#loading-message").css("display", "block");
+        $.ajax({
+            contentType: 'application/json; charset=utf-8',
+            // dataType: 'json',
+            type: 'POST',
+            url: url,
+            data: things,
+            success: function (resp1) {
+                console.log(resp1);
+                $("#loading-message").css("display", "none");
+
+                if (resp1 == "True") {
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "اطلاعات با موفقیت ذخیره شد"
+                    }).then(() => {
+                        location.reload();
+                    });
+                } else {
+                    $("#loading-message").css("display", "none");
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                    }).then(() => {
+                        $("#loading-message").css("display", "none");
+                    });
+
+
+                }
+
+            },
+            error: function (resp1) {
+                console.log(resp1);
+
+                $("#loading-message").css("display", "none");
+                Toast.fire({
+                    icon: 'success',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                }).then(() => {
+                    $("#loading-message").css("display", "none");
+                });
+            }
+        });
+
+
+    }
+
+
+</script>

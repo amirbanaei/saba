@@ -1,0 +1,1276 @@
+﻿
+@{
+    ViewBag.Title = "نمودار جریان وصول";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>nemoodarjadid</title>
+    <style>
+
+        :root {
+            --water-color: dodgerblue;
+        }
+
+        .container-col {
+            margin-bottom: 15vh;
+            width: 100%;
+            height: fit-content;
+            display: flex;
+            justify-content: center;
+            flex-direction: row-reverse;
+            gap: 1vh;
+            transform: translateZ(0); /* Hardware acceleration */
+        }
+
+        .leader-line {
+            will-change: transform !important;
+        }
+
+        .cols-start-txt {
+            align-items: start !important;
+            padding-top: 1vh !important;
+        }
+
+        .cols {
+            position: relative;
+            background-color: #004f9d;
+            border-radius: 1vh 1vh 1vh 1vh;
+            width: 28vh;
+            align-items: center;
+            justify-content: center;
+            display: flex;
+        }
+
+        .water-level1 {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--water-color);
+            border-radius: 1vh 1vh 0vh 1vh;
+            transition: height 1s ease;
+        }
+
+        .water-level2 {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #004f9d;
+            border-radius: 1vh 1vh 0 0;
+            transition: height 1s ease;
+        }
+
+        .arrow-right-simple {
+            position: absolute;
+            right: -2.5vh;
+            top: 5vh;
+            width: 0;
+            height: 0;
+            border-top: 15px solid transparent;
+            border-bottom: 15px solid transparent;
+            border-left: 25px solid var(--water-color);
+            display: inline-block;
+            z-index: 10;
+        }
+
+        .cols .cols-txt {
+            position: absolute;
+            z-index: 1;
+            height: fit-content;
+            width: 50vh;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .cols-txt p {
+            margin: 0px !important;
+            font-size: 1.5vh;
+            color: white;
+            font-weight: bold;
+        }
+
+        .boxs {
+            position: absolute;
+            bottom: -14vh;
+            right: -10.5vh;
+            width: 20vh;
+            height: fit-content;
+            display: flex;
+            justify-content: center;
+            border: 1px solid aqua;
+            border-radius: 10px;
+            color: white;
+            padding: 1vh;
+            font-size: 1.5vh;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            overflow: hidden;
+            text-align: start;
+        }
+
+            .boxs .boxs-txt {
+                height: fit-content;
+                width: fit-content;
+                justify-content: center;
+                text-align: center;
+            }
+
+        .boxs-txt p {
+            margin: 0px !important;
+            font-size: 1.2vh;
+            color: white;
+        }
+
+        .start-line {
+            position: absolute;
+            display: flex;
+            width: 6vh;
+            height: 1vh;
+            bottom: -1vh;
+            right: -5vh;
+            background-color: var(--water-color);
+        }
+
+        .mid-line {
+            position: absolute;
+            display: flex;
+            width: 1vh;
+            height: 1vh;
+            background-color: var(--water-color);
+            bottom: -1vh;
+            right: -1vh;
+        }
+
+        .lastpart {
+            transition: .2s;
+        }
+
+            .lastpart:hover {
+                background-color: #0064c7;
+                cursor: pointer;
+            }
+
+        .parttop {
+            height: 50%;
+            width: 28vh;
+            border-radius: 1vh 1vh 0vh 0vh;
+            display: flex;
+            justify-content: center;
+        }
+
+        .partbottom {
+            height: 50%;
+            display: flex;
+            justify-content: center;
+            width: 20vh;
+            border-radius: 0vh 0vh 1vh 1vh;
+        }
+    </style>
+    <style>
+
+        .col-xl-1,
+        .col-xl-2,
+        .col-xl-3,
+        .col-xl-4,
+        .col-xl-5,
+        .col-xl-6 {
+            position: relative !important;
+        }
+
+
+        .ModalAG {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0 !important;
+            width: 100vw;
+            height: 49vw;
+            padding-top: 50px;
+            background: #00000075;
+            backdrop-filter: blur(5px);
+        }
+
+        .ModalAG2 {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: -8vw !important;
+            /*            top:-175 px;
+        */ width: 100vw;
+            height: 49vw;
+            padding-top: 50px;
+            background: #00000075;
+            backdrop-filter: blur(5px);
+        }
+
+        .ContentModalAG {
+            margin: 5% auto;
+            padding: 10px;
+            border: 1px dashed aqua;
+            border-top: 3px solid aqua;
+            border-radius: 0px 0px 10px 10px;
+            width: 60%;
+            max-width: 100%;
+            /*            max-height: 100%;
+                */ /*            max-height: 850px;
+                */ /*            overflow-y: auto;*/
+            position: relative;
+        }
+
+        .ContentModalAG2 {
+            margin: 10% auto;
+            padding: 10px;
+            border: 1px dashed aqua;
+            border-top: 3px solid aqua;
+            border-radius: 0px 0px 10px 10px;
+            width: 87%;
+            max-width: 100%;
+            /*            max-height: 850px;
+                                max-height: 850px;
+
+                */ /*            overflow-y: auto;*/
+            position: relative;
+            /*            max-height: 100%;
+                */
+        }
+
+        #BodyModalAG .tab-content {
+            border-radius: 0px 0px 10px 10px !important;
+            border: 1px solid aqua !important;
+            padding-top: 15px !important;
+            /*            max-height: 560px !important;
+                */ overflow-y: auto !important;
+        }
+
+            /* ۱. تنظیم پهنای اسکرول‌بار برای این بخش خاص */
+            #BodyModalAG .tab-content::-webkit-scrollbar {
+                width: 10px; /* یکم باریک‌تر که ظریف بشه */
+            }
+
+            /* ۲. مسیر حرکت اسکرول (Track) */
+            #BodyModalAG .tab-content::-webkit-scrollbar-track {
+                background: rgba(0, 255, 255, 0.05); /* یه هاله خیلی کم‌رنگ Aqua زیرش باشه */
+                border-radius: 10px;
+            }
+
+            /* ۳. خودِ لغزنده (Thumb) با تم Aqua */
+            #BodyModalAG .tab-content::-webkit-scrollbar-thumb {
+                background: linear-gradient(180deg, #00ffff 0%, #00ced1 100%); /* گرادینت از آبی روشن به تیره */
+                border-radius: 10px;
+                border: 2px solid transparent; /* ایجاد فاصله ظریف */
+                background-clip: content-box; /* باعث میشه حاشیه شفاف دیده بشه و اسکرول‌بار لاغرتر به نظر بیاد */
+            }
+
+                /* ۴. حالت هاور برای فیدبک به کاربر */
+                #BodyModalAG .tab-content::-webkit-scrollbar-thumb:hover {
+                    cursor: pointer; /* وقتی موس میره روش یکم سنگین‌تر و تیره‌تر شه */
+                }
+
+            #BodyModalAG .tab-content .table-responsive::-webkit-scrollbar {
+                width: 10px; /* یکم باریک‌تر که ظریف بشه */
+            }
+
+            /* ۲. مسیر حرکت اسکرول (Track) */
+            #BodyModalAG .tab-content .table-responsive::-webkit-scrollbar-track {
+                background: rgba(0, 255, 255, 0.05); /* یه هاله خیلی کم‌رنگ Aqua زیرش باشه */
+                border-radius: 10px;
+            }
+
+            /* ۳. خودِ لغزنده (Thumb) با تم Aqua */
+            #BodyModalAG .tab-content .table-responsive::-webkit-scrollbar-thumb {
+                background: linear-gradient(180deg, #00ffff 0%, #00ced1 100%); /* گرادینت از آبی روشن به تیره */
+                border-radius: 10px;
+                border: 2px solid transparent; /* ایجاد فاصله ظریف */
+                background-clip: content-box; /* باعث میشه حاشیه شفاف دیده بشه و اسکرول‌بار لاغرتر به نظر بیاد */
+            }
+
+                /* ۴. حالت هاور برای فیدبک به کاربر */
+                #BodyModalAG .tab-content .table-responsive::-webkit-scrollbar-thumb:hover {
+                    cursor: pointer; /* وقتی موس میره روش یکم سنگین‌تر و تیره‌تر شه */
+                }
+
+
+
+        #BodyModalAG2 .tab-content {
+            border-radius: 0px 0px 10px 10px !important;
+            border: 1px solid aqua !important;
+            padding-top: 15px !important;
+            /*            max-height: 560px !important;
+                */ overflow-y: auto !important;
+        }
+
+            /* ۱. تنظیم پهنای اسکرول‌بار برای این بخش خاص */
+            #BodyModalAG2 .tab-content::-webkit-scrollbar {
+                width: 10px; /* یکم باریک‌تر که ظریف بشه */
+            }
+
+            /* ۲. مسیر حرکت اسکرول (Track) */
+            #BodyModalAG2 .tab-content::-webkit-scrollbar-track {
+                background: rgba(0, 255, 255, 0.05); /* یه هاله خیلی کم‌رنگ Aqua زیرش باشه */
+                border-radius: 10px;
+            }
+
+            /* ۳. خودِ لغزنده (Thumb) با تم Aqua */
+            #BodyModalAG2 .tab-content::-webkit-scrollbar-thumb {
+                background: linear-gradient(180deg, #00ffff 0%, #00ced1 100%); /* گرادینت از آبی روشن به تیره */
+                border-radius: 10px;
+                border: 2px solid transparent; /* ایجاد فاصله ظریف */
+                background-clip: content-box; /* باعث میشه حاشیه شفاف دیده بشه و اسکرول‌بار لاغرتر به نظر بیاد */
+            }
+
+                /* ۴. حالت هاور برای فیدبک به کاربر */
+                #BodyModalAG2 .tab-content::-webkit-scrollbar-thumb:hover {
+                    cursor: pointer; /* وقتی موس میره روش یکم سنگین‌تر و تیره‌تر شه */
+                }
+
+            #BodyModalAG2 .tab-content .table-responsive::-webkit-scrollbar {
+                width: 10px; /* یکم باریک‌تر که ظریف بشه */
+            }
+
+            /* ۲. مسیر حرکت اسکرول (Track) */
+            #BodyModalAG2 .tab-content .table-responsive::-webkit-scrollbar-track {
+                background: rgba(0, 255, 255, 0.05); /* یه هاله خیلی کم‌رنگ Aqua زیرش باشه */
+                border-radius: 10px;
+            }
+
+            /* ۳. خودِ لغزنده (Thumb) با تم Aqua */
+            #BodyModalAG2 .tab-content .table-responsive::-webkit-scrollbar-thumb {
+                background: linear-gradient(180deg, #00ffff 0%, #00ced1 100%); /* گرادینت از آبی روشن به تیره */
+                border-radius: 10px;
+                border: 2px solid transparent; /* ایجاد فاصله ظریف */
+                background-clip: content-box; /* باعث میشه حاشیه شفاف دیده بشه و اسکرول‌بار لاغرتر به نظر بیاد */
+            }
+
+                /* ۴. حالت هاور برای فیدبک به کاربر */
+                #BodyModalAG2 .tab-content .table-responsive::-webkit-scrollbar-thumb:hover {
+                    cursor: pointer; /* وقتی موس میره روش یکم سنگین‌تر و تیره‌تر شه */
+                }
+
+
+
+        .BtnCloseAG {
+            color: aqua;
+            border: 1px dashed aqua;
+            border-bottom: 2px solid aqua;
+            font-size: 21px;
+            text-align: center;
+            width: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            position: absolute;
+            top: -35px;
+            left: -1px;
+            border-radius: 10px 10px 0px 0px;
+            height: 30px;
+            transition: .2s;
+        }
+
+            .BtnCloseAG i {
+                transition: .2s;
+            }
+
+            .BtnCloseAG:hover {
+                border-color: red;
+                box-shadow: inset 0 0 10px red;
+            }
+
+                .BtnCloseAG:hover i {
+                    color: red;
+                }
+
+
+        .BtnCloseAG2 {
+            color: aqua;
+            border: 1px dashed aqua;
+            border-bottom: 2px solid aqua;
+            font-size: 21px;
+            text-align: center;
+            width: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            position: absolute;
+            top: -35px;
+            left: -1px;
+            border-radius: 10px 10px 0px 0px;
+            height: 30px;
+            transition: .2s;
+        }
+
+            .BtnCloseAG2 i {
+                transition: .2s;
+            }
+
+            .BtnCloseAG2:hover {
+                border-color: red;
+                box-shadow: inset 0 0 10px red;
+            }
+
+                .BtnCloseAG2 :hover i {
+                    color: red;
+                }
+    </style>
+    @*<h3>نتایج جدول اول</h3>
+        <p>تعداد valuunic: @Model.countgadval1</p>
+        <p>جمع valueFK_db2: @Model.mablaghtable1</p>
+
+        <hr />
+
+        <h3>نتایج جدول Result1218_Rejected</h3>
+
+        <p>تعداد valuunic (Reason='1'): @Model.countgadval2</p>
+        <p>جمع TotalVosol (Reason='1'): @Model.mablaghtable2</p>
+
+        <hr />
+
+        <p>تعداد valuunic (Reason='5'): @Model.countgadval3</p>
+        <p>جمع TotalVosol (Reason='5'): @Model.mablaghtable3</p>
+
+        <hr />
+
+        <p>تعداد valuunic (Reason='3'): @Model.countgadval4</p>
+        <p>جمع TotalVosol (Reason='3'): @Model.mablaghtable4</p>
+
+        <hr />
+
+        <p>تعداد valuunic (Reason='4'): @Model.countgadval5</p>
+        <p>جمع TotalVosol (Reason='4'): @Model.mablaghtable5</p>
+
+        <hr />
+
+        <h3>نتایج تفریقی (زنجیره‌ای)</h3>
+
+        <p>mablaghtable6 = mablaghtable1 - mablaghtable2</p>
+        <p>countgadval6 = countgadval1 - countgadval2</p>
+        <p>مبلغ: @Model.mablaghtable6</p>
+        <p>تعداد: @Model.countgadval6</p>
+
+        <hr />
+
+        <p>mablaghtable7 = mablaghtable6 - mablaghtable3</p>
+        <p>countgadval7 = countgadval6 - countgadval3</p>
+        <p>مبلغ: @Model.mablaghtable7</p>
+        <p>تعداد: @Model.countgadval7</p>
+
+        <hr />
+
+        <p>mablaghtable8 = mablaghtable7 - mablaghtable4</p>
+        <p>countgadval8 = countgadval7 - countgadval4</p>
+        <p>مبلغ: @Model.mablaghtable8</p>
+        <p>تعداد: @Model.countgadval8</p>
+
+        <hr />
+
+        <p>mablaghtable9 = mablaghtable8 - mablaghtable5</p>
+        <p>countgadval9 = countgadval8 - countgadval5</p>
+        <p>مبلغ: @Model.mablaghtable9</p>
+        <p>تعداد: @Model.countgadval9</p>
+        <p>درصد Reason 1 : @Model.percent2 %</p>
+        <p>درصد Reason 5 : @Model.percent3 %</p>
+        <p>درصد Reason 3 : @Model.percent4 %</p>
+        <p>درصد Reason 4 : @Model.percent5 %</p>
+
+        <hr />
+
+        <p>درصد باقی مانده 1 : @Model.percent6 %</p>
+        <p>درصد باقی مانده 2 : @Model.percent7 %</p>
+        <p>درصد باقی مانده 3 : @Model.percent8 %</p>
+        <p>درصد نهایی : @Model.percent9 %</p>*@
+
+</head>
+@{
+    decimal maxHeight = 50m;
+    decimal h1 = maxHeight;
+    decimal h2 = (Model.percent6 / 100m) * maxHeight;
+    decimal h3 = (Model.percent7 / 100m) * maxHeight;
+    decimal h4 = (Model.percent8 / 100m) * maxHeight;
+    //decimal h5 = (Model.percent5 / 100m) * maxHeight;
+    decimal h9 = (Model.percent9 / 100m) * maxHeight;
+
+    decimal h12 = (Model.percent12 / 100m) * h9;
+    decimal h13 = (Model.percent13 / 100m) * h9;
+    if (Model.percent13 < 25 || Model.percent12 < 25)
+    {
+        if (Model.percent13 > Model.percent12)
+        {
+            h12 = (25 / 100m) * h9;
+            h13 = (75 / 100m) * h9;
+        }
+        else
+        {
+            h12 = (75 / 100m) * h9;
+            h13 = (25 / 100m) * h9;
+
+        }
+    }
+
+}
+
+<body>
+    <div class="row">
+        <div class="col-xl-2 col-lg-3 col-md-4 col-12">
+            <input id="sharestan" style="text-align:center; font-weight:bold; color:aqua !important;"
+                   class="form-control"
+                   value="شناسه قبض"
+                    />
+        </div>    <div class="col-xl-1">
+            <button id="person-sabt" class="form-control buttonGeneral">
+                <i class="bi bi-eye fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text">مشاهده</span>
+            </button>
+        </div>
+    </div>
+    
+    <div class="tab-content" id="pills-tabContent">
+        @*<div class="boxs">شرکت خدمات فنی مهندسی نویان بهینه</div>*@
+        <div class="container-col">
+            <div class="cols cols-start-txt " style="height:50vh;" id="moadalvaziat_kol" data-id="0">
+                <div class="arrow-right-simple"></div>
+                <div class="water-level1"></div>
+                @*<div class="water-level2" id="moadalvaziat_kol" style="height:20vh;">*@
+                <div class="water-level2 moadalvaziat_kol" data-id="0" style="height:@(h2)vh;">
+
+                    @*<div class="water-level2" id="moadalvaziat_kol" style="height:@h1vh;">*@
+                    @*<div class="cols cols-start-txt" style="height:@h1vh;">*@
+
+                    @*<div class="start-line"></div>*@
+                    <div class="mid-line line1" data-id="1"></div>
+
+                </div>
+                <div class="boxs line1 moadalvaziat_kol" data-id="1" id="moadalvaziat_kol">
+                    <div class="boxs-txt">
+                        <p>
+                            غیرفعال
+                        </p>
+                        <p>
+                            تعداد : @Model.countgadval2.ToString("N0") _ (@( $"{(100 - Model.percent6c):N2}" )%)
+                        </p>
+                        <p>
+                            بدهی : @Model.mablaghtable2.ToString("N0") _( @( $"{(100 - Model.percent6):N2}" )%)
+
+                        </p>
+                    </div>
+                </div>
+                <div class="cols-txt">
+                    <p>
+                        کل مشترکین
+                    </p>
+                    <p>
+                        تعداد : @Model.countgadval1.ToString("N0")_(100%)
+                    </p>
+                    <p>
+                        بدهی : @Model.mablaghtable1.ToString("N0")_(100%)
+                    </p>
+                </div>
+            </div>
+            @*<div class="cols cols-start-txt" style="height:20vh;">*@
+            <div class="cols cols-start-txt " style="height:@(h2)vh;" data-id="1" id="moadalvaziat_kol1">
+
+                @*<div class="cols cols-start-txt" style="height:@x vh;">*@
+
+                <div class="arrow-right-simple"></div>
+                <div class="water-level1"></div> <!-- آب تا ۶۵٪ ارتفاع -->
+                <div class="water-level2 moadalvaziat_kol1" data-id="1" @*style="height:18vh;"*@ style="height:@(h3)vh;">
+                    @*<div class="start-line"></div>*@
+                    <div class="mid-line line2" data-id="2"></div>
+                </div>
+
+                <div class="boxs line2 moadalvaziat_kol" data-id="5" id="moadalvaziat_kol">
+                    <div class="boxs-txt">
+                        <p>
+                            دارای مهلت پرداخت
+                        </p>
+                        <p>
+                            تعداد : @Model.countgadval3.ToString("N0") _ (@( $"{(100 - Model.percent7c):N2}" )%)
+                        </p>
+                        <p>
+                            بدهی : @Model.mablaghtable3.ToString("N0") _( @( $"{(100 - Model.percent7):N2}" )%)
+
+                        </p>
+                        @*<p>
+                                تعداد : @Model.countgadval3.ToString("N0")
+                            </p>
+                            <p>
+                                بدهی : @Model.mablaghtable3.ToString("N0")
+                            </p>*@
+                    </div>
+                </div>
+
+
+                <div class="cols-txt">
+                    <p>
+                        فعال
+                    </p>
+
+                    <p>
+                        تعداد : @Model.countgadval6.ToString("N0") _ (@( $"{( Model.percent6c):N2}" )%)
+                    </p>
+                    <p>
+                        بدهی : @Model.mablaghtable6.ToString("N0") _( @( $"{( Model.percent6):N2}" )%)
+
+                    </p>
+                    @*<p>
+                            تعداد : @Model.countgadval6.ToString("N0")
+                        </p>
+                        <p>
+                            بدهی : @Model.mablaghtable6.ToString("N0")
+                        </p>*@
+                </div>
+
+            </div>
+            <div class="cols cols-start-txt " @*style="height:18vh;"*@ style="height:@(h3)vh;" data-id="5" id="moadalvaziat_kol1">
+                <div class="arrow-right-simple"></div>
+                <div class="water-level1"></div> <!-- آب تا ۶۵٪ ارتفاع -->
+                <div class="water-level2 moadalvaziat_kol1" data-id="5" @*style="height:16vh;"*@ style="height:@(h4)vh;">
+                    @*<div class="start-line"></div>*@
+                    <div class="mid-line line3" data-id="3"></div>
+                </div>
+
+                <div class="boxs line3 moadalvaziat_kol" data-id="3" id="moadalvaziat_kol">
+                    <div class="boxs-txt">
+                        <p>
+                            خاص
+                        </p>
+                        <p>
+                            تعداد : @Model.countgadval4.ToString("N0") _ (@( $"{(Model.percent7c - Model.percent8c):N2}" )%)
+                        </p>
+                        <p>
+                            بدهی : @Model.mablaghtable4.ToString("N0") _( @( $"{(100 - Model.percent8):N2}" )%)
+
+                        </p>
+
+                    </div>
+                </div>
+
+                <div class="cols-txt">
+                    <p>
+                        پایان مهلت پرداخت
+                    </p>
+                    <p>
+                        تعداد : @Model.countgadval7.ToString("N0") _ (@( $"{( Model.percent7c):N2}" )%)
+                    </p>
+                    <p>
+                        بدهی : @Model.mablaghtable7.ToString("N0") _( @( $"{( Model.percent7):N2}" )%)
+
+                    </p>
+                    @*<p>
+                            تعداد : @Model.countgadval7.ToString("N0")
+                        </p>
+                        <p>
+                            بدهی : @Model.mablaghtable7.ToString("N0")
+                        </p>*@
+                </div>
+            </div>
+            <div class="cols cols-start-txt " @*style="height:16vh;"*@ style="height:@(h4)vh;" data-id="3" id="moadalvaziat_kol1">
+                <div class="arrow-right-simple"></div>
+                <div class="water-level1"></div> <!-- آب تا ۶۵٪ ارتفاع -->
+                <div class="water-level2 moadalvaziat_kol1" data-id="3" @*style="height:14vh;"*@ style="height:@(h9)vh;">
+                    @*<div class="start-line"></div>*@
+                    <div class="mid-line line4" data-id="4"></div>
+                </div>
+
+                <div class="boxs line4 moadalvaziat_kol" data-id="4" id="moadalvaziat_kol">
+                    <div class="boxs-txt">
+                        <p>
+                            کنترل پذیر
+                        </p>
+                        @*<p>
+                                تعداد : @Model.countgadval5.ToString("N0")
+                            </p>
+                            <p>
+                                بدهی : @Model.mablaghtable5.ToString("N0")
+                            </p>*@
+                        <p>
+                            تعداد : @Model.countgadval5.ToString("N0") _ (@( $"{(Model.percent8c - Model.percent9c):N2}" )%)
+                        </p>
+                        <p>
+                            بدهی : @Model.mablaghtable5.ToString("N0") _( @( $"{(Model.percent8 - Model.percent9):N2}" )%)
+
+                        </p>
+                    </div>
+                </div>
+                <div class="cols-txt">
+                    <p>
+                        غیر خاص
+                    </p>
+                    @*<p>
+                            تعداد : @Model.countgadval8.ToString("N0")
+                        </p>
+                        <p>
+                            بدهی : @Model.mablaghtable8.ToString("N0")
+                        </p>*@
+                    <p>
+                        تعداد : @Model.countgadval8.ToString("N0") _ (@( $"{( Model.percent8c):N2}" )%)
+                    </p>
+                    <p>
+                        بدهی : @Model.mablaghtable8.ToString("N0") _( @( $"{( Model.percent8):N2}" )%)
+
+                    </p>
+                </div>
+            </div>
+            <div class="cols cols-start-txt moadalvaziat_kol1" @*style="height:14vh;"*@ style="height:@(h9)vh;" data-id="4" id="moadalvaziat_kol1">
+                <div class="arrow-right-simple"></div>
+                <div class="cols-txt">
+                    <p>
+                        کنترل ناپذیر
+                    </p>
+                    <p>
+                        تعداد : @Model.countgadval9.ToString("N0") _ (@( $"{( Model.percent9c):N2}" )%)
+                    </p>
+                    <p>
+                        بدهی : @Model.mablaghtable9.ToString("N0") _( @( $"{( Model.percent9):N2}" )%)
+
+                    </p>
+                    @*<p>
+                            تعداد : @Model.countgadval9.ToString("N0")
+                        </p>
+                        <p>
+                            بدهی : @Model.mablaghtable9.ToString("N0")
+                        </p>*@
+                </div>
+            </div>
+            @{
+                decimal h100 = (55 / 100m) * h9;
+
+            }
+            <div class="cols cols-start-txt " @*style="height:16vh;"*@ style="height:@(h9)vh;" data-id="3" id="moadalvaziat_kol1">
+                <div class="water-level1"></div> <!-- آب تا ۶۵٪ ارتفاع -->
+                <div class="water-level2 moadalvaziat_kol1" data-id="3" style="height:@(h100)vh;">
+                    @*<div class="start-line"></div>*@
+                    <div class="mid-line line5" data-id="4"></div>
+                </div>
+
+                <div class="boxs line5" data-id="4" id="moadalvaziat_kol">
+                    <div class="boxs-txt">
+                        <p>
+                            لیست حذف (کمبود نیرو)
+                        </p>
+                        <p>
+                            تعداد : @Model.countbletelephonnot.ToString("N0") _ (@( $"{( Model.percent16c):N2}" )%)
+                        </p>
+                        <p>
+                            بدهی : @Model.mablaghtabletelephonnot.ToString("N0") _( @( $"{( Model.percent16):N2}" )%)
+
+                        </p>
+                        @*<p>
+                                تعداد : @Model.countbletelephonnot.ToString("N0")
+                            </p>
+                            <p>
+                                بدهی : @Model.mablaghtabletelephonnot.ToString("N0")
+                            </p>*@
+                    </div>
+                </div>
+                <div class="cols-txt">
+                    <div id="telephoni" style="border-bottom: 1px solid white; margin: auto; margin-bottom: 7px;width: 55% ">
+                        <p>
+                            لیست تلفنی
+                        </p>
+                        @{
+                            //Model.countmablaghtabletelephon2 = 78185;
+                        }
+                        <p>
+                            تعداد : @Model.countmablaghtabletelephon2.ToString("N0") _ (@( $"{( Model.percent15c):N2}" )%)
+                        </p>
+                        <p>
+                            بدهی : @Model.mablaghtabletelephon2.ToString("N0") _( @( $"{( Model.percent15):N2}" )%)
+
+                        </p>
+                        @*<p>
+                                تعداد : @Model.countmablaghtabletelephon2.ToString("N0")
+                            </p>
+                            <p>
+                                بدهی : @Model.mablaghtabletelephon2.ToString("N0")
+                            </p>*@
+                    </div>
+                    @*<hr style="width:50%; margin:auto;" />*@
+                    <div id="hozoori" style=" border-bottom: 1px solid white; margin: auto; margin-bottom: 7px; width: 55%">
+                        <p>
+                            لیست حضوری
+                        </p>
+                        <p>
+                            تعداد : @Model.countmablaghtabletelephon.ToString("N0") _ (@( $"{( Model.percent14c):N2}" )%)
+                        </p>
+                        <p>
+                            بدهی : @Model.mablaghtabletelephon.ToString("N0") _( @( $"{( Model.percent14):N2}" )%)
+
+                        </p>
+                        @*<p>
+                                تعداد : @Model.countmablaghtabletelephon.ToString("N0")
+                            </p>
+                            <p>
+                                بدهی : @Model.mablaghtabletelephon.ToString("N0")
+                            </p>*@
+                    </div>
+                    <!--<div id="gharg">
+                        <p>
+                            لیست کمبود نیرو (خارج وقت اداری)
+                        </p>
+                        <p>
+                            تعداد : @Model.countbletelephonnot3.ToString("N0") _ (@( $"{( Model.percent17c):N2}" )%)
+                        </p>
+                        <p>
+                            بدهی : @Model.mablaghtabletelephon3.ToString("N0") _( @( $"{( Model.percent17):N2}" )%)
+
+                        </p>-->
+                        @*<p>
+                                تعداد : @Model.countmablaghtabletelephon2.ToString("N0")
+                            </p>
+                            <p>
+                                بدهی : @Model.mablaghtabletelephon2.ToString("N0")
+                            </p>*@
+                    <!--</div>-->
+
+
+                </div>
+
+            </div>
+            <!--<div class="cols" style="height: fit-content; display:flex; flex-direction:column; height:@(h9)vh;">-->
+            @*<div class="cols" style="height: fit-content; display: flex; flex-direction: column; height:14vh;">*@
+
+            <!--<div id="telephoni" class="lastpart parttop" style="border-bottom:1px solid white;height:@(h13)vh;">
+                <div class="cols-txt">
+                    <p>
+                        لیست تلفنی
+                    </p>
+                    <p>
+                        تعداد : @Model.countgadval13.ToString("N0")----(@Model.percent12)
+                    </p>
+                    <p>
+                        بدهی : @Model.mablaghtable13.ToString("N0")
+                    </p>-->
+            @*<p>
+                    تعداد : 107.446
+                </p>
+                <p>
+                    بدهی : 13.383.374
+                </p>*@
+            <!--</div>
+                </div>
+                <div id="hozoori" data-id="12345" class="lastpart partbottom" style="height:@(h12)vh;background-color:red;">
+                    <div class="cols-txt">
+                        <p>
+                            لیست حضوری
+                        </p>
+                        <p>
+                            تعداد : @Model.countgadval12.ToString("N0")---(@Model.percent13)
+                        </p>
+                        <p>
+                            بدهی : @Model.mablaghtable12.ToString("N0")
+                        </p>
+                    </div>
+                </div>
+            </div>-->
+
+
+        </div>
+    </div>
+    <div id="MyModalAG" class="ModalAG">
+        <div class="ContentModalAG">
+            <div class="BtnCloseAG">
+                <i class="bi bi-x"></i>
+            </div>
+            @*<i class="BtnCloseAG fa fa-window-close"></i>*@
+            <div id="BodyModalAG">
+
+
+            </div>
+        </div>
+    </div>
+    <div id="MyModalAG2" class="ModalAG2">
+        <div class="ContentModalAG2">
+            <div class="BtnCloseAG2">
+                <i class="bi bi-x"></i>
+            </div>
+            @*<i class="BtnCloseAG fa fa-window-close"></i>*@
+            <div id="BodyModalAG2">
+
+
+            </div>
+        </div>
+    </div>
+    <script src="~/Scripts/leader-line.min.js"></script>
+    <script src="~/Scripts/jquery-3.3.1.js"></script>
+    <script src="~/Scripts/jquery-ui.js"></script>
+
+
+    <script>
+        let allLines = [];
+
+        $(document).ready(function () {
+            function createLine(from, to) {
+                const line = new LeaderLine(from, to, {
+                    color: 'var(--water-color)',
+                    size: 8,
+                    endPlug: 'arrow2',
+                    endPlugSize: 0.4,
+                    startSocket: 'bottom',
+                    endSocket: 'top',
+                    path: 'straight'
+                });
+                allLines.push(line);
+                return line;
+            }
+
+            // خطوط خاص هر ستون
+            createLine(document.querySelector('.line1'), document.querySelector('.boxs.line1'));
+            createLine(document.querySelector('.line2'), document.querySelector('.boxs.line2'));
+            createLine(document.querySelector('.line3'), document.querySelector('.boxs.line3'));
+            createLine(document.querySelector('.line4'), document.querySelector('.boxs.line4'));
+            createLine(document.querySelector('.line5'), document.querySelector('.boxs.line5'));
+
+            // MutationObserver برای انیمیشن آب
+            const observer = new MutationObserver(() => {
+                setTimeout(() => allLines.forEach(l => l.position()), 1100);
+            });
+            observer.observe(document.querySelector('.water-level1'), { attributes: true });
+
+            // Ultra-safe resize handler
+            let resizeTimer;
+            const updateAll = () => {
+                allLines.forEach(line => {
+                    try { line.position(); } catch (e) { }
+                });
+            };
+
+            $(window).on('resize zoom orientationchange', () => {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(updateAll, 150);
+            });
+
+            // هر 2 ثانیه چک اضافی (برای safety)
+            setInterval(updateAll, 1000);
+        });
+    </script>
+
+    <script>
+
+        $(document).ready(function () {
+
+            // وقتی روی هر سلول یا دکمه click2 کلیک شد، مودال باز بشه
+            $("#telephoni").click(function () {
+       var $this = $(this);
+       allLines.forEach(l => l.hide());
+       // موقعیت المان کلیک‌شده
+       var offset = $this.offset();
+       var elementHeight = $this.outerHeight();
+       //$("#hiddenID").val(idd);
+       // نمایش مودال
+       $("#MyModalAG")
+           .addClass("fade-in")
+           .css({
+               "display": "block",
+               "position": "absolute",   // لازم
+               "top": offset.top - elementHeight - 100 + "px", // ۵px فاصله پایین المان
+           });
+
+       // گرفتن data-id یا هر چیزی که نیاز داری
+       //var idd = $this.data("id");
+       //console.log("Clicked ID:", idd);
+                $("#loading-circle").show();
+
+       // لود محتوا
+                $("#BodyModalAG").load('@Url.Content("/Setting/Orders/view_see_1218_vaz_modal_telphon")'); $("#loading-circle").hide();
+
+            });
+
+            @*$("#moadalvaziat_kol").click(function () {
+    var $this = $(this);
+    allLines.forEach(l => l.hide());
+
+    var offset = $this.offset();
+    var elementHeight = $this.outerHeight();
+
+    // گرفتن data-id
+    var idd = $this.data("id");  // مثلاً 1
+
+    $("#MyModalAG2")
+        .addClass("fade-in")
+        .css({
+            "display": "block",
+            "position": "absolute",
+            "top": (offset.top - elementHeight - 100) + "px"
+        });
+
+    // ارسال data-id به اکشن
+    $("#BodyModalAG2").load(
+        '@Url.Content("/Setting/Orders/view_see_1218_vaz_modal_koldata")',
+        { id: idd } // این آبجکت به صورت کوئری‌استرینگ/فرم به سرور میره
+    );
+});*@
+
+            $(".moadalvaziat_kol").click(function () {
+    var $this = $(this);
+    allLines.forEach(l => l.hide());
+    // موقعیت المان کلیک‌شده
+    var offset = $this.offset();
+    var elementHeight = $this.outerHeight();
+     //نمایش مودال
+                $("#MyModalAG2")
+        .addClass("fade-in")
+        .css({
+            "display": "block",
+            "position": "absolute",   // لازم
+            "top": offset.top - elementHeight - 100 + "px", // ۵px فاصله پایین المان
+        });
+
+    // گرفتن data-id یا هر چیزی که نیاز داری
+    var idd = $this.data("id");
+                console.log("Clicked ID:", idd);
+                document.getElementById("loading-circle").style.display = "block";
+
+                $("#BodyModalAG2").load('@Url.Content("/Setting/Orders/view_see_1218_vaz_modal_koldatamoshahdeh")?id=' + idd); $("#loading-circle").hide();
+
+
+    // لود محتوا
+    @*$("#BodyModalAG2").load('@Url.Content("/Setting/Orders/view_see_1218_vaz_modal_koldata")' );*@
+});
+
+            $(".moadalvaziat_kol1").click(function () {
+    var $this = $(this);
+    allLines.forEach(l => l.hide());
+    // موقعیت المان کلیک‌شده
+    var offset = $this.offset();
+    var elementHeight = $this.outerHeight();
+     //نمایش مودال
+                $("#MyModalAG2")
+        .addClass("fade-in")
+        .css({
+            "display": "block",
+            "position": "absolute",   // لازم
+            "top": offset.top - elementHeight - 100 + "px", // ۵px فاصله پایین المان
+        });
+
+              
+                document.getElementById("loading-circle").style.display = "block";
+
+    // گرفتن data-id یا هر چیزی که نیاز داری
+    var idd = $this.data("id");
+    console.log("Clicked ID:", idd);
+                $("#BodyModalAG2").load('@Url.Content("/Setting/Orders/view_see_1218_vaz_modal_koldata")?id=' + idd); $("#loading-circle").hide();
+
+
+    // لود محتوا
+    @*$("#BodyModalAG2").load('@Url.Content("/Setting/Orders/view_see_1218_vaz_modal_koldata")' );*@
+});
+
+            @*$("#telephoni").click(function () {
+                var $this = $(this);
+                allLines.forEach(l => l.hide());
+                // موقعیت المان کلیک‌شده
+                var offset = $this.offset();
+                var elementHeight = $this.outerHeight();
+                $("#hiddenID").val(idd);
+                // نمایش مودال
+                $("#MyModalAG")
+                    .addClass("fade-in")
+                    .css({
+                        "display": "block",
+                        "position": "absolute",   // لازم
+                        "top": offset.top - elementHeight - 100 + "px", // ۵px فاصله پایین المان
+                    });
+
+                // گرفتن data-id یا هر چیزی که نیاز داری
+                var idd = $this.data("id");
+                console.log("Clicked ID:", idd);
+
+                // لود محتوا
+                $("#BodyModalAG").load('@Url.Content("/Setting/Orders/modal1_nemoodarjadid")?id=' + 0);
+            });*@
+
+            // بستن مودال با آیکون
+            $(".BtnCloseAG").click(function () {
+                $("#MyModalAG").fadeOut();
+            });
+            $(".BtnCloseAG2").click(function () {
+                $("#MyModalAG2").fadeOut();
+            });
+            // بستن مودال وقتی روی بک‌گراند کلیک شد
+            //$("#MyModalAG").click(function (e) {
+            //    if (e.target === this) {
+            //        $(this).fadeOut();
+            //    }
+            //});
+
+        });
+        $(document).ready(function () {
+            $("#expandButton2").click(function () {
+                $("#MyModalAG").addClass("fade-in"); // Add the fade-in class
+                $("#MyModalAG").css("display", "block");
+                $("#MyModalAG2").addClass("fade-in"); // Add the fade-in class
+                $("#MyModalAG2").css("display", "block");
+            });
+
+            $(".close").click(function () {
+                $("#MyModalAG").removeClass("fade-in"); // Remove the fade-in class
+                $("#MyModalAG").css("display", "none");
+                $("#MyModalAG2").removeClass("fade-in"); // Remove the fade-in class
+                $("#MyModalAG2").css("display", "none");
+                $("#mymodal3").fadeOut();
+                allLines.forEach(l => l.show());
+            //    location.reload();
+            });
+
+            //$(window).click(function (event) {
+            //    if (event.target == $("#MyModalAG")[0]) {
+            //        $("#MyModalAG").removeClass("fade-in"); // Remove the fade-in class
+            //        $("#MyModalAG").css("display", "none");
+            //    }
+            //});
+        })
+        // بستن مودال با آیکون
+                $(".BtnCloseAG").click(function () {
+                    allLines.forEach(l => l.show());
+
+            $("#MyModalAG").fadeOut(200, function () {
+                //location.reload();
+            });
+        });
+        $(".BtnCloseAG2").click(function () {
+            allLines.forEach(l => l.show());
+
+            $("#MyModalAG2").fadeOut(200, function () {
+                //location.reload();
+            });
+        });
+        // بستن مودال با کلیک روی بک‌گراند
+        //$("#MyModalAG").click(function (e) {
+        //    if (e.target === this) {
+        //        $(this).fadeOut(200, function () {
+        //            location.reload();
+        //        });
+        //    }
+        //});
+
+    </script>
+    <script>
+
+        $(document).ready(function () {
+
+            // وقتی روی هر سلول یا دکمه click2 کلیک شد، مودال باز بشه
+            $("#hozoori").click(function () {
+                var $this = $(this);
+                allLines.forEach(l => l.hide());
+                // موقعیت المان کلیک‌شده
+                var offset = $this.offset();
+                var elementHeight = $this.outerHeight();
+                //$("#hiddenID").val(idd);
+                // نمایش مودال
+                $("#MyModalAG")
+                    .addClass("fade-in")
+                    .css({
+                        "display": "block",
+                        "position": "absolute",   // لازم
+                        "top": offset.top - elementHeight - 100 + "px", // ۵px فاصله پایین المان
+                    });
+
+               
+                document.getElementById("loading-circle").style.display = "block";
+
+                // گرفتن data-id یا هر چیزی که نیاز داری
+                //var idd = $this.data("id");
+                //console.log("Clicked ID:", idd);
+
+                // لود محتوا
+                $("#BodyModalAG").load('@Url.Content("/Setting/Orders/view_see_1218_vaz_modal")'); $("#loading-circle").hide();
+
+            });
+
+            // بستن مودال با آیکون
+            $(".BtnCloseAG").click(function () {
+                $("#MyModalAG").fadeOut();
+            });
+            $(".BtnCloseAG2").click(function () {
+                $("#MyModalAG2").fadeOut();
+            });
+
+            // بستن مودال وقتی روی بک‌گراند کلیک شد
+            //$("#MyModalAG").click(function (e) {
+            //    if (e.target === this) {
+            //        $(this).fadeOut();
+            //    }
+            //});
+
+        });
+        $(document).ready(function () {
+            $("#expandButton2").click(function () {
+                $("#MyModalAG").addClass("fade-in"); // Add the fade-in class
+                $("#MyModalAG").css("display", "block");
+                $("#MyModalAG2").addClass("fade-in"); // Add the fade-in class
+                $("#MyModalAG2").css("display", "block");
+            });
+
+            $(".close").click(function () {
+                $("#MyModalAG").removeClass("fade-in"); // Remove the fade-in class
+                $("#MyModalAG").css("display", "none");
+                $("#MyModalAG2").removeClass("fade-in"); // Remove the fade-in class
+                $("#MyModalAG2").css("display", "none");
+                $("#mymodal3").fadeOut();
+                lines.forEach(l => l.show());
+            //    location.reload();
+            });
+
+            //$(window).click(function (event) {
+            //    if (event.target == $("#MyModalAG")[0]) {
+            //        $("#MyModalAG").removeClass("fade-in"); // Remove the fade-in class
+            //        $("#MyModalAG").css("display", "none");
+            //    }
+            //});
+        })
+        // بستن مودال با آیکون
+                $(".BtnCloseAG").click(function () {
+                    lines.forEach(l => l.show());
+
+            $("#MyModalAG").fadeOut(200, function () {
+                //location.reload();
+            });
+        });
+        $(".BtnCloseAG2").click(function () {
+            lines.forEach(l => l.show());
+
+            $("#MyModalAG2").fadeOut(200, function () {
+                //location.reload();
+            });
+        });
+                  $("#person-sabt").click(function () {
+                      var sharestan = $("#sharestan").val();
+
+    //if (sharestan === "") {
+    //    alert("لطفاً یک انتخاب کنید");
+    //    return;
+                      //}
+                      if (sharestan === "") {
+                          alert("لطفاً یک شناسه قبض  وارد نمایید");
+                          return;
+                      }
+                      document.getElementById("loading-circle").style.display = "block";
+
+
+    // ریدایرکت به صفحه createps با پارامتر id
+                    window.location.href = '@Url.Action("view_see_1218_vaz_string", "Orders", new { area = "Setting" })' + "?shenaseh=" + sharestan;
+});
+        // بستن مودال با کلیک روی بک‌گراند
+        //$("#MyModalAG").click(function (e) {
+        //    if (e.target === this) {
+        //        $(this).fadeOut(200, function () {
+        //            location.reload();
+        //        });
+        //    }
+        //});
+
+    </script>
+</body>
+</html>
+
+
+
+
+
+

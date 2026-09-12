@@ -1,0 +1,130 @@
+﻿@*@{
+        ViewBag.Title = "مدیریت کاربران";
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+
+    <h2>ثبت کاربر</h2>
+    <form id="userForm">
+        <input type="text" id="name" placeholder="نام" required />
+        <input type="text" id="family" placeholder="نام خانوادگی" required />
+        <input type="text" id="nationalCode" placeholder="کد ملی" required />
+        <button type="submit">ذخیره</button>
+    </form>
+
+    <h2>لیست کاربران</h2>
+    <ul id="userList"></ul>
+
+
+
+    <script src="~/Scripts/Usertest.js"></script>
+
+    <script>
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("/Scripts/service-worker.js")
+                .then(() => console.log("✅ Service Worker فعال شد"))
+                .catch(err => console.error("❌ خطا:", err));
+        }
+    </script>*@
+
+
+
+
+
+@{
+    /////////////////////05081404 ثبت بدون اینترنت
+
+    ViewBag.Title = "مدیریت کاربران";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    @@keyframes pulseOnline {
+        0% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.12);
+        }
+
+        100% {
+            transform: scale(1);
+        }
+    }
+
+
+    @@keyframes shakeOffline {
+        0%, 100% {
+            transform: translateX(0);
+        }
+
+        25% {
+            transform: translateX(-4px);
+        }
+
+        75% {
+            transform: translateX(4px);
+        }
+    }
+</style>
+
+<h2>ثبت کاربر</h2>
+<form id="userForm">
+    <input type="text" id="name" placeholder="نام" required />
+    <input type="text" id="family" placeholder="نام خانوادگی" required />
+    <input type="text" id="nationalCode" placeholder="کد ملی" required />
+    <button type="submit">ذخیره</button>
+</form>
+
+<h2>لیست کاربران</h2>
+<ul id="userList"></ul>
+<div id="toast" style="
+    position: fixed;
+    bottom: -70px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #323232;
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 30px;
+    font-size: 15px;
+    opacity: 0;
+    transition: all .4s ease;
+    z-index: 9999;
+">
+    پیام Toast
+
+
+
+
+</div>
+<div id="netStatus" style="
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: #4caf50;
+    color: #fff;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 26px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    transition: background 0.3s, transform 0.3s;
+    z-index: 99999;
+">
+</div>
+
+
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script src="~/Scripts/Usertest.js"></script>
+
+<script>
+    if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("/service-worker.js")
+            .then(() => console.log("✅ Service Worker فعال شد"))
+            .catch(err => console.error("❌ خطا در ثبت Service Worker:", err));
+    }
+</script>

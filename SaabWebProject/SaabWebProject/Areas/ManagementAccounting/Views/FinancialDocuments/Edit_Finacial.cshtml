@@ -1,0 +1,326 @@
+﻿@{
+    /**/
+
+    ViewBag.Title = " ویرایش اسناد مالی ";
+    Layout = null;
+}
+@model SaabWebProject.Models.DomainModels.FinancialDocuments
+@{
+    if (Model.User_ID == null)
+    {
+        Model.User_ID = 0;
+    }
+}
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+<link href="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.style.css" rel="stylesheet" />
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+<link href="~/MyStyles/MyStyle.css" rel="stylesheet" />
+
+<link href="~/MyStyles/inputstyleandformstyle.css" rel="stylesheet" />
+@*برای input ih*@
+<link href="~/MyStyles/cardstyle.css" rel="stylesheet" />
+@*برای کارد  ها*@
+<link href="~/MyStyles/buttonstyle.css" rel="stylesheet" />
+@*برای دکمه  ها*@
+
+@*<div class="card">*@
+<div class="row" style="margin-top:20px;margin-right:20px">
+    <div class="col-xl-3">
+        <label class="form-label"> پیمان  </label>
+        <span id="Edit_span_peyman"></span>
+    </div>
+    <div class="col-xl-3">
+        <label class="form-label"> کاربر </label>
+        <span id="Edit_span_users"></span>
+    </div>
+    <div class="col-xl-3" id="Edit_Creditlamdicatros">
+        <label class="form-label"> مرکز هزینه</label>
+        <select class="form-select" id="Edit_creditline" style="display:none">
+            <option value="Select">انتخاب کنید</option>
+            @Html.Action("_ListAllCreditIndicatior", "CreditLine", new { area = "Budget" })
+        </select>
+        <select class="form-select" id="Edit_Detailedtitle" style="display:none">
+            <option value="Select">انتخاب کنید</option>
+            @Html.Action("_ListAlltbDetailedtitle", "FinancialDocuments", new { area = "ManagementAccounting" })
+        </select>
+    </div>
+</div>
+<div class="row" style="margin-top:20px;margin-right:20px">
+    <div class="col-xl-2">
+        <label class="form-label">تاریخ </label>
+        @*------------------------------------------------[1402/09/07]-|KH|-*@
+        <input data-jdp jdp-btn-close data-jdp-miladi-input="datepickerFromEn_Eq" id="datepickerFrom_Eq" class="form-control pdate" name="datepickerFrom_shw1" style="background-color: #1d2734; border-image: linear-gradient(to right,#323949, #5FC8CC,#323949) 1 !important;">
+        
+        <input id="datepickerFromEn_Eq" value="@Model.DataDocument.Value.ToString("MM/dd/yyyy")" type="hidden" />
+        @*-------------------------------------------------------------|KH|-*@
+    </div>
+    @*<div class="col-xl-3">
+        <label class="form-label"> تاریخ </label>
+        <div class="col-xl-12">
+
+            <input data-jdp jdp-btn-close data-jdp-miladi-input="Edit_datepickerFromEn_Eq1" id="Edit_datepickerFrom_Eq1" class="form-control" style="" value="@Model.DataDocument.ToString("MM/dd/yyyy")">
+            <input id="datepickerFrom_Eq" type="hidden" />
+        </div>
+    </div>*@
+
+    <div class="col-xl-2">
+        <label class="form-label"> بستانکار (ریال) </label>
+        <input class="form-control" id="Edit_pestenka" oninput="formatCurrency(this)" value="@Model.Creditor" />
+    </div>
+    <div class="col-xl-2">
+        <label class="form-label"> بدهکار(ریال) </label>
+        <input class="form-control" id="Edit_bdehkar" oninput="formatCurrency(this)" value="@Model.Debtore" />
+    </div>
+    <div class="col-xl-4">
+        <label class="form-label">  شرح  </label>
+        <input class="form-control" id="Edit_Title" value="@Model.Title" />
+    </div>
+</div>
+
+<div class="row" style="margin-top:20px">
+    <div class="col-xl-11"></div>
+    <div class="col-xl-1">
+        <button class="btn form-control buttonsabt" id="btnEdit">
+            <span class="bSabt-text"> ویرایش</span>
+           
+        </button>
+    </div>
+</div>
+
+<!-- arrow -->
+@*<div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+        </div>*@
+
+
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Scripts/popper.min.js"></script>
+@*------------------------------------------------[1402/10/14]-|KH|-*@
+<script>
+    jalaliDatepicker.startWatch({
+        time: false,
+        days: ["شنبه", "1شنبه", "2شنبه", "3شنبه", "4شنبه", "5شنبه", "جمعه"],
+        persianDigits: true,
+        autoClose: true,
+        //autocomplete: true,
+        showCloseBtn: true,
+        showEmptyBtn: false,
+        showCloseBtn: true,
+        zIndex: 100000,
+    });
+    date = document.getElementById("datepickerFromEn_Eq").value.replace(" ", "")
+    valueD = new Date(date.slice(0, 10)).toLocaleDateString('fa-IR-u-nu-latn', { year: 'numeric', month: '2-digit', day: '2-digit' })
+    valueD = valueD + " " + date.slice(10, 30)
+    document.getElementById("datepickerFrom_Eq").value = valueD
+
+
+    //-----------------------------------------------------------------
+    var inputs = document.querySelectorAll("[data-jdp-miladi-input]");
+    for (var i = 0; i < inputs.length; i++) {
+        inputs[i].addEventListener("jdp:change", function (e) {
+            var miladiInput = document.getElementById(this.getAttribute("data-jdp-miladi-input"));
+            var date = this.value.replace(' ', '').slice(0, 10).split('/');
+            date = jalaali.toGregorian(parseInt(date[0]), parseInt(date[1]), parseInt(date[2]),)
+            // If it was empty
+            if (!this.value) {
+                date = "";
+            }
+            // If it was only history
+            else if (this.value.replace(' ', '').length < 11) {
+                date = date.gy + '-' + date.gm + '-' + date.gd
+            }
+            // If it was the date and time
+            else {
+                date = date.gy + '-' + date.gm + '-' + date.gd + ' ' + this.value.replace(' ', '').slice(10, 30)
+            }
+            miladiInput.value = date
+        });
+    }
+</script>
+@*-------------------------------------------------------------|KH|-*@
+<script>
+    function formatCurrency(input) {
+        // حذف همه کاراکترهای غیر از اعداد و "." (جداکننده اعشاری)
+        let value = input.value.replace(/[^\d.]/g, '');
+
+        // تبدیل مقدار به عدد اعشاری
+        let number = parseFloat(value);
+
+        // اگر عدد معتبر باشد، آن را به صورت سه رقمی جداکنده کنید
+        if (!isNaN(number)) {
+            let formattedValue = number.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+            // قرار دادن مقدار فرمت شده در ورودی
+            input.value = formattedValue;
+        }
+    }
+</script>
+
+<script>
+        $(function(){
+
+                $("#Edit_span_peyman").load('@Url.Content("/Contracts/Peyman/_GetAllListPeymans_Select")', function () {
+                     $("#select_peyman").attr("id","Edit_SelectPeyman");
+                     $("#Edit_SelectPeyman").picker({ search: true });
+                     $("#Edit_SelectPeyman").picker('set', @Model.Peyman_ID);
+                     var $elem = $('#Edit_SelectPeyman');
+                                $elem.picker();
+                                $elem.on('sp-change', function () {
+
+                                });
+                });
+                $("#Edit_span_users").load('@Url.Content("/Users/Users/_GetAllUsers_Select")',function(){
+                     $("#select_users").attr("id","Edit_selectusers");
+                     $("#Edit_selectusers").picker({ search: true });
+                     var user = @Model.User_ID;
+
+                     $("#Edit_creditline").show();
+                     $("#Edit_creditline").val(@Model.Creditlamdicatros_ID);
+                     $("#Edit_Detailedtitle").hide();
+                     $("#Edit_Detailedtitle").val(@Model.Detailedtitle_ID);
+                     if(user != 0)
+                     {
+                         /*   alert("inje");*/
+                          $("#Edit_selectusers").picker('set',user);
+                          $("#Edit_creditline").hide();
+                          $("#Edit_Detailedtitle").show();
+                     }
+                     var $elem = $('#Edit_selectusers');
+                     $elem.picker();
+                     $elem.on('sp-change', function () {
+                        var typeVal = $('#Edit_selectusers').val();
+                        if (typeVal == 'Select') {
+                            $("#Edit_creditline").show();
+                            $("#Edit_Detailedtitle").hide();
+                        } else {
+                            $("#Edit_Detailedtitle").show();
+                            $("#Edit_creditline").hide();
+                        }
+                     });
+                });
+        });
+</script>
+
+
+<script>
+    $("#btnEdit").click(function () {
+        console.log($("#Edit_Detailedtitle").val());
+        console.log($("#Edit_Title").val());
+        console.log($("#Edit_SelectPeyman").val());
+        if ($("#Edit_creditline").val() == 'Select' && $("#Edit_Detailedtitle").val() == 'Select') {
+            alert("لطفا مرکز هزینه را را انتخاب نمائید");
+            }
+            else if (($("#Edit_Title").val() == 0))
+                 {
+                alert("لطفا شرح را وارد  نمائید");
+            }
+           else if (($("#Edit_SelectPeyman").val() == null))
+           {
+             alert("لطفا پیمان را انتخاب نمائید");
+           }
+        else if (($("#datepickerFromEn_Eq").val() == 0))
+           {
+             alert("لطفا تاریخ  را انتخاب نمائید");
+           }
+           else {
+             sendAjaxEdit('@Url.Action("EditFinantial", "FinancialDocuments",new { area = "ManagementAccounting" })', fd);
+           };
+    });
+
+</script>
+
+<script>
+        var Toast = Swal.mixin({
+            toast: true,
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+        var fd = new FormData();
+        function sendAjaxEdit(url2, fd2) {
+            var debtorCreditValue = $("#Edit_pestenka").val();
+            var resultString = debtorCreditValue.replace(/,/g, '');
+            fd2.append("Creditor", resultString);
+            var debtorCreditValue2 = $("#Edit_bdehkar").val();
+            var resultString2 = debtorCreditValue2.replace(/,/g, '');
+            fd2.append("ID",@Model.ID);
+            fd2.append("Title", $("#Edit_Title").val());
+            fd2.append("Debtore", resultString2);
+            fd2.append("Peyman_ID", $("#Edit_SelectPeyman").val());
+            var mod = $("#Edit_selectusers").val()
+            if (mod == 'Select') {
+                fd2.append("User_ID", null);
+            }
+            else {
+                fd2.append("User_ID", mod);
+            }
+            var mod1 = $("#Edit_creditline").val()
+            if (mod1 == 'Select') {
+                fd2.append("Creditlamdicatros_ID", null);
+            }
+            else {
+                fd2.append("Creditlamdicatros_ID", mod1);
+            }
+            var mod2 = $("#Edit_Detailedtitle").val()
+            if (mod2 == 'Select') {
+                fd2.append("Detailedtitle_ID", null);
+            }
+            else {
+                fd2.append("Detailedtitle_ID", mod2);
+            }
+            fd2.append("DataDocument", $("#datepickerFromEn_Eq").val());
+            console.log($("#datepickerFromEn_Eq").val());
+            $.ajax({
+                url: url2,
+                type: 'POST',
+                data: fd2,
+                processData: false,
+                contentType: false,
+                success: function (resp1) {
+                    console.log("okeye");
+                    console.log(resp1);
+                    $("#loading-message").css("display", "none");
+                    fd = new FormData();
+                    if (resp1 == "True") {
+                        alert("با موفقیت ثبت شد");
+                        location.reload();
+                    }
+                    else {
+                        $("#loading-message").css("display", "none");
+                        Toast.fire({
+                            icon: 'success',
+                            background: '#35434A',
+                            color: 'white',
+                            title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                        }).then(() => {
+                            $("#loading-message").css("display", "none");
+                        });
+                    }
+
+                },
+                error: function (resp1) {
+                    console.log(resp1);
+                    console.log("Nokeye");
+                    $("#loading-message").css("display", "none");
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                    }).then(() => {
+                        $("#loading-message").css("display", "none");
+                    });
+                }
+            });
+        }
+</script>
+

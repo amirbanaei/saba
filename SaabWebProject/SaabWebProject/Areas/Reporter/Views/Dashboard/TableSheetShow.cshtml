@@ -1,0 +1,260 @@
+﻿@{
+    ViewBag.Title = "";
+    Layout = null;
+}
+
+<link rel='stylesheet' href='~/Assets/luckysheet/dist/plugins/css/pluginsCss.css' />
+<link rel='stylesheet' href='~/Assets/luckysheet/dist/plugins/plugins.css' />
+<link rel='stylesheet' href='~/Assets/luckysheet/dist/css/luckysheet.css' />
+<link rel='stylesheet' href='~/Assets/luckysheet/dist/assets/iconfont/iconfont.css' />
+<script src="~/Assets/luckysheet/dist/plugins/js/plugin.js"></script>
+<script src="~/Assets/luckysheet/dist/luckysheet.umd.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/luckyexcel/dist/luckyexcel.umd.js"></script>
+<style>
+
+    #toolbarLucksheet {
+        display: flex;
+        background: #fff;
+        width: 100%;
+        position: relative;
+        padding: 2px;
+        border-radius: 4px;
+        justify-content: flex-start;
+        flex-direction: row-reverse;
+    }
+    #toolbarLucksheet i {
+        font-size: 22px;
+    }
+    .buttonLucksheet {
+        width: 35px;
+        height: 35px;
+        position: relative;
+        margin-right: 2px;
+        border-color: #676767;
+    }
+
+    .iconLucksheet {
+        width: 27px !important;
+        height: 27px;
+        position: absolute;
+        top: 2px;
+        left: 3px;
+        color: #4d4d4d;
+    }
+
+</style>
+<div id="toolbarLucksheet">
+    <button id="btn-insert-file" type="button" class="form-control buttonLucksheet" onclick="ShowDialogFile1()">
+        <i class="bi bi-box-arrow-in-down iconLucksheet"></i>
+
+    </button>
+    <input id="uploadExcel" type="file" style="display:none" />
+    @*<button id="btn-export-file" type="button" class="form-control buttonLucksheet">
+        <i class="bi bi-box-arrow-down  iconLucksheet"></i>
+    </button>*@
+
+    <button id="btn-insert-row" type="button" class="form-control buttonLucksheet">
+        <img class="iconLucksheet" src="~/Assets/luckysheet/dist/iconT/insert-row-5.svg" />
+    </button>
+    <button id="btn-delete-row" type="button" class="form-control buttonLucksheet">
+        <img class="iconLucksheet" src="~/Assets/luckysheet/dist/iconT/delete-row-7.svg" />
+    </button>
+    <button id="btn-insert-column" type="button" class="form-control buttonLucksheet">
+        <img class="iconLucksheet" src="~/Assets/luckysheet/dist/iconT/insert-column-5.svg" />
+    </button>
+    <button id="btn-delete-column" type="button" class="form-control buttonLucksheet">
+        <img class="iconLucksheet" src="~/Assets/luckysheet/dist/iconT/delete-column-6.svg" />
+    </button>
+</div>
+<div id="luckysheet"></div>
+
+
+
+<script>
+    // فرض می‌کنیم المان با آی‌دی uploadExcel در جای دیگری از کد HTML شما وجود دارد
+    const uploadInput = document.getElementById("uploadExcel");
+    if (uploadInput) {
+        uploadInput.addEventListener("change", function (event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            LuckyExcel.transformExcelToLucky(file, function (exportJson, luckysheetfile) {
+                if (exportJson.sheets == null || exportJson.sheets.length === 0) {
+                    alert("فایل اکسل حاوی داده‌ای نیست.");
+                    return;
+                }
+
+                // حذف Luckysheet قبلی (مهم قبل از ایجاد جدید)
+                if (window.luckysheet && typeof window.luckysheet.destroy === 'function') {
+                    try {
+                        window.luckysheet.destroy();
+                    } catch (e) { console.error("Error destroying:", e); }
+                }
+
+
+                // ایجاد Luckysheet جدید با داده‌های اکسل
+                luckysheet.create({
+                    container: 'luckysheet',
+                    data: exportJson.sheets,
+                    title: exportJson.info.name,
+                    userInfo: exportJson.info.nameCreator,
+                    lang: 'en', // تنظیمات دیگر را مطابق نیاز اضافه کنید
+                    showinfobar: true,
+                    showtoolbar: true, // نوار ابزار پیش‌فرض را نگه دارید یا false کنید
+                    showstatisticBar: true,
+                    showSheetbar: true,
+                    allowEdit: true,
+                    // --- مهم: تنظیمات showtoolbarConfig را اینجا هم اعمال کنید اگر می‌خواهید ثابت بماند ---
+                    showtoolbarConfig: {
+                        print: false,
+                        chart: false,
+                        pivotTable: false,
+                    },
+                    // enableAddRow/Col را هم در صورت نیاز تنظیم کنید
+                    enableAddRow: true, // یا false
+                    enableAddCol: true, // یا false
+                });
+                // پاک کردن مقدار ورودی فایل تا بتوان همان فایل را دوباره آپلود کرد
+                event.target.value = null;
+            }, function (err) {
+                console.error("Error processing Excel file:", err);
+                alert("خطا در پردازش فایل اکسل.");
+            });
+        });
+    } else {
+        // اگر المان آپلود وجود ندارد، یک هشدار در کنسول نمایش بده
+        // console.warn("Element with ID 'uploadExcel' not found. Upload functionality will not work.");
+    }
+</script>
+
+<script>
+    // مقادیر ViewBag (با Encode برای جلوگیری از خطا)
+    let rowT = @Html.Raw(Json.Encode(ViewBag.Row ?? 30)); // مقدار پیش‌فرض 30
+    let colT = @Html.Raw(Json.Encode(ViewBag.Col ?? 20)); // مقدار پیش‌فرض 20
+
+    console.log("Initial Rows:", rowT);
+    console.log("Initial Cols:", colT);
+
+    //----------------------------------
+    // پیکربندی اولیه Luckysheet
+    const options = {
+        container: 'luckysheet', // ID عنصر DOM
+        title: 'نمونه Luckysheet', // عنوان برگه
+        row: parseInt(rowT),                  // 👈 تعداد سطرها
+        column: parseInt(colT),               // 👈 تعداد ستون‌ها
+        showinfobar: true,
+        showtoolbar: true, // نوار ابزار پیش‌فرض Luckysheet
+        showstatisticBar: true,
+        showSheetbar: true,
+        allowEdit: true,
+        enableAddRow: true, // دکمه پیش‌فرض افزودن سطر فعال باشد یا خیر؟
+        enableAddCol: true, // دکمه پیش‌فرض افزودن ستون فعال باشد یا خیر؟
+        lang: 'en',
+        showtoolbarConfig: { // تنظیمات نمایش دکمه‌های نوار ابزار پیش‌فرض
+            print: false,
+            chart: false,
+            pivotTable: false,
+            // ... سایر دکمه‌ها را می‌توانید false کنید
+        },
+        data: [ // داده‌های اولیه برای برگه اول
+            {
+                name: 'Sheet1',
+                color: '',
+                index: 0,
+                status: 1,
+                order: 0,
+                celldata: [], // در ابتدا خالی
+                config: {},
+            }
+        ],
+        // می‌توانید هوک‌های دیگری هم در صورت نیاز اینجا اضافه کنید
+        // hook: { ... }
+    };
+
+    // --- ایجاد Luckysheet اولیه ---
+    // اول destroy می‌کنیم (همانطور که در کد شما بود، برای اطمینان از پاک شدن نمونه قبلی)
+    if (window.luckysheet && typeof window.luckysheet.destroy === 'function') {
+       try {
+          window.luckysheet.destroy();
+       } catch(e) { console.error("Error destroying:", e); }
+    }
+    // حالا نمونه جدید را ایجاد می‌کنیم
+    luckysheet.create(options);
+    console.log("Initial Luckysheet instance created.");
+    // لاگ گرفتن داده‌های برگه اول (همانطور که در کد شما بود)
+    // console.log(luckysheet.getAllSheets()[0].data); // ممکن است data در این سطح تعریف نشده باشد، celldata مناسب‌تر است
+    // console.log("Initial Cell Data:", luckysheet.getAllSheets()[0].celldata);
+
+    // ----------------------------------
+    // ***** شروع کد اضافه شده برای فعال‌سازی دکمه‌های سفارشی *****
+    // ----------------------------------
+    const btnInsertRow = document.getElementById('btn-insert-row');
+    const btnDeleteRow = document.getElementById('btn-delete-row');
+    const btnInsertColumn = document.getElementById('btn-insert-column');
+    const btnDeleteColumn = document.getElementById('btn-delete-column');
+
+    // بررسی وجود دکمه‌ها قبل از افزودن listener
+    if (btnInsertRow && btnDeleteRow && btnInsertColumn && btnDeleteColumn) {
+
+        // درج سطر
+        btnInsertRow.addEventListener('click', function () {
+            const selectedRange = luckysheet.getRange();
+            if (!selectedRange || selectedRange.length === 0) {
+                alert("لطفاً ابتدا یک سلول یا محدوده برای درج سطر انتخاب کنید.");
+                return;
+            }
+            const startRow = selectedRange[0].row[0];
+            luckysheet.insertRow(startRow, 1); // درج 1 سطر *بالای* سطر انتخاب شده
+        });
+
+        // حذف سطر
+        btnDeleteRow.addEventListener('click', function () {
+            const selectedRange = luckysheet.getRange();
+            if (!selectedRange || selectedRange.length === 0) {
+                alert("لطفاً ابتدا سطر یا سطرهای مورد نظر برای حذف را انتخاب کنید.");
+                return;
+            }
+            const startRow = selectedRange[0].row[0];
+            const endRow = selectedRange[0].row[1];
+             // محاسبه تعداد سطرها برای حذف (endRow - startRow + 1)
+            // luckysheet.deleteRow(startRow, endRow - startRow + 1); // API قدیمی‌تر؟
+             luckysheet.deleteRow(startRow, endRow); // API جدیدتر از شروع تا پایان را می‌گیرد
+        });
+
+        // درج ستون
+        btnInsertColumn.addEventListener('click', function () {
+            const selectedRange = luckysheet.getRange();
+            if (!selectedRange || selectedRange.length === 0) {
+                alert("لطفاً ابتدا یک سلول یا محدوده برای درج ستون انتخاب کنید.");
+                return;
+            }
+            const startCol = selectedRange[0].column[0];
+            luckysheet.insertColumn(startCol, 1); // درج 1 ستون *سمت چپ* ستون انتخاب شده
+        });
+
+        // حذف ستون
+        btnDeleteColumn.addEventListener('click', function () {
+            const selectedRange = luckysheet.getRange();
+            if (!selectedRange || selectedRange.length === 0) {
+                alert("لطفاً ابتدا ستون یا ستون‌های مورد نظر برای حذف را انتخاب کنید.");
+                return;
+            }
+            const startCol = selectedRange[0].column[0];
+            const endCol = selectedRange[0].column[1];
+             // محاسبه تعداد ستون‌ها برای حذف
+            // luckysheet.deleteColumn(startCol, endCol - startCol + 1); // API قدیمی‌تر؟
+            luckysheet.deleteColumn(startCol, endCol); // API جدیدتر
+        });
+
+        console.log("Custom toolbar button listeners added.");
+
+    } else {
+        console.error("Could not find one or more custom toolbar buttons to attach listeners.");
+    }
+    // ----------------------------------
+    // ***** پایان کد اضافه شده *****
+    // ----------------------------------
+
+</script>

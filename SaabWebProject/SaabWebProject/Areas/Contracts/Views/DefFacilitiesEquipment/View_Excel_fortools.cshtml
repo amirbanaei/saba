@@ -1,0 +1,210 @@
+﻿@model SaabWebProject.Models.ViewModels.Contracts.DefFacilitiesEquipment.Viewexceleabzar
+@{
+    Layout = null;
+}
+<style>
+    .hed {
+        position: sticky;
+        top: 0;
+        text-align: center;
+        z-index: 3;
+    }
+
+    .hed2 {
+        position: sticky;
+        right: 0;
+        text-align: center;
+        z-index: 3;
+        background-color: lightslategray !important;
+    }
+
+    .view {
+        overflow: auto;
+        white-space: nowrap; /* متن در یک خط افقی نمایش داده می‌شود */
+    }
+</style>
+<div>
+    <div>اطلاعات</div>
+
+    <div class="row">
+        <label class="col-xl-2 mt-3">نام پیمان:</label>
+        <div class="col-xl-4 mt-3 ">
+            <input class=" form-control "  id="py" value="@Model.SabtHeader.PeymanName" />
+        </div>
+        <label class="col-xl-2 mt-3">نام بسته :</label>
+        <div class="col-xl-4 mt-3">
+            <input class=" form-control "  id="baste" value="@Model.SabtHeader.Type" />
+        </div>
+    </div>
+    <div class="row">
+        <label class="col-xl-2 mt-3">سال</label>
+        <div class="col-xl-4 mt-3">
+            <input class=" form-control " id="year"  value="@Model.SabtHeader.MoalfeVal_Year" />
+        </div>
+        <label class="col-xl-2 mt-3">ماه :</label>
+        <div class="col-xl-4 mt-3 ">
+            <input class=" form-control  " id="month"  value="@Model.SabtHeader.MoalfeVal_Month" />
+        </div>
+    </div>
+    <div class="row">
+        <label class="col-xl-2" style="display:none;">از تاریخ </label>
+        <input class="col-xl-4  " style="display:none;" id="FromDate" value="@Model.SabtHeader.FromDate" />
+
+        <label class="col-xl-2" style="display:none;">تا تاریخ  :</label>
+        <input class="col-xl-4 " style="display:none;" id="ToDate" value="@Model.SabtHeader.ToDate" />
+    </div>
+    <input class=" form-control " style="display:none" id="Baste" value="@Model.FK_BASTE" />
+
+</div>
+<div class="view" style="height:400px">
+    <table class="table table-hover text-nowrap">
+        <thead>
+            <tr>
+                <th class="hed" scope="col">
+                    ID
+                </th>
+                <th class="hed" scope="col">
+                    نام ابزار
+                </th>
+                <th class="hed" scope="col">
+                    تعداد ثبت شده در قرارداد
+                </th>
+                <th class="hed" scope="col">
+                    تعداد مورد تایید
+                </th>
+
+                <th class="hed" scope="col">
+                    تعداد روز
+                </th>
+                <th class="hed" scope="col">
+                    وضعیت
+                </th>
+                <th class="hed" scope="col">
+                    توضیحات
+                </th>
+
+
+            </tr>
+
+        </thead>
+        <tbody>
+            @if (Model != null)
+            {
+                foreach (var item in Model.informationtool)
+                {
+                    <tr>
+                        <td class="users hed2">@item.ID</td>
+                        <td class="name_tool hed2">@item.name_tool</td>
+                        <td><input value="@item.number_recorded" class="number_recorded form-control"  /></td>
+                        <td><input value="@item.Approved_number" class="Approved_number form-control"  /></td>
+                        <td><input value="@item.days_number" class="days_number form-control"  /></td>
+                        <td><input value="@item.Condition" class="Condition form-control"  /></td>
+                        <td><input value="@item.Description" class="Description form-control"  /></td>
+
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+
+
+<div class="form-group mb-3">
+    <button id="btnCreate12" class="btn form-control buttonsabt">
+        <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+        <span class="bSabt-text">ثبت</span>
+    </button>
+
+</div>
+
+
+
+
+<script>
+
+
+
+$("#btnCreate12").click(function () {
+    var Filters = [];
+
+    // تعریف یک لیست برای UsersMoalefe
+    var UsersMoalefe = [];
+
+    $('.users').each(function (i, obj) {
+        var personalcode = $(this).text();  // Use .text() instead of .val() for non-input elements
+
+        var userObj = {};
+        userObj.SabtHeader = {};
+        userObj.SabtHeader.MoalfeVal_Month = $('#month').val();
+        userObj.SabtHeader.MoalfeVal_Year = $('#year').val();
+        userObj.SabtHeader.Type = $('#baste').val();
+        userObj.SabtHeader.PeymanName = $('#py').val();
+        userObj.SabtHeader.FromDate = $('#FromDate').val();
+        userObj.SabtHeader.ToDate = $('#ToDate').val();
+        userObj.FK_BASTE = $('#Baste').val();
+
+
+        userObj.information = {};
+        userObj.information.ID = personalcode;
+        userObj.information.name_tool = $(this).closest('tr').find('.name_tool').text();
+        userObj.information.number_recorded = $(this).closest('tr').find('.number_recorded').val();
+        userObj.information.Approved_number = $(this).closest('tr').find('.Approved_number').val();
+        userObj.information.days_number = $(this).closest('tr').find('.days_number').val();
+        userObj.information.Condition = $(this).closest('tr').find('.Condition').val();
+        userObj.information.Description = $(this).closest('tr').find('.Description').val();
+
+        userObj.informationtool = [];
+        userObj.informationtool.push(userObj.information);
+
+        // اضافه کردن userObj به لیست UsersMoalefe
+        UsersMoalefe.push(userObj);
+        console.log(userObj);
+    });
+
+    // تنظیم UsersMoalefe به Filters
+    Filters = UsersMoalefe;
+    console.log(Filters);
+
+  sendAjax('@Url.Action("sendtools", "DefFacilitiesEquipment", new { area = "Contracts" })', Filters); // Remove the extra comma here
+
+});
+
+
+
+function sendAjax(url, data) {
+    console.log(url);
+
+    $.ajax({
+        beforeSend: function () {
+            document.getElementById("loading-message").style.display = "block";
+        },
+        url: url,
+        data: { Filters: data },
+        type: "POST",
+        dataType: "html",
+        success: function (resp) {
+            console.log(resp);
+            document.getElementById("loading-message").style.display = "none";
+            if (resp == "true") {
+                alert("با موفقیت ثبت شد");
+                location.reload();
+
+            } else {
+                alert("در ثبت دچار خطا شده ایم ! لطفا بعدا تلاش نمائید");
+            }
+        },
+        error: function (resp) {
+            document.getElementById("loading-message").style.display = "none";
+            alert("دچار مشکل شده است ");
+            console.log(resp);
+        }
+    });
+}
+
+
+
+
+
+
+</script>

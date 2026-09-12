@@ -1,0 +1,110 @@
+﻿@{
+    Layout = null;
+}
+
+<div class="row">
+    <div class="col-xl-10"></div>
+    <div class="col-xl-1">
+        <a href="#" class=" btn form-control buttonGeneral" style="margin-bottom:10px;" id="dwn" onclick="DownloadExcel() ">
+            <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+            <span class="bGeneral-text">دانلود فایل نمونه</span>
+        </a>
+    </div>
+    <div class="col-xl-1">
+        <a href="#" id="createEeffrenceSavebtn" class="btn form-control buttonGeneral" data-bs-toggle="modal" data-bs-target="#modalLg1">
+            <i class="fa fa-plus-circle fa-fw me-1 VecGeneral"></i>
+            <span class="bGeneral-text">تعریف مراحل ثبت</span>
+        </a>
+    </div>
+
+</div>
+
+
+<div id="myTable">
+
+</div>
+
+
+<script src="~/Assets/js/jquery3.6.0.js"></script>
+<script src="~/Scripts/sweetalert2.js"></script>
+<script>
+    $(function () {
+        $("#myTable").load('@Url.Content("/Contracts/RegistrationAndConfirmationProcedures/ReffrenceSaveList")');
+    });
+    $("#createEeffrenceSavebtn").click(function () {
+        $("#big_modal_body1").load('@Url.Content("/Contracts/RegistrationAndConfirmationProcedures/ReffrenceSaveCreate")');
+    });
+</script>
+<script>
+      function DownloadExcel() {
+
+
+
+
+
+
+
+
+
+          $.ajax({
+              beforeSend: function () {
+                  document.getElementById("loading-message").style.display = "block";
+              },
+              @*url: '@Url.Action("ExportMoalefeExcel4", "Moalefe", new { area = "Salaries" })',*@
+              type: 'GET',
+              dataType: 'html',
+
+
+              success: function (res) {
+                             document.getElementById("loading-message").style.display = "none";
+            window.location = '@Url.Action("ExportMoalefeExcel7", "Moalefe", new { area = "Salaries" })';
+              },
+              error: function (res) {
+                  alart("fdslsfdk")
+                  console.log(res);
+              }
+          });
+      }
+
+
+    function DownloadExcel2() {
+
+
+
+
+
+
+
+
+
+        $.ajax({
+            beforeSend: function () {
+                document.getElementById("loading-message").style.display = "block";
+            },
+            @*url: '@Url.Action("ExportMoalefeExcel4", "Moalefe", new { area = "Salaries" })',*@
+            type: 'GET',
+            dataType: 'html',
+
+
+            success: function (res) {
+                           document.getElementById("loading-message").style.display = "none";
+          window.location = '@Url.Action("ExportMoalefeExcel10", "Moalefe", new { area = "Salaries" })';
+            },
+            error: function (res) {
+                alart("fdslsfdk")
+                console.log(res);
+            }
+        });
+    }
+
+  var Toast = Swal.mixin({
+      toast: true,
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+          toast.addEventListener('mouseenter', Swal.stopTimer)
+          toast.addEventListener('mouseleave', Swal.resumeTimer)
+      }
+  });
+</script>

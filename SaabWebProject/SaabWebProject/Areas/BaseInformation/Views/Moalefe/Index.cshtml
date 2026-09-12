@@ -1,0 +1,641 @@
+﻿@using SaabWebProject.Models.Classes;
+
+@{
+
+    ViewBag.Title = "مدیریت مولفه ها";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+
+<div class="row">
+
+    <ul class="nav nav-tabs nav-tabs-v2 ps-4 pe-4" id="pills-tab">
+
+        <li class="nav-item me-3">
+            <a class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" href="#pills-home">
+                <button class=" nav-btn">تعریف دسته و واحد</button>
+            </a>
+        </li>
+        <li class="nav-item me-3">
+            <a class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" href="#pills-profile">
+                <button class=" nav-btn">تعریف مولفه</button>
+            </a>
+        </li>
+        <li class="nav-item me-3">
+            <a class="nav-link " id="pills-profile-tab" data-bs-toggle="pill" href="#pills-profile2">
+                <button class=" nav-btn">تنظیمات کران ها</button>
+            </a>
+        </li>
+        <li class="nav-item me-3">
+            <a class="nav-link " id="pills-profile-tab" data-bs-toggle="pill" href="#pills-profile3">
+                <button class=" nav-btn">تنظیمات ضریب بدهی </button>
+            </a>
+        </li>
+        @if (UserStuf.PosID == "9")
+        {
+            <li class="nav-item me-3">
+                <a class="nav-link" id="pills-contact-tab" data-bs-toggle="pill" href="#pills-contact">
+                    <button class=" nav-btn">لینک مولفه کنترلی</button>
+                </a>
+            </li>
+            <li class="nav-item me-3">
+                <a class="nav-link" id="pills-contact-tab" data-bs-toggle="pill" href="#pills-contact1">
+                    <button class=" nav-btn">مولفه کنترلی پیمان</button>
+                </a>
+            </li>
+        }
+    </ul>
+
+</div>
+
+<div class="tab-content " id="pills-tabContent">
+    <div class="tab-pane fade show active" id="pills-home" style="height:auto;">
+        <div class="row">
+            <div class="col-xl-6" style=" border-left: 1px solid;">
+                @Html.Action("Index", "Categories", new { area = "Contracts" })
+            </div>
+            <div class="col-xl-6">
+                @using (Html.BeginForm("CreateVahed", "Moalefe", new { area = "BaseInformation" }, FormMethod.Post))
+                {
+
+
+                    <div class="row">
+                        <div class="col-xl-2"></div>
+                        <div class="col-xl-8">
+                            <div class="row" style="">
+                                <div class="col-xl-9">
+                                    <label class="form-label"> واحد  </label>
+                                    <input class="form-control" name="VahedValue" />
+                                </div>
+                                <div class="col-xl-3">
+                                    <button type="submit" class=" btn form-control buttonsabt" id="SabtVahed">
+                                        <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                                        <span class="bSabt-text">ثبت</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-xl-2"></div>
+
+                    </div>
+                }
+
+                <div class="row">
+
+                    <div class="col-xl-12">
+                        @Html.Action("_VahedListTable", "Moalefe", new { area = "BaseInformation" })
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <div class="tab-pane fade " id="pills-profile2">
+
+        <div class="card">
+            <div class="card-body pb-2">
+                <form action="@Url.Action("SaveCaranSetting","Admin",new {area="Setting"})" method="post">
+                    <input type="hidden" value="" name="CaranId" />
+                    <div class="row">
+                        <div class="col-xl-6">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> مولفه </label>
+                                @Html.Action("AllMoalefeList", "MoalefeDastmozdi", new { area = "Contracts" })
+                            </div>
+                        </div>
+                        <div class="col-xl-2">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> حداقل </label>
+                                <input class="form-control" name="min" value="" />
+                            </div>
+                        </div>
+                        <div class="col-xl-2">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> حداکثر </label>
+                                <input class="form-control" name="max" value="" />
+                            </div>
+                        </div>
+                        <div class="col-xl-2">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> مبلغ </label>
+                                <input class="form-control" name="mablagh" value="" />
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> مقدار معیار </label>
+                                <input class="form-control" name="Criterion" value="" />
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> استاندارد </label>
+                                <input class="form-control" name="standard" value="" />
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> حد پذیرش </label>
+                                <input class="form-control" name="AcceptLimit" value="" />
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> سرانه ایاب و ذهاب </label>
+                                <input class="form-control" name="AyabOZahab" value="" />
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> آستانه شروع پاداش </label>
+                                <input class="form-control" name="AstaneShoroPadash" value="" />
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> سرانه پاداش </label>
+                                <input class="form-control" name="SaranePadash" value="" />
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> آستانه شروع جریمه </label>
+                                <input class="form-control" name="AstaneShoroJarime" value="" />
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> سرانه جریمه  </label>
+                                <input class="form-control" name="SaraneJarime" value="" />
+                            </div>
+                        </div>
+                        <div class="col-xl-2">
+                            <div class="form-check">
+                                <div class="row">
+                                    <div class="col-xl-1" style="width: 1%;">
+                                        <input class="form-check-input" type="checkbox" id="zarib_sharestan" name="zarib_sharestan" value="true" />
+                                    </div>
+                                    <div class="col-xl-10" style="margin-top: 4px; padding-right: 0px; width: 85%;">
+                                        <label class="form-check-label" for="agree"> ضریب شهرستان اعمال شود؟ </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-2">
+                            <div class="form-check">
+                                <div class="row">
+                                    <div class="col-xl-1" style="width: 1%;">
+                                        <input class="form-check-input" type="checkbox" id="agree" name="agree" value="true" />
+                                    </div>
+                                    <div class="col-xl-10" style="margin-top: 4px; padding-right: 0px; width: 85%;">
+                                        <label class="form-check-label" for="agree">سرمایه ای </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-bottom:10px">
+                        <div class="col-xl-8"></div>
+                        <div class="col-xl-1">
+                            <a href="#" class=" btn form-control buttonGeneral" style="margin-bottom:10px;" id="downloadfile" onclick="DownloadExcel() ">
+                                <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                                <span class="bGeneral-text">دانلود فایل نمونه</span>
+                            </a>
+                        </div>
+                        <div class="col-xl-1">
+                            <a id="uploadfile" href="#" onclick="ShowDialogFile()" class=" btn btn-outline-info form-control buttonGeneral" style="margin-bottom:5px;">
+                                <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                                <span class="bGeneral-text">بارگذاری فایل</span>
+                            </a>
+                        </div>
+                        @*<div class="col-xl-1">
+                                <a href="#" onclick="ShowDialogFile2()" class=" btn btn-outline-info form-control buttonGeneral" style="margin-bottom:5px;">
+                                    <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                                    <span class="bGeneral-text">بارگذاری فایل</span>
+                                </a>
+                            </div>*@
+                        <input name="MyExcelStream" type="file" style="display:none" />
+                        @*<input name="MyExcelStream2" type="file" style="display:none" />*@
+
+                        <div class="col-xl-1">
+                            <button id="btnCreate" type="submit" class="btn form-control buttonsabt">
+                                <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                                <span class="bSabt-text">ثبت</span>
+                            </button>
+                        </div>
+                        <div class="col-xl-1">
+                            <button class="btn form-control buttonGeneral" id="showdet">
+                                <i class="fa fa-eye fa-fw me-1 VecGeneral"></i>
+                                <span class="bGeneral-text">مشاهده جزئیات</span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+
+            <div class="card-arrow">
+                <div class="card-arrow-top-left"></div>
+                <div class="card-arrow-top-right"></div>
+                <div class="card-arrow-bottom-left"></div>
+                <div class="card-arrow-bottom-right"></div>
+            </div>
+        </div>
+
+
+        @*<div class="row" style="margin-top:10px">
+                <div id="myTable10">
+
+                </div>
+            </div>*@
+        <div>
+            @Html.Action("modell", "Admin", new { area = "Setting" })
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="pills-profile" style="height:auto;">
+
+        @Html.Action("ManageMoalefeDastMozdi", "MoalefeDastmozdi", new { area = "Contracts" })
+
+    </div>
+
+
+    <div class="tab-pane fade" id="pills-contact">
+        <div class="card">
+            <div class="card-body pb-2">
+                <form>
+                    <div class="row">
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> مولفه کنترلی مورد نظر </label>
+                                @Html.Action("AllMoalefeList", "MoalefeDastmozdi", new { area = "Contracts" })
+
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> مولفه متناظر </label>
+                                @Html.Action("AllMoalefeList", "MoalefeDastmozdi", new { area = "Contracts" })
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-bottom:10px">
+                        <div class="col-xl-11">
+                        </div>
+                        <div class="col-xl-1">
+                            <button id="btnCreate" type="button" class=" btn form-control buttonGeneral">
+                                <i class="fa fa-link fa-fw me-1 VecGeneral"></i>
+                                <span class="bGeneral-text">برقراری لینک</span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="card-arrow">
+                <div class="card-arrow-top-left"></div>
+                <div class="card-arrow-top-right"></div>
+                <div class="card-arrow-bottom-left"></div>
+                <div class="card-arrow-bottom-right"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="pills-contact1" style="height:auto;">
+        <div class="card">
+            <div class="card-body pb-2">
+                <form>
+                    <h5>تخصیص مولفه کنترلی به پنل مربوطه</h5>
+                    <div class="row">
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> پنل  مورد نظر </label>
+                                @*<select class="form-control">
+                    <option style="background-color: #11181E">انتخاب نمایید..</option>
+                    <option style="background-color: #11181E">فیش حقوقی</option>
+                    <option style="background-color: #11181E">صورت وضعیت</option>
+                    <option style="background-color: #11181E">حسابداری</option>
+                </select>*@
+                                @Html.Action("PanelMoalefeList", "MoalefeDastmozdi", new { area = "Contracts" })
+
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> مولفه کنترلی </label>
+                                @*@Html.Action("AllMoalefeList", "MoalefeDastmozdi", new { area = "Contracts" })*@
+                                @Html.Action("ControllyMoalefeList", "MoalefeDastmozdi", new { area = "Contracts" })
+
+                            </div>
+                        </div>
+                        <div class="col-xl-5">
+                        </div>
+                        <div class="col-xl-1">
+                            <button onclick="ControllyPanel()" type="button" class="btn form-control buttonGeneral">
+                                <i class="fa fa-link fa-fw me-1 VecGeneral"></i>
+                                <span class="bGeneral-text">برقراری لینک</span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="mb-4 mt-2" id="ListProjects">
+                    @Html.Action("TableSynced_Panel_Moalefe", "MoalefeDastmozdi", new { area = "Contracts" })
+                </div>
+                <hr class="hr-bg" />
+                <form>
+                    <h5>تخصیص مولفه کنترلی به پیمان</h5>
+                    <div class="row">
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> پیمان </label>
+                                @*<select class="form-control">
+                    <option>انتخاب نمایید..</option>
+                </select>*@
+                                @Html.Action("PeymanList", "MoalefeDastmozdi", new { area = "Contracts" })
+
+                            </div>
+                        </div>
+                        <div class="col-xl-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> مولفه کنترلی </label>
+                                @*@Html.Action("AllMoalefeList", "MoalefeDastmozdi", new { area = "Contracts" })*@
+                                @Html.Action("ControllyMoalefeList2", "MoalefeDastmozdi", new { area = "Contracts" })
+
+                            </div>
+                        </div>
+                        <div class="col-xl-5">
+                        </div>
+                        <div class="col-xl-1">
+                            <button onclick="PeymanControlly()" type="button" class="btn form-control buttonGeneral">
+                                <i class="fa fa-link fa-fw me-1 VecGeneral"></i>
+                                <span class="bGeneral-text">برقراری لینک</span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="mb-4 mt-2" id="ListProjects">
+                    @Html.Action("TableSynced_Peyman_Moalefe", "MoalefeDastmozdi", new { area = "Contracts" })
+                </div>
+            </div>
+
+            <div class="card-arrow">
+                <div class="card-arrow-top-left"></div>
+                <div class="card-arrow-top-right"></div>
+                <div class="card-arrow-bottom-left"></div>
+                <div class="card-arrow-bottom-right"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+
+
+
+<script src="/Scripts/sweetalert2.js" type="text/javascript"></script>
+@*<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>*@
+
+
+<script>
+ $(document).ready(function () {
+    $("#showdet").click(function () {
+        console.log("lkjjh");
+
+        // Using JavaScript to construct the URL
+        var url = '@Url.Action("modell", "Admin", new { area = "Setting" })';
+
+        // Load content from the server using the constructed URL
+        $("#myTable10").load(url);
+    });
+});
+
+
+      function DownloadExcel() {
+
+
+
+
+
+
+
+
+
+          $.ajax({
+              beforeSend: function () {
+                  document.getElementById("loading-circle").style.display = "block";
+              },
+              @*url: '@Url.Action("ExportMoalefeExcel4", "Moalefe", new { area = "Salaries" })',*@
+              type: 'GET',
+              dataType: 'html',
+
+
+              success: function (res) {
+                  document.getElementById("loading-circle").style.display = "none";
+            window.location = '@Url.Action("ExportMoalefeExcel4", "Moalefe", new { area = "Salaries" })';
+              },
+              error: function (res) {
+                  alart("fdslsfdk")
+                  console.log(res);
+              }
+          });
+      }
+
+
+
+
+  var Toast = Swal.mixin({
+      toast: true,
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+          toast.addEventListener('mouseenter', Swal.stopTimer)
+          toast.addEventListener('mouseleave', Swal.resumeTimer)
+      }
+  });
+         $("input[name='MyExcelStream']").change(function () {
+       var file = this.files[0];
+       var ext = file.name.split('.')[1];
+       if (ext == "xlsx" || ext == "xls") {
+
+           var  obj = new FormData();
+
+           obj.append("MyExcelStream", file);
+
+           console.log(file);
+           $.ajax({
+           beforeSend:function (){
+                   document.getElementById("loading-circle").style.display = "block";
+           },
+                url: "@Url.Action("ImportExcel_AddFish", "Admin", new { area = "Setting" })",
+              type: "post",
+              contentType: false,
+              data: obj,
+              processData: false,
+              cache: false,
+              success: function (res) {
+                  document.getElementById("loading-circle").style.display = "none";
+                  Swal.fire({
+                      icon: 'success',
+                      background: 'rgb(29,40,52)',
+                      color: 'white',
+                      confirmButtonText: 'باشه',
+                      title: 'آپلود اکسل',
+                      text: res,
+                  });
+
+              },
+              error: function (res) {
+                  console.log(res);
+              }
+          });
+       }
+       else {
+
+           Swal.fire({
+               icon: 'warning',
+               background: 'rgb(29,40,52)',
+               color: 'white',
+               confirmButtonText: 'باشه',
+               title: 'نوع فایل',
+               text: 'لطفا فایلی با پسوند اکسل وارد کنید',
+           });
+           return false;
+       }
+
+   });
+   /// Open Dialog File
+   function ShowDialogFile() {
+       $("input[name='MyExcelStream']").val(null);
+       $("input[name='MyExcelStream']").click();
+   }
+
+
+
+
+
+
+    function ControllyPanel() {
+        //console.log($('#select_moalefe').val())
+        //console.log($("#ControllyMoalefe1").val())
+        var arguments = {}
+        arguments.moalefe = $('#select_moalefe').val()
+        arguments.CotrollyMoalefe = $("#ControllyMoalefe1").val()
+
+        $.ajax({
+            type: "Post",
+            url: '/MoalefeDastMozdi/PanelControlly_Submit',
+            dataType: 'text',
+            contentType: 'application/json',
+            traditional: true,
+            data: JSON.stringify(arguments),
+            success: function (data) {
+                $("#Error").html(data);
+                console.log($("#Error"))
+                if (data == "1") {
+                    alert('اطلاعات ثبت شد')
+                    window.location.reload();
+                }
+            },
+            error: (error) => {
+                console.log(error);
+            }
+        });
+    }
+    function PeymanControlly() {
+        var arguments2 = {}
+        arguments2.peyman = $('#select_Peymans').val()
+        arguments2.CotrollyMoalefe = $("#ControllyMoalefe2").val()
+
+        $.ajax({
+            type: "Post",
+            url: '/MoalefeDastMozdi/PeymanControlly_Submit',
+            dataType: 'text',
+            contentType: 'application/json',
+            traditional: true,
+            data: JSON.stringify(arguments2),
+            success: function (data) {
+                $("#Error").html(data);
+                console.log($("#Error"))
+                if (data == "1") {
+                    alert('اطلاعات ثبت شد')
+                    window.location.reload();
+                }
+            },
+            error: (error) => {
+                console.log(error);
+            }
+        });
+    }
+
+</script>
+
+<script>
+
+    var Toast = Swal.mixin({
+        toast: true,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    });
+    $("#SabtVahed").click(function () {
+
+        var res = "@TempData["response"]";
+
+    if (res == "True"){
+        document.getElementById("loading-circle").style.display = "none";
+        Toast.fire({
+             icon: 'success',
+             background: '#35434A',
+             color: 'white',
+             title: "اطلاعات با موفقیت ذخیره شد"
+         });
+    }
+    if (res == "False"){
+        document.getElementById("loading-circle").style.display = "none";
+            Toast.fire({
+                 icon: 'warning',
+                 background: '#35434A',
+                 color: 'white',
+                 title: "اطلاعات ذخیره نشد"
+            });
+
+        }
+        if (res == "NULL") {
+            document.getElementById("loading-circle").style.display = "none";
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: " فیلد را پر کنید"
+            });
+        }
+        })
+
+</script>
+
+@section Scripts{
+    <script src="~/Scripts/bootstrap-select.js"></script>
+    <script>
+        function apick() {
+            $('#select_moalefeEdit').selectpicker('refresh');
+        }
+    </script>
+}

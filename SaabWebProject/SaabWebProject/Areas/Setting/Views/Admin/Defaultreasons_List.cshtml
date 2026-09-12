@@ -1,0 +1,281 @@
+﻿@using SaabWebProject.Models.Classes;
+@{
+    //   ViewBag.TitleLargModal = " پیمان ها جدید";
+    Layout = null;
+}
+@model IEnumerable<SaabWebProject.Models.DomainModels.tbDefault_reasons>
+<style>
+    .tableH_Lock {
+        max-height: 473px;
+        /*height: 260px;*/
+    }
+
+    thead {
+        position: sticky;
+        top: 0;
+        text-align: center;
+        z-index: 2;
+    }
+
+    .inputFilter {
+        margin-bottom: 0px !important;
+    }
+
+    thead th {
+        vertical-align: middle;
+    }
+
+
+    .inputWithFilterIcon {
+        position: relative;
+    }
+
+        .inputWithFilterIcon .fa-filter {
+            position: absolute;
+            left: 2px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            padding: 7px;
+            border-right: 1px solid #87b2c7;
+            backdrop-filter: blur(3px);
+            border-radius: 6px 0 0 6px;
+            overflow: hidden;
+        }
+</style>
+<div class="card">
+    <div class="table-content p-2">
+        <div class="tab-pane fade show active" id="allTab">
+            <div class="table-responsive tableH_Lock ">
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr style="text-align:center">
+                            @if (UserStuf.PosID == "9")
+                            {
+                                <th>
+                                    @Html.DisplayName("فعالیت")
+                                </th>
+}
+                            <th>
+                                @Html.DisplayName("#")
+                            </th>
+                            <th>
+                                @Html.DisplayName("نام گروه")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter01-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            <th>
+                                @Html.DisplayName("علت ")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter02-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            <th>
+                                @Html.DisplayName("توضیحات")
+
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter03-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody style="text-align:center">
+                        @{
+                            var i = 0;
+                            string go = "";
+                        }
+                        @foreach (var item in Model)
+                        {
+                            i++;
+                            switch (item.TitleNumber)
+                            {
+                                case 1:
+                                    go = "خودرو";
+                                    break;
+                                case 2:
+                                    go = "عملکرد";
+                                    break;
+                                case 3:
+                                    go = "محدودیت";
+                                    break;
+                                case 4:
+                                    go = "ابزار";
+                                    break;
+                            }
+                            <tr class="task-list-row "
+                                data-filter01="@go"
+                                data-filter02="@item.Reason"
+                                data-filter03="@item.Description">
+                                @if (UserStuf.PosID == "9")
+                                {
+                                    <td>
+                                        <div class="ms-sm-4 mt-sm-0 mt-2 dropdown-toggle">
+                                            <a href="#" data-bs-toggle="dropdown" class="text-white text-opacity-75 text-decoration-none">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+
+                                            <div class="dropdown-menu">
+                                                <a data-bs-toggle="modal" data-bs-target="#modalLg" class="dropdown-item edit" id="Edit_@item.id">ویرایش</a>
+                                                <a data-bs-toggle="modal" data-bs-target="#modalLg" class="dropdown-item Details">جزئیات</a>
+                                                <a class="dropdown-item Delete" id="Delete_@item.id">حذف</a>
+
+
+                                            </div>
+                                        </div>
+                                    </td>
+                                }
+                                <td>
+                                    @i
+                                </td>
+                                <td>
+                                    @go
+                                </td>
+
+                                <td>
+                                    @item.Reason
+                                </td>
+
+                                <td>
+                                    @if (item.Description.Length > 200)
+                                    {
+                                        <span>
+                                            @item.Description.Substring(0, 20).ToString() <span>...</span>
+                                        </span>
+
+                                    }
+                                    else
+                                    {
+                                        @item.Description
+
+                                    }
+                                </td>
+
+                            </tr>
+
+                        }
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+<script>
+
+    var
+        filters = {
+            filter01: null,
+            filter02: null,
+            filter03: null,
+        };
+
+    function updateFilters() {
+        $('.task-list-row').hide().filter(function () {
+            var self = $(this),
+                result = true;
+
+            Object.keys(filters).forEach(function (filter) {
+                var filterData = self.data(filter);
+                if (filters[filter] && (filters[filter] != 'None') && (filters[filter] != 'همه')) {
+                    // تبدیل داده به رشته و بررسی مقدار
+                    result = result && (filterData && filterData.toString().indexOf(filters[filter]) !== -1);
+                }
+            });
+
+            return result;
+        }).show();
+    }
+
+    function changeFilter(filterName) {
+        filters[filterName] = this.value;
+        updateFilters();
+    }
+
+    // Assigned User Dropdown Filter
+    $('#filter01-filter').on('input', function () {
+        changeFilter.call(this, 'filter01');
+    });
+    $('#filter02-filter').on('input', function () {
+        changeFilter.call(this, 'filter02');
+    });
+    $('#filter03-filter').on('input', function () {
+        changeFilter.call(this, 'filter03');
+    });
+
+
+</script>
+<script>
+    $(".edit").click(function () {
+                                        var idd = $(this).attr("id").split("_")[1];
+        $("#big_modal_body").load('@Url.Content("/Admin/Defaultreasons_edit")?id='+idd);
+                                    });
+    $(".Details").click(function () {
+                                        var idd = $(this).attr("id").split("_")[1];
+        $("#big_modal_body").load('@Url.Content("/Peyman/_PartialDetailPeyman")?id='+idd);
+    });
+
+         $(".Delete").click(function () {
+        var idd = $(this).attr("id").split("_")[1];
+          $("#loading-message").css("display", "block");
+          $.ajax({
+              url: '@Url.Action(" defaltReason_Delete", "Admin", new { area = "Setting" })',
+              data: { ID: idd },
+              type: "Post",
+              dataType: "html",
+              success: function (resp) {
+                  $("#loading-message").css("display", "none");
+                  if (resp == "True") {
+                      Toast.fire({
+                          icon: 'success',
+                          background: '#35434A',
+                          color: 'white',
+                          title: "دلیل با موفقیت حذف شد"
+                      }).then(() => {
+                          location.reload();
+                      });
+                  } else {
+                      Toast.fire({
+                          icon: 'success',
+                          background: '#35434A',
+                          color: 'white',
+                          title: "نمیتوانید این پیمان را حذف کنید"
+                      }).then(() => {
+                      });
+                  }
+
+              },
+              error: function (resp2) {
+                  $("#loading-message").css("display", "none");
+                  Toast.fire({
+                      icon: 'success',
+                      background: '#35434A',
+                      color: 'white',
+                      title: "،حذف دلیل خطا مواجه شده است ، از این پیمان در قسمتی استفاده شده است"
+                  }).then(() => {
+                      location.reload();
+                  });
+              }
+          });
+      });
+
+    var Toast = Swal.mixin({
+        toast: true,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    });
+</script>

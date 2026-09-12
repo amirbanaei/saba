@@ -1,0 +1,71 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "ایجاد اولویت ۱۲۱۸";
+}
+
+<div class="tab-content" id="pills-tabContent" style="padding:20px; background:#f7f7f7;">
+    <div class="row">
+        <div class="col-xl-2">
+            <div class="form-group mb-3">
+                <label class="form-label">عنوان اولویت </label>
+                <input class="form-control" id="name" />
+            </div>
+        </div>
+        <div class="col-xl-1"></div>
+        <div class="col-xl-1">
+            <button id="btnSave" type="button" class="btn form-control buttonsabt">
+                <i class="bi bi-plus-circle fa-fw me-1 VecGeneral"></i>
+                <span class="bSabt-text">افزودن اولویت</span>
+            </button>
+        </div>
+    </div>
+    <div class="row">
+        @*$("#myTable").load('@Url.Action("listdocum", "FinancialDocuments", new { area = "ManagementAccounting" })');*@
+
+        @Html.Action("CreatOlaveat12182_list", "Orders", new { Area = "Setting" })
+    </div>
+    <div id="resultMsg" class="mt-3"></div>
+</div>
+
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script>
+
+    $("#btnSave").click(function () {
+        var name = $("#name").val().trim();
+
+        if (name == "") {
+            alert("لطفا مقدار شرط را وارد کنید");
+            return;
+        }
+
+        $.ajax({
+            url: "/Setting/Orders/SaveOlaveat1218_2",
+            type: "POST",
+            data: { name: name },
+            success: function (res) {
+                if (res.status === true) {
+                    alert("با موفقیت ثبت شد");
+                    $("#name").val("");
+                } else {
+                    alert("خطا در ثبت");
+                }
+            },
+            error: function () {
+                alert("خطای ارتباط با سرور");
+            }
+        });
+    });
+
+</script>
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,68 @@
+﻿@model List<SaabWebProject.Models.DomainModels.tbControllyPanel>
+
+<div class="card mt-3" style="width: 100%">
+    <div class="table-content p-4" style="z-index:1">
+
+        <table class="table table-hover" style="text-align:center;">
+            <thead>
+                <tr>
+                    <th>عملیات</th>
+                    <th>نام پنل</th>
+                    <th>نام مولفه کنترلی</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    var temp = -1;
+                    foreach (var pro in Model)
+                    {
+                        <tr>
+                            @if (temp == pro.tbContractPanels.Id)
+                            {
+                                <td>
+                                </td>
+                                <td></td>
+                                <td>
+                                    @pro.tbContractMoalefeDastmozdi.md_Title
+                                </td>
+                            }
+                            else
+                            {
+                                <td>
+                                    <div class="ms-sm-4 mt-sm-0 mt-2 dropdown-toggle">
+                                        <a href="#" data-bs-toggle="dropdown" class="text-white text-opacity-75 text-decoration-none">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                        <div class="dropdown-menu">
+                                            <a style="cursor:pointer" onclick="EditSyncedPanel(this)" id="@pro.Id" data-bs-toggle="modal" data-bs-target="#modalLg" class="dropdown-item EditUser">
+                                                ویرایش
+                                            </a>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>@pro.tbContractPanels.Title</td>
+                                <td>
+                                    @pro.tbContractMoalefeDastmozdi.md_Title
+                                </td>
+                                temp = pro.tbContractPanels.Id;
+                            }
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+
+
+<script>
+    function EditSyncedPanel(e) {
+        $("#big_modal_body").load('@Url.Content("/Contracts/MoalefeDastmozdi/EditSynced_Panel_Moalefe")?id='+e.id);
+    }
+</script>

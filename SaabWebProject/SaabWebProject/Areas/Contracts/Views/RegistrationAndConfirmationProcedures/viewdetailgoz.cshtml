@@ -1,0 +1,679 @@
+﻿@model SaabWebProject.Models.ViewModels.Contracts.Function.FunctionModel
+@using SaabWebProject.Models.DomainModels;
+@using System.Globalization;
+
+@{ SaabEntities db = new SaabEntities();
+
+    ViewBag.Title = "گزارش کارها";
+    Layout = null;
+}
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+
+<div class="card">
+    <div class="table-content p-4">
+
+
+        <div class="tab-pane fade show active" id="allTab">
+            <div class="table-responsive">
+                <table class="table table-hover text-nowrap">
+                    <thead class="sticky-header">
+                        <tr>
+                            <th>
+                                فعالیت
+                            </th>
+
+                            <th class="users1234 TitelL1" rowspan="1">
+                                نام و نام خانوادگی
+                                <input type="text" id="filter051-filter" class="inputFilter1 form-control" placeholder="">
+
+                            </th>
+                            <th class="users1234 TitelL1" rowspan="1">
+                                کد پرسنلی
+                                <input type="text" id="filter061-filter" class="inputFilter1 form-control" placeholder="">
+
+                            </th>
+                            <th class="users1234 TitelL1" rowspan="1">
+                                نام بسته
+                                <input type="text" id="filter061-filter" class="inputFilter1111 form-control" placeholder="">
+
+                            </th>
+
+                            <th class="users1234 TitelL1" rowspan="1">
+                                مرحله
+                                <input type="text" id="filter071-filter" class="inputFilter1 form-control" placeholder="">
+
+                            </th>
+                            @*@{
+            var sabt = db.tbmarhesabt3.Where(p => p.marahelsabt != null).FirstOrDefault();
+            var taeed = db.tbmarhesabt3.Where(p => p.taeed != null).FirstOrDefault();
+
+            var control = db.tbmarhesabt3.Where(p => p.controlmarahel != null).FirstOrDefault();
+
+        }*@
+                            <th class="users1234 TitelL1" rowspan="1">
+                                فایل
+                                <input type="text" id="filter081-filter" class="inputFilter1 form-control" placeholder="">
+
+                            </th>
+                            <th class="users1234 TitelL1" rowspan="1">
+                                وضعیت
+                                <input type="text" id="filter091-filter" class="inputFilter1 form-control" placeholder="">
+
+                            </th>
+                            <th class="users1234 TitelL1" rowspan="1">
+                                تاریخ
+                                <input type="text" id="filter0912-filter" class="inputFilter1 form-control" placeholder="">
+
+                            </th>
+                            <th class="users1234 TitelL1" rowspan="1">
+
+                                مانده
+                                <input type="text" id="filter092-filter" class="inputFilter1 form-control" placeholder="">
+
+                            </th>
+                            @*<th class="users1234 TitelL1" rowspan="1">
+            سال
+        </th>
+        <th class="users1234 TitelL1" rowspan="1">
+            ماه
+        </th>
+        <th class="users1234 TitelL1" rowspan="1">
+            وضعیت
+        </th>
+        <th class="users1234 TitelL1" rowspan="1">
+            مانده
+        </th>*@
+                        </tr>
+
+                    </thead>
+                    <tbody>
+                        @foreach (var it in Model.tbdetail.ToList())
+
+                        {
+                            int II42 = 0;
+
+                            var sabt = "";
+                            if (it.tbmarahesabt4.sabt == true)
+                            {
+                                sabt = "ثبت" + it.tbmarahesabt4.number;
+                            }
+                            else if (it.tbmarahesabt4.taeed == true)
+                            {
+                                sabt = "تایید" + it.tbmarahesabt4.number;
+                            }
+                            else if (it.tbmarahesabt4.control == true)
+                            {
+                                sabt = "کنترل" + it.tbmarahesabt4.number;
+                            }
+                            if (it.tbEquipmentMoalefeValueReffrenceSave != null)
+                            {
+                                string vaziat = "";
+                                string del = "";
+
+                                if (it.tbEquipmentMoalefeValueReffrenceSave.submitt == true)
+                                {
+                                    vaziat = "ارسال شده ";
+                                }
+                                else if (it.tbEquipmentMoalefeValueReffrenceSave.submitt != true)
+                                {
+                                    vaziat = "ثبت شده  ";
+                                }
+                                if (it.tbEquipmentMoalefeValueReffrenceSave.del == true)
+                                {
+                                    vaziat = "برگشت ";
+                                }
+                                //else if (it.tbEquipmentMoalefeValueReffrenceSave.del != true)
+                                //{
+                                //    del = "موفق";
+                                //}
+                                <tr class="task-list-row234 dateS_@II42"
+                                    data-filter051="@it.tbmarahesabt4.tbmarahlsabtbastedit2.tbPeymanContracts.pec_Title"
+                                    data-filter061="@it.tbmarahesabt4.tbmarahlsabtbastedit2.tbCities.Name"
+                                    data-filter071="@it.tbmarahesabt4.tbmarahlsabtbastedit2.tbmarahlsabtbastedit1.naem"
+                                    data-filter081="@sabt"
+                                    data-filter092="@it.daymondeh">
+
+
+                                    <td>
+                                        <div class="ms-sm-4 mt-sm-0 mt-2 dropdown-toggle">
+                                            <a href="#" data-bs-toggle="dropdown" class="text-white text-opacity-75 text-decoration-none">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                            <div class="dropdown-menu">
+
+
+
+                                                @if (it.tbmarahesabt4.control == true)
+                                                {
+                                                    <a style="cursor:pointer" data-month="@it.month" data-fkpymn="@it.tbmarahesabt4.tbmarahlsabtbastedit2.FK_pymn" data-fkcity="@it.tbmarahesabt4.tbmarahlsabtbastedit2.FK_City" data-usr="@it.tbmarahesabt4.FK_usr" onclick="sabtgozareshh( this.dataset.month, this.dataset.year,1,this.dataset.fkpymn,this.dataset.fkcity,this.dataset.usr)"
+                                                       data-year="@it.year" data-bs-toggle="modal" data-bs-target="#modalLg1" class="dropdown-item EditUser" id="@it.tbmarahesabt4.FK_basteh _@it.tbmarahesabt4.FK_usr _@it.tbmarahesabt4.tbmarahlsabtbastedit2.FK_pymn _@it.tbmarahesabt4.tbmarahlsabtbastedit2.FK_City">
+                                                        مشاهده وضعیت ثبت
+                                                    </a>
+                                                }
+
+                                            </div>
+                                        </div>
+                                        <input id="summery_file5" style="display:none" name="summery_file5" type="file" class="form-control" value="" />
+                                    </td>
+                                    <td>
+                                        @it.fullname
+
+
+                                    </td>
+                                    <td>
+                                        @it.personalID
+
+
+                                    </td>
+                                    <td>
+                                        @it.namebasteh
+
+
+                                    </td>
+                                    <td>
+                                        @sabt
+
+
+                                    </td>
+                                    @if (it.tbEquipmentMoalefeValueReffrenceSave != null)
+                                    {
+                                        if (it.tbEquipmentMoalefeValueReffrenceSave.File_SystemNameForAccept != null)
+                                        {
+
+                                            <td>
+                                                <a target="_blank" href="~/Areas/Contracts/Contents/DefFacilitiesEquipment/UserUpload/@it.tbEquipmentMoalefeValueReffrenceSave.File_SystemNameForAccept">دانلود</a>
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            <td>پیوستی ثبت نشده </td>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <td>پیوستی ثبت نشده </td>
+
+
+                                    }
+
+                                    <td>
+                                        @it.vaziat
+
+
+                                    </td>
+                                    <td>
+                                        @it.daysabt
+
+
+                                    </td>
+                                    <td>
+                                        @it.daymondeh
+
+
+                                    </td>
+                                </tr>
+                            }
+                            else if (it.tbsaveSoratBasteh != null)
+                            {
+                                string vaziat = "";
+                                string del = "";
+
+                                if (it.tbsaveSoratBasteh.submitt == true)
+                                {
+                                    vaziat = "ارسال شده ";
+                                }
+                                else if (it.tbsaveSoratBasteh.submitt != true)
+                                {
+                                    vaziat = "ثبت شده  ";
+                                }
+                                if (it.tbsaveSoratBasteh.del == true)
+                                {
+                                    vaziat = "برگشت ";
+                                }
+                                //else if (it.tbEquipmentMoalefeValueReffrenceSave.del != true)
+                                //{
+                                //    del = "موفق";
+                                //}
+                    <tr class="task-list-row234 dateS_@II42"
+                        data-filter051="@it.tbmarahesabt4.tbmarahlsabtbastedit2.tbPeymanContracts.pec_Title"
+                        data-filter061="@it.tbmarahesabt4.tbmarahlsabtbastedit2.tbCities.Name"
+                        data-filter071="@it.tbmarahesabt4.tbmarahlsabtbastedit2.tbmarahlsabtbastedit1.naem"
+                        data-filter081="@sabt"
+                        data-filter092="@it.daymondeh">
+
+                        <td>
+                            <div class="ms-sm-4 mt-sm-0 mt-2 dropdown-toggle">
+                                <a href="#" data-bs-toggle="dropdown" class="text-white text-opacity-75 text-decoration-none">
+                                    <i class="fa fa-edit"></i>
+                                </a>
+                                <div class="dropdown-menu">
+
+
+
+                                    @if (it.tbmarahesabt4.control == true)
+                                    {
+                                        <a style="cursor:pointer" data-month="@it.month" data-fkpymn="@it.tbmarahesabt4.tbmarahlsabtbastedit2.FK_pymn" data-fkcity="@it.tbmarahesabt4.tbmarahlsabtbastedit2.FK_City" data-usr="@it.tbmarahesabt4.FK_usr" onclick="sabtgozareshh( this.dataset.month, this.dataset.year,1,this.dataset.fkpymn,this.dataset.fkcity,this.dataset.usr)"
+                                           data-year="@it.year" data-bs-toggle="modal" data-bs-target="#modalLg1" class="dropdown-item EditUser" id="@it.tbmarahesabt4.FK_basteh _@it.tbmarahesabt4.FK_usr _@it.tbmarahesabt4.tbmarahlsabtbastedit2.FK_pymn _@it.tbmarahesabt4.tbmarahlsabtbastedit2.FK_City">
+                                            مشاهده وضعیت ثبت
+                                        </a>
+                                    }
+
+                                </div>
+                            </div>
+                            <input id="summery_file5" style="display:none" name="summery_file5" type="file" class="form-control" value="" />
+                        </td>
+                        <td>
+                            @it.fullname
+
+
+                        </td>
+                        <td>
+                            @it.personalID
+
+
+                        </td>
+                        <td>
+                            @it.namebasteh
+
+
+                        </td>
+                        <td>
+                            @sabt
+
+
+                        </td>
+                        @if (it.tbsaveSoratBasteh != null)
+                        {
+                            if (it.tbsaveSoratBasteh.FileName != null)
+                            {
+
+                                <td>
+                                    <a target="_blank" href="~/Areas/Salaries/Content/UserFunctionsFile/@it.tbsaveSoratBasteh.FileName">دانلود</a>
+                                </td>
+                            }
+                            else
+                            {
+                                <td>پیوستی ثبت نشده </td>
+                            }
+                        }
+                        else
+                        {
+                            <td>پیوستی ثبت نشده </td>
+
+
+                        }
+
+                        <td>
+                            @it.vaziat
+
+
+                        </td>
+                        <td>
+                            @it.daysabt
+
+
+                        </td>
+                        <td>
+                            @it.daymondeh
+
+
+                        </td>
+                    </tr>
+                            }
+
+                            else if (it.vazrt == 1)
+                            {
+                                string vaziat = "";
+                                //if (it.tbSavedFunctions.submitt == true)
+                                //{
+                                //    vaziat = "ارسال شده ";
+                                //}
+                                //else if (it.tbSavedFunctions.submitt != true)
+                                //{
+                                //    vaziat = "ثبت شده  ";
+                                //}
+                                //if (it.tbSavedFunctions.del == true)
+                                //{
+                                //    vaziat = "برگشت ";
+                                //}
+                    <tr class="task-list-row234 dateS_@II42"
+                        data-filter051="@it.tbmarahesabt4.tbmarahlsabtbastedit2.tbPeymanContracts.pec_Title"
+                        data-filter061="@it.tbmarahesabt4.tbmarahlsabtbastedit2.tbCities.Name"
+                        data-filter071="@it.tbmarahesabt4.tbmarahlsabtbastedit2.tbmarahlsabtbastedit1.naem"
+                        data-filter081="@sabt" data-filter092="@it.daymondeh">
+
+                        <td>
+                            <div class="ms-sm-4 mt-sm-0 mt-2 dropdown-toggle">
+                                <a href="#" data-bs-toggle="dropdown" class="text-white text-opacity-75 text-decoration-none">
+                                    <i class="fa fa-edit"></i>
+                                </a>
+                                <div class="dropdown-menu">
+
+
+
+                                    @if (it.tbmarahesabt4.control == true)
+                                    {
+                                        <a style="cursor:pointer" data-month="@it.month" data-fkpymn="@it.tbmarahesabt4.tbmarahlsabtbastedit2.FK_pymn" data-fkcity="@it.tbmarahesabt4.tbmarahlsabtbastedit2.FK_City" data-usr="@it.tbmarahesabt4.FK_usr" onclick="sabtgozareshh( this.dataset.month, this.dataset.year,1,this.dataset.fkpymn,this.dataset.fkcity,this.dataset.usr)"
+                                           data-year="@it.year" data-bs-toggle="modal" data-bs-target="#modalLg1" class="dropdown-item EditUser" id="@it.tbmarahesabt4.FK_basteh _@it.tbmarahesabt4.FK_usr _@it.tbmarahesabt4.tbmarahlsabtbastedit2.FK_pymn _@it.tbmarahesabt4.tbmarahlsabtbastedit2.FK_City">
+                                            مشاهده وضعیت ثبت
+                                        </a>
+                                    }
+
+                                </div>
+                            </div>
+                            <input id="summery_file5" style="display:none" name="summery_file5" type="file" class="form-control" value="" />
+                        </td>
+                        <td>
+                            @it.fullname
+
+
+                        </td>
+                        <td>
+                            @it.personalID
+
+
+                        </td>
+                        <td>
+                            @it.namebasteh
+
+
+                        </td>
+                        <td>
+                            @sabt
+
+
+                        </td>
+                        @if (it.tbSavedFunctions != null)
+                        {
+                            if (it.tbSavedFunctions.svdfunc_FileNameExcel != null)
+                            {
+                                <td>
+                                    <a href="~/Areas/Salaries/Content/UserFunctionsFile/@it.tbSavedFunctions.svdfunc_FileNameExcel">
+                                        <i class="bi bi-download DownloadExcelFunction" style="cursor:pointer"></i>
+                                    </a>
+                                </td>
+                            }
+
+                            else
+                            {
+                                <td>پیوستی ثبت نشده </td>
+
+                            }
+
+                        }
+                        else
+                        {
+                            <td>پیوستی ثبت نشده </td>
+
+                        }
+                        <td>
+                            @it.vaziat
+
+
+                        </td>
+                        <td>
+                            @it.daysabt
+
+
+                        </td>
+                        <td>
+                            @it.daymondeh
+
+
+                        </td>
+                    </tr>
+                            }
+                            else if (it.vazrt == 2)
+                            {
+                                string vaziat = "";
+                                //if (it.tbmoalfefishexcel.submitt == true)
+                                //{
+                                //    vaziat = "ارسال شده ";
+                                //}
+                                //else if (it.tbmoalfefishexcel.submitt != true)
+                                //{
+                                //    vaziat = "ثبت شده  ";
+                                //}
+                                //if (it.tbmoalfefishexcel.del == true)
+                                //{
+                                //    vaziat = "برگشت ";
+                                //}
+                    <tr class="task-list-row234 dateS_@II42"
+                        data-filter051="@it.tbmarahesabt4.tbmarahlsabtbastedit2.tbPeymanContracts.pec_Title"
+                        data-filter061="@it.tbmarahesabt4.tbmarahlsabtbastedit2.tbCities.Name"
+                        data-filter071="@it.tbmarahesabt4.tbmarahlsabtbastedit2.tbmarahlsabtbastedit1.naem"
+                        data-filter081="@sabt" data-filter092="@it.daymondeh">
+
+                        <td>
+                            <div class="ms-sm-4 mt-sm-0 mt-2 dropdown-toggle">
+                                <a href="#" data-bs-toggle="dropdown" class="text-white text-opacity-75 text-decoration-none">
+                                    <i class="fa fa-edit"></i>
+                                </a>
+                                <div class="dropdown-menu">
+
+
+
+                                    @if (it.tbmarahesabt4.control == true)
+                                    {
+                                        <a style="cursor:pointer" data-month="@it.month" data-fkpymn="@it.tbmarahesabt4.tbmarahlsabtbastedit2.FK_pymn" data-fkcity="@it.tbmarahesabt4.tbmarahlsabtbastedit2.FK_City" data-usr="@it.tbmarahesabt4.FK_usr" onclick="sabtgozareshh( this.dataset.month, this.dataset.year,1,this.dataset.fkpymn,this.dataset.fkcity,this.dataset.usr)"
+                                           data-year="@it.year" data-bs-toggle="modal" data-bs-target="#modalLg1" class="dropdown-item EditUser" id="@it.tbmarahesabt4.FK_basteh _@it.tbmarahesabt4.FK_usr _@it.tbmarahesabt4.tbmarahlsabtbastedit2.FK_pymn _@it.tbmarahesabt4.tbmarahlsabtbastedit2.FK_City">
+                                            مشاهده وضعیت ثبت
+                                        </a>
+                                    }
+
+                                </div>
+                            </div>
+                            <input id="summery_file5" style="display:none" name="summery_file5" type="file" class="form-control" value="" />
+                        </td>
+                        <td>
+                            @it.fullname
+
+                        </td>
+                        <td>
+                            @it.personalID
+
+                        </td>
+                        <td>
+                            @it.namebasteh
+
+
+                        </td>
+                        <td>
+                            @sabt
+
+
+                        </td>
+                        @if (it.tbmoalfefishexcel != null)
+                        {
+
+                            if (it.tbmoalfefishexcel.Filsesystem != null)
+                            {
+                                <td>
+                                    <a href="~/Areas/Salaries/Content/UserFunctionsFile/@it.tbmoalfefishexcel.FileName">
+                                        <i class="bi bi-download DownloadExcelFunction" style="cursor:pointer"></i>
+                                    </a>
+                                </td>
+                            }
+                            else
+                            {
+                                <td>
+                                    پیوستی ثبت نشده
+                                </td>
+                            }
+                        }
+                        else
+                        {
+                            <td>
+                                پیوستی ثبت نشده
+                            </td>
+                        }
+                        <td>
+                            @it.vaziat
+
+
+                        </td>
+                        <td>
+                            @it.daysabt
+
+
+                        </td>
+                        <td>
+                            @it.daymondeh
+
+
+                        </td>
+                    </tr>
+                            }
+                        }
+                        @{ int II2 = 0;
+
+                            var marahls = db.tbmarahlsabtbastedit1.Where(p => p.naem != null).ToList(); // ستون‌های ثابت
+
+                            var list = db.tbmarahlsabtbastedit2.ToList();
+                            var cit = db.tbpeymancities.ToList();
+                        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        @*@foreach (var contract in db.tbPeymanContracts.ToList())
+                            {
+                                var cities = cit.Where(p => p.FK_PYMN == contract.pec_ID).ToList();
+                                foreach (var city in cities)
+                                {
+                                    var cityName = city.tbCities?.Name ?? "N/A";
+
+                                    <tr class="task-list-row234 dateS_@II2"
+                                        data-filter01="@contract.pec_Title"
+                                        data-filter02="@cityName">
+                                        <td>@contract.pec_Title</td>
+                                        <td>@cityName</td>
+
+
+
+
+
+                                        @foreach (var marahl in marahls)
+                                        {
+                                            var findvalu = list
+                                                             .FirstOrDefault(p => p.FK_City == city.FK_City
+                                                                                  && p.FK_namebAST == marahl.ID
+                                                                                  && p.FK_pymn == contract.pec_ID);
+                                            var hasValue = findvalu?.Has ?? false;
+
+                                            <td data-column="@marahl.ID">
+                                                <input class=" mamur form-control44334 "
+                                                       name="checkRow_@marahl.ID"
+                                                       type="checkbox"
+                                                       id="checkVasileV1-@marahl.ID-@city.FK_City-@contract.pec_ID"
+                                                       data-column="@marahl.ID"
+                                                       data-bind="@marahl.ID"
+                                                       data-keyboard="@marahl.ID"
+                                                       @(hasValue ? "checked" : "") />
+                                            </td>
+
+                                        }
+                                    </tr>
+                                    II2++;
+                                }
+                            }*@
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xl-11"></div>
+        <div class="col-xl-1">
+            <button id="savabtn123451111" type="button" class="btn form-control buttonsabt">
+                <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                <span class="bSabt-text">ثبت</span>
+            </button>
+        </div>
+    </div>
+
+
+    <div id="mymodal3" class="modal3" style="margin-left: 10% !important;">
+        <div class="modal-content2">
+            <div class="row">
+                <i class="close fa fa-window-close"></i>
+            </div>
+            <div id="ss">
+
+            </div>
+
+        </div>
+    </div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Scripts/popper.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script>
+    function sabtgozareshh(month, year, vaziatt, fkpymn, fkcity, usr) {
+        console.log(vaziatt)
+        console.log(fkpymn)
+        console.log(fkcity)
+        console.log(usr)
+
+    $.ajax({
+        url: '@Url.Action("viewadetailcontroll", "RegistrationAndConfirmationProcedures")',
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({ month: month, year: year, vaziatt: vaziatt, fkpymn: fkpymn, fkcity: fkcity, Usr: usr }),
+        success: function (response) {
+            $("#big_modal_body1").html(response);
+        },
+        error: function (xhr, status, error) {
+            console.log("Error: " + error);
+        }
+    });
+}
+
+</script>

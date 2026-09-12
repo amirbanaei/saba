@@ -1,0 +1,171 @@
+﻿
+@using SaabWebProject.Models.Classes;
+@{
+    Layout = null;
+}
+@model IEnumerable<SaabWebProject.Models.DomainModels.tb_Step_tax>
+
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+
+<div class="card">
+    <div class="table-content p-4">
+        <div class="tab-pane fade show active" id="allTab">
+            <div class="table-responsive tableH_Lock">
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr style="text-align:center">
+
+
+                            <th>
+                                @Html.DisplayName("#")
+                            </th>
+                            <th>
+                                @Html.DisplayName("پله ")
+                            </th>
+                            <th>
+                                @Html.DisplayName("از مبلغ(ریال)")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter06-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            <th>
+                                @Html.DisplayName("تا مبلغ(ریال) ")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter07-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            <th>
+                                @Html.DisplayName("ترخ مالیات ")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter08-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            <th>
+                                @Html.DisplayName("سال")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter09-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody style="text-align:center">
+
+                        @if (Model != null)
+                        {
+
+                            var i = 0;
+                            foreach (var item in Model)
+                            {
+                                if (item != null)
+                                {
+
+
+                                    i++;
+                                    <tr class="task-list-rowP"
+                                        data-filter06="@String.Format("{0:N0}", item.Fromamount).Replace(",","")"
+                                        data-filter07="@String.Format("{0:N0}", item.Toamount).Replace(",","")"
+                                        data-filter08="@item.Percent_amount"
+                                        data-filter09="@item.year">
+
+                                        <td>
+                                            @i
+                                        </td>
+                                        <td>
+                                            @item.number
+                                        </td>
+                                        <td>@String.Format("{0:N0}", item.Fromamount)</td>
+                                        <td>@String.Format("{0:N0}", item.Toamount)</td>
+                                        <td>@item.Percent_amount</td>
+                                        <td>@item.year</td>
+
+                                    </tr>
+                                }
+                                else
+                                {
+                                    i++;
+                                    <tr class="task-list-rowP"
+                                        data-filter06="@item.Fromamount"
+                                        data-filter07="@item.Toamount"
+                                        data-filter08="@item.Percent_amount"
+                                        data-filter09="@item.year">
+
+                                        <td>@i</td>
+                                        <td>@item.number</td>
+                                        <td>@item.Fromamount</td>
+                                        <td>@item.Toamount</td>
+                                        <td>@item.Percent_amount</td>
+                                        <td>@item.year</td>
+
+                                    </tr>
+                                }
+                            }
+
+                            // Your foreach loop code here
+                        }
+
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+<script>
+
+    var
+        filtersP = {
+            filter06: null,
+            filter07: null,
+            filter08: null,
+            filter09: null,
+        };
+
+    function updateFiltersP() {
+        $('.task-list-rowP').hide().filter(function () {
+            var self = $(this),
+                result = true;
+
+            Object.keys(filtersP).forEach(function (filter) {
+                var filterData = self.data(filter);
+                if (filtersP[filter] && (filtersP[filter] != 'None') && (filtersP[filter] != 'همه')) {
+                    // تبدیل داده به رشته و بررسی مقدار
+                    result = result && (filterData && filterData.toString().indexOf(filtersP[filter]) !== -1);
+                }
+            });
+
+            return result;
+        }).show();
+    }
+
+    function changeFilterP(filterName) {
+        filtersP[filterName] = this.value;
+        updateFiltersP();
+    }
+
+    // Assigned User Dropdown Filter
+    $('#filter06-filter').on('input', function () {
+        changeFilterP.call(this, 'filter06');
+    });
+    $('#filter07-filter').on('input', function () {
+        changeFilterP.call(this, 'filter07');
+    });
+    $('#filter08-filter').on('input', function () {
+        changeFilterP.call(this, 'filter08');
+    });
+    $('#filter09-filter').on('input', function () {
+        changeFilterP.call(this, 'filter09');
+    });
+
+
+
+</script>

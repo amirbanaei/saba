@@ -1,0 +1,413 @@
+﻿@model SaabWebProject.Models.DomainModels.Descriptionsorat
+
+@{
+    ViewBag.Title = "";
+    Layout = null;
+}
+<link href="~/MyStyles/MyStyle.css" rel="stylesheet" />
+<hr />
+<div class="row">
+    <div class="col-xl-3">
+        <label id="total" class="form-label">مبلغ کل</label>
+        @if (Model != null)
+        {
+            <input id="totalInput" class="form-control" value="@Model.value" disabled />
+
+        }
+        else
+        {
+            <input id="totalInput" class="form-control " value="" disabled />
+
+        }
+    </div>
+</div>
+@*<div class="row">
+
+    <div class="col-xl-1" style="margin-top:29px">
+        <button id="minus" class="btn buttonGeneral form-control" onclick="subtractValue()">
+            <i class="fa fa-minus" style="padding-top: 3px; padding-bottom: 3px;"></i>
+        </button>
+    </div>
+    <div class="col-xl-1" style="margin-top:29px">
+        <button id="plus" class="btn buttonGeneral form-control" onclick="addValue()">
+            <i class="fa fa-plus" style="padding-top: 3px; padding-bottom: 3px;"></i>
+        </button>
+    </div>
+    <div class="col-xl-3">
+        <label id="price" class="form-label">مبلغ</label>
+        <input id="priceInput" class="form-control" />
+    </div>
+    <div class="col-xl-4">
+        <label class="form-label">شرح</label>
+        @if (Model != null)
+        {
+            <textarea class="form-control" style="height: 34px;" id="des">@Model.Description</textarea>
+        }
+        else
+        {
+            <textarea class="form-control" style="height: 34px;" id="des"></textarea>
+        }
+
+    </div>
+</div>*@
+
+
+
+
+<div class="row">
+    <div id="SectionInstallmentInputs" ></div>
+</div>
+<div class="row">
+    @*<div class="col-xl-3">
+            <a href="#" class="btn btn-outline-info form-control" id="Show_Etebar">
+                <i class="fa fa-eye"></i>
+                مشاهده اعتبار ردیف ها
+            </a>
+        </div>
+        <div class="col-xl-2">
+            <a href="#" class="btn btn-outline-info form-control">
+                <i class="bi bi-download"></i>
+                دانلود فایل نمونه
+            </a>
+
+        </div>
+        <div class="col-xl-2">
+            <a href="#" class="btn btn-outline-info form-control">
+                <i class="bi bi-upload"></i>
+                بارگذاری اطلاعات
+            </a>
+
+        </div
+            >*@
+
+    <div class="col-xl-1">
+        <div class="form-group mb-3">
+            <button id="btnPlusInput" onclick="plusInputInstallmentManually(this)" class="btn form-control buttonGeneralPlus">
+                <i class="fa fa-plus VecGeneral"></i>
+            </button>
+        </div>
+    </div>
+    <div class="col-xl-10"></div>
+    <div class="col-xl-1">
+        <button class="btn form-control buttonsabt" id="sabt">
+            <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+            <span class="bSabt-text">ثبت</span>
+        </button>
+    </div>
+</div>
+
+
+
+<hr />
+
+
+
+
+<div id="table22">
+
+</div>
+
+
+@*<script>
+    $(document).ready(function () {
+        const ivalueElements = document.getElementsByClassName("ivalue3_");
+
+        for (const ivalueElement of ivalueElements) {
+            const value = ivalueElement.textContent;
+
+            // تبدیل مقدار به عدد
+            const number = Number(value);
+
+            // تبدیل عدد به رشته با جداکننده
+            const formattedNumber = number.toLocaleString("fa-IR");
+
+            // تنظیم مقدار td با عدد جدا شده
+            ivalueElement.textContent = formattedNumber;
+        }
+    });
+</script>*@
+
+<script>
+    $(document).ready(function () {
+        // Get the initial value from the totalInput field
+        var initialValue = parseFloat($("#totalInput").val().replace(/,/g, '')) || 0;
+
+        // Format the initial value with commas
+        var formattedValue = initialValue.toLocaleString('en');
+
+        // Set the formatted value back to the input
+        $("#totalInput").val(formattedValue);
+    });
+    var idd55 = $('#value_radif').val();
+    var idd25 = $('#select_peyman2').val();
+    $("#table22").load('@Url.Content("/Statments/Statment/tablesorat")?id=' + idd55 + '&fkpymn=' + idd25);
+
+
+    var nodesLength = 0; // Declare outside the function to maintain its value
+    function plusInputInstallmentManually(e) {
+        var a = 1;
+        nodesLength++;
+        a++;
+
+
+        $("#SectionInstallmentInputs").append(`
+            <div id="row_${nodesLength}" class="row">
+                <div class="col-md-12 col-xl-5">
+                    <label class="form-label"> شرح </label>
+                    <textarea class="form-control " style="height: 34px;" id="bedehkar_${nodesLength}"></textarea>
+                </div>
+                <div class="col-md-12 col-xl-2">
+                    <label class="form-label">  مقدار (ریال) </label>
+                    <input class="form-control installmentAmountInputManually" oninput="formatCurrency(this)" id="bestankar_${nodesLength}" style=""/>
+                </div>
+                <div class="col-xl-2 ">
+                    <label class="form-label">نوع عملیات</label>
+                    <select class="form-select"id="bed_${nodesLength}" data-row="${nodesLength}">
+                         <option value="0">کسر</option>
+                         <option value="1">افزودن</option>
+                    </select>
+                </div>
+                <div class="col-xl-2" >
+                    <button class="btn buttonsabt form-control" onclick="addValue1(this)">
+                         <i class="fa fa-thumbs-up fa-fw me-1 VecGeneral"></i>
+                         <span class="bSabt-text"> اعمال</span> 
+                    </button>
+                </div>
+                <div class="col-xl-1">
+                     <button type="button" class="btn buttonGeneralMins form-control close" aria-label="Close" onclick="removeRow('row_${nodesLength}')">
+                     <i class="fa fa-multiply VecGeneral" ></i>
+                     </button>
+                </div>
+          </div>
+`);
+
+
+    }
+    $(".deleteBtn[data-row-id='" + nodesLength + "']").on("click", function () {
+        var rowId = $(this).data("row-id");
+        nodesLength--;
+        // Remove the entire row with the corresponding ID
+        $("#row_" + rowId).remove();
+    });
+    function removeRow(rowId) {
+        // Find the row element with the given ID
+        var row = document.getElementById(rowId);
+
+        // Check if the row exists
+        if (row) {
+            // Remove the row
+            row.remove();
+            nodesLength--;
+        } else {
+            console.error("Row with ID " + rowId + " does not exist.");
+        }
+    }
+    function formatCurrency(input) {
+        // Remove any non-numeric characters except for the decimal point
+        let value = input.value.replace(/,/g, '');
+
+        // Convert to number and format with commas as thousands separators
+        value = Number(value).toLocaleString('en');
+
+        // Set the formatted value back to the input
+        input.value = value;
+    }
+
+
+    
+
+
+    $().on('hidden.bs.modal', function () {
+        $(this).find('form')[0].reset();
+        location.reload();
+    });
+</script>
+<script>
+//    $(document).ready(function() {
+//    // Add event listener to the button with id "plus"
+//    $('#plus').on('click', function() {
+//        // Get the selected option value from the nearest select element
+//        var selectedOption = $(this).closest('.row').find('select').val();
+
+//        // Check the selected option value and call the appropriate function
+//        if(selectedOption == "1") {
+//            subtractValue();
+//        } else if(selectedOption == "2") {
+//            addValue();
+//        }
+//    });
+//});
+
+    function addValue1(button) {
+        var selectedRow = $(button).closest('.row').find('select').data('row');
+        console.log("Clicked on row: " + selectedRow);       console.log("fdlsk;");
+        var selectedOption = $(button).closest('.row').find('select').val();
+        // Check the selected option value and call the appropriate function
+        if (selectedOption == "0") {
+            subtractValue();
+        } else if (selectedOption == "1") {
+            addValue();
+        }
+
+    }
+
+
+</script>
+<script>
+    function addValue() {
+        // Get the current values
+        var totalValue = parseFloat($("#totalInput").val().replace(/,/g, '')) || 0;
+        var bestankarValue = parseFloat($("#SectionInstallmentInputs").find('[id^="bestankar_"]').last().val().replace(/,/g, '')) || 0;
+        var bedehkarValue = parseFloat($("#SectionInstallmentInputs").find('[id^="bedehkar_"]').last().val()) || 0;
+
+        // Add the values
+        var result = totalValue + bestankarValue - bedehkarValue;
+        var formattedResult = result.toLocaleString('en');
+
+        // Update the total input with the formatted result
+        $("#totalInput").val(formattedResult);
+        // Update the total input
+        //$("#totalInput").val(result);
+
+        // تنظیم مقدار جدید در المان des
+        updateDescription();
+    }
+
+    function subtractValue() {
+        // Get the current values
+        var totalValue = parseFloat($("#totalInput").val().replace(/,/g, '')) || 0;
+        var bestankarValue = parseFloat($("#SectionInstallmentInputs").find('[id^="bestankar_"]').last().val().replace(/,/g, '')) || 0;
+        var bedehkarValue = parseFloat($("#SectionInstallmentInputs").find('[id^="bedehkar_"]').last().val()) || 0;
+        console.log(bestankarValue);
+        // Subtract the values
+        var result = totalValue - bestankarValue + bedehkarValue;
+        var formattedResult = result.toLocaleString('en');
+
+        // Update the total input with the formatted result
+        $("#totalInput").val(formattedResult);
+        // Update the total input
+        //$("#totalInput").val(result);
+
+        // تنظیم مقدار جدید در المان des
+        updateDescription();
+    }
+
+   $("#sabt").click(function () {
+    var idd = $('#value_radif').val();
+    var idd2 = $('#select_peyman2').val();
+       var idd3 = $('#totalInput').val().replace(/,/g, '');
+       var idd4 = $('#des').val();
+       var idd5 = $('#Sorat').val();
+
+       console.log(idd3);
+
+    var fd2 = new FormData();
+       var Filter = [];
+
+    $.ajax({
+        url: '@Url.Action("createdes", "Statment", new { area = "Statments" })?FK_Radif=' + idd + '&FK_Pymn=' + idd2 + '&value=' + idd3 +'&Description='+idd4,
+        type: 'POST',
+        processData: false,
+        contentType: false,
+        success: function (resp1) {
+            console.log("okeye");
+            console.log(resp1);
+            $("#loading-message").css("display", "none");
+            fd2 = new FormData();
+
+            $('.installmentAmountInputManually').each(function (i, obj) {
+                let count = 0;
+
+                if ($(this).attr("id").split("_").length == 2) {
+                    var obj = new Object();
+                    count++;
+                    console.log($(this).attr("id"));
+                    var parts = $(this).attr("id").split("_"); // Corrected line                    var inputString = $(this).val();
+                    console.log($(this).val());
+
+                    var Year_id = "bestankar_" + parts[1];
+                    var ttt = "bed_" + parts[1];
+                    var Monthid = "bedehkar_" + parts[1];
+                    var inputString2 = $("#" + Year_id).val().replace(/,/g, '');
+                    var inputString = $("#" + Monthid).val();
+                    var y = $("#" + ttt).val()
+                    console.log(y);
+                    console.log(Year_id);
+
+                    console.log(Monthid);
+
+                    console.log(inputString2);
+
+                    obj.value = inputString2;
+                    obj.numbersorat = idd5;
+                    obj.Descriptionn = inputString;
+                    obj.Fk_Description = resp1;
+                    if (y == 1) {
+                        obj.type = true;
+
+                    }
+                    else {
+                        obj.type = false;
+
+                    }
+                    console.log(obj);
+                    Filter.push(obj);
+                    console.log(Filter);
+                }
+            });
+            sendAjax('@Url.Action("createdetail", "Statment", new { area = "Statments" })', Filter);
+
+        },
+        error: function (resp1) {
+            console.log(resp1);
+            console.log("Nokeye");
+            $("#loading-message").css("display", "none");
+            Toast.fire({
+                icon: 'success',
+                background: '#35434A',
+                color: 'white',
+                title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+            }).then(() => {
+                $("#loading-message").css("display", "none");
+            });
+        }
+    });
+});
+
+</script>
+
+
+<script>
+    function sendAjax(url, data) {
+        console.log(url);
+
+        $.ajax({
+            beforeSend: function () {
+                document.getElementById("loading-message").style.display = "block";
+            },
+            url: url,
+            data: { Filter: data },
+            type: "POST",
+            dataType: "html",
+            success: function (resp) {
+                console.log(resp);
+                document.getElementById("loading-message").style.display = "none";
+                if (resp == "True") {
+                    alert("با موفقیت ثبت شد");
+                    location.reload();
+                }
+
+                else {
+                    alert("مبلغ های های بستانکارهای شما بیش از حد مجاز در قرار داد است ")
+                }
+            },
+            error: function (resp) {
+                document.getElementById("loading-message").style.display = "none";
+                alert("دچار مشکل شده است ");
+                console.log(resp);
+            }
+        });
+    }
+
+  
+</script>

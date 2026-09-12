@@ -1,0 +1,147 @@
+﻿@model IEnumerable<SaabWebProject.Models.DomainModels.tbSoratvaziat>
+
+@{
+    ViewBag.Title = "";
+    Layout = null;
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@*<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />*@
+<style>
+    .tableH_LockM {
+        max-height: 585px;
+        /*height: 260px;*/
+    }
+
+    thead {
+        position: sticky;
+        top: 0;
+        text-align: center;
+        z-index: 2;
+    }
+
+    .inputFilter {
+        margin-bottom: 0px !important;
+        min-width: 100px;
+    }
+
+    thead th {
+        vertical-align: middle;
+    }
+</style>
+<div class="card">
+    <div class="card-body pb-2">
+        <div class="tab-pane fade show active" id="allTab">
+            <div class="table-responsive tableH_LockM">
+                <table class="table table-hover text-nowrap" style="width:100% ;text-align:center">
+                    <thead>
+                        <tr>
+                            <th>
+                                پیمان
+                                <input type="text" id="filter04-filter" class="inputFilter form-control" placeholder="">
+                            </th>
+                            <th>مبلغ</th>
+                            <th>
+                                نقش
+                                <input type="text" id="filter05-filter" class="inputFilter form-control" placeholder="">
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{ 
+                            string naghsh = "";
+                        }
+                        @foreach (var item in Model)
+                        {
+                            if (item.role == 1)
+                            {
+                                naghsh = "مامورین";
+                            }
+                            else if (item.role == 3)
+                            {
+                                naghsh = "کادر اداری";
+                            }
+                            else if (item.role == 2)
+                            {
+                                naghsh = "نماینده مقیم";
+                            }
+                            <tr class="task-list-row"
+                                data-filter04='@item.tbPeymanContracts.pec_Title'
+                                data-filter05="@naghsh">
+
+                                <td>@item.tbPeymanContracts.pec_Title</td>
+                                <td class="ivalue_">@item.value</td>
+                                <td>@naghsh</td>
+
+                            </tr>
+
+                        }
+                        </tbody>
+
+                    </table>
+            </div>
+        </div>
+    </div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+<script>
+
+    var
+        filters = {
+            filter04: null,
+            filter05: null,
+        };
+
+    function updateFilters() {
+        $('.task-list-row').hide().filter(function () {
+            var self = $(this),
+                result = true;
+
+            Object.keys(filters).forEach(function (filter) {
+                var filterData = self.data(filter);
+                if (filters[filter] && (filters[filter] != 'None') && (filters[filter] != 'همه')) {
+                    // تبدیل داده به رشته و بررسی مقدار
+                    result = result && (filterData && filterData.toString().indexOf(filters[filter]) !== -1);
+                }
+            });
+
+            return result;
+        }).show();
+    }
+
+    function changeFilter(filterName) {
+        filters[filterName] = this.value;
+        updateFilters();
+    }
+
+    // Assigned User Dropdown Filter
+    $('#filter04-filter').on('input', function () {
+        changeFilter.call(this, 'filter04');
+    });
+    $('#filter05-filter').on('input', function () {
+        changeFilter.call(this, 'filter05');
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        const ivalueElements = document.getElementsByClassName("ivalue_");
+
+        for (const ivalueElement of ivalueElements) {
+            const value = ivalueElement.textContent;
+
+            // تبدیل مقدار به عدد
+            const number = Number(value);
+
+            // تبدیل عدد به رشته با جداکننده
+            const formattedNumber = number.toLocaleString("fa-IR");
+
+            // تنظیم مقدار td با عدد جدا شده
+            ivalueElement.textContent = formattedNumber;
+        }
+    });
+</script>
+

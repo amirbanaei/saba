@@ -1,0 +1,594 @@
+﻿@model SaabWebProject.Models.ViewModels.Contracts.Function.FunctionModel
+@*@{
+        Layout = null;
+    }*@
+@using System.Globalization
+
+@using SaabWebProject.Models.DomainModels;
+
+@{
+    SaabEntities db = new SaabEntities();
+    Layout = null;
+}
+<script src="~/Assets/js/jalalidatepicker.min.js"></script>
+<link href="~/Assets/css/jalalidatepicker.min.css" rel="stylesheet" />
+<script src="~/Assets/js/jalaali.min.js"></script>
+<link href="~/MyStyles/jalalidatepicker.css" rel="stylesheet" />
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>checkpage</title>
+</head>
+<body>
+    <style>
+        .form-check {
+            display: flex !important;
+        }
+
+        .form-check-label {
+            margin-right: 5px;
+        }
+    </style>
+    @foreach (var it in db.dbergharelicratgrouprel11.Where(s => s.ID == Model.usrID && s.vaziat == 0))
+    {
+
+        var fild = db.dbergharelrelationseefild_10.Where(s => s.ID != 0).FirstOrDefault();
+        var fild1 = fild.fild1;
+        var fild2 = fild.file2;
+        var fild3 = fild.fild3;
+        var fild4 = fild.fild4;
+        var fild5 = fild.fild5;
+        var fild6 = fild.fild4;
+
+        var findvalue = db.dbergharelimsertfk1_7.Where(s => s.FK_db2 == fild1 && s.valuunic == it.unic).OrderByDescending(t => t.ID).FirstOrDefault();
+        var findvalue1 = db.dbergharelimsertfk1_7.Where(s => s.FK_db2 == fild2 && s.valuunic == it.unic).OrderByDescending(t => t.ID).FirstOrDefault();
+        var findvalue2 = db.dbergharelimsertfk1_7.Where(s => s.FK_db2 == fild3 && s.valuunic == it.unic).OrderByDescending(t => t.ID).FirstOrDefault();
+        var findvalue4 = db.dbergharelimsertfk1_7.Where(s => s.FK_db2 == fild4 && s.valuunic == it.unic).OrderByDescending(t => t.ID).FirstOrDefault();
+        //var findvalue5 = db.dbergharelimsertfk1_7.Where(s => s.FK_db2 == fild1).FirstOrDefault();
+
+        var findvalue5 = db.dbergharelimsertfk1_7.Where(s => s.FK_db2 == fild5 && s.valuunic == it.unic).OrderByDescending(t => t.ID).FirstOrDefault();
+
+        <div class="row">
+            <div class="col-xl-3">
+                <span>@findvalue.valueFK_db2</span>
+            </div>
+
+
+            <div class="col-xl-3">
+                <span>
+                    @findvalue1.valueFK_db2
+                    ریال بدهکار
+
+
+
+
+                </span>
+
+
+            </div><div class="col-xl-3">
+                <span>@findvalue2.valueFK_db2</span>
+            </div>
+
+            <div class="col-xl-3">
+                <span>
+                    تاریخ آخرین واریزی:
+                    @findvalue4.valueFK_db2
+
+
+
+
+                </span>
+
+
+            </div><div class="col-xl-3">
+                <span>شناسه پرداخت: @findvalue5.valueFK_db2</span>
+            </div>
+          <div class="col-xl-3">
+    <span>شناسه قبض: @it.unic</span>
+</div>
+        </div>
+
+        <hr />
+    }
+    @*@foreach (var it in db.dbergharelicratgrouprel11.Where(s => s.ID == Model.usrID))
+        {
+
+            var fild = db.dbergharelrelationseefild_10.Where(s => s.ID != 0).FirstOrDefault();
+            var fild1 = fild.fild1;
+            var fild2 = fild.file2;
+            var fild3 = fild.fild3;
+            var fild4 = fild.fild4;
+            var findvalue = db.dbergharelimsertfk1_7.Where(s => s.FK_db2 == fild1).FirstOrDefault();
+            var findvalue1 = db.dbergharelimsertfk1_7.Where(s => s.FK_db2 == fild2).FirstOrDefault();
+            var findvalue2 = db.dbergharelimsertfk1_7.Where(s => s.FK_db2 == fild3).FirstOrDefault();
+            var findvalue4 = db.dbergharelimsertfk1_7.Where(s => s.FK_db2 == fild4).FirstOrDefault();
+            //var findvalue5 = db.dbergharelimsertfk1_7.Where(s => s.FK_db2 == fild1).FirstOrDefault();
+
+
+            <div class="row">
+                <div class="col-xl-3">
+                    <label class="form-label">تقسیط بدهی(مبلغ پرداختی)</label>
+                    <input id="taghsitBedehi25" class="form-control" type="text" value="@findvalue.valueFK_db2" />
+                </div>
+
+
+                <div class="col-xl-3">
+                    <label class="form-label">تقسیط بدهی(مبلغ پرداختی)</label>
+                    <input id="taghsitBedehi35" class="form-control" type="text" value="@findvalue1.valueFK_db2" />
+                </div><div class="col-xl-3">
+                    <label class="form-label">تقسیط بدهی(مبلغ پرداختی)</label>
+                    <input id="taghsitBedehi45" class="form-control" type="text" value="@findvalue2.valueFK_db2" />
+                </div>
+
+            </div>
+
+            <hr />
+        }*@
+    @using (Html.BeginForm("Create", "Orders", FormMethod.Post, new { area = "Setting", id = "form-job13" }))
+    {
+        @Html.HiddenFor(m => m.usrID)
+        @Html.AntiForgeryToken()
+        @*@Html.HiddenFor(m => m.fkdb12, new { Value = Model.ID })*@
+
+        <div class="tab-content" id="pills-tabContent">
+            <div class="row g-3" style="margin-top:5px;">
+
+                <div class="col-xl-3">
+                    <div class="form-check">
+                        @Html.CheckBoxFor(m => m.PardakhtShod, new { @class = "form-check-input", id = "pardakhtShod" })
+                        <label class="form-check-label" for="pardakhtShod">پرداخت شد</label>
+                    </div>
+                </div>
+                @{
+                    string formattedTaghsit = "";
+                    if (Model.TaghsitBedehi.HasValue)
+                    {
+                        formattedTaghsit = String.Format("{0:N0}", Model.TaghsitBedehi.Value); // 3رقمی جدا شده با کاما
+                    }
+                }
+                <div class="col-xl-3">
+                    <label class="form-label">تقسیط بدهی (مبلغ پرداختی)</label>
+                    <input id="taghsitBedehi" class="form-control" name="taghsitBedehi" type="text" value="@formattedTaghsit" />
+                </div>
+
+                <div class="col-xl-3">
+                    <label class="form-label">تاریخ پرداخت</label>
+                    @*<input data-jdp jdp-btn-close data-jdp-miladi-input="miladi_date1" id="datepickerFrom_shw1"
+                   class="form-control pdate" value="@(Model.Miladi_date1.HasValue ? Model.Miladi_date1.Value.ToString("yyyy/MM/dd") : "")">
+            @Html.HiddenFor(m => m.Miladi_date1, new { id = "miladi_date1" })*@
+
+                    @{
+                        string shamsiDate = "";
+                        if (Model.Miladi_date1.HasValue)
+                        {
+                            var dt = Model.Miladi_date1.Value;
+                            PersianCalendar pc = new PersianCalendar();
+                            int jy = pc.GetYear(dt);
+                            int jm = pc.GetMonth(dt);
+                            int jd = pc.GetDayOfMonth(dt);
+                            shamsiDate = $"{jy}/{jm:D2}/{jd:D2}";
+                        }
+                    }
+                    <input data-jdp jdp-btn-close data-jdp-miladi-input="miladi_date1"
+                           id="datepickerFrom_shw1" class="form-control pdate"
+                           value="@shamsiDate">
+                    @Html.HiddenFor(m => m.Miladi_date1, new { id = "miladi_date1" })
+
+
+                </div>
+
+                <div class="col-xl-3">
+                    <div class="form-check">
+                        @Html.CheckBoxFor(m => m.DarbBasteh, new { @class = "form-check-input", id = "darbBasteh" })
+                        <label class="form-check-label" for="darbBasteh">درب بسته</label>
+                    </div>
+                </div>
+
+                <div class="col-xl-3">
+                    <div class="form-check">
+                        @Html.CheckBoxFor(m => m.MamanetAzAnjamKar, new { @class = "form-check-input", id = "mamanetAzAnjamKar" })
+                        <label class="form-check-label" for="mamanetAzAnjamKar">ممانعت از انجام کار</label>
+                    </div>
+                </div>
+
+                <div class="col-xl-3">
+                    <div class="form-check">
+                        @Html.CheckBoxFor(m => m.EnsheabJamAvaryShodeh, new { @class = "form-check-input", id = "ensheabJamAvaryShodeh" })
+                        <label class="form-check-label" for="ensheabJamAvaryShodeh">انشعاب جمع آوری شده است</label>
+                    </div>
+                </div>
+
+                <div class="col-xl-3">
+                    <div class="form-check">
+                        @Html.CheckBoxFor(m => m.EnsheabGhatMovaghat, new { @class = "form-check-input", id = "ensheabGhatMovaghat" })
+                        <label class="form-check-label" for="ensheabGhatMovaghat">انشعاب قطع موقت است</label>
+                    </div>
+                </div>
+                <div class="col-xl-3">
+                    <div class="form-check">
+                        @if (Model.DarbBasteh==true || Model.MamanetAzAnjamKar == true)
+                        {
+                            @Html.CheckBoxFor(m => m.MoghayratFazBaAmper, new { @class = "form-check-input", id = "moghayratFazBaAmper", disabled = "disabled" })
+                        }
+                        else
+                        {
+                            @Html.CheckBoxFor(m => m.MoghayratFazBaAmper, new { @class = "form-check-input", id = "moghayratFazBaAmper" })
+                        }
+                        <label class="form-check-label" for="moghayratFazBaAmper">مغایرت فاز با آمپر</label>
+                    </div>
+                </div>
+
+                <div class="col-xl-3">
+                    <div class="form-check">
+                        @if (Model.DarbBasteh || Model.MamanetAzAnjamKar)
+                        {
+                            @Html.CheckBoxFor(m => m.DastkariDarKontor, new { @class = "form-check-input", id = "dastkariDarKontor", disabled = "disabled" })
+                        }
+                        else
+                        {
+                            @Html.CheckBoxFor(m => m.DastkariDarKontor, new { @class = "form-check-input", id = "dastkariDarKontor" })
+                        }
+                        <label class="form-check-label" for="dastkariDarKontor">دستکاری در کنتور</label>
+                    </div>
+                </div>
+
+                <div class="col-xl-3">
+                    <div class="form-check">
+                        @if (Model.DarbBasteh || Model.MamanetAzAnjamKar)
+                        {
+                            @Html.CheckBoxFor(m => m.KontorKharabAst, new { @class = "form-check-input", id = "kontorKharabAst", disabled = "disabled" })
+                        }
+                        else
+                        {
+                            @Html.CheckBoxFor(m => m.KontorKharabAst, new { @class = "form-check-input", id = "kontorKharabAst" })
+                        }
+                        <label class="form-check-label" for="kontorKharabAst">کنتور خراب است</label>
+                    </div>
+                </div>
+
+                <div class="col-xl-3">
+                    <div class="form-check">
+                        @if (Model.DarbBasteh || Model.MamanetAzAnjamKar)
+                        {
+                            @Html.CheckBoxFor(m => m.BarghGheyrMojazAzShabakeh, new { @class = "form-check-input", id = "barghGheyrMojazAzShabakeh", disabled = "disabled" })
+                        }
+                        else
+                        {
+                            @Html.CheckBoxFor(m => m.BarghGheyrMojazAzShabakeh, new { @class = "form-check-input", id = "barghGheyrMojazAzShabakeh" })
+                        }
+                        <label class="form-check-label" for="barghGheyrMojazAzShabakeh">برق غیرمجاز از شبکه</label>
+                    </div>
+                </div>
+
+
+
+                <div class="col-xl-3">
+                    <div class="form-check">
+                        @Html.CheckBoxFor(m => m.AzGhalamOftadeh, new { @class = "form-check-input", id = "azGhalamOftadeh" })
+                        <label class="form-check-label" for="azGhalamOftadeh">از قلم افتاده</label>
+                    </div>
+                </div>
+
+                <div class="col-xl-2">
+                    <label class="form-label">اصلاح شماره همراه</label>
+                    @*@Html.TextBoxFor(m => m.EslahShomareHamrah, new { @class = "form-control", id = "eslahShomareHamrah" })*@
+                    @Html.TextBox("EslahShomareHamrah", Model.EslahShomareHamrah, new { @class = "form-control", id = "eslahShomareHamrah" })
+
+                </div>
+
+                <div class="col-xl-9"></div>
+
+                @*<div class="col-xl-1">
+                    <button type="button" id="btn-exit" class="btn form-control buttonsabt">
+                        <i class="bi bi-x-lg fa-fw me-1 VecGeneral"></i>
+                        <span class="bSabt-text">خروج</span>
+                    </button>
+                </div>*@
+                <div class="col-xl-1">
+                    <button type="submit" id="btn-save" class="btn form-control buttonsabt">
+                        <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                        <span class="bSabt-text">ذخیره</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" name="fkdb12" value="@Model.usrID" />
+
+
+
+    }
+
+    <script src="~/Assets/js/jalalidatepicker.min.js"></script>
+    <script src="~/Assets/js/jalaali.min.js"></script>
+    <link href="~/Assets/css/jalalidatepicker.min.css" rel="stylesheet" />
+    <link href="~/MyStyles/jalalidatepicker.css" rel="stylesheet" />
+    <script>
+        jalaliDatepicker.startWatch();
+    </script>
+
+    <!--<div class="tab-content" id="pills-tabContent">
+        <div class="row g-3" style="margin-top:5px;">
+
+            <div class="col-xl-3">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="pardakhtShod">
+                    <label class="form-check-label" for="pardakhtShod">پرداخت شد</label>
+                </div>
+            </div>-->
+    @*<div class="col-xl-3">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="taghsitBedehi">
+                <label class="form-check-label" for="taghsitBedehi">
+                    تقسیط بدهی (مبلغ پرداختی : ............. ریال )
+                </label>
+            </div>
+        </div>*@
+
+    <!--<div class="col-xl-3">
+        <label class="form-label">تقسیط بدهی(مبلغ پرداختی)</label>
+        <input id="taghsitBedehi" class="form-control" type="text" />
+    </div>-->
+    @*<div class="col-xl-3">
+            <label class="form-check-label" for="tarikhPardakht">تاریخ پرداخت :</label>
+            <input class="form-control" type="text" id="tarikhPardakht" placeholder=".... / .... / ..........">
+        </div>*@
+
+    <!--<div class="col-xl-3">
+
+        <label class="form-label">تاریخ پرداخت</label>
+        <input data-jdp jdp-btn-close data-jdp-miladi-input="miladi_date1" id="datepickerFrom_shw1" class="form-control pdate" name="datepickerFrom_shw1">
+        <input id="miladi_date1" type="hidden" />
+    </div>
+
+    <div class="col-xl-3">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="darbBasteh">
+            <label class="form-check-label" for="darbBasteh">درب بسته</label>
+        </div>
+    </div>
+
+    <div class="col-xl-3">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="mamanetAzAnjamKar">
+            <label class="form-check-label" for="mamanetAzAnjamKar">ممانعت از انجام کار</label>
+        </div>
+    </div>
+
+    <div class="col-xl-3">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="ensheabJamAvaryShodeh">
+            <label class="form-check-label" for="ensheabJamAvaryShodeh">انشعاب جمع آوری شده است</label>
+        </div>
+    </div>
+
+    <div class="col-xl-3">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="ensheabGhatMovaghat">
+            <label class="form-check-label" for="ensheabGhatMovaghat">انشعاب قطع موقت است</label>
+        </div>
+    </div>
+
+    <div class="col-xl-3">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="moghayratFazBaAmper">
+            <label class="form-check-label" for="moghayratFazBaAmper">مغایرت فاز با آمپر</label>
+        </div>
+    </div>
+
+    <div class="col-xl-3">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="dastkariDarKontor">
+            <label class="form-check-label" for="dastkariDarKontor">دستکاری در کنتور</label>
+        </div>
+    </div>
+
+    <div class="col-xl-3">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="kontorKharabAst">
+            <label class="form-check-label" for="kontorKharabAst">کنتور خراب است</label>
+        </div>
+    </div>
+
+    <div class="col-xl-3">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="barghGheyrMojazAzShabakeh">
+            <label class="form-check-label" for="barghGheyrMojazAzShabakeh">برق غیرمجاز از شبکه</label>
+        </div>
+    </div>
+
+    <div class="col-xl-3">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="azGhalamOftadeh">
+            <label class="form-check-label" for="azGhalamOftadeh">از قلم افتاده</label>
+        </div>
+    </div>-->
+    @*<div class="col-xl-3">
+            <label class="form-check-label" for="eslahShomareHamrah">اصلاح شماره همراه :</label>
+            <input class="form-control" type="text" id="eslahShomareHamrah" placeholder="..................">
+        </div>*@
+
+    <!--<div class="col-xl-2">
+                <label class="form-label">اصلاح شماره همراه</label>
+                <input id="eslahShomareHamrah" class="form-control" type="text" />
+            </div>
+
+            <div class="col-xl-8"></div>
+
+            <div class="col-xl-1">
+                <button id="btn-exit" type="button" class="btn form-control buttonsabt">
+                    <i class="bi bi-x-lg fa-fw me-1 VecGeneral"></i>
+                    <span class="bSabt-text">خروج</span>
+                </button>
+            </div>
+            <div class="col-xl-1">
+                <button id="btn-save" type="button" class="btn form-control buttonsabt">
+                    <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                    <span class="bSabt-text">ذخیره</span>
+                </button>
+            </div>
+        </div>
+    </div>-->
+    <script>
+        jalaliDatepicker.startWatch({
+            time: false,
+            days: ["شنبه", "1شنبه", "2شنبه", "3شنبه", "4شنبه", "5شنبه", "جمعه"],
+            persianDigits: true,
+            autoClose: true,
+            autocomplete: true,
+            showEmptyBtn: false,
+            showCloseBtn: true,
+            zIndex: 100000,
+        });
+
+        var inputs = document.querySelectorAll("[data-jdp-miladi-input]");
+        for (var i = 0; i < inputs.length; i++) {
+            inputs[i].addEventListener("jdp:change", function (e) {
+                var miladiInput = document.getElementById(this.getAttribute("data-jdp-miladi-input"));
+                var date = this.value.replace(' ', '').slice(0, 10).split('/');
+                date = jalaali.toGregorian(parseInt(date[0]), parseInt(date[1]), parseInt(date[2]));
+                if (!this.value) {
+                    date = "";
+                } else if (this.value.replace(' ', '').length < 11) {
+                    date = date.gy + '-' + date.gm + '-' + date.gd;
+                } else {
+                    date = date.gy + '-' + date.gm + '-' + date.gd + ' ' + this.value.replace(' ', '').slice(10, 30);
+                }
+                miladiInput.value = date;
+            });
+        }
+
+    </script>
+
+    <script>
+        $("#form-job13").submit(function (e) {
+            e.preventDefault();
+            let taghsit = $("#taghsitBedehi").val();
+            $("#taghsitBedehi").val(taghsit.replace(/,/g, ""));
+            $.ajax({
+                url: $(this).attr("action"),
+                type: "POST",
+                data: $(this).serialize(),
+                success: function (res) {
+                    if (res.success) {
+                        alert(res.message); // ✅ پیام موفقیت
+                        location.reload();  // ری‌لود صفحه
+                    } else {
+                        alert(res.message); // ❌ پیام خطا
+                        location.reload();  // باز هم ری‌لود (یا می‌تونی نری‌لود نکنی)
+                    }
+                },
+                error: function () {
+                    alert("خطایی رخ داد، لطفاً دوباره تلاش کنید.");
+                    location.reload();
+                }
+            });
+        });
+
+        const input = document.getElementById("taghsitBedehi");
+
+        input.addEventListener("input", function (e) {
+            // حذف هر چیزی غیر از عدد
+            let value = this.value.replace(/\D/g, "");
+
+            // فرمت سه‌تا سه‌تا جدا کن
+            value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+            this.value = value;
+        });
+    </script>
+
+    <script>
+        // چک‌باکس‌های اصلی
+        const darbBasteh = document.getElementById("darbBasteh");
+        const mamanet = document.getElementById("mamanetAzAnjamKar");
+
+        // چک‌باکس‌هایی که باید غیرفعال بشن
+        const disableCheckboxes = [
+            "moghayratFazBaAmper",
+            "dastkariDarKontor",
+            "kontorKharabAst",
+            "barghGheyrMojazAzShabakeh"
+        ].map(id => document.getElementById(id));
+
+        function toggleDisable() {
+            const shouldDisable = darbBasteh.checked || mamanet.checked; // OR منطقی
+            disableCheckboxes.forEach(cb => {
+                cb.disabled = shouldDisable;
+                if (shouldDisable) cb.checked = false; // تیک‌ها رو هم پاک کن
+            });
+        }
+
+        darbBasteh.addEventListener("change", toggleDisable);
+        mamanet.addEventListener("change", toggleDisable);
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // چک‌باکس‌های اصلی
+            const darbBasteh = document.getElementById("darbBasteh");
+            const mamanet = document.getElementById("mamanetAzAnjamKar");
+
+            // چک‌باکس‌هایی که باید غیرفعال بشن
+            const disableCheckboxes = [
+                "moghayratFazBaAmper",
+                "dastkariDarKontor",
+                "kontorKharabAst",
+                "barghGheyrMojazAzShabakeh"
+            ].map(id => document.getElementById(id));
+
+            function toggleDisable() {
+                const shouldDisable = darbBasteh.checked || mamanet.checked;
+                disableCheckboxes.forEach(cb => {
+                    cb.disabled = shouldDisable;
+                    if (shouldDisable) cb.checked = false;
+                });
+            }
+
+            // اجرا روی لود اولیه
+            toggleDisable();
+
+            // اجرا روی تغییرات
+            darbBasteh.addEventListener("change", toggleDisable);
+            mamanet.addEventListener("change", toggleDisable);
+        });
+    </script>
+
+</body>
+</html>
+<script>
+    // وقتی صفحه بارگذاری شد، تاریخ میلادی را به شمسی تبدیل کن
+    window.addEventListener("DOMContentLoaded", function () {
+
+        var input = document.getElementById("datepickerFrom_shw1");
+        var miladi = input.value;
+        if (miladi) {
+            var parts = miladi.split('/'); // yyyy/MM/dd
+            var gYear = parseInt(parts[0]);
+            var gMonth = parseInt(parts[1]);
+            var gDay = parseInt(parts[2]);
+
+            // تبدیل میلادی به شمسی با jalaali.js
+            var j = jalaali.toJalaali(gYear, gMonth, gDay);
+            input.value = j.jy + '/' + String(j.jm).padStart(2, '0') + '/' + String(j.jd).padStart(2, '0');
+        }
+    });
+
+    // وقتی کاربر تاریخ را تغییر داد، hidden input را آپدیت کن
+    var inputs = document.querySelectorAll("[data-jdp-miladi-input]");
+    inputs.forEach(function (el) {
+        el.addEventListener("jdp:change", function () {
+            var miladiInput = document.getElementById(this.getAttribute("data-jdp-miladi-input"));
+            if (!this.value) {
+                miladiInput.value = "";
+                return;
+            }
+            var parts = this.value.split('/');
+            var g = jalaali.toGregorian(parseInt(parts[0]), parseInt(parts[1]), parseInt(parts[2]));
+            miladiInput.value = g.gy + '-' + g.gm + '-' + g.gd;
+        });
+    });
+
+</script>

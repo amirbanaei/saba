@@ -1,0 +1,158 @@
+﻿@model IEnumerable<SaabWebProject.Models.DomainModels.FinancialDocuments>
+@using System.Globalization;
+
+@using SaabWebProject.Models.DomainModels;
+
+@{
+    Layout = null;
+    SaabEntities db = new SaabEntities();
+}
+
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+<link href="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.style.css" rel="stylesheet" />
+<link href="~/MyStyles/MyStyle.css" rel="stylesheet" />
+
+<link href="~/MyStyles/inputstyleandformstyle.css" rel="stylesheet" />
+@*برای input ih*@
+<link href="~/MyStyles/cardstyle.css" rel="stylesheet" />
+@*برای کارد  ها*@
+<link href="~/MyStyles/buttonstyle.css" rel="stylesheet" />
+@*برای دکمه  ها*@
+
+@*<div class="card">*@
+@{
+    var t = 0;
+    long mondeh = 0;
+    string tashghes= "بس";
+}
+@foreach (var it in Model)
+{
+
+    if (t == 0)
+    {
+
+        PersianCalendar persianCalendar = new PersianCalendar();
+        DateTime dataDocument = it.DataDocument.Value; // تبدیل نالیبل به غیر نالیبل
+        int persianYear = persianCalendar.GetYear(dataDocument);
+        int persianMonth = persianCalendar.GetMonth(dataDocument);
+        var fsish = db.tbMoalefeValueFish.Where(p => p.tbContractMoalefeDastmozdi.md_Title == "خالص قابل دریافت (ریال)" && p.mlfvlfsh_Month == persianMonth && p.mlfvlfsh_Year == persianYear && p.FK_User == it.User_ID).Select(s=>s.mlfvlfsh_Value).FirstOrDefault();
+        var eydi = db.tbMoalefeValueFish.Where(p => p.tbContractMoalefeDastmozdi.md_Title == "عیدی و پاداش ( ماهانه-ریال)" && p.mlfvlfsh_Month == persianMonth && p.mlfvlfsh_Year == persianYear && p.FK_User == it.User_ID).Select(s => s.mlfvlfsh_Value).FirstOrDefault();
+        var sanavat = db.tbMoalefeValueFish.Where(p => p.tbContractMoalefeDastmozdi.md_Title == "سنوات خدمت (ماهانه-ریال)" && p.mlfvlfsh_Month == persianMonth && p.mlfvlfsh_Year == persianYear && p.FK_User == it.User_ID).Select(s => s.mlfvlfsh_Value).FirstOrDefault();
+
+        mondeh = (long)fsish;
+
+            <div class="row" style="margin-top:20px;margin-right:20px">
+            <div class="col-xl-4"></div>
+
+            <div class="col-xl-3">
+                <label class="form-label"> کاربر </label>
+                <input class="form-control bestankar-input" id="Creditor" value="@it.tbUsers.FullName" />
+            </div>
+            <div class="col-xl-4"></div>
+
+        </div>
+        <div class="row" style="margin-top:20px;margin-right:20px">
+            <div class="col-xl-4">
+                @*@if (istruu)
+            {*@
+                <label class="form-label">  شرح </label>
+                @*//}*@
+                <input class="form-control bestankar-input" id="Creditor" value="خالص فیش" />
+            </div>
+
+            <div class="col-xl-2">
+                @*@if (istruu)
+            {*@
+                <label class="form-label">  بستانکار (ریال)  </label>
+
+                @*//}*@
+                <input class="form-control bestankar-input" id="Creditor" value="  @String.Format("{0:N0}", fsish)" />
+            </div>
+            <div class="col-xl-2">
+                @*@if (istruu)
+            {*@
+                <label class="form-label">  بدهکار (ریال)  </label>
+                @*//    istruu = false;
+            //}*@
+                <input class="form-control bestankar-input" id="Creditor" value="  @String.Format("{0:N0}", 0)" />
+            </div>
+            <div class="col-xl-1">
+                @*@if (istruu)
+            {*@
+                <label class="form-label">  تشخیص	  </label>
+                @*//    istruu = false;
+            //}*@
+                <input class="form-control bestankar-input" id="Creditor" value="@tashghes" />
+            </div>
+            <div class="col-xl-2">
+                @*@if (istruu)
+            {*@
+                <label class="form-label">  مانده	  </label>
+                @*//    istruu = false;
+            //}*@
+                <input class="form-control bestankar-input" id="Creditor" value="  @String.Format("{0:N0}",mondeh )" />
+            </div>
+        </div>
+    }
+    if (t != 0)
+    {
+        if (it.Creditor != null && it.Creditor != 0)
+        {
+            mondeh += (long) it.Creditor;
+
+        }
+        if (it.Debtore != null && it.Debtore != 0)
+        {
+            mondeh -= (long)it.Debtore;
+
+        }
+        if (mondeh < 0)
+        {
+            tashghes = "بد";
+        }
+<div class="row" style="margin-top:20px;margin-right:20px">
+    <div class="col-xl-4">
+        @*@if (istruu)
+            {*@
+        <label class="form-label">  شرح </label>
+        @*//}*@
+        <input class="form-control bestankar-input" id="Creditor" value="@it.tbfkfinancial.Title" />
+    </div>
+
+    <div class="col-xl-2">
+        @*@if (istruu)
+            {*@
+        <label class="form-label">  بستانکار (ریال)  </label>
+
+        @*//}*@
+        <input class="form-control bestankar-input" id="Creditor" value="  @String.Format("{0:N0}", it.Creditor)" />
+    </div>
+    <div class="col-xl-2">
+        @*@if (istruu)
+            {*@
+        <label class="form-label">  بدهکار (ریال)  </label>
+        @*//    istruu = false;
+            //}*@
+        <input class="form-control bestankar-input" id="Creditor" value="  @String.Format("{0:N0}", it.Debtore)" />
+    </div>
+    <div class="col-xl-1">
+        @*@if (istruu)
+            {*@
+        <label class="form-label">  تشخیص	  </label>
+        @*//    istruu = false;
+            //}*@
+        <input class="form-control bestankar-input" id="Creditor" value="  @String.Format("{0:N0}", @tashghes)" />
+    </div>
+    <div class="col-xl-2">
+        @*@if (istruu)
+            {*@
+        <label class="form-label">  مانده	  </label>
+        @*//    istruu = false;
+            //}*@
+        <input class="form-control bestankar-input" id="Creditor" value="  @String.Format("{0:N0}", mondeh)" />
+    </div>
+</div>
+    }
+
+    t++;
+}

@@ -1,0 +1,35 @@
+﻿@using SaabWebProject.Models.DomainModels;
+@{
+    Layout = null;
+    SaabEntities db = new SaabEntities();
+
+}
+@model IEnumerable<SaabWebProject.Models.DomainModels.dbrelatinperson>
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+<select multiple="multiple" class="form-select" id="select_users1" name="select_users1">
+    <option value="-1">همه</option>
+    @if (Model != null && Model.Any())
+    {
+        foreach (var item in Model)
+        {
+            <option value="@item.ID">@db.tbUsers.Where(p => p.usr_ID == item.FK_usr).FirstOrDefault().FullName</option>
+        }
+
+
+    }
+
+    else
+    {
+
+        <optgroup label="برای این سمت کاربری ثبت نشده است">
+            <option value="0" disabled selected>کاربری یافت نشد</option>
+        </optgroup>
+
+    }
+</select>
+<script src="~/Assets/js/jquery3.6.0.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script>
+    $('#select_users1').picker({ search: true });
+</script>
+

@@ -1,0 +1,145 @@
+﻿
+@using SaabWebProject.Models.Classes;
+@{
+    Layout = null;
+}
+@model IEnumerable<SaabWebProject.Models.DomainModels.tbCities>
+
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+
+<div class="card">
+    <div class="table-content p-4">
+        <div class="tab-pane fade show active" id="allTab">
+            <div class="table-responsive tableH_Lock">
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr style="text-align:center">
+
+
+                            <th>
+                                @Html.DisplayName("#")
+                            </th>
+                            <th>
+                                @Html.DisplayName("شهر ")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter16-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            <th>
+                                @Html.DisplayName("نرخ مالیات")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter17-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody style="text-align:center">
+
+                        @if (Model != null)
+                        {
+
+                            var i = 0;
+                            foreach (var item in Model)
+                            {
+                                if (item != null)
+                                {
+                                    i++;
+                                    <tr class="task-list-rowZ"
+                                        data-filter16="@item.Name"
+                                        data-filter17="@String.Format("{0:N0}", item.Zaribmalyat)">
+                                        <td>
+                                            @i
+                                        </td>
+                                        <td>
+                                            @item.Name
+                                        </td>
+                                        <td>
+                                            @String.Format("{0:N0}", item.Zaribmalyat)
+                                        </td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    i++;
+                                    <tr>
+
+                                        <td>
+                                            @i
+                                        </td>
+
+
+                                        <td>
+                                            @item.Name
+                                        </td>
+
+                                        <td>
+                                            @item.Zaribmalyat
+                                        </td>
+
+
+
+
+
+                                    </tr>
+                                }
+                            }
+
+                            // Your foreach loop code here
+                        }
+
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+<script>
+
+    var
+        filtersZ = {
+            filter16: null,
+            filter17: null,
+        };
+
+    function updateFiltersZ() {
+        $('.task-list-rowZ').hide().filter(function () {
+            var self = $(this),
+                result = true;
+
+            Object.keys(filtersZ).forEach(function (filter) {
+                var filterData = self.data(filter);
+                if (filtersZ[filter] && (filtersZ[filter] != 'None') && (filtersZ[filter] != 'همه')) {
+                    // تبدیل داده به رشته و بررسی مقدار
+                    result = result && (filterData && filterData.toString().indexOf(filtersZ[filter]) !== -1);
+                }
+            });
+
+            return result;
+        }).show();
+    }
+
+    function changeFilterZ(filterName) {
+        filtersZ[filterName] = this.value;
+        updateFiltersZ();
+    }
+
+    // Assigned User Dropdown Filter
+    $('#filter16-filter').on('input', function () {
+        changeFilterZ.call(this, 'filter16');
+    });
+    $('#filter17-filter').on('input', function () {
+        changeFilterZ.call(this, 'filter17');
+    });
+
+</script>
+
+

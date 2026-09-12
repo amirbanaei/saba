@@ -1,0 +1,211 @@
+﻿@{
+    ViewBag.Title = "مدیریت چارت سازمانی";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div>
+    <div style="float:left;display:block;">
+        <a href="@Url.Action("Export_BusinessSide", "BusinessSide")" style="margin-right:10px;margin-bottom:10px;" class="btn btn-outline-info">
+            <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+            <span class="bGeneral-text">دانلود فایل اکسل نمونه</span>
+            
+        </a>
+        <a id="CreateBusinessSide" style="margin-right: 10px; cursor: pointer; margin-bottom: 10px;" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#modalLg">
+            <i class="fa fa-plus-circle fa-fw me-1 VecGeneral"></i>
+            <span class="bGeneral-text">افزودن سمت جدید</span>
+            
+        </a>
+        <a style="margin-right:10px;margin-bottom:10px;cursor:pointer" onclick="OpenDialogfile()" class="btn btn-outline-info">
+            <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+            <span class="bGeneral-text">آپلود فایل</span>
+            
+        </a>
+        <a href="@Url.Action("TreeChart_BusinessSide", "BusinessSide")" style="margin-right:10px;margin-bottom:10px;cursor:pointer" class="btn btn-outline-info">
+            <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+            <span class="bGeneral-text"> چارت سازمانی</span>
+           
+        </a>
+        <input type="file" style="display:none" name="BusinessFile"/>
+
+    </div>
+    <hr/>
+    <div id="BusinessSide_List">
+        @Html.Action("_GetAllBusiness", "BusinessSide", new { area = "Users" })
+    </div>
+</div>
+
+@*<ul class="pagination mb-0">
+        <li class="page-item disabled"><a class="page-link">قبلی</a></li>
+        <li class="page-item"><a class="page-link" href="#">1</a></li>
+        <li class="page-item active"><a class="page-link" href="#">2</a></li>
+        <li class="page-item"><a class="page-link" href="#">3</a></li>
+        <li class="page-item"><a class="page-link" href="#">بعد</a></li>
+    </ul>*@
+
+<script src="~/Assets/js/jquery3.6.0.js"></script>
+<script src="~/Scripts/sweetalert2.js"></script>
+<script src="~/Areas/Users/Scripts/BusinessSide/Index.js"></script>
+<script src="~/Scripts/sweetalert2.js"></script>
+<script>
+const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+
+$(function (){
+   
+    var res = "@TempData["response"]";
+    if (res == "True"){
+         document.getElementById("loading-message").style.display = "none";
+        Toast.fire({
+             icon: 'success',
+             background: '#35434A',
+             color: 'white',
+             title: "اطلاعات با موفقیت ذخیره شد"
+         });
+    }
+    if (res == "False"){
+             document.getElementById("loading-message").style.display = "none";
+            Toast.fire({
+                 icon: 'warning',
+                 background: '#35434A',
+                 color: 'white',
+                 title: "اطلاعات ذخیره نشد"
+             });
+        }
+    if (res == "Exists_Position"){
+             document.getElementById("loading-message").style.display = "none";
+            Toast.fire({
+                 icon: 'warning',
+                 background: '#35434A',
+                 color: 'white',
+                 title: "این سمت از قبل در سیستم ثبت شده است"
+             });
+        }
+    if (res == "catch"){
+             document.getElementById("loading-message").style.display = "none";
+            Toast.fire({
+                 icon: 'error',
+                 background: '#35434A',
+                 color: 'white',
+                 title: "عملیات ذخیره سازی با خطا مواجه شد لطفا بعدا تلاش فرمائید"
+             });
+        }
+    
+});
+
+    function OpenDialogfile() {
+        $("input[name='BusinessFile']").val(null);
+        $("input[name='BusinessFile']").click();
+        
+    }
+
+    $("input[name='BusinessFile']").change(function () {
+            var file = this.files[0];
+        var ext = file.name.split('.')[1];
+        if (ext == "xlsx" || ext == "xls") {
+            var obj = new FormData();
+
+            obj.append("BusinessFile", file);
+
+            console.log(file);
+            $.ajax({
+            beforeSend:function (){
+              document.getElementById("loading-message").style.display = "block";  
+            },
+                url: "@Url.Action("GetDataFromExcel_Positions", "BusinessSide")",
+                type: "post",
+                contentType: false,
+                data: obj,
+                dataType: "html",
+                processData: false,
+                cache: false,
+                success: function (res) {
+                    document.getElementById("loading-message").style.display = "none";
+                    UploadedFile(res);
+                },
+                error: function (res) {
+                    document.getElementById("loading-message").style.display = "none";
+                   Swal.fire({
+                        icon: 'error',
+                        background: 'rgb(29,40,52)',
+                        color: 'white',
+                        confirmButtonText: 'باشه',
+                        title: 'نوع فایل',
+                        text: 'آپلود اکسل با خطا مواجه شد',
+                   });
+                }
+            });
+        }
+        else {
+            Swal.fire({
+                icon: 'warning',
+                background: 'rgb(29,40,52)',
+                color: 'white',
+                confirmButtonText: 'باشه',
+                title: 'نوع فایل',
+                text: 'لطفا فایلی با پسوند اکسل وارد کنید',
+            });
+            return false;
+        }
+
+       });
+
+
+    //Show Partial View Create Business
+    $("#CreateBusinessSide").click(function () {
+        CreateBusinessSide('@Url.Content("/BusinessSide/_CreateBusinessSide")');
+    });
+
+     //If OnSuccess
+    function UploadedFile(res) {
+        console.log(res);
+        const Toast = Swal.mixin({
+            toast: true,
+            showConfirmButton: false,
+            timer: 4000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+
+        if (res == "True") {
+            Toast.fire({
+                icon: 'success',
+                background: '#35434A',
+                color: 'white',
+                title: "اطلاعات با موفقیت ذخیره شد"
+            }).then(function () {
+
+                document.location.reload();
+
+            });
+        }
+        else {
+
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: res
+            });
+        }
+
+
+
+    }
+
+
+
+
+</script>

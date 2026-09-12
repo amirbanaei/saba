@@ -1,0 +1,234 @@
+﻿@using SaabWebProject.Models.DomainModels;
+
+@{ SaabEntities db = new SaabEntities();
+
+    ViewBag.Title = "ارتباط مولفه ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+
+<div class="card">
+    <div class="table-content p-4">
+
+
+        <div class="tab-pane fade show active" id="allTab">
+            <div class="table-responsive">
+                <table class="table table-hover text-nowrap">
+                    <thead class="sticky-header">
+                        <tr>
+                            <th class="users1234 TitelL1" rowspan="1">
+                                فعالیت
+                            </th>
+
+                            <th class="users1234 TitelL1" rowspan="1">
+مولفه فیش حقوقی
+                                <input type="text" id="filter05-filter" class="inputFilter1 form-control" placeholder="">
+
+                            </th>
+                            <th class="users1234 TitelL1" rowspan="1">
+                                واحد
+                                <input type="text" id="filter06-filter" class="inputFilter1 form-control" placeholder="">
+
+                            </th>
+                            <th class="users1234 TitelL1" rowspan="1">
+                                مولفه 
+                                <input type="text" id="filter07-filter" class="inputFilter1 form-control" placeholder="">
+
+                            </th>
+                            @*@{
+                                    var sabt = db.tbmarhesabt3.Where(p => p.marahelsabt != null).FirstOrDefault();
+                                    var taeed = db.tbmarhesabt3.Where(p => p.taeed != null).FirstOrDefault();
+
+                                    var control = db.tbmarhesabt3.Where(p => p.controlmarahel != null).FirstOrDefault();
+
+                                }*@
+                       
+                        </tr>
+
+                    </thead>
+                    <tbody>
+                        @{
+                            int II2 = 0;
+                            var marahls = db.tbmarahlsabtbastedit1.Where(p => p.naem != null).ToList(); // ستون‌های ثابت
+
+                            var list = db.tbmarahlsabtbastedit2.ToList();
+                            var cit = db.tbpeymancities.ToList();
+                        }
+
+
+
+                        @foreach (var it in db.tbmarahlsabtbastedit6.ToList())
+                        {
+
+
+                            //var sabt = "";
+                            //if (it.tbmarahesabt4.sabt == true)
+                            //{
+                            //    sabt = "ثبت" + it.tbmarahesabt4.number;
+                            //}
+                            //else if (it.tbmarahesabt4.taeed == true)
+                            //{
+                            //    sabt = "تایید" + it.tbmarahesabt4.number;
+                            //}
+                            //else if (it.tbmarahesabt4.control == true)
+                            //{
+                            //    sabt = "کنترل" + it.tbmarahesabt4.number;
+                            //}
+                            <tr>
+                                <td>
+                                    <div class="ms-sm-4 mt-sm-0 mt-2 dropdown-toggle">
+                                        <a href="#" data-bs-toggle="dropdown" class="text-white text-opacity-75 text-decoration-none">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                        <div class="dropdown-menu">
+
+                                          
+                                            @*<a class="dropdown-item push" data-month="@it.month" onclick="upload112332444(this.id, this.dataset.month, this.dataset.year)"
+                    data-year="@it.year" id="@it.tbmarahesabt4.ID">مشاهده</a>*@
+                                           
+                                            <a style="cursor:pointer" data-month="@it.ID" onclick="adamneyaz(this.id, this.dataset.month, this.dataset.year)"
+                                               data-year="@it.ID" data-bs-toggle="modal" data-bs-target="#modalLg" class="dropdown-item EditUser" id="@it.ID">
+                                                ویرایش
+                                            </a>
+                                        
+                                        </div>
+                                    </div>
+                                    <input id="summery_file5" style="display:none" name="summery_file5" type="file" class="form-control" value="" />
+                                </td>
+                                <td>@db.tbContractMoalefeDastmozdi.Where(p => p.md_ID == it.FK_moalfe).Select(s => s.md_Title).FirstOrDefault()</td>
+
+                                <td>@db.tbContractMoalefeDastmozdi.Where(p => p.md_ID == it.FK_moalfe).Select(s => s.md_Title).FirstOrDefault()</td>
+                                @if (it.FK_moalfeh2 != null)
+                                {
+                                    <td>@db.tbContractMoalefeDastmozdi.Where(p => p.md_ID == it.FK_moalfeh2).Select(s => s.md_Title).FirstOrDefault()</td>
+
+                                }
+                                else
+                                {
+                                    <td>
+                                    </td>
+                                }
+
+
+                                @*@foreach (var marahl in marahls)
+        {
+            var findvalu = list
+                             .FirstOrDefault(p => p.FK_City == city.FK_City
+                                                  && p.FK_namebAST == marahl.ID
+                                                  && p.FK_pymn == contract.pec_ID);
+            var hasValue = findvalu?.Has ?? false;
+
+            <td data-column="@marahl.ID">
+                <input class="form-check-input mamur form-control44334 weewee"
+                       name="checkRow_@marahl.ID"
+                       type="checkbox"
+                       id="checkVasileV1-@marahl.ID-@city.FK_City-@contract.pec_ID"
+                       data-column="@marahl.ID"
+                       data-bind="@marahl.ID"
+                       data-keyboard="@marahl.ID"
+                       @(hasValue ? "checked" : "") />
+            </td>
+
+        }*@
+                            </tr>
+                            II2++;
+                        }
+                        @*@foreach (var contract in db.tbPeymanContracts.ToList())
+                            {
+                                var cities = cit.Where(p => p.FK_PYMN == contract.pec_ID).ToList();
+                                foreach (var city in cities)
+                                {
+                                    var cityName = city.tbCities?.Name ?? "N/A";
+
+                                    <tr class="task-list-row234 dateS_@II2"
+                                        data-filter01="@contract.pec_Title"
+                                        data-filter02="@cityName">
+                                        <td>@contract.pec_Title</td>
+                                        <td>@cityName</td>
+
+
+
+
+
+                                        @foreach (var marahl in marahls)
+                                        {
+                                            var findvalu = list
+                                                             .FirstOrDefault(p => p.FK_City == city.FK_City
+                                                                                  && p.FK_namebAST == marahl.ID
+                                                                                  && p.FK_pymn == contract.pec_ID);
+                                            var hasValue = findvalu?.Has ?? false;
+
+                                            <td data-column="@marahl.ID">
+                                                <input class=" mamur form-control44334 "
+                                                       name="checkRow_@marahl.ID"
+                                                       type="checkbox"
+                                                       id="checkVasileV1-@marahl.ID-@city.FK_City-@contract.pec_ID"
+                                                       data-column="@marahl.ID"
+                                                       data-bind="@marahl.ID"
+                                                       data-keyboard="@marahl.ID"
+                                                       @(hasValue ? "checked" : "") />
+                                            </td>
+
+                                        }
+                                    </tr>
+                                    II2++;
+                                }
+                            }*@
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xl-11"></div>
+        <div class="col-xl-1">
+            <button id="savabtn123451111" type="button" class="btn form-control buttonsabt">
+                <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                <span class="bSabt-text">ثبت</span>
+            </button>
+        </div>
+    </div>
+
+
+    <div id="mymodal3" class="modal3" style="margin-left: 10% !important;">
+        <div class="modal-content2">
+            <div class="row">
+                <i class="close fa fa-window-close"></i>
+            </div>
+            <div id="ss">
+
+            </div>
+
+        </div>
+    </div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Scripts/popper.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script>
+        function adamneyaz(id, month, year) {
+     //obj.append("id", id);
+     //obj.append("month", month);
+     //obj.append("year", year);
+     $("#big_modal_body").load('@Url.Content("/Contracts/RegistrationAndConfirmationProcedures/viewsabteditertebat")?id=' + id + '&month=' + month + '&year=' + year);
+ }
+</script>

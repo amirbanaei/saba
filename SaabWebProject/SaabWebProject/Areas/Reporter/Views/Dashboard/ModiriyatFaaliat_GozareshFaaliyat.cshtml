@@ -1,0 +1,275 @@
+﻿
+@{
+    ViewBag.Title = "گزارش کارها";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model SaabWebProject.Models.ViewModels.Contracts.Function.FunctionModel
+
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+<style>
+    .inputFilter {
+        margin-bottom: 0px !important;
+    }
+
+    thead tr:first-child th:first-child {
+        border-top-right-radius: 10px !important;
+        border-bottom-right-radius: 10px !important;
+    }
+
+    thead tr th:first-child {
+        border-radius: 0 !important;
+    }
+
+    thead tr:first-child th:last-child {
+        border-top-left-radius: 10px !important;
+        border-bottom-left-radius: 10px !important;
+    }
+
+    thead tr th:last-child {
+        border-radius: 0 !important;
+    }
+
+    .Le {
+        border-left: 1px solid var(--bs-border-input-color) !important;
+    }
+
+    .Ri {
+        border-right: 1px solid var(--bs-border-input-color) !important;
+    }
+
+    .To {
+        border-top: 1px solid var(--bs-border-input-color) !important;
+    }
+
+    .Bo {
+        border-bottom: 1px solid var(--bs-border-input-color) !important;
+    }
+
+    .table > :not(:first-child) {
+        border-top: 2px solid var(--bs-border-input-color) !important;
+    }
+
+    #dateDisplay {
+        float: left;
+    }
+
+    h5 {
+        margin-bottom: 0;
+    }
+</style>
+<div class="tab-content">
+
+    <div class="row p-2">
+        <div class="col-xl-8">
+            <h5>گزارش وضعیت فعالیت های ارجاع شده</h5>
+        </div>
+        <div class="col-xl-4">
+            <h5 id="dateDisplay"></h5>
+        </div>
+    </div>
+    <hr />
+    <div class="card">
+
+        <div class="table-content p-4">
+            <div class="tab-pane fade show active" id="allTab">
+                <div class="table-responsive">
+                    <table class="table table-hover text-nowrap">
+                        <thead>
+                            <tr>
+                                <th colspan="1" rowspan="2" class="Le ">
+                                    فعالیت
+                                </th>
+                                <th colspan="3" rowspan="2" class="Le Ri">
+                                    نام کاربر
+                                    <input type="text" id="filter01-filter" class="inputFilter form-control" placeholder="">
+                                </th>
+                                <th colspan="6" rowspan="1" class="Bo" style="border-bottom: 1px solid var(--bs-border-input-color) !important ">
+                                    تعداد کار ارجاع شده
+                                </th>
+                                <th colspan="1" rowspan="2" class="Le Ri">
+                                    پیام ها
+                                    <input type="text" id="filter08-filter" class="inputFilter form-control" placeholder="">
+                                </th>
+                                <th colspan="1" rowspan="2" class="Le Ri">
+                                    زمان آزاد ماه جاری
+                                    <input type="text" id="filter08-filter" class="inputFilter form-control" placeholder="">
+                                </th>
+                                <th colspan="1" rowspan="2">
+                                    زمان آزاد ماه آینده
+                                    <input type="text" id="filter09-filter" class="inputFilter form-control" placeholder="">
+                                </th>
+                            </tr>
+                            <tr>
+                                <th colspan="1" rowspan="1">
+                                    انجام شده
+                                    <input type="text" id="filter02-filter" class="inputFilter form-control" placeholder="">
+                                </th>
+                                <th colspan="1" rowspan="1">
+                                    عدم انجام
+                                    <input type="text" id="filter03-filter" class="inputFilter form-control" placeholder="">
+                                </th>
+                                <th colspan="1" rowspan="1">
+                                    تاخیر
+                                    <input type="text" id="filter04-filter" class="inputFilter form-control" placeholder="">
+                                </th>
+                                <th colspan="1" rowspan="1">
+                                    درجریان
+                                    <input type="text" id="filter05-filter" class="inputFilter form-control" placeholder="">
+                                </th>
+                                <th colspan="1" rowspan="1">
+                                    عدم امکان
+                                    <input type="text" id="filter06-filter" class="inputFilter form-control" placeholder="">
+                                </th>
+                                <th colspan="1" rowspan="1">
+                                    عدم  توانایی
+                                    <input type="text" id="filter07-filter" class="inputFilter form-control" placeholder="">
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach(var it in Model.fortariftatil)
+            {
+<tr class="task-list-row"
+    data-filter01=""
+    data-filter02=""
+    data-filter03=""
+    data-filter04=""
+    data-filter05=""
+    data-filter06=""
+    data-filter07=""
+    data-filter08=""
+    data-filter09="">
+    <td>
+        <div class="ms-sm-4 mt-sm-0 mt-2 dropdown-toggle">
+            <a href="#" data-bs-toggle="dropdown" class="text-white text-opacity-75 text-decoration-none">
+                <i class="fa fa-edit"></i>
+            </a>
+            <div class="dropdown-menu">
+                <a data-bs-toggle="modal" data-bs-target="#modalLg" class="dropdown-item Vaziyat" id="Vaziyat_@it.ID">وضعیت</a>
+                <a data-bs-toggle="modal" data-bs-target="#modalLg1" class="dropdown-item Erja" id="Erja_@it.ID">ارجا</a>
+                <a data-bs-toggle="modal" data-bs-target="#modalLg" class="dropdown-item Payam" id="Payam_@it.PersonalCode">پیام</a>
+            </div>
+        </div>
+    </td>
+    <td colspan="3" rowspan="1">@it.FullName</td>
+    <td colspan="1" rowspan="1">@it.anjam</td>
+    <td colspan="1" rowspan="1">@it.adam</td>
+    <td colspan="1" rowspan="1">@it.tagher</td>
+    <td colspan="1" rowspan="1">@it.darjaryan</td>
+    <td colspan="1" rowspan="1">@it.cant</td>
+    <td colspan="1" rowspan="1">@it.notanjam</td>
+
+    <td colspan="1" rowspan="1" class="clickable-td" id="td_@it.PersonalCode">
+        <span style="color: #2faa92; font-weight: bold">
+            <!-- آیکون و عدد بدون فاصله -->
+            <i class="fa fa-envelope Payam" id="Pgh_@it.PersonalCode" style="color: #2faa92; display: inline-block; vertical-align: middle;"></i>
+
+            <a data-bs-toggle="modal" data-bs-target="#modalLg" class="dropdown-item Payam" id="Payam_@it.PersonalCode" style="display: inline-block;width:0 !important;margin-right:-29px; vertical-align: middle;">
+                @it.pyam
+            </a>
+        </span>
+    </td>
+
+    <td colspan="1" rowspan="1"></td>
+
+    <td colspan="1" rowspan="1"></td>
+</tr>
+            }
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="card-arrow">
+            <div class="card-arrow-top-left"></div>
+            <div class="card-arrow-top-right"></div>
+            <div class="card-arrow-bottom-left"></div>
+            <div class="card-arrow-bottom-right"></div>
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script>
+    var options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+    var dateString = new Date().toLocaleDateString('fa-IR-u-nu-latn', options);
+    document.getElementById('dateDisplay').textContent = "تاریخ امروز : " + dateString;
+</script>
+<script>
+
+    var
+        filters = {
+            filter01: null,
+            filter02: null,
+            filter03: null,
+            filter04: null,
+            filter05: null,
+            filter06: null,
+            filter07: null,
+            filter08: null,
+            filter09: null,
+        };
+
+    function updateFilters() {
+        $('.task-list-row').hide().filter(function () {
+            var self = $(this),
+                result = true; // not guilty until proven guilty
+
+            Object.keys(filters).forEach(function (filter) {
+                if (filters[filter] && (filters[filter] != 'None') && (filters[filter] != 'همه')) {
+                    // تطبیق جزئی (contains) به جای تطبیق کامل
+                    result = result && self.data(filter).indexOf(filters[filter]) !== -1;
+                }
+            });
+
+            return result;
+        }).show();
+    }
+
+    function changeFilter(filterName) {
+        filters[filterName] = this.value;
+        updateFilters();
+    }
+     $(".Payam").click(function () {
+     var idd = $(this).attr("id").split("_")[1];
+     console.log(idd);
+         $("#big_modal_body").load('@Url.Content("/Reporter/Dashboard/ModiriyatFaaliat_ListeFaaliyat_PayamModal")?id='+idd);
+     });
+    // Assigned User Dropdown Filter
+    $('#filter01-filter').on('input', function () {
+        changeFilter.call(this, 'filter01');
+    });
+    $('#filter02-filter').on('input', function () {
+        changeFilter.call(this, 'filter02');
+    });
+    $('#filter03-filter').on('input', function () {
+        changeFilter.call(this, 'filter03');
+    });
+    $('#filter04-filter').on('input', function () {
+        changeFilter.call(this, 'filter04');
+    });
+    $('#filter05-filter').on('input', function () {
+        changeFilter.call(this, 'filter05');
+    });
+    $('#filter06-filter').on('input', function () {
+        changeFilter.call(this, 'filter06');
+    });
+    $('#filter07-filter').on('input', function () {
+        changeFilter.call(this, 'filter07');
+    });
+    $('#filter08-filter').on('input', function () {
+        changeFilter.call(this, 'filter07');
+    });
+    $('#filter09-filter').on('input', function () {
+        changeFilter.call(this, 'filter07');
+    });
+
+
+</script>

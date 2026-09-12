@@ -1,0 +1,77 @@
+﻿@model SaabWebProject.Models.ViewModels.Contracts.Function.FunctionModel
+@using SaabWebProject.Models.DomainModels
+@using System.Globalization
+
+@{
+    SaabEntities db = new SaabEntities();
+    Layout = null;
+}
+
+<!-- jQuery -->
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+
+<!-- jQuery UI for Autocomplete -->
+<script src="~/Scripts/jquery-ui.min.js"></script>
+<link href="~/Content/themes/base/jquery-ui.css" rel="stylesheet" />
+
+<!-- Picker CSS/JS -->
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+
+<!-- Jalaali DatePicker -->
+<script src="~/Assets/js/jalaali.min.js"></script>
+<script src="~/Assets/js/jalalidatepicker.min.js"></script>
+<link href="~/Assets/css/jalalidatepicker.min.css" rel="stylesheet" />
+<link href="~/MyStyles/jalalidatepicker.css" rel="stylesheet" />
+
+<!-- Select pehman (مثل قبل) -->
+<select class="form-select select_peyman" id="select_peyman" name="select_peyman">
+    <option hidden value="Select">انتخاب مورد</option>
+    @foreach (var item in Model.tbAdamAdam23)
+    {
+        var finduae = db.tbUsers.FirstOrDefault(s => s.usr_ID == item.nam);
+        if (finduae != null)
+        {
+            <option value="@item.nam">@finduae.FullName</option>
+        }
+    }
+</select>
+
+<!-- Input جدید برای جستجوی pehman2 (جایگزین select سنگین) -->
+<input type="text" id="peyman2Search" placeholder="انتخاب مورد..." class="form-control" />
+
+<script>
+$(document).ready(function () {
+
+    // فعال کردن select-peyman با picker
+    $("#select_peyman").picker({ search: true });
+
+    // Autocomplete برای pehman2Search
+    $("#peyman2Search").autocomplete({
+        source: function (request, response) {
+            $.ajax({
+url: '@Url.Action("GetLinkAutocomplete", "Orders", new { area = "Setting" })',
+                type: "GET",
+                dataType: "json",
+                data: {
+                    term: request.term,
+                    month: @Model.month,
+                    year: @Model.year333
+                },
+                success: function (data) {
+                    response(data);
+                }
+            });
+        },
+        minLength: 2,
+        select: function (event, ui) {
+            console.log("Selected: " + ui.item.label + " ID: " + ui.item.value);
+            // می‌توانید مقدار ID را در یک hidden input ذخیره کنید
+            $("#hidden_peyman2ID").val(ui.item.value);
+        }
+    });
+});
+
+// hidden input برای ذخیره ID انتخاب شده
+</script>
+<input type="hidden" id="hidden_peyman2ID" name="select_peyman2" />

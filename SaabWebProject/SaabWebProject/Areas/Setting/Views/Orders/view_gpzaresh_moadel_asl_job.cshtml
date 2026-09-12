@@ -1,0 +1,605 @@
+﻿ویو نقشه نهایی
+@model SaabWebProject.Models.ViewModels.Contracts.Function.FunctionModel
+
+
+@{
+    ViewBag.Title = "نقشه راه گزارش ها";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+
+    <meta name="viewport" content="width=device-width" />
+    <title>NaghsheRah</title>
+    <style>
+        p {
+            margin-bottom: 0px !important;
+        }
+
+
+
+        .modal3 {
+            display: none;
+            position: fixed; /* حفظ مودال مرکزی */
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            /*        overflow: auto;*/
+            padding-top: 50px;
+            position: absolute !important
+        }
+
+        .modal-content2 {
+            background-color: #082D59;
+            margin: 5% auto; /* مرکزی شدن محتوا */
+            padding: 20px;
+            border: 2px solid #00CAFC;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 800px; /* حداکثر پهنا برای مودال */
+            height: auto;
+            max-height: 400px;
+/*            overflow-y: auto;
+*/            position: relative;
+        }
+
+        /* ترکیب دو کلاس close و close-icon */
+        .close-icon,
+        .close {
+            color: #00CAFC;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            /* تنظیمات absolute برای موقعیت‌دهی در گوشه بالا چپ */
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            z-index: 1001;
+        }
+
+        /*    .Naghshe {
+            height: 600px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+        }*/
+        .Naghshe {
+            min-height: 600px;
+            display: grid;
+            grid-template-columns: repeat(6, 60px); /* عرض واقعی هر نود */
+            gap: 90px 70px;
+            justify-content: center; /* ← مهم */
+            align-items: center;
+            padding: 60px;
+        }
+
+        .circle2 {
+            position: relative; /* ← قبلا absolute بود */
+            background-color: #1d2734;
+            height: 30px;
+            width: 30px;
+            border-radius: 50%;
+            box-shadow: inset 0 0 16px 0px #00ffff, 0px 0px 5px 1px #00ffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+            /* .circle2 {
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-color: #1d2734;
+            height: 30px;
+            width: 30px;
+            border-radius: 50%;
+            box-shadow: inset 0 0 16px 0px #00ffff, 0px 0px 5px 1px #00ffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            cursor: pointer;
+            transition: .2s;
+        }*/
+
+            .circle2:hover {
+                border: 1px solid white;
+                z-index: 10001 !important;
+            }
+
+                .circle2:hover .box {
+                    opacity: 1;
+                    visibility: visible;
+                    z-index: 10002 !important;
+                    transform: translateY(-95px) scale(1);
+                    pointer-events: all;
+                }
+
+
+        .red {
+            box-shadow: inset 0 0 16px 0px #ff0000, 0px 0px 5px 1px #ff0000;
+        }
+
+        .green {
+            box-shadow: inset 0 0 16px 0px #04ff00, 0px 0px 5px 1px #00ff37;
+        }
+
+        .yellow {
+            box-shadow: inset 0 0 16px 0px #ff9900, 0px 0px 5px 1px #ff9900;
+        }
+
+        .circle2 i {
+            font-size: 14px;
+            color: white;
+            font-style: normal;
+        }
+
+        .box {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            height: fit-content;
+            width: 215px !important;
+            z-index: 100;
+            justify-content: center;
+            border-radius: 15px;
+            border: 1px solid aqua;
+            background: #1d2734;
+            padding: 10px;
+            /* موقعیت اولیه */
+            top: 28px;
+            right: -92px;
+            /* حالت مخفی و ریز شده */
+            opacity: 0;
+            visibility: hidden;
+            /* ۱. تغییر سایز اولیه به 50% */
+            transform: scale(0.1);
+            /* ۲. نرم کردن حرکت و تغییر سایز */
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none;
+        }
+
+
+
+        .body-box {
+            width: 100%;
+            height: 100%;
+            justify-content: center;
+            display: flex;
+            flex-direction: column;
+        }
+
+            .body-box p {
+                color: white;
+                width: 100%;
+            }
+
+        .box2 {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            height: 60px;
+            width: 60px !important;
+            z-index: 1000;
+            justify-content: center;
+            border-radius: 15px;
+            border: 1px solid #00ffff40;
+        }
+
+        .title-box2 {
+            margin: auto;
+            position: absolute;
+            top: -20px;
+            right: 38%;
+            width: 40px;
+            height: 40px;
+            border-radius: 99%;
+            background: #1d2734;
+            justify-content: center;
+            display: flex;
+            align-items: center;
+            border: 1px dashed aqua;
+        }
+
+            .title-box2 i {
+                font-size: 20px;
+                color: white;
+            }
+
+        .body-box2 {
+            width: 100%;
+            height: 100%;
+            justify-content: center;
+            display: flex;
+        }
+
+            .body-box2 p {
+                height: 100%;
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+        b {
+            color: aqua;
+            font-weight: bold;
+        }
+    </style>
+    <style>
+        .cls-1 {
+            fill: aqua;
+            stroke: none;
+        }
+
+        .cls-2 {
+            fill: aqua;
+            stroke: none;
+            stroke-width: 12.59px;
+        }
+
+        .cls-2, .cls-3 {
+            stroke-miterlimit: 1;
+        }
+
+        .cls-3 {
+            fill: none;
+            stroke: #00ffff40;
+            stroke-width: 6px;
+            stroke-dasharray: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="card-body pb-2">
+            <div class="Naghshe" id="pills-tabContent" style="overflow:hidden;">
+
+
+                @{
+                    var reports = new List<dynamic> {
+        new { Id = 1, Status = Model.var1, Name = "ثبت شرط ها", Top = "185px", Right = "152px", Left = "" },
+        new { Id = 2, Status = Model.var2, Name = "ست شرط ها", Top = "268px", Right = "190px", Left = "" },
+        new { Id = 3, Status = Model.var3, Name = "پردازش حذف ها ", Top = "185px", Right = "321px", Left = "" },
+        new { Id = 4, Status = Model.var4, Name = "ثبت اولویت ها", Top = "89px", Right = "362px", Left = "" },
+        new { Id = 5, Status = Model.var5, Name = "ست کردن اولویت ها", Top = "185px", Right = "495px", Left = "" },
+        new { Id = 6, Status = Model.var6, Name = "پردازش اولویت ها ", Top = "268px", Right = "535px", Left = "" },
+
+        // می‌توانید بقیه دایره‌ها (7 تا 12) را به صورت استاتیک یا با مقادیر دلخواه اضافه کنید
+        new { Id = 7, Status = Model.var7, Name = "ست کردن تعداد نیرو ها", Top = "185px", Right = "666px", Left = "" },
+        new { Id = 8, Status = Model.var8, Name = "ریختن کار", Top = "89px", Right = "706px", Left = "" },
+        new { Id = 9, Status = 1, Name = "", Top = "185px", Right = "838px", Left = "" },
+        new { Id = 10, Status = 1, Name = "", Top = "268px", Right = "879px", Left = "" },
+        new { Id = 11, Status = 1, Name = "", Top = "185px", Right = "1008px", Left = "" },
+        new { Id = 12, Status = 1, Name = "", Top = "89px", Right = "1045px", Left = "" },
+    };
+                }
+                @*@{
+            var firstRow = reports.Take(6).ToList(); // 1 تا 6
+            var secondRow = reports.Skip(6).Take(6).Reverse().ToList(); // 7 تا 12 و برعکس
+            var orderedReports = firstRow.Concat(secondRow).ToList();
+        }*@
+                @{
+                    var firstRow = reports.Take(6).ToList(); // 1 تا 6
+                    var secondRow = reports.Skip(6).Take(6).Reverse().ToList(); // 7 تا 12 و برعکس
+                    var orderedReports = firstRow.Concat(secondRow).ToList();
+                }
+
+                @foreach (var item in orderedReports)
+                {
+                    <div class="circle2 step-node @(item.Status == 0 ? "red" : item.Status == 1 ? "green" : "yellow")"
+                         data-id="@item.Id">
+                        <div class="box">
+                            <div class="body-box">
+                                <p>نام گزارش : <b>@item.Name</b></p>
+                                <p>
+                                    وضعیت :
+                                    <b>
+                                        @(item.Status == 0 ? "ثبت نشده"
+                        : item.Status == 1 ? "ثبت شده است"
+                        : "پردازش نشده است")
+                                    </b>
+                                </p>
+                            </div>
+                        </div>
+                        <i>@item.Id</i>
+                    </div>
+                }
+
+                @*@{
+            int iddd = 0;
+        }
+
+        @foreach (var item in reports)
+        {
+            <div class="circle2 step-node @(item.Status == 0 ? "red" : item.Status == 1 ? "green" : "yellow")"
+                 data-id="@item.Id">
+
+                <div class="box">
+                    <div class="body-box">
+                        <p>نام گزارش : <b>@item.Name</b></p>
+                        <p>
+                            وضعیت :
+                            <b>
+                                @(item.Status == 0 ? "ثبت نشده"
+                : item.Status == 1 ? "ثبت شده است"
+                : "پردازش نشده است")
+                            </b>
+                        </p>
+                    </div>
+                </div>
+
+                <i>@item.Id</i>
+            </div>
+        }*@
+
+
+                @*@foreach (var item in reports)
+        {
+            <div class="circle2 step-node @(item.Status == 0 ? "red" : item.Status == 1 ? "green" : "yellow")"
+                 data-id="@item.Id">
+
+                <div class="box">
+                    <div class="body-box">
+                        <p>نام گزارش : <b>@item.Name</b></p>
+                        <p>
+                            وضعیت :
+                            <b>
+                                @(item.Status == 0 ? "ثبت نشده"
+                : item.Status == 1 ? "ثبت شده است"
+                : "پردازش نشده است")
+                            </b>
+                        </p>
+                    </div>
+                </div>
+
+                <i>@item.Id</i>
+            </div>
+        }*@
+
+                @*@foreach (var item in reports)
+        {
+            // تمام محاسبات استایل رو اینجا انجام میدیم که تمیز باشه
+            var posTop = item.Top;
+            var posRight = !string.IsNullOrEmpty(item.Right) ? $"right:{item.Right};" : "";
+            var posLeft = !string.IsNullOrEmpty(item.Left) ? $"left:{item.Left};" : "";
+
+            // ترکیب نهایی
+            var finalStyle = $"top:{posTop}; {posRight} {posLeft}";
+
+            <div class="circle2 step-node @(item.Status == 0 ? "red" : item.Status == 1 ? "green" : "yellow")"
+                 style="@finalStyle" data-id="@item.Id">
+                <div class="box">
+                    <div class="body-box">
+                        <p>نام گزارش : <b>@item.Name</b></p>
+                        <p>وضعیت : <b>@(item.Status == 0 ? "ثبت نشده" : item.Status == 1 ? "ثبت شده است" : "پردازش نشده است")</b></p>
+                    </div>
+                </div>
+                <i>@item.Id</i>
+            </div>
+        }*@
+
+
+
+
+
+
+                <!--<div class="box2 step-node" style="top: 410px; left: 410px;">-->
+                @*<div class="title-box2">
+            <i class="bi bi-card-list"></i>
+        </div>*@
+                <!--<div class="body-box2">
+            <p>
+
+                <a class="btnDownload input1 btn form-control buttonGeneralPlus" target="_blank" href="~/Areas/Suggestion/Contents/"><i class="bi bi-download"></i></a>
+
+            </p>
+        </div>
+    </div>-->
+                <div class="box2 step-node" data-id="@(reports.Count + 1)">
+
+                    <div class="body-box2">
+                               <div class="col-xl-1">
+           <a href="@Url.Action("ExportAddMoalefeghaleskarkard_countcar", "Orders", new { area = "Setting" })"
+              class="btn form-control buttonGeneral"
+              onclick="this.href+='?fromDate=' + document.getElementById('astime').value + '&month=' + document.getElementById('astime').value">
+               <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+               <span class="bGeneral-text"> فایل کارکردها </span>
+           </a>
+       </div>
+                        @*<p>
+                            <a class="btnDownload input1 btn form-control buttonGeneralPlus"
+                               target="_blank"
+                               href="~/Areas/Suggestion/Contents/">
+                                <i class="bi bi-download"></i>
+                            </a>
+                        </p>*@
+                    </div>
+                </div>
+
+
+
+                @*<div class="map">
+            <?xml version="1.0" encoding="UTF-8" ?>
+            <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="1545" height="530" viewBox="0 130 1940 900">
+
+                <g>
+                    <path class="cls-3" d="M1834.81,281.86v270.73c0,18.19-21.48,32.94-47.98,32.94h-195.63c-26.5,0-47.98-14.75-47.98-32.94v-237.76c0-18.19-21.49-32.94-47.99-32.94h-195.66c-26.5,0-47.98,14.75-47.98,32.94,0,58.38,0,179.34,0,237.74,0,18.19-21.48,32.94-47.98,32.94h-195.63c-26.5,0-47.98-14.75-47.98-32.94v-237.76c0-18.19-21.49-32.94-47.99-32.94h-195.66c-26.5,0-47.98,14.76-47.98,32.95v237.75c0,18.19-21.47,32.94-47.97,32.94h-177.43c-44.71,0-66.18-14.75-66.18-32.94v-237.76c0-18.19-21.49-32.94-47.99-32.94h-195.66c-26.5,0-47.98,14.76-47.98,32.95v270.7s0,264.7,0,264.7c0,18.19,21.48,32.94,47.98,32.94h387" />
+                    <polygon class="cls-1" points="514.27 839.16 514.27 927.12 558.24 883.14 514.27 839.16" />
+                </g>
+                <circle class="cls-2" cx="1833" cy="275.14" r="26.86" />
+            </svg>
+        </div>*@
+
+
+
+            </div>
+        </div>
+        <div class="card-arrow">
+            <div class="card-arrow-top-left"></div>
+            <div class="card-arrow-top-right"></div>
+            <div class="card-arrow-bottom-left"></div>
+            <div class="card-arrow-bottom-right"></div>
+        </div>
+        <div id="mymodal3" class="modal3">
+            <div class="modal-content2">
+                <i class="close-icon fa fa-window-close"></i>
+                <div id="ss">
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="~/Scripts/leader-line.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            function getNodeColor(node) {
+                if (node.classList.contains('green')) return '#00ff88';
+                if (node.classList.contains('red')) return '#ff3b3b';
+                return '#ffaa00';
+            }
+            // 1. رسم خطوط بعد از لود شدن کامل
+
+    const lines = [];
+    const nodes = Array.from(document.querySelectorAll('.step-node'))
+                      .sort((a, b) => a.dataset.id - b.dataset.id);
+
+    nodes.forEach((node, i) => {
+        if (i < nodes.length - 1) {
+            let line = new LeaderLine(
+                nodes[i],
+                nodes[i + 1],
+                {
+                    path: 'grid',
+                    size: 4,
+
+                    color: '#00f6ff',
+                    gradient: true,
+
+                    dash: { len: 8, gap: 6, animation: true },
+
+                    outline: true,
+                    outlineColor: '#003a40',
+                    outlineSize: 3,
+
+                    dropShadow: {
+                        dx: 0,
+                        dy: 0,
+                        blur: 10
+                    },
+
+                    startPlug: 'disc',
+                    startPlugSize: 0.8,
+
+                    endPlug: 'arrow3',
+                    endPlugSize: 1.3,
+
+                    zIndex: 0
+                }
+            );
+
+
+            lines.push(line);
+        }
+    });
+
+    // 2. مدیریت کلیک روی دایره‌ها
+
+    // 3. فیکس کردن جابجایی خطوط موقع اسکرول یا تغییر سایز
+    $(window).on('scroll resize', function() {
+        lines.forEach(l => l.position());
+    });
+        // وقتی روی هر سلول یا دکمه click2 کلیک شد، مودال باز بشه
+    $(".circle2").click(function () {
+        var $this = $(this);
+        lines.forEach(l => l.hide());
+
+        // موقعیت المان کلیک‌شده
+        var offset = $this.offset();
+        var elementHeight = $this.outerHeight();
+        $("#hiddenID").val(idd);
+        // نمایش مودال
+        $("#mymodal3")
+            .addClass("fade-in")
+            .css({
+                "display": "block",
+
+            });
+
+        // گرفتن data-id یا هر چیزی که نیاز داری
+        var idd = $this.data("id");
+        console.log("Clicked ID:", idd);
+        var fromDate = $("#astime").val();
+
+        // لود محتوا
+$("#ss").load('@Url.Content("/Setting/Orders/Modal_Naghshe")?id=' + idd + '&fromDate=' + fromDate);
+    });
+
+    // بستن مودال با آیکون
+    $(".close-icon").click(function () {
+        $("#mymodal3").fadeOut();
+        lines.forEach(l => l.show());
+
+    });
+
+    // بستن مودال وقتی روی بک‌گراند کلیک شد
+    $("#mymodal3").click(function (e) {
+        if (e.target === this) {
+            $(this).fadeOut();
+        }
+    });
+});
+    </script>
+    <script>
+
+        $(document).ready(function () {
+
+
+
+        });
+        $(document).ready(function () {
+            $("#expandButton2").click(function () {
+                $("#mymodal3").addClass("fade-in"); // Add the fade-in class
+                $("#mymodal3").css("display", "block");
+            });
+
+            $(".close").click(function () {
+                $("#mymodal3").removeClass("fade-in"); // Remove the fade-in class
+                $("#mymodal3").css("display", "none");
+                //location.reload();
+            });
+
+            $(window).click(function (event) {
+                if (event.target == $("#mymodal3")[0]) {
+                    $("#mymodal3").removeClass("fade-in"); // Remove the fade-in class
+                    $("#mymodal3").css("display", "none");
+                }
+            });
+        })
+        // بستن مودال با آیکون
+        $(".close-icon").click(function () {
+            $("#mymodal3").fadeOut(200, function () {
+                //location.reload();
+            });
+        });
+
+        // بستن مودال با کلیک روی بک‌گراند
+        $("#mymodal3").click(function (e) {
+            if (e.target === this) {
+                $(this).fadeOut(200, function () {
+                    //location.reload();
+                });
+            }
+        });
+
+    </script>
+</body>
+</html>
+

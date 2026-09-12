@@ -1,0 +1,169 @@
+﻿@{ Layout = null;}
+@model IEnumerable<SaabWebProject.Models.DomainModels.tbSavedFunctions>
+<div class="tab-pane active" id="TaedKarkardKarbaran">
+    <style>
+        .card .card-arrow-bottom-left:before, .card .card-arrow-bottom-right:before, .card .card-arrow-top-left:before, .card .card-arrow-top-right:before {
+            content: "";
+            position: absolute;
+            width: 2px;
+            height: 8px;
+            background: aqua;
+            opacity: .75;
+        }
+
+        .card .card-arrow-bottom-left:after, .card .card-arrow-bottom-right:after, .card .card-arrow-top-left:after, .card .card-arrow-top-right:after {
+            content: "";
+            position: absolute;
+            width: 10px;
+            height: 2px;
+            background: aqua;
+            opacity: .75;
+        }
+
+        tbody tr td:first-child {
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px
+        }
+
+        tbody tr td:last-child {
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px
+        }
+
+        thead tr th:first-child {
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px
+        }
+
+        thead tr th:last-child {
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px
+        }
+
+        th,
+        td {
+            padding: 10px;
+        }
+
+        thead th {
+            background-color: #101729 !important;
+        }
+
+        tbody tr:nth-child(odd) {
+            border-radius: 30px;
+        }
+
+        tbody tr:nth-child(even) {
+            border-radius: 40px;
+            background-color: #0e223d;
+            color: #a1bad9;
+        }
+
+        }
+
+        .table > :not(caption) > * > * {
+            border-bottom-width: 0px !important;
+        }
+
+
+
+        tbody tr:first-child {
+            border-radius: 45px;
+        }
+    </style>
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="form-group mb-12">
+                <div class="table-responsive">
+                    <table class="table table-hover text-nowrap">
+                        <thead>
+                            <tr style="text-align:center;margin:auto">
+                                <th>
+                                    @Html.DisplayName("عملیات")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("ردیف")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("پیمان")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("بسته")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("از تاریخ")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("تا تاریخ")
+                                </th>
+                                <th>
+                                    @Html.DisplayName(" کاربر")
+                                </th>
+
+                            </tr>
+
+                        </thead>
+                        <tbody>
+                            @{ int counter = 0;}
+                            @foreach (var item in Model)
+                            {
+                                counter = counter + 1;
+
+                                <tr style="text-align:center;">
+                                    <td>
+                                        <div class="ms-sm-4 mt-sm-0 mt-2 dropdown-toggle">
+                                            <a href="#" data-bs-toggle="dropdown" class="text-white text-opacity-75 text-decoration-none">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                            <div class="dropdown-menu">
+                                                <a style="cursor:pointer" data-bs-toggle="modal" data-bs-target="#modalLg" class="dropdown-item showFunction" id="showFunction_@item.svdfunc_ID">
+                                                    مشاهده
+                                                </a>
+                                            </div>
+
+                                        </div>
+                                    </td>
+
+
+                                    <td>@counter</td>
+                                    <td>@item.tbPeymanContracts.pec_Title</td>
+                                    <td>@item.tbReffrenceSaveLevel.Title</td>
+                                    <td>@item.ShmasiStartTime</td>
+                                    <td>@item.ShmasiENDTime</td>
+                                    <td>@item.tbUsers.FullName</td>
+
+
+
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+@*<div class="modal fade" id="modalLg">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-body" id="ModalFunction">
+
+                </div>
+            </div>
+        </div>
+    </div>*@
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script>
+        @*$("#ShowFunctionDetail").click(function () {
+            alert("salam");
+
+        $("#ModalFunction").load('@Url.Content("../../Contracts/Functions/_SubmitFunction")');
+        });*@
+        $(".showFunction").click(function () {
+            var idd = $(this).attr("id").split("_")[1];
+            console.log(idd);
+             $("#big_modal_body").load('@Url.Content("../../Contracts/Functions/_SubmitFunction")?idd='+idd);
+          });
+</script>

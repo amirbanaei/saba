@@ -1,0 +1,544 @@
+﻿
+@using SaabWebProject.Models.DomainModels;
+
+@using System.Globalization
+
+@{
+    PersianCalendar persianCalendar = new PersianCalendar();
+}
+
+@{
+    Layout = null;
+    SaabEntities db = new SaabEntities();
+
+}
+@model SaabWebProject.Models.DomainModels.dbAsnaduplaodfil2
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+<style>
+    th{
+        vertical-align:middle;
+    }
+</style>
+<div class="card">
+    <div class="table-content p-4">
+        <div class="tab-pane fade show active" id="allTab">
+            <div class="table-responsive">
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr style="text-align:center">
+
+
+                            <th>
+                                @Html.DisplayName("فعالیت")
+                            </th>
+                            @if (Model.defaultRadio7 == true)
+                            {
+                                <th>
+                                    @Html.DisplayName("پیمان ها")
+                                    <input type="text" id="filter01-filter" class="inputFilter form-control" placeholder="">
+                                </th>
+                            }
+                            @if (Model.defaultRadio4 == true)
+                            {
+                                <th>
+                                    @Html.DisplayName("کاربران حقیقی")
+                                    <input type="text" id="filter02-filter" class="inputFilter form-control" placeholder="">
+                                </th>
+                            }
+                            @if (Model.defaultRadio3 == true)
+                            {
+                                <th>
+                                    @Html.DisplayName("کاربران حقوقی")
+                                    <input type="text" id="filter03-filter" class="inputFilter form-control" placeholder="">
+                                </th>
+                            }
+                            @if (Model.defaultRadio5 == true)
+                            {
+                                <th>
+                                    @Html.DisplayName("شرح")
+                                    <input type="text" id="filter04-filter" class="inputFilter form-control" placeholder="">
+                                </th>
+                            }  
+                            @if (Model.shomarehnameh == true)
+                            {
+                                <th>
+                                    @Html.DisplayName("شماره نامه")
+                                    <input type="text" id="filter05-filter" class="inputFilter form-control" placeholder="">
+                                </th>
+                            }  @if (Model.mablaghChecked == true)
+                            {
+                                <th>
+                                    @Html.DisplayName("مبلغ")
+                                </th>
+                            }  @if (Model.timestartChecked == true)
+                            {
+                                <th>
+                                    @Html.DisplayName("تاریخ شروع")
+                                    <input type="text" id="filter06-filter" class="inputFilter form-control" placeholder="">
+                                </th>
+                            }  @if (Model.timeendChecked == true)
+                            {
+                                <th>
+                                    @Html.DisplayName("تاریخ پایان")
+                                    <input type="text" id="filter07-filter" class="inputFilter form-control" placeholder="">
+                                </th>
+                            }  @if (Model.timerepetChecked == true)
+                            {
+                                <th>
+                                    @Html.DisplayName("تاریخ تکرار")
+                                    <input type="text" id="filter08-filter" class="inputFilter form-control" placeholder="">
+                                </th>
+                            }  @if (Model.timetamdidChecked == true)
+                            {
+                                <th>
+                                    @Html.DisplayName("تاریخ تمدید")
+                                    <input type="text" id="filter09-filter" class="inputFilter form-control" placeholder="">
+                                </th>
+                            }
+
+                            @if (Model.defaultRadio6 == true)
+                            {
+                                <th>
+                                    @Html.DisplayName("واحد")
+                                    <input type="text" id="filter10-filter" class="inputFilter form-control" placeholder="">
+                                </th>
+                            } @if (Model.DAyChecked == true)
+                            {
+                                <th>
+                                    @Html.DisplayName("روز")
+                                    <input type="text" id="filter11-filter" class="inputFilter form-control" placeholder="">
+                                </th>
+                            } @if (Model.defaultRadio1 == true)
+                            {
+                                <th>
+                                    @Html.DisplayName("ماه")
+                                    <input type="text" id="filter12-filter" class="inputFilter form-control" placeholder="">
+                                </th>
+                            }@if (Model.defaultRadio2 == true)
+                            {
+                                <th>
+                                    @Html.DisplayName("سال")
+                                    <input type="text" id="filter13-filter" class="inputFilter form-control" placeholder="">
+                                </th>
+                            }
+                            <th>
+                                @Html.DisplayName("دنلود پیوست")
+                            </th>
+
+
+
+
+
+
+                        </tr>
+
+
+
+                    </thead>
+                    <tbody style="text-align:center">
+
+                        @if (Model != null)
+                        {
+
+                            var i = 0;
+                            var Title01 = "";
+                            var Title02 = "";
+                            var Title03 = "";
+                            var Title04 = "";
+                            var Title05 = "";
+                            var TitleM = "";
+                            var Title06 = "";
+                            var Title07 = "";
+                            var Title08 = "";
+                            var Title09 = "";
+                            var Title10 = "";
+                            var Title11 = "";
+                            var Title12 = "";
+                            var Title13 = "";
+                            foreach (var item in db.dbAsnaduplaodfil3.Where(s => s.FK_upload2 == Model.ID).ToList())
+                            {
+                                if (item != null)
+                                {
+                                    i++;
+                                    /*-------------------------------*/
+                                    if (item.FK_PYMN != null)
+                                    {
+                                        Title01 = @item.tbPeymanContracts.pec_Title;
+                                    }
+                                    else
+                                    {
+                                        Title01 = "";
+                                    }
+
+                                    /*-------------------------------*/
+                                    if (item.FK_usr != null)
+                                    {
+
+                                        Title02 = @item.tbUsers.FullName;
+                                    }
+                                    else
+                                    {
+                                        Title02 = "";
+                                    }
+
+                                    /*-------------------------------*/
+                                    if (item.FK_compain != null)
+                                    {
+                                        Title03 = @item.tbCompanies.CompanyName;
+                                    }
+                                    else
+                                    {
+                                        Title03 = "";
+                                    }
+                                    /*-------------------------------*/
+                                    if (item.Sharh != null)
+                                    {
+                                        Title04 = @item.Sharh;
+                                    }
+                                    else
+                                    {
+                                        Title04 = "";
+                                    }
+                                    /*-------------------------------*/
+                                    if (item.shomarehnameh != null)
+                                    {
+                                        Title05 = @item.shomarehnameh;
+                                    }
+                                    else
+                                    {
+                                        Title05 = "";
+                                    }
+                                    /*-------------------------------*/
+                                    if (item.mablaghChecked != null)
+                                    {
+                                        TitleM = string.Format("{0:N0}", item.mablaghChecked);
+                                    }
+                                    else
+                                    {
+                                        TitleM = "";
+                                    }
+                                    /*-------------------------------*/
+                                    if (item.timestartChecked != null)
+                                    {
+                                        DateTime miladiDate = Convert.ToDateTime(item.timestartChecked);
+                                        string shamsiDate = persianCalendar.GetYear(miladiDate) + "/" +
+                                                            persianCalendar.GetMonth(miladiDate).ToString("00") + "/" +
+                                                            persianCalendar.GetDayOfMonth(miladiDate).ToString("00");
+                                        Title06 = @shamsiDate;
+                                    }
+                                    else
+                                    {
+                                        Title06 = "";
+                                    }
+                                    /*-------------------------------*/
+                                    if (item.timeendChecked != null)
+                                    {
+                                        DateTime miladiDate = Convert.ToDateTime(item.timeendChecked);
+                                        string shamsiDate = persianCalendar.GetYear(miladiDate) + "/" +
+                                                            persianCalendar.GetMonth(miladiDate).ToString("00") + "/" +
+                                                            persianCalendar.GetDayOfMonth(miladiDate).ToString("00");
+                                        Title07 = @shamsiDate;
+                                    }
+                                    else
+                                    {
+                                        Title07 = "";
+                                    }
+                                    /*-------------------------------*/
+                                    if (item.timerepetChecked != null)
+                                    {
+                                        DateTime miladiDate = Convert.ToDateTime(item.timerepetChecked);
+                                        string shamsiDate = persianCalendar.GetYear(miladiDate) + "/" +
+                                                            persianCalendar.GetMonth(miladiDate).ToString("00") + "/" +
+                                                            persianCalendar.GetDayOfMonth(miladiDate).ToString("00");
+                                        Title08 = shamsiDate;
+                                    }
+                                    else
+                                    {
+                                        Title08 = "";
+                                    }
+                                    /*-------------------------------*/
+                                    if (item.timetamdidChecked != null)
+                                    {
+                                        DateTime miladiDate = Convert.ToDateTime(item.timetamdidChecked);
+                                        string shamsiDate = persianCalendar.GetYear(miladiDate) + "/" +
+                                                            persianCalendar.GetMonth(miladiDate).ToString("00") + "/" +
+                                                            persianCalendar.GetDayOfMonth(miladiDate).ToString("00");
+                                        Title09 = shamsiDate;
+                                    }
+                                    else
+                                    {
+                                        Title09 = "";
+                                    }
+                                    /*-------------------------------*/
+                                    if (item.vahed != null)
+                                    {
+                                        Title10 = item.vahed;
+                                    }
+                                    else
+                                    {
+                                        Title10 = "";
+                                    }
+                                    /*-------------------------------*/
+                                    if (item.DAyChecked != null)
+                                    {
+                                        Title11 = item.DAyChecked.ToString();
+                                    }
+                                    else
+                                    {
+                                        Title11 = "";
+                                    }
+                                    /*-------------------------------*/
+                                    if (item.month != null)
+                                    {
+                                        Title12 = item.month.ToString();
+                                    }
+                                    else
+                                    {
+                                        Title12 = "";
+                                    }
+                                    /*-------------------------------*/
+                                    if (item.year != null)
+                                    {
+                                        Title13 = item.year.ToString();
+                                    }
+                                    else
+                                    {
+                                        Title13 = "";
+                                    }
+                                <tr class="task-list-row "
+                                    data-filter01="@Title01"
+                                    data-filter02="@Title02"
+                                    data-filter03="@Title03"
+                                    data-filter04="@Title04"
+                                    data-filter05="@Title05"
+                                    data-filter06="@Title06"
+                                    data-filter07="@Title07"
+                                    data-filter08="@Title08"
+                                    data-filter09="@Title09"
+                                    data-filter10="@Title10"
+                                    data-filter11="@Title11"
+                                    data-filter12="@Title12"
+                                    data-filter13="@Title13">
+                                    <td>
+                                        <div class="ms-sm-4 mt-sm-0 mt-2 dropdown-toggle">
+                                            <a href="#" data-bs-toggle="dropdown" class="text-white text-opacity-75 text-decoration-none">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                            <div class="dropdown-menu">
+                                                <a data-bs-toggle="modal" data-bs-target="#modalLg1" class="dropdown-item edit2" id="Edit_@item.ID">ویرایش</a>
+                                                <a data-bs-toggle="modal" data-bs-target="#modalLg1" class="dropdown-item Details2" id="Detail_@item.ID">جزئیات</a>
+                                                <a class="dropdown-item Delete" id="Delete_@item.ID">حذف</a>
+
+
+                                            </div>
+                                        </div>
+                                    </td>
+                                    @if (Model.defaultRadio7 == true)
+                                    {
+                                        <td>@Title01</td>
+                                    }
+                                    @if (Model.defaultRadio4 == true)
+                                    {
+                                        <td>@Title02</td>
+                                    }
+                                    @if (Model.defaultRadio3 == true)
+                                    {
+                                        <td>@Title03</td>
+                                    }
+                                    @if (Model.defaultRadio5 == true)
+                                    {
+                                        <td>@Title04</td>
+                                    }
+                                    @if (Model.shomarehnameh == true)
+                                    {
+                                        <td>@Title05</td>
+                                    }
+                                    @if (Model.mablaghChecked == true)
+                                    {
+                                        <td>@TitleM</td>
+                                    }
+                                    @if (Model.timestartChecked == true)
+                                    {
+                                        <td>@Title06</td>
+                                    }
+                                    @if (Model.timeendChecked == true)
+                                    {
+                                        <td>@Title07</td>
+                                    }
+                                    @if (Model.timerepetChecked == true)
+                                    {
+                                        <td>@Title08</td>
+                                    }
+                                    @if (Model.timetamdidChecked == true)
+                                    {
+                                        <td>@Title09</td>
+                                    }
+
+                                    @if (Model.defaultRadio6 == true)
+                                    {
+                                        <td>@Title10</td>
+                                    }
+                                    @if (Model.DAyChecked == true)
+                                    {
+                                        <td>@Title11</td>
+                                    }
+                                    @if (Model.defaultRadio1 == true)
+                                    {
+                                        <td>@Title12</td>
+                                    }
+                                    @if (Model.defaultRadio2 == true)
+                                    {
+                                        <td>@Title13</td>
+                                        if (item.svdfunc_FileSystemNameExcel != null)
+                                        {
+                                            <td style="color:green">
+                                                <a target="_blank" href="~/Areas/ManagementAccounting/Contents/RegistrationDucumentAttachmentsFile/@item.svdfunc_FileSystemNameExcel">
+                                                    دانلود
+                                                </a>
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            <td>ذخیره نشده</td>
+                                        }
+
+                                    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                </tr>
+                            }
+
+                        }
+
+                        // Your foreach loop code here
+                    }
+
+                        </tbody>
+
+                    </table>
+            </div>
+        </div>
+    </div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+<script>
+
+    var
+        filters = {
+            filter01: null,
+            filter02: null,
+            filter03: null,
+            filter04: null,
+            filter05: null,
+            filter06: null,
+            filter07: null,
+            filter08: null,
+            filter09: null,
+            filter10: null,
+            filter11: null,
+            filter12: null,
+            filter13: null,
+        };
+
+    function updateFilters() {
+        $('.task-list-row').hide().filter(function () {
+            var self = $(this),
+                result = true;
+
+            Object.keys(filters).forEach(function (filter) {
+                var filterData = self.data(filter);
+                if (filters[filter] && (filters[filter] != 'None') && (filters[filter] != 'همه')) {
+                    // تبدیل داده به رشته و بررسی مقدار
+                    result = result && (filterData && filterData.toString().indexOf(filters[filter]) !== -1);
+                }
+            });
+
+            return result;
+        }).show();
+    }
+
+    function changeFilter(filterName) {
+        filters[filterName] = this.value;
+        updateFilters();
+    }
+
+    // Assigned User Dropdown Filter
+    $('#filter01-filter').on('input', function () {
+        changeFilter.call(this, 'filter01');
+    });
+    $('#filter02-filter').on('input', function () {
+        changeFilter.call(this, 'filter02');
+    });
+    $('#filter03-filter').on('input', function () {
+        changeFilter.call(this, 'filter03');
+    });
+    $('#filter04-filter').on('input', function () {
+        changeFilter.call(this, 'filter04');
+    });
+    $('#filter05-filter').on('input', function () {
+        changeFilter.call(this, 'filter05');
+    });
+    $('#filter06-filter').on('input', function () {
+        changeFilter.call(this, 'filter06');
+    });
+    $('#filter07-filter').on('input', function () {
+        changeFilter.call(this, 'filter07');
+    });
+    $('#filter08-filter').on('input', function () {
+        changeFilter.call(this, 'filter08');
+    });
+    $('#filter09-filter').on('input', function () {
+        changeFilter.call(this, 'filter09');
+    });
+    $('#filter10-filter').on('input', function () {
+        changeFilter.call(this, 'filter10');
+    });
+    $('#filter11-filter').on('input', function () {
+        changeFilter.call(this, 'filter11');
+    });
+    $('#filter12-filter').on('input', function () {
+        changeFilter.call(this, 'filter12');
+    });
+    $('#filter13-filter').on('input', function () {
+        changeFilter.call(this, 'filter13');
+    });
+</script>
+<script>
+    $(".edit2").click(function () {
+        var idd = $(this).attr("id").split("_")[1];
+        console.log(idd);
+        $("#big_modal_body1").load('@Url.Content("/Budget/CreditLine/Edit_CreateCreditIndiactors")?id='+idd);
+    });
+      $(".Details2").click(function () {
+        var idd = $(this).attr("id").split("_")[1];
+        console.log(idd);
+        $("#big_modal_body1").load('@Url.Content("/Budget/CreditLine/Dtail_CreateCreditIndiactors")?id='+idd);
+    });
+
+
+         @*$(".Delete").click(function () {
+             var idd = $(this).attr("id").split("_")[1];
+              console.log(idd);
+             // $("#big_modal_body").load('@Url.Content("/installments/installmentsDelete")')?ReffrenceSaveID='+idd);
+             ajax('@Url.Content("/installments/installmentsDelete")');
+    });*@
+
+</script>

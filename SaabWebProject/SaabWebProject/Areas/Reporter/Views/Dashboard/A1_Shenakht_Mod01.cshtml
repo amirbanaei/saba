@@ -1,0 +1,712 @@
+﻿@model SaabWebProject.Models.DomainModels.tbNamshnaght
+
+
+@using SaabWebProject.Models.DomainModels;
+
+@{
+    SaabEntities db = new SaabEntities();
+
+    Layout = null;
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .modal-lg, .modal-xl {
+        margin-top: 8px;
+        max-width: 80% !important;
+    }
+
+    table th, table td {
+        vertical-align: middle;
+    }
+
+    th, td {
+        padding: 3px 6px !important;
+    }
+
+    .WTH {
+        width: 10%;
+        padding: 0 !important;
+    }
+
+    select.form-select, input.form-control {
+        margin-bottom: 0 !important;
+    }
+
+    input.form-control {
+        border-width: 1px !important;
+    }
+
+    .btn {
+        margin-bottom: 10px !important;
+    }
+
+    .TitelL {
+        border-radius: 10px;
+        background-color: #146792 !important;
+    }
+
+    .TitelC {
+        border-radius: 0 10px 10px 0;
+        background-color: #146792 !important;
+    }
+
+    .Titel3 {
+        border-radius: 10px 0 0 10px;
+        background-color: #146792 !important;
+    }
+
+    .Titel1 {
+        border-radius: 10px;
+        background-color: #1469a18f !important;
+    }
+
+    .Titel2 {
+        border-radius: 0 10px 10px 0;
+        background-color: #1469a18f !important;
+    }
+
+    .Titel4 {
+        border-radius: 10px;
+        background-color: #1469a18f !important;
+    }
+
+    .Titel5 {
+        border-radius: 10px;
+        background-color: #00eaff7d !important;
+    }
+
+    tbody, td, tfoot, th, thead, tr {
+        border-color: var(--bs-tab-content-bg) !important;
+        border-style: solid !important;
+        border-width: 1px !important;
+        text-align: center
+    }
+/*
+        tbody tr:nth-child(even) td:not(.Titel1,.Titel2,.Titel6) {
+            background-color: #4a8fbc63 !important;
+        }
+
+        tbody tr:nth-child(even) td:last-child {
+            border-radius: 10px 0 0 10px;
+            background-color: #4a8fbc63 !important;
+        }*/
+
+/*    .table1 td {
+        border-radius: 10px !important;
+        background-color: #1469a18f !important;
+    }*/
+</style>
+<style>
+
+    .modal2 {
+        display: none;
+        position: absolute; /* Change this from fixed */
+        z-index: 1000; /* Adjust z-index as needed */
+        left: 0;
+        top: 0;
+        width: 65%;
+        height: auto;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content2 {
+        background-color: black;
+        position: relative; /* Add relative positioning */
+        /*  margin: 15% auto;*/
+        padding: 20px;
+        border: 4px solid aqua;
+        border-radius: 30px;
+        width: 100%;
+        max-height: 100%;
+        overflow-y: auto;
+    }
+
+    .modal3 {
+        display: none;
+        position: absolute; /* Change this from fixed */
+        z-index: 1000; /* Adjust z-index as needed */
+        left: 0;
+        top: 0;
+        width: 65%;
+        height: auto;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content3 {
+        background-color: black;
+        position: relative; /* Add relative positioning */
+        margin: 65% auto;
+        padding: 20px;
+        border: 4px solid aqua;
+        border-radius: 30px;
+        width: 100%;
+        max-height: 100%;
+        overflow-y: auto;
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+    .fade-in {
+        animation: fadeIn 1s ease-in-out; /* Adjust duration and timing function as needed */
+    }
+</style>
+
+<div class="card p-2">
+    <div class="card-body">
+        <div class="row">
+            <h5>اطلاعات پایه و تعهدی</h5>
+        </div>
+        <div class="row" style="text-align:center">
+            <p> @Model.Name</p>
+
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-xl-4">
+                <table class="table1 table table-bordered">
+                    <tr style="text-align:center;margin:auto">
+                        <th class="TitelL" colspan="3" rowspan="1">تعداد مشترکین</th>
+                    </tr>
+                    <tr style="text-align:center;margin:auto">
+                        <th class="TitelL" colspan="2" rowspan="1">عادی</th>
+                        <th class="TitelL" colspan="1" rowspan="2">دیماندی</th>
+                    </tr>
+                    <tr style="text-align:center;margin:auto">
+                        <th class="TitelL" colspan="1" rowspan="1">شهری</th>
+                        <th class="TitelL" colspan="1" rowspan="1">روستایی</th>
+                    </tr>
+                    <tr style="text-align:center;margin:auto">
+                        <th class="WTH"></th>
+                        <th class="WTH"></th>
+                        <th class="WTH"></th>
+                    </tr>
+                    <tr style="text-align:center;margin:auto">
+                        @{ 
+                            var t1 = db.dbcountshenaght.Where(p => p.FK_Name == Model.ID&&p.demandi!=null ).Select(s => s.demandi).FirstOrDefault();
+                            var t2 = db.dbcountshenaght.Where(p => p.FK_Name == Model.ID && p.shahri != null).Select(s => s.shahri).FirstOrDefault();
+                            var t3 = db.dbcountshenaght.Where(p => p.FK_Name == Model.ID && p.rostaei != null).Select(s => s.rostaei).FirstOrDefault();
+                        }
+                        <td colspan="1" rowspan="1"><input class="form-control form-control100  form-control56"id="u_@Model.ID"value="@t2" /></td>
+                        <td colspan="1" rowspan="1"><input class="form-control form-control100"id="w" value="@t3" /></td>
+                        <td colspan="1" rowspan="1"><input class="form-control form-control100"id="t" value="@t1" /></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-xl-8"></div>
+        </div>
+        <div class="row">
+            <div class="col-xl-2">
+                <label class="form-label">دوره</label>
+                <select class="form-select" id="Month01">
+                    <option value="0">انتخاب کنید..</option>
+                    <option value="1">ماهانه</option>
+                    <option value="2">سالانه</option>
+                    <option value="3">روزانه</option>
+                </select>
+            </div>
+
+        </div>
+        <div class="row" style="margin-top:20px">
+            <div class="col-xl-10">
+                <table class="table table-bordered" id="table_First">
+                    <thead>
+                        <tr style="text-align:center;margin:auto">
+                            <th class="TitelL" colspan="3" rowspan="3">
+                                @Html.DisplayName("عنوان شغل")
+                            </th>
+                            <th class="TitelC" colspan="1" rowspan="3">
+                                @Html.DisplayName("فردی / گروهی")
+                            </th>
+                            <th class="Titel3" colspan="6" rowspan="1">
+                                @Html.DisplayName("تعداد کار پیش بینی شده")
+                            </th>
+                        </tr>
+                        <tr style="text-align:center;margin:auto">
+                            <th class="Titel4" colspan="2" rowspan="1">
+                                @Html.DisplayName("تکفاز")
+                            </th>
+                            <th class="Titel4" colspan="2" rowspan="1">
+                                @Html.DisplayName("سه فاز")
+                            </th>
+                            <th class="Titel4" colspan="2" rowspan="1">
+                                @Html.DisplayName("دیماندی")
+                            </th>
+                        </tr>
+                        <tr style="text-align:center;margin:auto">
+                            <th class="Titel5" colspan="1" rowspan="1">
+                                @Html.DisplayName("شهری")
+                            </th>
+                            <th class="Titel5" colspan="1" rowspan="1">
+                                @Html.DisplayName("روستایی")
+                            </th>
+                            <th class="Titel5" colspan="1" rowspan="1">
+                                @Html.DisplayName("شهری")
+                            </th>
+                            <th class="Titel5" colspan="1" rowspan="1">
+                                @Html.DisplayName("روستایی")
+                            </th>
+                            <th class="Titel5" colspan="1" rowspan="1">
+                                @Html.DisplayName("شهری")
+                            </th>
+                            <th class="Titel5" colspan="1" rowspan="1">
+                                @Html.DisplayName("روستایی")
+                            </th>
+                        </tr>
+                        <tr>
+                            <th class="WTH"></th>
+                            <th class="WTH"></th>
+                            <th class="WTH"></th>
+                            <th class="WTH"></th>
+                            <th class="WTH"></th>
+                            <th class="WTH"></th>
+                            <th class="WTH"></th>
+                            <th class="WTH"></th>
+                            <th class="WTH"></th>
+                            <th class="WTH"></th>
+                        </tr>
+
+                    </thead>
+                    <tbody style="text-align:center">
+
+                        @foreach (var IT in db.dbTitletahod.Where(p=>p.Fk_NAME==Model.ID).ToList())
+                        {
+                            if (IT.Fardi == true && IT.grohi == true)
+                            {
+                                var v1 = db.tbinformation.Where(p => p.fktitel == IT.ID && p.fardi == true && p.Shahri == true && p.takfaz == true).Select(s => s.value).FirstOrDefault();
+                                var v2 = db.tbinformation.Where(p => p.fktitel == IT.ID && p.fardi == true && p.rostaeei == true && p.takfaz == true).Select(s => s.value).FirstOrDefault();
+                                var v3 = db.tbinformation.Where(p => p.fktitel == IT.ID && p.fardi == true && p.rostaeei == true && p.sefaz == true).Select(s => s.value).FirstOrDefault();
+                                var v4 = db.tbinformation.Where(p => p.fktitel == IT.ID && p.fardi == true && p.Shahri == true && p.sefaz == true).Select(s => s.value).FirstOrDefault();
+                                var v5 = db.tbinformation.Where(p => p.fktitel == IT.ID && p.fardi == true && p.Shahri == true && p.demandi == true).Select(s => s.value).FirstOrDefault();
+                                var v6 = db.tbinformation.Where(p => p.fktitel == IT.ID && p.fardi == true && p.rostaeei == true && p.demandi == true).Select(s => s.value).FirstOrDefault();
+                                var v7 = db.tbinformation.Where(p => p.fktitel == IT.ID && p.grohi == true && p.rostaeei == true && p.demandi == true).Select(s => s.value).FirstOrDefault();
+                                var v8 = db.tbinformation.Where(p => p.fktitel == IT.ID && p.grohi == true && p.Shahri == true && p.demandi == true).Select(s => s.value).FirstOrDefault();
+                                var v9 = db.tbinformation.Where(p => p.fktitel == IT.ID && p.grohi == true && p.Shahri == true && p.sefaz == true).Select(s => s.value).FirstOrDefault();
+                                var v10 = db.tbinformation.Where(p => p.fktitel == IT.ID && p.grohi == true && p.rostaeei == true && p.sefaz == true).Select(s => s.value).FirstOrDefault();
+                                var v11 = db.tbinformation.Where(p => p.fktitel == IT.ID && p.grohi == true && p.rostaeei == true && p.takfaz == true).Select(s => s.value).FirstOrDefault();
+                                var v12 = db.tbinformation.Where(p => p.fktitel == IT.ID && p.grohi == true && p.Shahri == true && p.takfaz == true).Select(s => s.value).FirstOrDefault();
+
+                                <tr style="text-align:center;margin:auto">
+                                    <td class="" colspan="3" rowspan="1">@IT.Title</td>
+                                    <td class="" colspan="1" rowspan="1">فردی</td>
+                                    <td colspan="1" rowspan="1"><input id="fardi_takfaz_shahri_@IT.ID" class="form-control form-control2" value="@v1" /></td>
+                                    <td colspan="1" rowspan="1"><input id="fardi_takfaz_roostayi_@IT.ID" class="form-control form-control2" value="@v2" /></td>
+                                    <td colspan="1" rowspan="1"><input id="fardi_sefaz_shahri_@IT.ID" class="form-control form-control2" value="@v4" /></td>
+                                    <td colspan="1" rowspan="1"><input id="fardi_sefaz_roostayi_@IT.ID" class="form-control form-control2" value="@v3" /></td>
+                                    <td colspan="1" rowspan="1"><input id="fardi_demandi_shahri_@IT.ID" class="form-control form-control2" value="@v5" /></td>
+                                    <td colspan="1" rowspan="1"><input id="fardi_demandi_roostayi_@IT.ID" class="form-control form-control2" value="@v6" /></td>
+                                </tr>
+
+                                <tr style="text-align:center;margin:auto">
+                                    <td class="" colspan="3" rowspan="1">@IT.Title</td>
+                                    <td class="" colspan="1" rowspan="1">گروهی</td>
+                                    <td colspan="1" rowspan="1"><input id="grohi_takfaz_shahri_@IT.ID" class="form-control form-control2" value="@v12" /></td>
+                                    <td colspan="1" rowspan="1"><input id="grohi_takfaz_roostayi_@IT.ID" class="form-control form-control2" value="@v11" /></td>
+                                    <td colspan="1" rowspan="1"><input id="grohi_sefaz_shahri_@IT.ID" class="form-control form-control2" value="@v9" /></td>
+                                    <td colspan="1" rowspan="1"><input id="grohi_sefaz_roostayi_@IT.ID" class="form-control form-control2" value="@v10" /></td>
+                                    <td colspan="1" rowspan="1"><input id="grohi_demandi_shahri_@IT.ID" class="form-control form-control2" value="@v8" /></td>
+                                    <td colspan="1" rowspan="1"><input id="grohi_demandi_roostayi_@IT.ID" class="form-control form-control2" value="@v7" /></td>
+                                </tr>
+
+                            }
+                            else if (IT.Fardi == true)
+                            {
+                                var v1 = db.tbinformation.Where(p => p.fktitel == IT.ID && p.fardi == true && p.Shahri == true && p.takfaz == true).Select(s => s.value).FirstOrDefault();
+                                var v2 = db.tbinformation.Where(p => p.fktitel == IT.ID && p.fardi == true && p.rostaeei == true && p.takfaz == true).Select(s => s.value).FirstOrDefault();
+                                var v3 = db.tbinformation.Where(p => p.fktitel == IT.ID && p.fardi == true && p.rostaeei == true && p.sefaz == true).Select(s => s.value).FirstOrDefault();
+                                var v4 = db.tbinformation.Where(p => p.fktitel == IT.ID && p.fardi == true && p.Shahri == true && p.sefaz == true).Select(s => s.value).FirstOrDefault();
+                                var v5 = db.tbinformation.Where(p => p.fktitel == IT.ID && p.fardi == true && p.Shahri == true && p.demandi == true).Select(s => s.value).FirstOrDefault();
+                                var v6 = db.tbinformation.Where(p => p.fktitel == IT.ID && p.fardi == true && p.rostaeei == true && p.demandi == true).Select(s => s.value).FirstOrDefault();
+                                <tr style="text-align:center;margin:auto">
+                                    <td class="" colspan="3" rowspan="1">@IT.Title</td>
+                                    <td class="" colspan="1" rowspan="1">فردی</td>
+                                    <td colspan="1" rowspan="1"><input id="fardi_takfaz_shahri_@IT.ID" class="form-control form-control2" value="@v1" /></td>
+                                    <td colspan="1" rowspan="1"><input id="fardi_takfaz_roostayi_@IT.ID" class="form-control form-control2" value="@v2" /></td>
+                                    <td colspan="1" rowspan="1"><input id="fardi_sefaz_shahri_@IT.ID" class="form-control form-control2" value="@v4" /></td>
+                                    <td colspan="1" rowspan="1"><input id="fardi_sefaz_roostayi_@IT.ID" class="form-control form-control2" value="@v3" /></td>
+                                    <td colspan="1" rowspan="1"><input id="fardi_demandi_shahri_@IT.ID" class="form-control form-control2" value="@v5" /></td>
+                                    <td colspan="1" rowspan="1"><input id="fardi_demandi_roostayi_@IT.ID" class="form-control form-control2" value="@v6" /></td>
+                                </tr>
+                            }
+                            else if (IT.grohi == true)
+                            {
+                                var v7 = db.tbinformation.Where(p => p.fktitel == IT.ID && p.grohi == true && p.rostaeei == true && p.demandi == true).Select(s => s.value).FirstOrDefault();
+                                var v8 = db.tbinformation.Where(p => p.fktitel == IT.ID && p.grohi == true && p.Shahri == true && p.demandi == true).Select(s => s.value).FirstOrDefault();
+                                var v9 = db.tbinformation.Where(p => p.fktitel == IT.ID && p.grohi == true && p.Shahri == true && p.sefaz == true).Select(s => s.value).FirstOrDefault();
+                                var v10 = db.tbinformation.Where(p => p.fktitel == IT.ID && p.grohi == true && p.rostaeei == true && p.sefaz == true).Select(s => s.value).FirstOrDefault();
+                                var v11 = db.tbinformation.Where(p => p.fktitel == IT.ID && p.grohi == true && p.rostaeei == true && p.takfaz == true).Select(s => s.value).FirstOrDefault();
+                                var v12 = db.tbinformation.Where(p => p.fktitel == IT.ID && p.grohi == true && p.Shahri == true && p.takfaz == true).Select(s => s.value).FirstOrDefault();
+
+                                <tr style="text-align:center;margin:auto">
+                                    <td class="" colspan="3" rowspan="1">@IT.Title</td>
+                                    <td class="" colspan="1" rowspan="1">گروهی</td>
+                                    <td colspan="1" rowspan="1"><input id="grohi_takfaz_shahri_@IT.ID" class="form-control form-control2" value="@v12" /></td>
+                                    <td colspan="1" rowspan="1"><input id="grohi_takfaz_roostayi_@IT.ID" class="form-control form-control2" value="@v11" /></td>
+                                    <td colspan="1" rowspan="1"><input id="grohi_sefaz_shahri_@IT.ID" class="form-control form-control2" value="@v9" /></td>
+                                    <td colspan="1" rowspan="1"><input id="grohi_sefaz_roostayi_@IT.ID" class="form-control form-control2" value="@v10" /></td>
+                                    <td colspan="1" rowspan="1"><input id="grohi_demandi_shahri_@IT.ID" class="form-control form-control2" value="@v8" /></td>
+                                    <td colspan="1" rowspan="1"><input id="grohi_demandi_roostayi_@IT.ID" class="form-control form-control2" value="@v7" /></td>
+                                </tr>
+
+                            }
+                        }
+
+
+
+
+                    </tbody>
+                </table>
+                <div class="row">
+                    <div class="col-xl-1">
+                        <button class="btn form-control buttonGeneralMins" onclick="Geeks()">
+                            <i class="fa fa-multiply VecGeneral" style="font-size:1rem"></i>
+                        </button>
+                    </div>
+                    <div class="col-xl-9"></div>
+
+                    <div class="col-xl-1">
+                        <button id="btn_SaveMovaqat" class="btn form-control buttonGeneralPlus">
+                            <i class="fa fa-plus VecGeneral" style="font-size:1rem"></i>
+
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-2">
+                <div class="row">
+                    <div class="col-xl-8"></div>
+                    <div class="col-xl-4">
+                        <div>
+
+                            <button id="btnSaveDastor" type="button" class="btn form-control buttonGeneral">
+                                <i class="bi bi-card-checklist fa-fw  me-1 VecGeneral"></i>
+                                <span class="bGeneral-text">دستور کار</span>
+                            </button>
+
+                            <button id="btnSaveDastor222" data-bs-toggle="modal" data-bs-target="#modalLg" type="button" class="btn form-control buttonGeneral">
+                                <i class="fa fa-plus VecGeneral" style="font-size:1rem"></i>
+                            </button>
+                            <button id="btn_SaveMovaqat2" type="button" class="btn form-control buttonsabt">
+                                <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                                <span class="bSabt-text">ثبت</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+@*<div id="myModal3" class="modal3" style="margin-left:25% !important;">
+        <div class="modal-content3">
+            <div class="row">
+                <i class="close fa fa-window-close"></i>
+            </div>
+
+            <div id="ss2">
+
+            </div>
+
+        </div>
+    </div>*@
+
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+@*<script>
+        $(document).ready(function () {
+            $("#expandButton2").click(function () {
+                $("#myModal3").addClass("fade-in"); // Add the fade-in class
+                $("#myModal3").css("display", "block");
+            });
+
+            $(".close").click(function () {
+                $("#myModal3").removeClass("fade-in"); // Remove the fade-in class
+                $("#myModal3").css("display", "none");
+            });
+
+            $(window).click(function (event) {
+                if (event.target == $("#myModal3")[0]) {
+                    $("#myModal3").removeClass("fade-in"); // Remove the fade-in class
+                    $("#myModal3").css("display", "none");
+                }
+            });
+        });
+    </script>
+
+    <script>
+            $("#btnSaveDastor").click(function () {
+     $("#myModal3").addClass("fade-in"); // Add the fade-in class
+     $("#myModal3").css("display", "block");
+     var idd = $(this).attr("id").split("_")[1];
+     console.log(idd);
+                $("#ss2").load('@Url.Content("/Reporter/Dashboard/A1_Shenakht_Mod01_M01")');
+
+    });
+    </script>*@
+<script>
+        // Function to format numbers with commas
+        function formatNumberWithCommas(number) {
+            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        // Function to remove commas from a formatted number
+        function removeCommas(number) {
+            return number.replace(/,/g, '');
+        }
+
+        // Apply the formatting to all relevant input fields
+        $('input.form-control2').on('input', function () {
+            var value = $(this).val();
+            value = removeCommas(value); // Remove existing commas
+            if ($.isNumeric(value)) {
+                $(this).val(formatNumberWithCommas(value)); // Format with commas
+            }
+        });
+    $('input.form-control100').on('input', function () {
+        var value = $(this).val();
+        value = removeCommas(value); // Remove existing commas
+        if ($.isNumeric(value)) {
+            $(this).val(formatNumberWithCommas(value)); // Format with commas
+        }
+    });
+    $('input.form-control100').each(function () {
+        var value = $(this).val();
+        if ($.isNumeric(value)) {
+            $(this).val(formatNumberWithCommas(value)); // اعمال فرمت
+        }
+    });
+
+    $('input.form-control2').each(function () {
+        var value = $(this).val();
+        if ($.isNumeric(value)) {
+            $(this).val(formatNumberWithCommas(value)); // اعمال فرمت
+        }
+    });
+    $("#btn_SaveMovaqat2").click(function () {
+        // جمع‌آوری داده‌ها
+        var dataList = []; // ایجاد یک آرایه برای ذخیره تمام داده‌ها
+        var id3 =@Model.ID;
+        $("input.form-control2").each(function () {
+            var inputId = $(this).attr("id");
+            var value = $(this).val();
+            value = removeCommas(value); // Remove commas before sending to the server
+
+            if (value) { // اگر ورودی پر شده است
+                var parts = inputId.split('_'); // تقسیم ID به اجزا
+                var type = parts[0];   // مثلا 'fardi'
+                var phase = parts[1];  // مثلا 'takfaz'
+                var area = parts[2];   // مثلا 'shahri'
+                var id = parts[3];     // ID رکورد در دیتابیس
+                dataList.push({
+                    id: id,
+                    type: type,
+                    phase: phase,
+                    area: area,
+                    value: value,
+                    ghragtdemandi: null,
+
+                    ghragtrostaei: null,
+                    ghragtshahri: null
+                });
+                // ارسال داده‌ها به سرور
+            }
+            else {
+                var parts = inputId.split('_'); // تقسیم ID به اجزا
+                var type = parts[0];   // مثلا 'fardi'
+                var phase = parts[1];  // مثلا 'takfaz'
+                var area = parts[2];   // مثلا 'shahri'
+                var id = parts[3];     // ID رکورد در دیتابیس
+                dataList.push({
+                    id: id,
+                    type: type,
+                    phase: phase,
+                    area: area,
+                    value: 0,
+                    ghragtdemandi: null,
+
+                    ghragtrostaei: null,
+                    ghragtshahri: null
+                });
+            }
+        });
+        $("input.form-control56").each(function () {
+            var inputId = $(this).attr("id");
+            var value = removeCommas($(this).val())
+            var value2 = removeCommas($("#w").val())
+            var value3 =  removeCommas($("#t").val())
+
+            if (value) {
+                var parts = inputId.split('_'); // تقسیم ID به اجزا
+
+                var type = parts[0];   // مثلا 'fardi'
+                console.log(type);
+
+                    dataList.push({
+                        id: id3,
+                        ghragtdemandi: value3,
+
+                        ghragtrostaei: value2,
+                        ghragtshahri: value
+                    });
+
+
+                // اگر ورودی پر شده است
+                   // مثلا 'shahri'
+
+                // ارسال داده‌ها به سرور
+            }
+            else {
+                var parts = inputId.split('_'); // تقسیم ID به اجزا
+                var type = parts[0];   // مثلا 'fardi'
+                if (type == "u") {
+                    dataList.push({
+                        id: id3,
+
+                        ghragtdemandi: value
+                    });
+                }
+                else if (type == "w") {
+                    dataList.push({
+                        id: id3,
+
+                        ghragtrostaei: value
+                    });
+                }
+                else if (type == "t") {
+                    dataList.push({
+                        id: id3,
+
+                        ghragtshahri: value
+                    });
+                }
+            }
+        });
+
+        if (dataList.length > 0) {
+            updateDatabase(dataList);
+            console.log(dataList);
+        }
+    });
+    function updateDatabase(dataList) {
+        $.ajax({
+            url: '/Reporter/Dashboard/UpdateRecord', // آدرس اکشن کنترلر شما
+            method: 'POST',
+            data: JSON.stringify(dataList), // ارسال آرایه به سرور
+
+            contentType: 'application/json',
+            success: function (response) {
+                console.log("Record updated successfully.");
+                if (response == "true") {
+                    alert("با موفقیت ثبت شد");
+                    location.reload();
+
+                }
+            },
+            error: function (error) {
+                console.error("Error updating record:", error);
+            }
+        });
+    }
+
+
+    function Geeks() {
+        var table = document.getElementById("table_First");
+        var rowCount = table.rows.length;
+        console.log(rowCount)
+        if (rowCount > 14) {
+            table.deleteRow(rowCount - 1);
+        }
+    }
+
+
+    $("#btnSaveDastor222").click(function () {
+        console.log($("#FK_job").val());
+        $("#big_modal_body").load('@Url.Content("~/Reporter/Dashboard/viewappendone")?id=' + @Model.ID);
+        });
+</script>
+
+
+<script>
+    var counter = 1;
+    $("#btn_SaveMovaqat").click(function () {
+        var tbodyRef = document.getElementById('table_First').getElementsByTagName('tbody')[0];
+        var newRow = tbodyRef.insertRow();
+
+        var newCell = newRow.insertCell();
+        newCell.colSpan = 3
+        newCell.classList = [""]
+        var newInput = document.createElement("input");
+        newInput.classList = ["form-control numbers"]
+        newInput.style = "margin-bottom: 0 !important;"
+        newCell.appendChild(newInput);
+
+        var newCell = newRow.insertCell();
+        newCell.classList = [""]
+        var newInput = document.createElement("input");
+        newInput.classList = ["form-control "]
+        newInput.style = "margin-bottom: 0 !important;"
+        newCell.appendChild(newInput);
+
+        var newCell = newRow.insertCell();
+        var newInput = document.createElement("input");
+        newInput.classList = ["form-control numbers"]
+        newInput.style = "margin-bottom: 0 !important;"
+        newCell.appendChild(newInput);
+
+        var newCell = newRow.insertCell();
+        var newInput = document.createElement("input");
+        newInput.classList = ["form-control numbers"]
+        newInput.style = "margin-bottom: 0 !important;"
+        newCell.appendChild(newInput);
+
+        var newCell = newRow.insertCell();
+        var newInput = document.createElement("input");
+        newInput.classList = ["form-control numbers"]
+        newInput.style = "margin-bottom: 0 !important;"
+        newCell.appendChild(newInput);
+
+        var newCell = newRow.insertCell();
+        var newInput = document.createElement("input");
+        newInput.classList = ["form-control numbers"]
+        newInput.style = "margin-bottom: 0 !important;"
+        newCell.appendChild(newInput);
+
+        var newCell = newRow.insertCell();
+        var newInput = document.createElement("input");
+        newInput.classList = ["form-control numbers"]
+        newInput.style = "margin-bottom: 0 !important;"
+        newCell.appendChild(newInput);
+
+        var newCell = newRow.insertCell();
+        var newInput = document.createElement("input");
+        newInput.classList = ["form-control numbers"]
+        newInput.style = "margin-bottom: 0 !important;"
+        newCell.appendChild(newInput);
+
+        counter++;
+
+
+    });
+</script>

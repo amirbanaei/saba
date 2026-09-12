@@ -1,0 +1,550 @@
+﻿<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+@using SaabWebProject.Models.DomainModels;
+
+@model SaabWebProject.Models.DomainModels.tbHoshdar
+
+@{
+    SaabEntities db = new SaabEntities();
+
+    ViewBag.Title = "گزارش کارها";
+    Layout = null;
+}
+
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+<script src="~/Assets/js/jalalidatepicker.min.js"></script>
+<link href="~/Assets/css/jalalidatepicker.min.css" rel="stylesheet" />
+<script src="~/Assets/js/jalaali.min.js"></script>
+<link href="~/MyStyles/jalalidatepicker.css" rel="stylesheet" />
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+
+<div class="">
+    <div class="card">
+        <div class="card-body pb-2">
+            <div class="row" style="margin-top:10px">
+                <div class="col-xl-2">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <label class="form-label">
+                                عنوان هشدار
+                                @*<span class="red-star">*</span>*@
+                            </label>
+
+                        </div>
+                        <div class="col-xl-12">
+                            <input class="form-control" id="NAMEEDIT" value="@Model.NAME" @*type="number" name="usr_NationalCode"*@ @*onkeyup="ValidationInput(this)"*@ />
+                            @*<div class="invalid-feedback">این فیلد مورد نیاز است !</div>*@
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-2">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <label class="form-label">
+                                شرح هشدار
+                                @*<span class="red-star">*</span>*@
+                            </label>
+
+                        </div>
+                        <div class="col-xl-12">
+                            <input class="form-control" id="sharhhoshdarEDIT" value="@Model.sharhhoshdar" @*type="number" name="usr_NationalCode"*@ @*onkeyup="ValidationInput(this)"*@ />
+                            @*<div class="invalid-feedback">این فیلد مورد نیاز است !</div>*@
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-4">
+                    <label class="form-label">کاربران زیرمجموعه</label>
+                    <span id="div_users1"></span>
+                </div>
+                @*<div class="col-xl-4">
+                    <label class="form-label"> کاربران حقیقی </label>
+                    <select class="form-select select_peyman" id="usr" name="select_peyman">
+                        <option value="-1" hidden>انتخاب کنید</option>
+                        @foreach (var item in db.tbUsers.ToList())
+                        {
+                            <option value="@item.usr_ID">@item.FullName</option>
+                        }
+                    </select>
+                </div>*@
+                <div class="col-xl-4">
+                    <label class="form-label"> تاریخ تکرار</label>
+                    @*------------------------------------------------[1402/09/20]-|KH|-*@
+                    <input data-jdp jdp-btn-close data-jdp-miladi-input="datepickerFromEn_usrrepetE" id="datepickerFrom_usrrepetE" class="form-control">
+                    <input id="datepickerFromEn_usrrepetE" type="hidden" value="@Model.datepickerFromEn_usrrepet.Value.ToString("yyyy/MM/dd HH:mm:ss")" />
+                    @*-------------------------------------------------------------|KH|-*@
+                </div>
+
+
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-xl-2">
+                    <label class="form-label"> نوع تکرار هشدار </label>
+                    <select class="form-select select_peyman" id="typehoshdarEDIT" name="select_peyman">
+                        @if (Model.typehoshdar == 0)
+                        {
+                            <option value="0">بلافاصله پس از ورود به سامانه</option>
+                            <option value="1">نمایش در زمان تعریف شده</option>
+                            <option value="2">نمایش دوره ای</option>
+                        }
+                        else if (Model.typehoshdar == 1)
+                        {
+                            <option value="1">نمایش در زمان تعریف شده</option>
+
+                            <option value="0">بلافاصله پس از ورود به سامانه</option>
+                            <option value="2">نمایش دوره ای</option>
+                        }
+                        else
+                        {
+                            <option value="2">نمایش دوره ای</option>
+
+                            <option value="0">بلافاصله پس از ورود به سامانه</option>
+                            <option value="1">نمایش در زمان تعریف شده</option>
+                        }
+
+                        @*@foreach (var item in db.tbUsers.ToList())
+                {
+                    <option value="@item.usr_ID">@item.FullName</option>
+                }*@
+                    </select>
+                </div>
+                <div class="col-xl-2" id="EDIT" style="display: none;">
+                    <label class="form-label">تایم تمرکز</label>
+                    <div class="col-xl-12">
+                        <input class="form-control" id="TimetamarkozEdit" value=" @Model.Timetamarkoz" />
+                    </div>
+                </div>
+                @if (Model.count_dafaat != null && Model.count_dafaat != 0)
+                {
+                    <div class="col-xl-2" id="shomarehShabaContainerEDIT" style="display: none;">
+                        <label class="form-label">تعداد دفعات</label>
+                        <div class="col-xl-12">
+                            <input class="form-control" id="count_dafaatEDIT" value=" @Model.count_dafaat" />
+                        </div>
+                    </div>
+
+                    <div class="col-xl-2" id="shomarehKartContainerEDIT">
+                        <label class="form-label">دوره زمانی</label>
+                        <div class="col-xl-12">
+                            <input class="form-control" id="DOrehEDIT" @*value="@Model.DOreh"*@ />
+                        </div>
+                    </div>
+                }
+                else if (Model.DOreh != null && Model.DOreh != 0)
+                {
+                    <div class="col-xl-2" id="shomarehShabaContainerEDIT" style="display: none;">
+                        <label class="form-label">تعداد دفعات</label>
+                        <div class="col-xl-12">
+                            <input class="form-control" id="count_dafaatEDIT" />
+                        </div>
+                    </div>
+
+                    <div class="col-xl-2" id="shomarehKartContainerEDIT">
+                        <label class="form-label">دوره زمانی</label>
+                        <div class="col-xl-12">
+                            <input class="form-control" id="DOrehEDIT" value="@Model.DOreh" />
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="col-xl-2" id="shomarehShabaContainerEDIT" style="display: none;">
+                        <label class="form-label">تعداد دفعات</label>
+                        <div class="col-xl-12">
+                            <input class="form-control" id="count_dafaatEDIT" />
+                        </div>
+                    </div>
+
+                    <div class="col-xl-2" id="shomarehKartContainerEDIT" style="display: none;">
+                        <label class="form-label">دوره زمانی</label>
+                        <div class="col-xl-12">
+                            <input class="form-control" id="DOrehEDIT" />
+                        </div>
+                    </div>
+                }
+
+                <div class="col-xl-2" style="display:none">
+                    <div class="form-check mt-4">
+                        <input class="form-check-input" type="checkbox" id="toggleDateInputsEDIT">
+                        <label class="form-check-label" for="toggleDateInputsEDIT">
+                            نمایش تاریخ‌ها
+                        </label>
+                    </div>
+                </div>
+                @if (Model.datepickerFromEn_usr == null)
+                {
+                    <div class="col-xl-4" id="dateInputsContainer" style="display: none;">
+                        <div class="row">
+                            <div class="col-xl-6">
+                                <label class="form-label">تاریخ شروع</label>
+                                <input data-jdp jdp-btn-close data-jdp-miladi-input="datepickerFromEn_usrStrt" id="datepickerFrom_usrStrt" class="form-control">
+                                <input id="datepickerFromEn_usrStrt" type="hidden" />
+                            </div>
+                            <div class="col-xl-6">
+                                <label class="form-label">تاریخ پایان</label>
+                                <input data-jdp jdp-btn-close data-jdp-miladi-input="datepickerFromEn_usrendEnd" id="datepickerFrom_usrendEnd" class="form-control">
+                                <input id="datepickerFromEn_usrendEnd" type="hidden" />
+                            </div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="col-xl-4" id="dateInputsContainer" style="display: block;">
+                        <div class="row">
+                            <div class="col-xl-6">
+                                <label class="form-label">تاریخ شروع</label>
+                                <input data-jdp jdp-btn-close data-jdp-miladi-input="datepickerFromEn_usrStrt" id="datepickerFrom_usrStrt" class="form-control">
+                                <input id="datepickerFromEn_usrStrt" type="hidden" value="@Model.datepickerFromEn_usr.Value.ToString("yyyy/MM/dd HH:mm:ss")" />
+                            </div>
+                            <div class="col-xl-6">
+                                <label class="form-label">تاریخ پایان</label>
+                                <input data-jdp jdp-btn-close data-jdp-miladi-input="datepickerFromEn_usrendEnd" id="datepickerFrom_usrendEnd" class="form-control">
+                                <input id="datepickerFromEn_usrendEnd" type="hidden" value="@Model.datepickerFromEn_usrend.Value.ToString("yyyy/MM/dd HH:mm:ss")" />
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <!--<div class="col-xl-2">
+    <label class="form-label">تاریخ شروع</label>-->
+                @*------------------------------------------------[1402/09/20]-|KH|-*@
+                <!--<input data-jdp jdp-btn-close data-jdp-miladi-input="datepickerFromEn_usr" id="datepickerFrom_usr" class="form-control">
+    <input id="datepickerFromEn_usr" type="hidden" />-->
+                @*-------------------------------------------------------------|KH|-*@
+                <!--</div>
+
+    <div class="col-xl-2">
+        <label class="form-label">تاریخ پایان</label>-->
+                @*------------------------------------------------[1402/09/20]-|KH|-*@
+                <!--<input data-jdp jdp-btn-close data-jdp-miladi-input="datepickerFromEn_usrend" id="datepickerFrom_usr" class="form-control">
+    <input id="datepickerFromEn_usrend" type="hidden" />-->
+                @*-------------------------------------------------------------|KH|-*@
+                <!--</div>-->
+                <!--<div class="col-xl-12">
+    <input class="form-control" id="SHomarehshaba"-->
+                @*type="number" name="usr_NationalCode"*@ @*onkeyup="ValidationInput(this)"*@ <!--/>-->
+                @*<div class="invalid-feedback">این فیلد مورد نیاز است !</div>*@
+                <!--</div>-->
+            </div>
+
+
+
+
+            <div class="col-xl-1">
+                <button class="btn form-control buttonGeneral" id="btnCreate3EDIT">
+                    <i class="fa fa-eye fa-fw me-1 VecGeneral"></i>
+                    <span class="bGeneral-text">نمایش قراردادهای ثبت شده</span>
+                </button>
+            </div>
+
+
+        </div>
+
+        <div class="card-arrow">
+            <div class="card-arrow-top-left"></div>
+            <div class="card-arrow-top-right"></div>
+            <div class="card-arrow-bottom-left"></div>
+            <div class="card-arrow-bottom-right"></div>
+        </div>
+    </div>
+</div>
+@*<div id="">
+    @Html.Action("viewlist", "Orders", new { area = "Setting" })
+
+</div>*@
+<script src="~/Scripts/sweetalert2.js" type="text/javascript"></script>
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/src/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script>
+
+
+</script>
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/js/jquery3.6.0.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/popper.min.js"></script>
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Scripts/sweetalert2.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Scripts/popper.min.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/src/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script>
+          $("#div_users1").load('@Url.Content("/../Users/Users/_PartialViewUsersListWithSearchAndMultiple")', function () {
+      $("#select_users1").attr("id", "users");
+      $('#users').attr("multiple", "multiple");
+      $('#users').picker({ search: true });
+      $('#users').on('sp-change', function () { });
+     var myArray = [];
+
+ @foreach (var d in db.tbHoshdar.Where(p=>p.ID_ID==Model.ID_ID&&p.Active!=false).ToList())
+ {
+
+                    @:myArray.push(@d.FK_usr);
+
+ }
+
+          myArray.forEach((x) => $("#users").picker('set', x));
+      });
+    $(document).ready(function () {
+        // پنهان‌سازی/نمایش بر اساس مقدار اولیه
+        function toggleDateInputsEDIT() {
+            if ($('#toggleDateInputsEDIT').is(':checked')) {
+                $('#dateInputsContainerEDIT').slideDown();
+            } else {
+                $('#dateInputsContainerEDIT').slideUp();
+            }
+        }
+
+        // اجرا در لود
+        toggleDateInputsEDIT();
+
+        // اجرا در تغییر مقدار چک‌باکس
+        $('#toggleDateInputsEDIT').on('change', function () {
+            toggleDateInputsEDIT();
+        });
+    });
+</script>
+
+<script>
+    function sendAjax3EDIT(url2, fd2) {
+            //var debtorCreditValue = $("#pestenka").val();
+            //var resultString = debtorCreditValue.replace(/,/g, '');
+            //fd2.append("Creditor", resultString);
+            //var debtorCreditValue2 = $("#bdehkar").val();
+
+
+
+            //console.log(resultString)
+            //var resultString2 = debtorCreditValue2.replace(/,/g, '');
+            //console.log(resultString2)
+            //console.log(resultString2)
+
+            //console.log(resultString)
+
+
+                @{
+                    long id = 0;
+                }
+                @if (Model != null)
+                {
+                    id = Model.ID;
+                }
+                @*fd2.append("FK_upload2", @id);
+                var PeymanArr = [];
+                $.each($("#select_peyman_").val().toString().split(","), function (index, item) {
+                    if (item !== "") {
+                        if (item != 'Select') {
+                            PeymanArr.push(item);
+                            console.log(item);
+                        }
+                    }
+                });*@
+        var usrnArrEDIT = [];
+        $.each($("#users").val().toString().split(","), function (index, item) {
+            if (item !== "") {
+                if (item != 'Select') {
+                    usrnArrEDIT.push(item);
+                    console.log(item);
+                }
+            }
+        });
+                //$.each($("#select_usr_").val().toString().split(","), function (index, item) {
+                //    if (item !== "") {
+                //        if (item != 'Select') {
+                //            usrnArrEDIT.push(item);
+                //            console.log(item);
+                //        }
+                //    }
+                //});
+                //var compauinArr = [];
+                //$.each($("#select_compain_").val().toString().split(","), function (index, item) {
+                //    if (item !== "") {
+                //        if (item != 'Select') {
+                //            compauinArr.push(item);
+                //            console.log(item);
+                //        }
+                //    }
+                //});
+
+
+        console.log(usrnArrEDIT);
+                //console.log(compauinArr);
+                //console.log(PeymanArr);
+                //fd2.append("fkcompain", compauinArr );
+        fd2.append("fkusr", usrnArrEDIT );
+              /*  fd2.append("fkPymn", PeymanArr);*/
+        fd2.append("sharhhoshdar", $("#sharhhoshdarEDIT").val());
+        fd2.append("ID", @Model.ID_ID);
+        fd2.append("Timetamarkoz", $("#TimetamarkozEdit").val());
+
+        fd2.append("NAME", $("#NAMEEDIT").val());
+        fd2.append("count_dafaat", $("#count_dafaatEDIT").val());
+        fd2.append("DOreh", $("#DOrehEDIT").val());
+        fd2.append("Sharh", $("#SharhEDIT").val());
+        fd2.append("typehoshdar", $("#typehoshdarEDIT").val());
+        console.log($("#datepickerFromEn_usrStrt").val());
+        console.log($("#datepickerFromEn_usrrepetE").val());
+        console.log($("#datepickerFromEn_usrendEnd").val());
+
+        fd2.append("datepickerFromEn_usr", $("#datepickerFromEn_usrStrt").val());
+                //fd2.append("datepickerFromEn_usrtamdid", $("#datepickerFromEn_usrtamdid").val());
+        fd2.append("datepickerFromEn_usrrepet", $("#datepickerFromEn_usrrepetE").val());
+        fd2.append("datepickerFromEn_usrend", $("#datepickerFromEn_usrendEnd").val());
+                //fd2.append("mablaghChecked", $("#mablaghChecked").val());
+                //fd2.append("shomarehnameh", $("#shomarehnameh").val());
+
+                //console.log($("#compain").val());
+                $("#loading-circle .loadingText1").text("لطفا منتظر نمایش اطلاعات بمانید ...");
+                $("#loading-circle").css("display", "flex");
+            $.ajax({
+                url: url2,
+                type: 'POST',
+                data: fd2,
+                processData: false,
+                contentType: false,
+                success: function (resp1) {
+                    if (resp1 === "True") {
+                        $("#loading-circle").css("display", "none"); // پنهان کردن لودینگ
+                        alert("با موفقیت ثبت شد");
+                        location.reload();
+                    }
+   //                 console.log("okeye");
+   //                 console.log(resp1);
+   //                 $("#loading-message").css("display", "none");
+
+
+
+   //console.log("djkjsdkl");
+
+
+
+
+
+
+
+
+
+                },
+                error: function (resp1) {
+                    console.log(resp1);
+                    console.log("Nokeye");
+                    $("#loading-message").css("display", "none");
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                    }).then(() => {
+                        $("#loading-message").css("display", "none");
+                    });
+                }
+            });
+    }
+    var fd20 = new FormData();
+
+    $("#btnCreate3EDIT").click(function () {
+
+         //       console.log($("#year").val());
+                sendAjax3EDIT('@Url.Action("createhoshdarEDIT", "Orders", new { area = "Setting" })', fd20);
+
+});
+    $(document).ready(function () {
+        function toggleFieldsEDIT() {
+            $("#shomarehShabaContainerEDIT").hide();
+            $("#shomarehKartContainerEDIT").hide();
+            console.log($("#typehoshdarEDIT").val());
+            var value = $("#typehoshdarEDIT").val();
+            if (value == "1") {
+                $("#shomarehShabaContainerEDIT").show();
+            } else if (value == "2") {
+                $("#shomarehKartContainerEDIT").show();
+            }
+        }
+
+        toggleFieldsEDIT(); // در ابتدا
+
+        $("#typehoshdarEDIT").on("change", toggleFieldsEDIT);
+    });
+</script>
+
+<script>
+    //$.each($("#usr"), function (index, item) {
+    //    $("#usr").attr("id", "select_usr_");
+    //    $('#select_usr_').attr("multiple", "multiple");
+    //    $('#select_usr_').picker({ search: true });
+    //    $('#select_usr_').on('sp-change', function () { });
+    //});
+    // Convert Gregorian date to jaali in the table
+    //var tds = document.querySelectorAll("[cont-date]");
+    //var valueD, id, target;
+    //var options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    //cont = 1
+    //tds.forEach(td => {
+    //    valueD = new Date(td.textContent).toLocaleDateString('fa-IR-u-nu-latn', options).replace(',', '').replace(" ", "");
+    //    valueD = valueD.slice(0, 10) + " " + td.textContent.slice(10, 30)
+    //    id = td.getAttribute("cont-date");
+    //    target = document.getElementById(id);
+    //    target.textContent = valueD;
+    //    let row = document.querySelector('.task-list-row.dateS_' + cont);
+    //    row.setAttribute('data-filter01', valueD);
+    //    cont += 1
+    //});
+
+</script>
+<script>
+    var valueD
+    var date
+
+    // convert miladi to jalali
+    date = document.getElementById("datepickerFromEn_usrrepetE").value.replace(" ", "")
+    valueD = new Date(date.slice(0, 10)).toLocaleDateString('fa-IR-u-nu-latn', { year: 'numeric', month: '2-digit', day: '2-digit' })
+    valueD = valueD + " " + date.slice(10, 30)
+    document.getElementById("datepickerFrom_usrrepetE").value = valueD
+
+    date = document.getElementById("datepickerFromEn_usrStrt").value.replace(" ", "")
+    valueD = new Date(date.slice(0, 10)).toLocaleDateString('fa-IR-u-nu-latn', { year: 'numeric', month: '2-digit', day: '2-digit' })
+    valueD = valueD + " " + date.slice(10, 30)
+    document.getElementById("datepickerFrom_usrStrt").value = valueD
+
+    date = document.getElementById("datepickerFromEn_usrendEnd").value.replace(" ", "")
+    valueD = new Date(date.slice(0, 10)).toLocaleDateString('fa-IR-u-nu-latn', { year: 'numeric', month: '2-digit', day: '2-digit' })
+    valueD = valueD + " " + date.slice(10, 30)
+    document.getElementById("datepickerFrom_usrendEnd").value = valueD
+
+    var inputs = document.querySelectorAll("[data-jdp-miladi-input]");
+    for (var i = 0; i < inputs.length; i++) {
+        inputs[i].addEventListener("jdp:change", function (e) {
+            var miladiInput = document.getElementById(this.getAttribute("data-jdp-miladi-input"));
+            var date = this.value.replace(' ', '').slice(0, 10).split('/');
+            date = jalaali.toGregorian(parseInt(date[0]), parseInt(date[1]), parseInt(date[2]),)
+            // If it was empty
+            if (!this.value) {
+                date = "";
+            }
+            // If it was only history
+            else if (this.value.replace(' ', '').length < 11) {
+                date = date.gy + '-' + date.gm + '-' + date.gd
+            }
+            // If it was the date and time
+            else {
+                date = date.gy + '-' + date.gm + '-' + date.gd + ' ' + this.value.replace(' ', '').slice(10, 30)
+            }
+            miladiInput.value = date
+
+        });
+    }
+</script>

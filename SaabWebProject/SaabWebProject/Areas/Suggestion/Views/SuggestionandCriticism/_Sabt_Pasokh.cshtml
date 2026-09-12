@@ -1,0 +1,183 @@
+﻿@model List<SaabWebProject.Models.DomainModels.tbSuggestion>
+@{
+    Layout = null;
+}
+<div class="card" style="width: 100%;">
+    <div class="tab-content p-4">
+        <div class="tab-pane fade show active" id="allTab">
+            <div class="table-responsive">
+                <table class="table table-hover" style="text-align:center;">
+                    <thead class="table-dark">
+                        <tr>
+                            <td>ردیف</td>
+                            <td>عنوان</td>
+                            <td>شرح</td>
+                            <td>تاریخ</td>
+                            <td>ثبت کننده</td>
+                            <td>پیوست</td>
+                            <td>دیده شده</td>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{ var counter = 0;}
+                        @foreach (var item in Model)
+                        {
+                            counter++;
+                        <tr>
+                            @if (counter == 1)
+                            {
+                                <td class="first" id="first_@item.ID">@counter</td>
+                            }
+                            else
+                            {
+                                <td>@counter</td>
+
+                            }
+
+                            <td>@item.Title</td>
+                            <td>@item.Description</td>
+                            <td>@item.Persian_Date</td>
+                            <td>@item.UserFullName</td>
+                            @if (item.FileName != null)
+                            {
+                                <td><a target="_blank" href="~/Areas/Suggestion/Contents/@item.FileSystemName">دانلود</a></td>
+                            }
+                            else
+                            {
+                                <td>
+                                    ندارد
+                                </td>
+                            }
+                            @if (item.IsSeen == true)
+                            {
+                                <td><i style="color:green" class="bi bi-eye-fill text-theme"></i></td>
+                            }
+                            else
+                            {
+                                <td><i style="color:red" class="bi bi-eye-slash-fill text-theme"></i></td>
+
+                            }
+                        </tr>
+                        }
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-md-12">
+
+                <label class="form-label"> پاسخ </label>
+                <textarea class="form-control" id="Description1"></textarea>
+            </div>
+
+        </div>
+        <div class="row" style="margin-top:20px">
+            <div class="col-xl-8">
+                <div class="form-group mb-6">   </div>
+            </div>
+            <div class="col-xl-2">    
+                <input type="file" id="file1" class="btn btn-info form-control" />
+            </div>
+            <div class="col-xl-2">
+                <button class="btn btn-success buttonGeneral form-control" id="Send1">
+                    <i class="fa fa-paper-plane fa-fw me-1 VecGeneral"></i>
+                    <span class="bGeneral-text"></span>
+                    ارسال
+                </button>
+            </div>    
+        </div>
+    </div>
+
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+
+
+<script>
+    var fd1 = new FormData();
+    $("#file1").change(function (e) {
+        $.each(e.target.files, function (index, file) {
+            fd1.append("files", file);
+        });
+    });
+</script>
+<script>
+        $("#Send1").click(function () {
+            if ($("#Description1").val() != "") {
+                console.log($(".first").attr("id").split("_")[1]);
+                fd1.append("parent_ID", $(".first").attr("id").split("_")[1]);
+                fd1.append("Description", $("#Description1").val());
+                sendAjax('@Url.Action("Reply","SuggestionandCriticism",new { area = "Suggestion" })', fd1);
+            } else {
+                alert("لطفا تمامی فیلد های مورد نیاز را وارد نمائید .");
+            }
+
+        });
+</script>
+<script>
+    var Toast = Swal.mixin({
+        toast: true,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    });
+</script>
+<script>
+
+    function sendAjax(url2, fd2) {
+        $("#loading-message").css("display", "block");
+
+        $.ajax({
+            url: url2,
+            type: 'POST',
+            data: fd2,
+            processData: false,
+            contentType: false,
+            success: function (resp1) {
+                $("#loading-message").css("display", "none");
+                if (resp1 == "True") {
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "پاسخ با موفقیت ثبت شد"
+                    }).then(() => {
+                        location.reload();
+                    });
+                } else {
+                    $("#loading-message").css("display", "none");
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                    }).then(() => {
+                        $("#loading-message").css("display", "none");
+                    });
+                }
+            },
+            error: function (resp1) {
+                $("#loading-message").css("display", "none");
+                Toast.fire({
+                    icon: 'success',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                }).then(() => {
+                    $("#loading-message").css("display", "none");
+                });
+            }
+        });
+    }
+</script>

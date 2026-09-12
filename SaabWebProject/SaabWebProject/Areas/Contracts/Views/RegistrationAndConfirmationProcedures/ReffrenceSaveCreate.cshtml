@@ -1,0 +1,425 @@
+﻿@using SaabWebProject.Models.DomainModels;
+
+@{
+    Layout = null;
+    SaabEntities db = new SaabEntities();
+
+}
+<link href="~/MyStyles/MyStyle.css" rel="stylesheet" />
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+
+<div class="mb-5">
+    <div class="card">
+        <div class="card-body p-4">
+            <div class="row">
+                <div class="col-xl-5">
+                    <label class="form-label"> پیمان </label>
+                    <div id="peyman2"> </div>
+                </div>
+                <div class="col-xl-3">
+                    <label class="form-label">عنوان عملیات  </label>
+                    <select class="form-select IsFor" id="IsFor">
+                        <option value="0">انتخاب نمایید..</option>
+                        @foreach (var it in db.tbmarahelsabt.ToList())
+                        {
+                            <option value="@it.ID">@it.Name</option>
+
+                        }
+                        @*<option value="1">عملکرد افراد</option>
+                        <option value="4">ابزارکار و  لوازم ایمنی</option>
+                        <option value="3">وسیله نقلیه</option>
+                        <option value="5">عملکرد صورت وضعیت </option>
+                        <option value="6">پروژه کالایی</option>
+                        <option value="7">فیش حقوقی </option>*@
+                    </select>
+                </div>
+                <div class="col-xl-2">
+                    <label class="form-label"> دوره گزارش گیری </label>
+                    <select class="form-select Duration" id="Duration">
+                        <option value="0">انتخاب نمایید..</option>
+                        <option value="1">ماهانه</option>
+                        <option value="2">دوماه</option>
+                        <option value="3">فصلی</option>
+                    </select>
+                </div>
+
+                <div class="col-xl-2">
+                    <label class="form-label"> نوع بارگذاری داده </label>
+                    <select class="form-select TypeOfUpload" id="TypeOfUpload">
+                        <option value="0">انتخاب نمایید..</option>
+                        <option value="1">تجمعی</option>
+                        <option value="2">متوالی</option>
+                    </select>
+                </div>
+                <div class="col-xl-2">
+                    <label class="form-label"> نوع شخص </label>
+                    <select class="form-select TypeOfUser" id="TypeOfUser">
+                        <option value="0">انتخاب نمایید..</option>
+                        <option value="1">حقیقی</option>
+                        <option value="2">حقوقی</option>
+                    </select>
+                </div>
+                <div class="col-xl-2">
+                    <label class="form-label"> ماه شروع ثبت </label>
+                    <input class="form-control" id="startMonth" type="number" value="1" />
+                </div>
+                <div class="col-xl-8">
+                    <div class="row" id="Div_ContinueForm">
+
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row" id="Div_TedadMarahel" style="overflow-y:scroll;height:300px;">
+
+            </div>
+
+            <div class="row" style="margin-top:30px">
+                <div class="col-xl-9"></div>
+
+                <div class="col-xl-2" id="marahelTaed" style="display:none">
+                    <label class="form-label"> آخرین روز انجام ثبت </label>
+                    <input class="form-control" id="EndDay" />
+                </div>
+                <div class="col-xl-1" id="btnsabt" style="display:none">
+                    <button class="btn form-control buttonsabt" id="btn_ReffrenceSave">
+                        <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                        <span class="bSabt-text">ثبت</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card-arrow">
+            <div class="card-arrow-top-left"></div>
+            <div class="card-arrow-top-right"></div>
+            <div class="card-arrow-bottom-left"></div>
+            <div class="card-arrow-bottom-right"></div>
+        </div>
+    </div>
+</div>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script>
+
+    $(".IsFor").picker({ search: false });
+    $(".Duration").picker({ search: false });
+    //$(".TypeOfUpload").picker({ search: false });
+    $(".TypeOfUser").picker({ search: false });
+
+</script>
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+@* آوردن پیمان ها *@
+<script>
+   //// $("#Duration").picker();
+   // $("#TypeOfUpload").picker();
+    $("#peyman2" ).load('@Url.Content("/../Contracts/Peyman/_GetAllListPeymans_SingleSelect")',function(){
+        $("#select_peyman1").attr("id", "select_peyman2");
+         $('#select_peyman2').picker({ search: true });
+         $('#select_peyman2').change(function () {
+            console.log("select2 changed");
+             GetListSabt();
+         });
+    });
+</script>
+
+@*ذخیره اطلاعات*@
+<script>
+
+    var flag = 1;
+    $("#btn_ReffrenceSave").click(function () {
+        if ($("#select_peyman2").val() == 0) {
+            alert("پیمان را انتخاب نمایید");
+        } else if ($("#Duration").val() == 0) {
+            alert("دوره گزارش گیری را انتخاب نمایید")
+        } else if ($("#TypeOfUpload").val() == 0) {
+            alert("نوع بارگذاری داده را وارد نمایید")
+        }
+        //else if ($("#MaxDaysForSave").val() == 0) {
+        //    alert("حداکثر تعداد روز برای عملیات ثبت را وارد نمایید")
+        //}
+        else if ($("#CountLevels").val() == 0) {
+            alert("تعداد مراحل را وارد نمایید")
+        } else {
+            var Total = new Object();
+            Total.FK_PeymanID = $("#select_peyman2").val();
+            Total.Duration = $("#Duration").val();
+            Total.TypeOfUpload = $("#TypeOfUpload").val();
+            //Total.MaxDaysForSave = $("#MaxDaysForSave").val();
+            Total.TypeOfUser = $("#TypeOfUser").val();
+            Total.CountLevels = $("#CountLevels").val();
+            Total.StartMonth = $("#startMonth").val();
+
+            Total.IsFor = $("#IsFor").val();
+            Total.ID = $("#model_ID").val();
+            let levelArr = []; // ارایه ذخیره سازی  همه سطوح بسته ها
+            let counter = 0;
+            $.each($(".count_Perdays"), function (index, item) {
+                var id = $(this).attr("id").split("_")[1];
+                var obj = new Object();
+                obj.Title = $("#title_" + id).val();
+                obj.StartDaysInMonth = $("#StartDaysInMonth_" + id).val();
+                obj.DeadLine = $("#DeadLine_" + id).val();
+
+                //ارایه ذخیره افراد هر سطر
+                var UsersArr = [];
+                console.log($("#select_users_" + counter).val());
+                $.each($("#select_users_" + counter).val().toString().split(","), function (index, item) {
+                    if (item != "") {
+                        var user_obj = new Object();
+                        user_obj.FK_UserID = item;
+                        console.log(item);
+                        UsersArr.push(user_obj);
+                    }
+
+                });
+                console.log(UsersArr);
+                if (UsersArr.length == 0) {
+                    alert("لطفا کاربران مجاز را انتخاب نمایید");
+                    flag = 0;
+                }
+
+                obj.tbReffrenceSaveLevelUser = UsersArr;
+                if ($("#IsFor").val() == 1) {
+                    console.log("hljhjh")
+                    var selectElement = $("#select_Allmoalefe_" + counter);
+                    console.log(selectElement.length);
+                    //ارایه ذخیره مولفه های هر سطر
+                    var MoalefeArr = [];
+                    $.each($("#select_Allmoalefe_" + counter).val().toString().split(","), function (index, item) {
+                        if (item != "") {
+                            var moalefe_obj = new Object();
+                            moalefe_obj.FK_MoalefeID = item;
+                            MoalefeArr.push(moalefe_obj);
+                        }
+                    });
+
+                    obj.tbReffrenceSaveLevelMoalefe = MoalefeArr;
+                    counter++;
+
+                    levelArr.push(obj);
+                }
+                else if ($("#IsFor").val() == 5) {
+                    console.log("hljhjh");
+
+                    var selectElement = $("#select_Allmoalefe_" + counter);
+
+                    if (selectElement.length > 0) {
+                        //ارایه ذخیره مولفه های هر سطر
+                        var MoalefeArr = [];
+                        $.each(selectElement.val().toString().split(","), function (index, item) {
+                            if (item != "") {
+                                var moalefe_obj = new Object();
+                                moalefe_obj.FK_MoalefeID = item;
+                                MoalefeArr.push(moalefe_obj);
+                            }
+                        });
+
+                        obj.tbReffrenceSaveLevelMoalefe = MoalefeArr;
+                        counter++;
+
+                        levelArr.push(obj);
+                    } else {
+                        console.error("Element not found: #select_Allmoalefe_" + counter);
+                    }
+                }
+
+                else {
+                    var MoalefeArr = [];
+                    $.each($("#select_Allmoalefe_" + counter).val(), function (index, item) {
+                        if (item != "") {
+                            var moalefe_obj = new Object();
+                            moalefe_obj.FK_MoalefeID = item;
+                            MoalefeArr.push(moalefe_obj);
+                        }
+                    });
+
+                    obj.tbReffrenceSaveLevelMoalefe = MoalefeArr;
+                    counter++;
+
+                    levelArr.push(obj);
+                }
+                });
+            Total.tbReffrenceSaveLevel = levelArr;
+
+
+
+            if (flag == 1) {
+                sendAjax('@Url.Action("SaveReffrenceSave", "RegistrationAndConfirmationProcedures", new { area = "Contracts" })', Total)
+                console.log($("#IsFor").val());
+
+            }
+        }
+    });
+</script>
+
+@* ajax code *@
+<script>
+    function sendAjax(url, data) {
+        $.ajax({
+            beforeSend: function () {
+                document.getElementById("loading-message").style.display = "block";
+            },
+            url: url,
+            data: { Total: data },
+            type: "Post",
+            dataType: "html",
+            success: function (resp) {
+                document.getElementById("loading-message").style.display = "none";
+                console.log(resp);
+                if (resp == "True") {
+
+                    alert("با موفقیت ثبت شد..");
+                    location.reload();
+                }
+            },
+            error: function (resp) {
+                document.getElementById("loading-message").style.display = "none";
+                alert("دچار مشکل شده است ");
+                console.log(resp);
+            }
+        });
+    }
+</script>
+
+@* show Continiue form information *@
+<script>
+    $("#Duration").change(function () {
+        GetListSabt();
+    });
+    $("#TypeOfUpload").change(function () {
+        GetListSabt();
+    });
+    function GetListSabt() {
+
+
+
+        if ($("#Duration").val() != 0 && $("#TypeOfUpload").val() != 0 && $('#select_peyman2').val() != 'Select') {
+            var typee = $("#TypeOfUpload").val();
+            var durationn = $("#Duration").val() ;
+            var peymann = $('#select_peyman2').val();
+            $("#Div_ContinueForm").load('@Url.Content("/../Contracts/RegistrationAndConfirmationProcedures/ReffrenceSaveUpdate")?peymanId='+ peymann + '&type='+ typee + '&duration=' + durationn, function () {
+                var isForValue = $("#IsFor").val();
+
+                if (isForValue == 3 || isForValue == 4 || isForValue == 5 || isForValue == 6 || isForValue == 7) {
+                    $("#CountLevels").val(1);
+                    $("#CountLevels").prop("disabled", true);
+                }
+                controlLevels();
+            });
+        }
+    }
+</script>
+<script>
+    function controlLevels(){
+    @* نمایش سطوح مختلف *@
+
+        $(function () {
+            if ($("#model_ID").val() != null) {
+                $("Submit").click();
+            }
+        });
+        $("#Submit").click(function () {
+
+            if ($("#IsFor").val() == 1) {
+
+
+                if ($("#TypeOfUpload").val() != 0) {
+                    $("#Div_TedadMarahel").load('@Url.Content("/RegistrationAndConfirmationProcedures/ReffrenceSaveListMarahelSabt")?count=' + $("#CountLevels").val() + '&TypeOfUser=' + $("#TypeOfUser").val() + '&IsFor=' + $("#IsFor").val() + '&pymn=' + $("#select_peyman2").val(), function () {
+
+                        $("#StartDaysInMonth_1").keyup(function () {
+                            FillStartDays();
+                        });
+
+                        $(".count_Perdays").keyup(function () {
+                            FillStartDays();
+                        });
+                    });
+                } else {
+                    alert("نوع بارگذاری داده را مشخص نمائید.")
+                }
+            }
+            else {
+                   if ($("#TypeOfUpload").val() != 0) {
+                       $("#Div_TedadMarahel").load('@Url.Content("/RegistrationAndConfirmationProcedures/ReffrenceSaveListMarahelSabt")?count=' + $("#CountLevels").val() + '&TypeOfUser=' + $("#TypeOfUser").val() + '&IsFor=' + $("#IsFor").val() + '&pymn=' + $("#select_peyman2").val(), function () {
+
+           $("#StartDaysInMonth_1").keyup(function () {
+               FillStartDays();
+           });
+
+           $(".count_Perdays").keyup(function () {
+               FillStartDays();
+           });
+       });
+   } else {
+       alert("نوع بارگذاری داده را مشخص نمائید.")
+   }
+
+            }
+        });
+        // تابع پر کردن تاریخ ها
+        function FillStartDays(){
+            //if ($("#TypeOfUpload").val() == 1) { // اگر تجمیعی بود
+            //    var max = 0; // متغیری برای ذخیره کردن بزرگ ترین روز در بین روز های هر سطر
+            //    $.each($(".count_Perdays"), function (index, item) {
+            //        var id = $(this).attr("id").split("_")[1];
+            //        $("#StartDaysInMonth_" + id).val($("#StartDaysInMonth_1").val());
+            //        if ($("#DeadLine_" + id).val().toString().length != 0 && $("#DeadLine_" + id).val() > max) {
+            //            max = $("#DeadLine_" + id).val();
+            //        }
+
+            //    });
+            //    // محاسبه اتمام روز مراحل تایید
+            //    var sumation = parseInt($("#StartDaysInMonth_1").val()) + parseInt(max);
+            //    console.log($("#StartDaysInMonth_1").val());
+
+            //    if (sumation > 30) {
+            //        sumation = parseInt(sumation) - 30;
+            //        $("#EndDay").val(sumation + "ماه بعد");
+
+            //    } else {
+            //        $("#EndDay").val(sumation);
+            //    }
+            //} else if ($("#TypeOfUpload").val() == 2) { // اگر متوالی بود
+
+            //    counter = 1;
+
+            //    $.each($(".count_Perdays"), function (index, item) {
+            //        counter++;
+            //        var id = $(this).attr("id").split("_")[1];
+            //        var sumation = parseInt($("#StartDaysInMonth_" + (counter - 1)).val()) + parseInt($("#DeadLine_" + (counter - 1)).val());
+            //        if (sumation > 30) {
+            //            sumation = sumation - 30;
+            //        }
+            //        $("#StartDaysInMonth_" + counter).val(sumation);
+            //    });
+            //    var end_sum = parseInt($("#StartDaysInMonth_" + (counter - 1)).val()) + parseInt($("#DeadLine_" + (counter - 1)).val());
+            //    if (end_sum > 30) {
+            //        end_sum = end_sum - 30;
+            //        $("#EndDay").val(end_sum + "ماه بعد");
+
+            //    } else {
+            //        $("#EndDay").val(end_sum);
+            //    }
+            //    // محاسبه اتمام روز مراحل تایید
+            //    $("#EndDay").val(end_sum);
+
+            //}
+            //بیش از تعداد روز اعلامی نشده باشد
+            //var endday = 0;
+            //$.each($(".count_Perdays"), function (index, item) {
+            //    endday++;
+             //   var id = $(this).attr("id").split("_")[1];
+            //    var sumation = 0;
+            //    sumation += parseInt($("#DeadLine_" + endday).val());
+            //    if (sumation > $("#MaxDaysForSave").val()) {
+             //       alert("تعداد روز ها بیش از زمان در نظر گرفته شده است، لطفا اصلاح نمایید")
+            //   }
+           // });
+
+
+        }
+    }
+</script>
+

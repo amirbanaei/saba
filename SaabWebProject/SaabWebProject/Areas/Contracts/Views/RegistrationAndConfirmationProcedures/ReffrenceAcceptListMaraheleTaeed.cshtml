@@ -1,0 +1,69 @@
+﻿@{
+    Layout = null;
+}
+
+
+@model int
+
+<style>
+    td input, td input[class="form-control"] {
+        margin-bottom: 0 !important;
+    }
+
+    td .picker, td .form-select {
+        margin-bottom: 0 !important;
+    }
+</style>
+<div class="table-responsive">
+    <table class="table table-hover" style="text-align:center;">
+        <thead >
+
+            <tr>
+                <th>مرحله تایید</th>
+                <th style="width:50%">افراد مجاز</th>
+                <th>روز شروع</th>
+                <th>مهلت روز</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{ for (int i = 0; i < Model; i++)
+                {
+                    int radif = i + 1;
+
+                    <tr>
+                        <td>@radif</td>
+                        <td style="width:50%;" class="td_users_taeed"></td>
+                        @if (radif == 1)
+                        {
+                            <td><input class="form-control number" type="number" max="31" min="1" id="StartDayInMonth_@radif" /></td>
+                        }else
+                        {
+                            <td><input class="form-control number" type="number" max="31" min="1" id="StartDayInMonth_@radif" /></td>
+                        }
+                        <td><input class="form-control count_Perdays1 number" type="number" max="31" min="1" id="Duration_@radif" /></td>
+                    </tr>
+                }
+            }
+        </tbody>
+
+    </table>
+</div>
+
+<script>
+    //مالتی سلکت کاربران حقیقی
+    var counter1 = 0 ;
+    $.each($(".td_users_taeed"), function (index, item) {
+               $(this).load('@Url.Content("/../Users/Users/_GetAllHaghighiUsers_Select")',function(){
+               $("#select_users1").attr("id", "select_usersTaeed_"+counter1);
+               $("#select_usersTaeed_"+counter1).attr("multiple", "multiple");
+                var $elem = $('#select_usersTaeed_'+counter1);
+                $elem.picker({ search: true });
+                    $elem.on('sp-change', function () {
+               });
+               counter1++;
+        });
+    });
+
+</script>
+
+

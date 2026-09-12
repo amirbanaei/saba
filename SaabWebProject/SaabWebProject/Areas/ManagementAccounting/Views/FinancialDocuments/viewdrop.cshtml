@@ -1,0 +1,1090 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "جدول با قابلیت Drag & Drop و Merge";
+
+}
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+
+<style>
+
+    table {
+        /*        width: 100%;
+        margin: 20px auto;
+        border-collapse: collapse;
+        text-align: center;*/
+    }
+
+    th, td {
+        padding: 15px;
+        cursor: pointer;
+        padding: 15px !important;
+    }
+
+    td {
+        border: 1px dashed #687278;
+    }
+
+
+
+    .draggable {
+        padding: 4px;
+        border: 1px solid #007BFF;
+        cursor: grab;
+        border-radius: 5px;
+        font-size: 12px;
+        display: inline-block;
+    }
+
+    .drop-target {
+        /*border: 2px dashed;*/
+    }
+
+    .dragging {
+        opacity: 0.5;
+    }
+
+    .selected {
+        background-color: #f080807a !important;
+    }
+
+    .highlight {
+        background-color: #f0f8ff;
+    }
+
+    .merged {
+        background-color: #d1ffd1;
+    }
+
+    /*---------------------------*/
+    .form-control {
+        margin-bottom: 0 !important;
+    }
+
+    .rowOption {
+        display: flex;
+        flex-wrap: nowrap;
+    }
+
+    .boxOption {
+        display: flex;
+        flex-wrap: nowrap;
+        border-left: 1px dashed;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .boxOption input {
+            max-width: 62px;
+            border-left: 1px dashed;
+        }
+
+
+
+    .boxBit {
+        /*margin: 0px 4px;*/
+        margin: 5px;
+    }
+
+        .boxBit i {
+            font-size: 18px;
+        }
+
+    .tableH_Lock {
+        max-height: 447px;
+    }
+
+    thead {
+        position: sticky;
+        top: 0;
+        text-align: center;
+        z-index: 2;
+    }
+</style>
+
+<div class="tab-content">
+    <div class="rowOption">
+        <div class="boxOption">
+            <input class="form-control boxBit" type="number" id="rowsInput" placeholder="- - - -" min="1" title="تعداد سطر">
+            <input class="form-control boxBit" type="number" id="colsInput" placeholder="| | | |" min="1" title="تعداد ستون">
+            <button class="boxBit form-control buttonGeneralPlus" id="createTable" title="ایجاد جدول">
+                <i class="bi bi-table"></i>
+            </button>
+        </div>
+
+        <button id="saveMergedButton">ذخیره ادغام‌ها</button>
+
+
+
+        <div class="boxOption">
+            <input class="form-control boxBit" type="number" id="hideRowInput" placeholder="- - - -" min="1" title="شماره ردیف">
+            <button class="boxBit form-control buttonGeneralPlus" id="hideRow" title="مخفی کردن ردیف">
+                <i class="bi bi-eye-slash"></i>
+            </button>
+            <button class="boxBit form-control buttonGeneralPlus" id="showRow" title="ظاهر کردن ردیف">
+                <i class="bi bi-eye"></i>
+            </button>
+        </div>
+
+        <div class="boxOption">
+            <input class="form-control boxBit" type="number" id="hideColInput" placeholder="| | | |" min="1" title="شماره ستون">
+            <button class="boxBit form-control buttonGeneralPlus" id="hideCol" title="مخفی کردن ستون">
+                <i class="bi bi-eye-slash"></i>
+            </button>
+            <button class="boxBit form-control buttonGeneralPlus" id="showCol" title="ظاهر کردن ستون">
+                <i class="bi bi-eye"></i>
+            </button>
+        </div>
+
+        <div class="boxOption">
+            <button class="boxBit form-control buttonGeneralPlus" id="mergeCells" title="ادغام سلول‌های">
+                <i class="fa fa-grip-lines"></i>
+            </button>
+            <button class="boxBit form-control buttonGeneralPlus" id="unmergeCells" title="جدا کردن سلول‌ها">
+                <i class="fa fa-grip"></i>
+            </button>
+            <button class="boxBit form-control buttonGeneralPlus" id="removeInnerBorders" title="حذف بردر داخلی">
+                <i class="bi bi-file-x" style="rotate:90deg;"></i>
+            </button>
+        </div>
+        <div class="boxOption col-xl-2" style="width:150px">
+            <input class="form-control  boxBit" id="textInput" placeholder="متن را وارد کنید" min="1" title="متن را وارد کنید" style="width:100%">
+            <button class="boxBit form-control buttonGeneralPlus" id="addText" title="افزودن">
+                <i class="bi bi-plus-square-dotted"></i>
+            </button>
+        </div>
+        <div class="boxOption ">
+
+            <select class="form-control form-select boxBit" id="FontSize" title="اندازه متن" style="width:100px">
+                <option value="">اندازه متن</option>
+                <option value="15">15</option>
+                <option value="22">22</option>
+                <option value="29">29</option>
+                <option value="36">36</option>
+                <option value="42">42</option>
+                <option value="48">48</option>
+            </select>
+            <button class="boxBit form-control buttonGeneralPlus" id="RightTxt" title="راست چین ">
+                <i class="bi bi-justify-right"></i>
+            </button>
+            <button class="boxBit form-control buttonGeneralPlus" id="MidTxt" title="وسط چین">
+                <i class="bi bi-justify"></i>
+            </button>
+            <button class="boxBit form-control buttonGeneralPlus" id="LeftTxt" title="چپ چین">
+                <i class="bi bi-justify-left"></i>
+            </button>
+        </div>
+        <div class="boxOption1">
+            <div class="boxBit" id="addLaw"></div>
+        </div>
+    </div>
+
+
+    <div class="card mt-3 mb-3" style="width: 100%">
+        <div class="table-content p-4">
+            <div class="table-container table-responsive tableH_Lock">
+            </div>
+        </div>
+        <div class="card-arrow">
+            <div class="card-arrow-top-left"></div>
+            <div class="card-arrow-top-right"></div>
+            <div class="card-arrow-bottom-left"></div>
+            <div class="card-arrow-bottom-right"></div>
+        </div>
+    </div>
+
+
+
+    <div class="row">
+        <div class="col-xl-3">
+            <input class="boxBit form-control" type="text" id="formulaInput" placeholder="فرمول (مثلاً A1+B2 یا sqrt(A2) یا log(A3))">
+
+        </div>
+        <div class="col-xl-3">
+            <input class="boxBit form-control" type="text" id="targetCellInput" placeholder="سلول مقصد (مثلاً A4)">
+
+        </div>
+        <div class="col-xl-1">
+            <button class="boxBit form-control buttonGeneralPlus" id="calculate" title="افزودن">
+                <i class="bi bi-calculator"></i>
+            </button>
+        </div>
+
+        <p id="result"></p>
+    </div>
+</div>
+
+
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Scripts/sweetalert2.js"></script>
+
+<script>
+
+    $(document).ready(function () {
+
+
+
+        $("#saveMergedButton").click(function () {
+            //=========================================================================================================
+            const myTable = document.querySelector(".table"); // یا هر متغیر دیگه‌ای
+
+            const cellData = [];
+
+            if (myTable) {
+                const rows = myTable.rows;
+
+                let colTracker = 0; // برای شمارش ستون‌ها با توجه به مرج‌ها
+
+                for (let i = 0; i < rows.length; i++) {
+                    const cells = rows[i].cells;
+
+                    for (let j = 0; j < cells.length; j++) {
+                        const cell = cells[j];
+
+                        // بررسی مرج شدن (colspan و rowspan)
+                        const rowspan = cell.rowSpan || 1;
+                        const colspan = cell.colSpan || 1;
+
+                        // فقط برای سلول‌های اصلی که مرج شده‌اند اطلاعات رو ثبت می‌کنیم
+                        if (rowspan > 1 || colspan > 1) {
+                            // افزایش شمارش برای سلول‌هایی که مرج شدن
+                            j += colspan - 1;
+                            colTracker += colspan - 1;
+                        }
+
+                        // بررسی محتوای داخلی برای استایل مثل font-size
+                        const inner = cell.querySelector("*"); // چک کردن اگر داخلش عنصر دیگه‌ای هست
+                        const innerStyle = inner ? window.getComputedStyle(inner) : null;
+                        const outerStyle = window.getComputedStyle(cell);
+
+                        // استخراج متن از محتوای داخلی (مثلاً <div>) یا خود سلول
+                        const text = inner ? inner.innerText.trim() : cell.innerText.trim();
+
+                        // ذخیره اطلاعات فقط برای سلول واقعی
+                        cellData.push({
+                            rowIndex: i,
+                            colIndex: colTracker,
+                            text: text,
+                            rowspan: rowspan,
+                            colspan: colspan,
+                            classList: Array.from(cell.classList),
+                            inlineStyle: cell.getAttribute("style"),
+                            computedStyle: {
+                                color: outerStyle.color,
+                                backgroundColor: outerStyle.backgroundColor,
+                                fontSize: innerStyle ? innerStyle.fontSize : outerStyle.fontSize,
+                                fontWeight: innerStyle ? innerStyle.fontWeight : outerStyle.fontWeight,
+                                fontFamily: innerStyle ? innerStyle.fontFamily : outerStyle.fontFamily,
+                                textAlign: outerStyle.textAlign,
+                                verticalAlign: outerStyle.verticalAlign,
+                                border: outerStyle.border,
+                                padding: outerStyle.padding,
+                                display: outerStyle.display,
+                                visibility: outerStyle.visibility,
+                                borderTop: outerStyle.borderTop,
+                                borderBottom: outerStyle.borderBottom,
+                                borderLeft: outerStyle.borderLeft,
+                                borderRight: outerStyle.borderRight
+                            }
+                        });
+
+                        // افزایش شمارنده‌ی ستون با در نظر گرفتن colspan
+                        colTracker += colspan;
+                    }
+                }
+
+                console.log("---------------------------------------------------------------");
+                console.log(cellData);
+                console.log("---------------------------------------------------------------");
+
+            } else {
+                console.warn("جدول پیدا نشد.");
+            }
+
+        //=========================================================================================================
+            let formId = 1; // مقدار FK_Form1 (باید مقدار واقعی را از دیتابیس دریافت کنید)
+            saveMergedData(formId);
+        });
+
+    });
+
+    function saveMergedData(formId) {
+        let mergedDataString = JSON.stringify(mergedData); // تبدیل به رشته JSON
+        console.log(mergedDataString);
+        $.ajax({
+            url: "/ManagementAccounting/FinancialDocuments/SaveMergedData",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({
+                FK_Form1: formId, // مقدار کلید خارجی
+                MERGEE: mergedDataString // ارسال مقدار مرج شده
+            }),
+            success: function (response) {
+                if (response.success) {
+                    alert("داده‌های مرج شده با موفقیت ذخیره شدند!");
+                } else {
+                    alert("خطا در ذخیره داده‌ها: " + response.message);
+                }
+            },
+            error: function (error) {
+                console.error("خطا در ذخیره داده‌ها:", error);
+            }
+        });
+    }
+
+    document.getElementById("removeInnerBorders").addEventListener("click", function () {
+        let selectedCells = Array.from(document.querySelectorAll(".selected"));
+
+        selectedCells.forEach(cell => {
+            let row = cell.parentElement.rowIndex;
+            let col = cell.cellIndex;
+
+            selectedCells.forEach(otherCell => {
+                let otherRow = otherCell.parentElement.rowIndex;
+                let otherCol = otherCell.cellIndex;
+
+                if (row === otherRow && col === otherCol - 1) {
+                    // اگر دو سلول کنار هم در یک سطر هستند
+                    cell.style.borderLeft = "none";
+                    otherCell.style.borderRight = "none";
+                }
+
+                if (col === otherCol && row === otherRow + 1) {
+                    // اگر دو سلول روی هم قرار دارند
+                    cell.style.borderTop = "none";
+                    otherCell.style.borderBottom = "none";
+                }
+            });
+        });
+    });
+
+
+
+    // برای نمایش دوباره ردیف‌ها
+    $("#showRow").click(function () {
+        var rowNumber = $("#hideRowInput").val();
+        if (rowNumber > 0 && rowNumber <= table.find("tbody tr").length) {
+            var row = table.find("tbody tr").eq(rowNumber - 1); // شماره ردیف را با ایندکس تطبیق می‌دهیم
+            row.css("display", "table-row"); // نمایش دوباره ردیف
+        } else {
+            alert("لطفاً شماره ردیف صحیح وارد کنید.");
+        }
+    });
+
+    // برای نمایش دوباره ستون‌ها
+    $("#showCol").click(function () {
+        var colNumber = $("#hideColInput").val();
+        if (colNumber > 0 && colNumber <= table.find("thead th").length) {
+            // نمایش دوباره تمامی سلول‌های آن ستون
+            table.find("tbody tr").each(function () {
+                $(this).find("td").eq(colNumber - 1).css("display", "table-cell");
+            });
+            table.find("thead th").eq(colNumber - 1).css("display", "table-cell"); // نمایش دوباره هدر ستون
+        } else {
+            alert("لطفاً شماره ستون صحیح وارد کنید.");
+        }
+    });
+
+    $("#hideRow").click(function () {
+        var rowNumber = $("#hideRowInput").val();
+        if (rowNumber > 0 && rowNumber <= table.find("tbody tr").length) {
+            var row = table.find("tbody tr").eq(rowNumber - 1); // شماره ردیف را با ایندکس تطبیق می‌دهیم
+            row.css("display", "none"); // مخفی کردن ردیف
+        } else {
+            alert("لطفاً شماره ردیف صحیح وارد کنید.");
+        }
+    });
+
+    $("#hideCol").click(function () {
+        var colNumber = $("#hideColInput").val();
+        if (colNumber > 0 && colNumber <= table.find("thead th").length) {
+            // مخفی کردن تمامی سلول‌های آن ستون
+            table.find("tbody tr").each(function () {
+                $(this).find("td").eq(colNumber - 1).css("display", "none");
+            });
+            table.find("thead th").eq(colNumber - 1).css("display", "none"); // مخفی کردن هدر ستون
+        } else {
+            alert("لطفاً شماره ستون صحیح وارد کنید.");
+        }
+    });
+
+    let table;
+    let selectedCells = [];
+    function getColumnName(index) {
+        let columnName = '';
+        while (index >= 0) {
+            columnName = String.fromCharCode(index % 26 + 65) + columnName;
+            index = Math.floor(index / 26) - 1;
+        }
+        return columnName;
+    }
+
+
+    //$("#createTable").click(function () {
+    //    var rows = $("#rowsInput").val();
+    //    var cols = $("#colsInput").val();
+    //    if (rows > 0 && cols > 0) {
+    //        table = $("<table></table>");
+    //        var thead = $("<thead><tr></tr></thead>");
+    //        for (let i = 0; i < cols; i++) {
+    //            thead.find("tr").append("<th>" + getColumnName(i) + "</th>");
+    //        }
+    //        table.append(thead);
+
+    //        var tbody = $("<tbody></tbody>");
+    //        for (let i = 0; i < rows; i++) {
+    //            var row = $("<tr></tr>");
+    //            for (let j = 0; j < cols; j++) {
+    //                var cell = $("<td class='drop-target'></td>").attr("data-id", (i * cols) + j + 1);
+    //                cell.attr("title", "ستون: " + getColumnName(j) + " ردیف: " + (i + 1));
+    //                row.append(cell);
+    //            }
+    //            tbody.append(row);
+    //        }
+    //        table.append(tbody);
+    //        $(".table-container").html(table);
+    //    } else {
+    //        alert("لطفاً مقدار صحیح وارد کنید.");
+    //    }
+    //});
+
+    function createTable(rows, cols) {
+
+
+        if (rows > 0 && cols > 0) {
+            table = $("<table class='table table-hover text-nowrap'></table>");
+            var thead = $("<thead><tr></tr></thead>");
+            for (let i = 0; i < cols; i++) {
+                thead.find("tr").append("<th>" + getColumnName(i) + "</th>");
+            }
+            table.append(thead);
+
+            var tbody = $("<tbody></tbody>");
+            for (let i = 0; i < rows; i++) {
+                var row = $("<tr></tr>");
+                for (let j = 0; j < cols; j++) {
+                    var cell = $("<td class='drop-target' colspan='1'></td>").attr("data-id", (i * cols) + j + 1);
+                    cell.attr("title", "ستون: " + getColumnName(j) + " ردیف: " + (i + 1));
+                    row.append(cell);
+                }
+                tbody.append(row);
+            }
+            table.append(tbody);
+            $(".table-container").html(table);
+        } else {
+            alert("لطفاً مقدار صحیح وارد کنید.");
+        }
+
+
+    }
+
+
+    $("#createTable").click(function () {
+        var rows = $("#rowsInput").val();
+        var cols = $("#colsInput").val();
+        if (rows > 0 && cols > 0) {
+            table = $("<table class='table table-hover text-nowrap'></table>");
+            var thead = $("<thead><tr></tr></thead>");
+            for (let i = 0; i < cols; i++) {
+                thead.find("tr").append("<th>" + getColumnName(i) + "</th>");
+            }
+            table.append(thead);
+
+            var tbody = $("<tbody></tbody>");
+            for (let i = 0; i < rows; i++) {
+                var row = $("<tr></tr>");
+                for (let j = 0; j < cols; j++) {
+                    var cell = $("<td class='drop-target'></td>").attr("data-id", (i * cols) + j + 1);
+                    cell.attr("title", "ستون: " + getColumnName(j) + " ردیف: " + (i + 1));
+                    row.append(cell);
+                }
+                tbody.append(row);
+            }
+            table.append(tbody);
+            $(".table-container").html(table);
+        } else {
+            alert("لطفاً مقدار صحیح وارد کنید.");
+        }
+    });
+
+    $("#addText").click(function () {
+        var text = $("#textInput").val().trim();
+        if (text !== "") {
+            var newText = $("<div class='draggable'></div>").text(text);
+            newText.attr("draggable", "true");
+            $("#addLaw").append(newText);
+            $("#textInput").val("");
+        }
+    });
+
+    $(document).on("dragstart", ".draggable", function () { $(this).addClass("dragging"); });
+    $(document).on("dragend", ".draggable", function () { $(this).removeClass("dragging"); });
+
+    $(document).on("dragover", ".drop-target", function (e) { e.preventDefault(); $(this).addClass("highlight"); });
+    $(document).on("dragleave", ".drop-target", function () { $(this).removeClass("highlight"); });
+
+    $(document).on("drop", ".drop-target", function (e) {
+        e.preventDefault();
+        var draggedElement = $(".dragging");
+        $(this).append(draggedElement);
+        $(this).removeClass("highlight");
+    });
+    let mergedCells = {};
+
+    //$(document).on("click", "td", function () {
+    //    if ($(this).hasClass("selected")) {
+    //        $(this).removeClass("selected");
+    //        selectedCells = selectedCells.filter(cell => cell !== this);
+    //    } else {
+    //        $(this).addClass("selected");
+    //        selectedCells.push(this);
+    //    }
+    //});
+    $(document).on("click", "td", function () {
+        if ($(this).hasClass("selected")) {
+            $(this).removeClass("selected");
+            selectedCells = selectedCells.filter(cell => cell !== this);
+        } else {
+            $(this).addClass("selected");
+            selectedCells.push(this);
+        }
+    });
+    $("#unmergeCells").click(function () {
+        if (selectedCells.length !== 1) {
+            alert("لطفاً یک سلول ادغام‌شده را انتخاب کنید.");
+            return;
+        }
+
+        let cell = selectedCells[0];
+        let rowspan = parseInt($(cell).attr("rowspan")) || 1;
+        let colspan = parseInt($(cell).attr("colspan")) || 1;
+
+        if (rowspan === 1 && colspan === 1) {
+            alert("این سلول ادغام نشده است.");
+            return;
+        }
+
+        let tableCols = parseInt($("#colsInput").val());
+        let cellId = parseInt($(cell).attr("data-id"));
+        let minRow = Math.floor((cellId - 1) / tableCols);
+        let minCol = (cellId - 1) % tableCols;
+        let cellContent = $(cell).html();
+
+        // ایجاد سلول‌های جدید قبل از حذف ویژگی‌های ادغام
+        for (let row = minRow; row < minRow + rowspan; row++) {
+            for (let col = minCol; col < minCol + colspan; col++) {
+                if (row === minRow && col === minCol) {
+                    continue; // اولین سلول را نگه میداریم
+                }
+
+                let newCellId = (row * tableCols) + col + 1;
+                let newCell = $("<td class='drop-target'></td>")
+                    .attr("data-id", newCellId)
+                    .attr("title", "ستون: " + String.fromCharCode(65 + col) + " ردیف: " + (row + 1));
+
+                // پیدا کردن محل مناسب برای درج سلول جدید
+                let currentRow = Math.floor((newCellId - 1) / tableCols);
+                let currentRowFirstCell = (currentRow * tableCols) + 1;
+                let currentRowLastCell = currentRowFirstCell + tableCols - 1;
+
+                // پیدا کردن نزدیک‌ترین سلول موجود در همان ردیف
+                let inserted = false;
+                for (let i = newCellId; i <= currentRowLastCell; i++) {
+                    let existingCell = $("td[data-id='" + i + "']");
+                    if (existingCell.length) {
+                        existingCell.before(newCell);
+                        inserted = true;
+                        break;
+                    }
+                }
+
+                // اگر هیچ سلولی در ردیف پیدا نشد، به آخر ردیف اضافه کن
+                if (!inserted) {
+                    let rowElement = $("tr").eq(row);
+                    rowElement.append(newCell);
+                }
+            }
+        }
+
+        // حذف ویژگی‌های ادغام از سلول اصلی
+        $(cell).removeAttr("rowspan").removeAttr("colspan");
+        mergedData = mergedData.filter(item => item.mergedCellId !== cellId);
+        console.log("Updated Merged Data:", mergedData);
+
+        selectedCells = [];
+        $("td").removeClass("selected");
+    });
+    let mergedData = [
+        {
+            mergedCell: "I24",                // نام سلول مرج‌شده
+            mergedCellId: 469,                // شناسه سلول مرج‌شده
+            mergedIds: [469, 490, 470, 489],  // شناسه‌های سلول‌های مرج‌شده
+            mergedWith: "I24, J25, J24, I25", // سلول‌هایی که با آن مرج شده‌اند
+            rowspan: 2,                       // تعداد سطرهایی که سلول مرج‌شده در آن قرار دارد
+            colspan: 2,                       // تعداد ستونی که سلول مرج‌شده در آن قرار دارد
+            mergedText: "Some merged text"    // متنی که از سلول‌های مرج‌شده ترکیب می‌شود
+        },
+        {
+            mergedCell: "E29",                // نام سلول مرج‌شده
+            mergedCellId: 565,                // شناسه سلول مرج‌شده
+            mergedIds: [565, 566, 567],       // شناسه‌های سلول‌های مرج‌شده
+            mergedWith: "E29, F29, G29",      // سلول‌هایی که با آن مرج شده‌اند
+            rowspan: 1,                       // تعداد سطرهایی که سلول مرج‌شده در آن قرار دارد
+            colspan: 3,                       // تعداد ستونی که سلول مرج‌شده در آن قرار دارد
+            mergedText: "Another merged text" // متنی که از سلول‌های مرج‌شده ترکیب می‌شود
+        }
+    ];
+    // Merge Cells
+    $("#mergeCells").click(function () {
+        if (selectedCells.length < 2) {
+            alert("حداقل دو سلول را انتخاب کنید!");
+            return;
+        }
+
+        let tableCols = parseInt($("#colsInput").val()); // تعداد ستون‌ها از ورودی
+        let minRow = Infinity, maxRow = -Infinity, minCol = Infinity, maxCol = -Infinity;
+        let selectedCellIds = [];
+
+        // محاسبه حداقل و حداکثر ردیف‌ها و ستون‌ها
+        selectedCells.forEach(cell => {
+            let cellId = parseInt($(cell).attr("data-id"));
+            let row = Math.floor((cellId - 1) / tableCols); // محاسبه ردیف
+            let col = (cellId - 1) % tableCols; // محاسبه ستون
+            selectedCellIds.push(cellId); // ذخیره data-id
+
+            minRow = Math.min(minRow, row);
+            maxRow = Math.max(maxRow, row);
+            minCol = Math.min(minCol, col);
+            maxCol = Math.max(maxCol, col);
+        });
+        let firstCellId = (minRow * tableCols) + minCol + 1; // محاسبه data-id اولین سلول مرج‌شده
+
+        // انتخاب اولین سلول برای اعمال ویژگی‌های rowspan و colspan
+        let firstCell = $(`td[data-id='${(minRow * tableCols) + minCol + 1}']`);
+        let mergedText = selectedCells.map(cell => $(cell).text()).join(" "); // ترکیب متن تمام سلول‌ها
+
+        // تعیین rowspan و colspan برای سلول اول
+        let rowspan = maxRow - minRow + 1;
+        let colspan = maxCol - minCol + 1;
+
+        // ذخیره اطلاعات مرج شده
+        let mergedKey = `R${minRow + 1}C${minCol + 1}`;  // کلید برای شناسه مرج شده
+        let mergedCellNames = selectedCells.map(cell => {
+            let cellId = parseInt($(cell).attr("data-id"));
+            let row = Math.floor((cellId - 1) / tableCols); // محاسبه ردیف
+            let col = (cellId - 1) % tableCols; // محاسبه ستون
+            return getColumnName(col) + (row + 1);  // نام سلول
+        });
+
+        // ذخیره داده‌های مرج‌شده
+        mergedData.push({
+            mergedCell: getColumnName(minCol) + (minRow + 1), // نام سلول جدید
+            mergedWith: mergedCellNames.join(", "),
+            mergedIds: selectedCellIds,
+            rowspan: rowspan, // مقدار rowspan اضافه شد
+            colspan: colspan,
+            mergedCellId: firstCellId, // data-id سلول اصلی
+            // ذخیره data-id سلول‌ها
+
+            // سلول‌هایی که مرج شده‌اند
+        });
+
+        // اعمال ویژگی‌های rowspan و colspan به اولین سلول
+        firstCell.attr("rowspan", rowspan).attr("colspan", colspan).addClass("merged").text(mergedText);
+
+        // حذف سلول‌های دیگر که در ادغام حضور دارند
+        selectedCells.forEach(cell => {
+            let cellId = parseInt($(cell).attr("data-id"));
+            let row = Math.floor((cellId - 1) / tableCols); // محاسبه ردیف
+            let col = (cellId - 1) % tableCols; // محاسبه ستون
+
+            // حذف سلول‌های غیر از اولین سلول ادغام‌شده
+            if (!(row === minRow && col === minCol)) {
+                $(cell).remove();
+            }
+        });
+
+        // خالی کردن لیست انتخاب‌شده‌ها و برداشتن کلاس selected از تمامی سلول‌ها
+        selectedCells = [];
+        $("td").removeClass("selected");
+
+        // نمایش اطلاعات مرج شده در کنسول
+        console.log("Merged Data:", mergedData);
+
+        // حالا mergedData آماده ارسال به دیتابیس است
+        // ارسال به دیتابیس می‌تواند در اینجا انجام شود
+        // مثلا ارسال به یک API
+        sendMergedDataToDatabase(mergedData);
+    });
+
+
+    let formulas = []; // ذخیره‌ی فرمول‌ها و سلول‌های مرتبط
+
+    $("#calculate").click(function () {
+        var formula = $("#formulaInput").val().trim();
+        var targetCell = $("#targetCellInput").val().trim();
+
+        if (formula !== "" && targetCell !== "") {
+            var result = evaluateFormula(formula);
+            $("td[data-id='" + cellNameToIndex(targetCell) + "']").text(result);
+            $("#result").text("نتیجه: " + result);
+
+            // ذخیره فرمول و سلول مقصد
+            formulas.push({ cell: targetCell, formula: formula });
+
+            console.log("فرمول‌های ذخیره‌شده:", formulas); // نمایش در کنسول
+        } else {
+            alert("لطفاً فرمول و سلول مقصد را وارد کنید.");
+        }
+    });
+
+    // تابع برای نمایش تمام فرمول‌های ذخیره‌شده
+    function showFormulas() {
+        console.log("تمام فرمول‌های ذخیره‌شده:", formulas);
+        alert(JSON.stringify(formulas, null, 2)); // نمایش فرمول‌ها در قالب JSON
+    }
+    function cellNameToIndex(cellName) {
+        var col = cellName.match(/[A-Za-z]+/)[0]; // استخراج حروف برای ستون
+        var row = parseInt(cellName.match(/[0-9]+/)[0]) - 1; // استخراج شماره ردیف
+        var colIndex = columnToIndex(col); // تبدیل نام ستون به ایندکس
+
+        return row * $("#colsInput").val() + colIndex + 1;
+    }
+
+
+
+    function evaluateFormula(formula) {
+        // تبدیل `if(x, y, z)` به `x ? y : z`
+        formula = formula.replace(/([A-Z]+)(\d+)/g, function (match, col, row) {
+            var colIndex = columnToIndex(col);
+            var cellValue = $("td[data-id='" + ((row - 1) * $("#colsInput").val() + colIndex + 1) + "']").text();
+            return cellValue ? parseFloat(cellValue) : 0;
+        });
+
+        formula = formula.replace(/if\(([^,]+),\s*([^,]+),\s*([^,]+)\)/g, "$1 ? $2 : $3");
+
+        // تبدیل `sqrt(x)` به `Math.sqrt(x)`
+        formula = formula.replace(/sqrt\(([^)]+)\)/g, "Math.sqrt($1)");
+
+        // تبدیل `log(x)` به `Math.log(x)`
+        formula = formula.replace(/log\(([^)]+)\)/g, "Math.log($1)");
+
+        // اصلاح برای برخورد با پرانتزهای اضافی
+        formula = formula.replace(/(\d+)\s*\+\s*\(\d+\s*\+\s*\d+\)/g, "($1 + ($2))");
+
+        // اصلاح برای پردازش تو در تو if
+        formula = formula.replace(/if\(([^,]+),\s*([^,]+),\s*([^,]+)\)/g, "($1) ? ($2) : ($3)");
+        try {
+            return eval(formula);
+        } catch (e) {
+            return "خطا در فرمول!";
+        }
+    }
+
+    $(document).ready(function () {
+        let formId = 1; // مقدار واقعی FK_Form1 از دیتابیس دریافت شود
+
+        // تعداد سطرها و ستون‌ها را از ورودی‌ها می‌گیریم
+        $("#rowsInput").val(32);
+        $("#colsInput").val(30);
+        // در صورتی که ورودی خالی باشد مقدار پیش‌فرض 20
+        createTable(32, 30);
+
+        loadMergedData(formId);
+
+        // ایجاد جدول
+
+        // بعد از ساخت جدول، باید سلول‌های مرج‌شده را اعمال کنیم
+            mergeCellsOnLoad();
+    });
+
+    function mergeCellsOnLoad() {
+        // مرج کردن سلول‌ها بر اساس داده‌های ذخیره شده در mergedData
+        mergedData.forEach(data => {
+            let firstCell = $(`td[data-id='${data.mergedCellId}']`); // پیدا کردن اولین سلول مرج‌شده
+
+            // اعمال ویژگی‌های rowspan و colspan
+            firstCell.attr("rowspan", data.rowspan).attr("colspan", data.colspan).addClass("merged").text(data.mergedText);
+
+            // حذف سلول‌های دیگر در این مجموعه که باید مرج شوند
+            data.mergedIds.forEach(cellId => {
+                if (cellId !== data.mergedCellId) {
+                    $(`td[data-id='${cellId}']`).remove(); // حذف سلول‌های غیر از سلول اول
+                }
+            });
+        });
+    }
+    // اعمال داده‌های مرج‌شده روی جدول
+    function applyMergedCells(mergedData) {
+        mergedData.forEach(data => {
+            let firstCell = $(`td[data-id='${data.mergedCellId}']`);
+
+            firstCell.attr("rowspan", data.rowspan)
+                .attr("colspan", data.colspan)
+                .addClass("merged")
+                .text(data.mergedText);
+
+            data.mergedIds.forEach(cellId => {
+                if (cellId !== data.mergedCellId) {
+                    $(`td[data-id='${cellId}']`).remove();
+                }
+            });
+        });
+    }
+    function loadMergedData(formId) {
+        $.ajax({
+            url: "/ManagementAccounting/FinancialDocuments/GetMergedData?formId=" + formId,
+            type: "GET",
+            success: function (response) {
+                if (response.success) {
+                    let newMergedData = response.mergedData; // نیازی به JSON.parse نیست
+                    console.log("داده‌های دریافت شده:", newMergedData);
+
+                    // اضافه کردن داده‌های جدید بدون جایگزین کردن داده‌های قبلی
+                    mergedData = [...mergedData, ...newMergedData];
+                    console.log("داده‌های ترکیب شده:", mergedData);
+
+                    // اعمال داده‌های جدید روی جدول
+                    applyMergedCells(newMergedData);
+                } else {
+                    console.warn("هیچ داده‌ای برای این فرم وجود ندارد.");
+                }
+            },
+            error: function (error) {
+                console.error("خطا در دریافت داده‌های مرج شده:", error);
+            }
+        });
+    }
+
+
+    function columnToIndex(colName) {
+        let index = 0;
+        for (let i = 0; i < colName.length; i++) {
+            index = index * 26 + (colName.charCodeAt(i) - 64);
+        }
+        return index - 1; // برای همخوانی با ایندکس‌های صفرمحور
+    }
+
+    $("#FontSize").change(function () {
+        let fontSize = $(this).val();
+
+        if (fontSize) { // اگر یک مقدار انتخاب شده باشد
+            selectedCells.forEach(cell => {
+                $(cell).find(".draggable").css("font-size", fontSize + "px");
+            });
+        }
+    });
+    // تعریف آرایه برای ذخیره تغییرات سلول‌ها
+    let cellChanges = [];
+
+    // تابع برای ذخیره تغییرات سلول
+    function saveCellChanges(cell) {
+        let cellInfo = {
+            cellNames: [], // آرایه برای ذخیره نام تمام سلول‌های ادغام شده
+            fontSize: $(cell).find(".draggable").css("font-size"), // اندازه فونت
+            isMerged: $(cell).hasClass("merged"), // وضعیت ادغام سلول
+            size: {
+                width: $(cell).width(), // عرض سلول
+                height: $(cell).height() // ارتفاع سلول
+            }
+        };
+
+        // اگر سلول ادغام شده است
+        if ($(cell).hasClass("merged")) {
+            // دریافت محدوده سلول‌های ادغام شده
+            let colspan = $(cell).attr("colspan") || 1;
+            let rowspan = $(cell).attr("rowspan") || 1;
+
+            let startCell = getCellName(cell);
+            let startCol = columnToIndex(startCell.replace(/[0-9]/g, '')) + 1;
+            let startRow = parseInt(startCell.replace(/[A-Z]/g, ''));
+
+            // اضافه کردن نام تمام سلول‌های محدوده ادغام شده
+            for (let i = 0; i < rowspan; i++) {
+                for (let j = 0; j < colspan; j++) {
+                    let currentCol = indexToColumn(startCol + j);
+                    let currentRow = startRow + i;
+                    cellInfo.cellNames.push(currentCol + currentRow);
+                }
+            }
+        } else {
+            // اگر سلول ادغام نشده است، فقط نام همان سلول را اضافه می‌کنیم
+            cellInfo.cellNames.push(getCellName(cell));
+        }
+
+        // بررسی وجود سلول در آرایه و به‌روزرسانی یا اضافه کردن
+        let existingIndex = cellChanges.findIndex(item =>
+            item.cellNames[0] === cellInfo.cellNames[0]
+        );
+        if (existingIndex !== -1) {
+            cellChanges[existingIndex] = cellInfo;
+        } else {
+            cellChanges.push(cellInfo);
+        }
+
+        console.log("تغییرات ذخیره شده:", cellChanges);
+    }
+
+    // تابع کمکی برای دریافت نام سلول
+    function getCellName(cell) {
+        let $cell = $(cell);
+        let colIndex = $cell.index() + 1;
+        let rowIndex = $cell.parent().index() + 1;
+        return indexToColumn(colIndex) + rowIndex;
+    }
+
+    // تابع کمکی برای تبدیل شماره ستون به حروف
+    function indexToColumn(index) {
+        let column = '';
+        while (index > 0) {
+            let remainder = (index - 1) % 26;
+            column = String.fromCharCode(65 + remainder) + column;
+            index = Math.floor((index - 1) / 26);
+        }
+        return column;
+    }
+
+    // اضافه کردن فراخوانی تابع به رویداد تغییر اندازه فونت
+    $("#addFontSize").click(function () {
+        let fontSize = $("#FontSize").val();
+
+        if (fontSize < 15 || fontSize > 48) {
+            alert("لطفاً عددی بین 15 تا 48 وارد کنید.");
+            return;
+        }
+
+        selectedCells.forEach(cell => {
+            $(cell).find(".draggable").css("font-size", fontSize + "px");
+            saveCellChanges(cell); // ذخیره تغییرات برای هر سلول
+        });
+    });
+
+    // $("#RightTxt").click(function() {
+    //     selectedCells.forEach(cell => {
+    //         let draggable = $(cell).find(".draggable");
+
+    //         draggable.css({
+
+    //             "transform":"translateX(20px)",
+    //             "margin-right":"1px"
+    //         });
+    //         $(cell).css("position", "relative");
+    //         saveCellChanges(cell);
+    //     });
+    // });
+    $("#RightTxt").click(function () {
+        selectedCells.forEach(cell => {
+            let draggable = $(cell).find(".draggable");
+            let selected = $(cell); // فرض کنید selected همان سلول است
+
+            // تبدیل colspan به عدد
+            let colspan = parseInt(selected.attr("colspan"));
+
+            // بررسی مقدار colspan
+            if (colspan === 1) {
+                draggable.css({
+                    "transform": `translateX(${colspan * 15}px)`, // اگر colspan برابر ۱ باشد
+                    "margin-right": "1px"
+                });
+            } else if (colspan > 1) {
+                draggable.css({
+                    "transform": `translateX(${colspan * 20}px)`, // اگر colspan بزرگ‌تر از ۱ باشد
+                    "margin-right": "1px"
+                });
+                console.log('true');
+            }
+
+            $(cell).css("position", "relative");
+            saveCellChanges(cell);
+        });
+    });
+    $("#MidTxt").click(function () {
+        selectedCells.forEach(cell => {
+            let draggable = $(cell).find(".draggable");
+            draggable.css({
+
+                "transform": "translateY(0px)"
+            });
+            $(cell).css("position", "relative");
+            saveCellChanges(cell);
+        });
+    });
+
+    // اضافه کردن رویداد کلیک برای دکمه راست چین
+    $("#LeftTxt").click(function () {
+        selectedCells.forEach(cell => {
+            let draggable = $(cell).find(".draggable");
+            let selected = $(cell); // فرض کنید selected همان سلول است
+
+            // تبدیل colspan به عدد
+            let colspan = parseInt(selected.attr("colspan"));
+
+            // بررسی مقدار colspan
+            if (colspan === 1) {
+                draggable.css({
+                    "transform": `translateX(${colspan * -15}px)`, // اگر colspan برابر ۱ باشد
+                    "margin-right": "1px"
+                });
+            } else if (colspan > 1) {
+                draggable.css({
+                    "transform": `translateX(${colspan * -20}px)`, // اگر colspan بزرگ‌تر از ۱ باشد
+                    "margin-right": "1px"
+                });
+                console.log('true');
+            }
+
+            $(cell).css("position", "relative");
+            saveCellChanges(cell);
+        });
+    });
+    // دریافت استایل‌های جدول
+    $("#getTableStyles").click(function () {
+        let tableStyles = {};
+
+        // بررسی همه سلول‌های جدول
+        $("td").each(function () {
+            let cellId = $(this).attr("data-id");
+            let styles = {
+                cell: {
+                    width: $(this).css("width"),
+                    height: $(this).css("height"),
+                    backgroundColor: $(this).css("background-color"),
+                    border: $(this).css("border"),
+                    position: $(this).css("position")
+                }
+            };
+
+            // بررسی المان‌های draggable داخل سلول
+            let draggable = $(this).find(".draggable");
+            if (draggable.length) {
+                styles.draggable = {
+                    fontSize: draggable.css("font-size"),
+                    position: draggable.css("position"),
+                    left: draggable.css("left"),
+                    right: draggable.css("right"),
+                    textAlign: draggable.css("text-align"),
+                    content: draggable.text()
+                };
+            }
+
+            // ذخیره ویژگی‌های ادغام سلول‌ها
+            let colspan = $(this).attr("colspan");
+            let rowspan = $(this).attr("rowspan");
+            if (colspan) styles.cell.colspan = colspan;
+            if (rowspan) styles.cell.rowspan = rowspan;
+
+            tableStyles[cellId] = styles;
+        });
+
+        // ذخیره استایل‌ها در متغیر전역 برای استفاده بعدی
+        window.tableStyles = tableStyles;
+
+        console.log("استایل‌های جدول:", tableStyles);
+        return tableStyles;
+    });
+
+
+</script>
+<script>
+   
+</script>
+

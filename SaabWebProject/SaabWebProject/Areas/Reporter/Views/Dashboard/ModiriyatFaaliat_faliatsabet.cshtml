@@ -1,0 +1,282 @@
+﻿@using SaabWebProject.Models.DomainModels;
+
+@{
+    ViewBag.Title = "موظفی های  ثابت";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    SaabEntities db = new SaabEntities();
+
+}
+@model SaabWebProject.Models.DomainModels.tbUserContracts
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+<script src="~/Assets/js/jalalidatepicker.min.js"></script>
+<link href="~/Assets/css/jalalidatepicker.min.css" rel="stylesheet" />
+<script src="~/Assets/js/jalaali.min.js"></script>
+<link href="~/MyStyles/jalalidatepicker.css" rel="stylesheet" />
+<style>
+    .WTH {
+        width: 14.28%;
+        padding: 0 !important;
+    }
+
+    .inputFilter {
+        margin-bottom: 0px !important;
+    }
+
+    thead tr th:first-child {
+        border-radius: 0 !important;
+    }
+
+    thead tr:first-child th:first-child {
+        border-top-right-radius: 10px !important;
+        border-bottom-right-radius: 10px !important;
+    }
+
+    thead tr th:last-child {
+        border-radius: 0 !important;
+    }
+
+    thead tr:first-child th:last-child {
+        border-top-left-radius: 10px !important;
+    }
+
+    .Le {
+        border-left: 1px solid var(--bs-border-input-color) !important;
+    }
+
+    .Ri {
+        border-right: 1px solid var(--bs-border-input-color) !important;
+    }
+
+    .To {
+        border-top: 1px solid var(--bs-border-input-color) !important;
+    }
+
+    .Bo {
+        border-bottom: 1px solid var(--bs-border-input-color) !important;
+    }
+
+    .table > :not(:first-child) {
+        border-top: 2px solid var(--bs-border-input-color) !important;
+    }
+
+    #dateDisplay {
+        float: left;
+    }
+
+    h5 {
+        margin-bottom: 0;
+    }
+
+    table td input.form-control {
+        margin-bottom: 0 !important;
+    }
+
+    .tableDate td {
+        padding: 2px 4px !important;
+    }
+
+    .tableDate {
+        margin-bottom: 0 !important;
+    }
+
+    .headTo {
+        position: sticky;
+        top: 0;
+        text-align: center;
+        z-index: 2;
+        border-radius: 15px;
+    }
+</style>
+<div class="tab-content">
+
+    <div class="row p-2">
+        <div class="col-xl-8">
+            <h5>تعریف موظفین ثابت  همکاری کاربران</h5>
+        </div>
+        <div class="col-xl-4">
+            <h5 id="dateDisplay"></h5>
+        </div>
+    </div>
+    <hr />
+
+    <div class="row">
+        <div class="col-xl-8">
+            <label class="form-label">نام کاربر/کاربران ر انتخاب نمایید :</label>
+            <span id="div_users1"></span>
+        </div>
+
+
+        <div class="col-xl-4">
+            <label class="form-label">روز های مناسب</label>
+            <span id="div_users2"></span>
+        </div>
+    </div>
+    <hr />
+
+    <div class="row">
+        <div class="col-xl-2">
+            <div class="row">
+                <div class="col-md-12">
+                    <label class="form-label">از تاریخ</label>
+                    @*------------------------------------------------[1402/09/05]-|KH|-*@
+                    <input data-jdp jdp-btn-close data-jdp-miladi-input="miladi_date1" id="datepickerFrom_shw1" class="form-control pdate" name="datepickerFrom_shw1">
+                    <input id="miladi_date1" type="hidden" />
+                    @*-------------------------------------------------------------|KH|-*@
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-2">
+            <div class="row">
+                <div class="col-md-12">
+                    <label class="form-label">تا تاریخ</label>
+                    @*------------------------------------------------[1402/09/05]-|KH|-*@
+                    <input data-jdp jdp-btn-close data-jdp-miladi-input="miladi_date2" id="datepickerToEn_shw1" class="form-control pdate" name="datepickerToEn_shw1">
+                    <input id="miladi_date2" type="hidden" />
+                    @*-------------------------------------------------------------|KH|-*@
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-xl-2">
+            <label class="form-label">تایم کارکرد</label>
+
+            <input type="text" data-jdp="" data-jdp-only-time="" class="form-control" id="valuetime" />
+        </div>
+        <div class="col-xl-4">
+            <label class="form-label">شرخ</label>
+
+            <input type="text" class="form-control" id="sharh" />
+        </div>
+        <div class="col-xl-1">
+        </div>
+
+        <div class="col-xl-1">
+            <button id="btnSaveContract" type="button" class="btn form-control buttonsabt">
+                <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                <span class="bSabt-text">ثبت</span>
+            </button>
+        </div>
+    </div>
+
+</div>
+<script src="~/Scripts/sweetalert2.js" type="text/javascript"></script>
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/src/jquery.md.bootstrap.datetimepicker.js"></script>
+
+<script>
+            $("#div_users1").load('@Url.Content("/../Users/Users/usrfaliatsabt")', function () {
+            $("#select_users1").attr("id", "users");
+            $("#users").picker({ search: true });
+            $("#users").picker();
+            $('#users').picker({ search: true });
+            });
+        jalaliDatepicker.startWatch({
+            time: false,
+            days: ["شنبه", "1شنبه", "2شنبه", "3شنبه", "4شنبه", "5شنبه", "جمعه"],
+            persianDigits: true,
+            autoClose: true,
+            autocomplete: true,
+            // showCloseBtn:true,
+            showEmptyBtn: false,
+
+            showCloseBtn: true,
+            zIndex: 100000,
+
+        });
+        //-----------------------------------------------------------------
+        var inputs = document.querySelectorAll("[data-jdp-miladi-input]");
+        for (var i = 0; i < inputs.length; i++) {
+            inputs[i].addEventListener("jdp:change", function (e) {
+                var miladiInput = document.getElementById(this.getAttribute("data-jdp-miladi-input"));
+                var date = this.value.replace(' ', '').slice(0, 10).split('/');
+                date = jalaali.toGregorian(parseInt(date[0]), parseInt(date[1]), parseInt(date[2]),)
+                // If it was empty
+                if (!this.value) {
+                    date = "";
+                }
+                // If it was only history
+                else if (this.value.replace(' ', '').length < 11) {
+                    date = date.gy + '-' + date.gm + '-' + date.gd
+                }
+                // If it was the date and time
+                else {
+                    date = date.gy + '-' + date.gm + '-' + date.gd + ' ' + this.value.replace(' ', '').slice(10, 30)
+                }
+                miladiInput.value = date
+            });
+        }
+</script>
+<script>
+    $("#div_users2").load('@Url.Content("/../Reporter/Dashboard/ModiriyatFaaliat_day")', function () {
+            $("#select_users2").attr("id", "days");
+        $("#days").picker({ search: true });
+        $("#days").picker();
+        $('#days').picker({ search: true });
+            });
+
+
+
+
+
+
+    $("#btnSaveContract").click(function () {
+        var userIds = [];  // لیست شناسه کاربران
+        var dates = [];
+        var fromdat = null;
+        var todat = null;
+        var time = null;
+        var sharh = null;
+        // پیمایش کاربرها از انتخابگر
+        $.each($("#users").val().toString().split(","), function (index, userId) {
+            if (userId && userId !== 'Select') {
+                userIds.push(userId);
+
+            }
+        });
+        $.each($("#days").val().toString().split(","), function (index, date) {
+            if (date && date !== 'Select') {
+                // اضافه کردن شناسه کاربر و تاریخ به آرایه‌ها
+                dates.push(date);
+            }
+        });
+        // استخراج مقادیر از فیلدها
+        fromdat = $("#miladi_date1").val();
+        todat = $("#miladi_date2").val();
+        time = $("#valuetime").val();
+        sharh = $("#sharh").val();
+        // ساختن داده‌ها برای ارسال به سرور
+        var data = {
+            userId: userIds,
+            Date: dates,
+            DataDocument: fromdat,
+            DataDocument2: todat,
+            time: time,
+            titl: sharh
+        };
+
+        console.log(data);
+
+        // فراخوانی AJAX برای ارسال داده‌ها به سمت سرور
+        $.ajax({
+            url: '@Url.Action("creat", "Orders", new { area = "Setting" })',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (response) {
+                if (response.success) {
+                    alert("Data saved successfully!");
+                } else {
+                    alert("Error saving data!");
+                }
+            },
+            error: function () {
+                alert("Error saving data!");
+            }
+        });
+    });
+
+
+    </script>

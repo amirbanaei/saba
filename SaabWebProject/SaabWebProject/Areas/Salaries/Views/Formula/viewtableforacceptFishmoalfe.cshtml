@@ -1,0 +1,207 @@
+﻿@using SaabWebProject.Models.Classes;
+@{
+    Layout = null;
+}
+@model IEnumerable<SaabWebProject.Models.DomainModels.tbmoalfefishexcel>
+
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+
+<div class="card">
+    <div class="table-content p-4">
+        <div class="tab-pane fade show active" id="allTab">
+            <div class="table-responsive">
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr style="text-align:center">
+
+
+                            <th>
+                                @Html.DisplayName("#")
+                            </th>
+                            <th>
+                                @Html.DisplayName("پیمان")
+                            </th>
+                            <th>
+                                @Html.DisplayName("بسته  ")
+                            </th>
+                            <th>
+                                @Html.DisplayName("ماه")
+                            </th>
+                            <th>
+                                @Html.DisplayName("سال")
+                            </th>
+                            <th>
+                                @Html.DisplayName("مدرک")
+                            </th>
+
+
+
+
+
+
+                        </tr>
+
+
+
+                    </thead>
+                    <tbody style="text-align:center">
+
+                        @if (Model != null)
+                        {
+
+                            var i = 0;
+                            foreach (var item in Model)
+                            {
+                                if (item != null)
+                                {
+
+
+                                    i++;
+                                    <tr>
+
+
+                                        <td>
+                                            @i
+                                        </td>
+                                        <td>
+                                            @item.tbPeymanContracts.pec_Title
+                                        </td>
+
+                                        <td>
+                                            @item.tbReffrenceSaveLevel.Title
+                                        </td>
+                                        <td>
+                                            @{
+                                                var monthNumber = item.tbMoalefeValueFish.FirstOrDefault().mlfvlfsh_Month;
+                                                string monthName;
+
+                                                switch (monthNumber)
+                                                {
+                                                    case 1:
+                                                        monthName = "فروردین";
+                                                        break;
+                                                    case 2:
+                                                        monthName = "اردیبهشت";
+                                                        break;
+                                                    case 3:
+                                                        monthName = "خرداد";
+                                                        break;
+                                                    case 4:
+                                                        monthName = "تیر";
+                                                        break;
+                                                    case 5:
+                                                        monthName = "مرداد";
+                                                        break;
+                                                    case 6:
+                                                        monthName = "شهریور";
+                                                        break;
+                                                    case 7:
+                                                        monthName = "مهر";
+                                                        break;
+                                                    case 8:
+                                                        monthName = "آبان";
+                                                        break;
+                                                    case 9:
+                                                        monthName = "آذر";
+                                                        break;
+                                                    case 10:
+                                                        monthName = "دی";
+                                                        break;
+                                                    case 11:
+                                                        monthName = "بهمن";
+                                                        break;
+                                                    case 12:
+                                                        monthName = "اسفند";
+                                                        break;
+                                                    default:
+                                                        monthName = "نامشخص";
+                                                        break;
+                                                }
+                                            }
+                                            @monthName
+                                        </td>
+
+                                        <td>@item.tbMoalefeValueFish.FirstOrDefault().mlfvlfsh_Year</td>
+
+
+                                        @if (item.Filsesystem != null)
+                                        {
+                                            <td style="color:green">
+                                                <a target="_blank" href="~/Areas/Salaries/Content/UserFunctionsFile/@item.Filsesystem">
+                                                    دانلود
+                                                </a>
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            <td style="color:red">ذخیره نشده</td>
+                                        }
+
+
+
+
+
+
+
+
+
+                                    </tr>
+
+
+                                }
+                            }
+
+                            // Your foreach loop code here
+                        }
+
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+<script>
+    // Convert Gregorian date to jaali in the table
+    var tds = document.querySelectorAll("[cont-date]");
+    var valueD, id, target;
+    var options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    tds.forEach(td => {
+        valueD = new Date(td.textContent).toLocaleDateString('fa-IR-u-nu-latn', options).replace(',', '').replace(" ", "");
+        valueD = valueD.slice(0, 10) + " " + td.textContent.slice(10, 30)
+        id = td.getAttribute("cont-date");
+        target = document.getElementById(id);
+        target.textContent = valueD;
+    });
+</script>
+<script>
+
+$(".edit").click(function () {
+    var idd = $(this).attr("id").split("_")[1];
+    console.log(idd);
+
+    var url = "/FinancialDocuments/_EditFinnail?id=" + idd;
+    $("#big_modal_body1").load(url);
+});
+
+    $(".Details").click(function () {
+
+        var idd = $(this).attr("id").split("_")[1];
+        console.log(idd);
+
+        var url = "/FinancialDocuments/Detail?id=" + idd;
+        $("#big_modal_body1").load(url)
+        @*var idd = $(this).attr("id").split("_")[1];
+$("#big_modal_body1").load('@Url.Content("/FinancialDocuments/Detail")?id=' + idd);*@
+    });
+</script>
+
+
+
+

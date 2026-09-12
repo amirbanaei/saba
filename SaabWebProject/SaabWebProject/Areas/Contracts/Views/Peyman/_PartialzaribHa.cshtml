@@ -1,0 +1,160 @@
+﻿@{
+    ViewBag.Title = "ضریب ها";
+    Layout = null;
+
+}
+@model IEnumerable<SaabWebProject.Models.DomainModels.tbPeymanContractsZarib>
+<h5> @Model.FirstOrDefault().tbPeymanContracts.pec_Title</h5>
+
+<style>
+    td input{
+        margin-bottom:0 !important;
+    }
+</style>
+
+<div class="card">
+    <div class="p-1">
+        <div class="tab-pane fade show active" id="allTab">
+            <div class="table-responsive">
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr style="text-align:center;margin:auto">
+                            <th>
+                                @Html.DisplayName("نوع")
+                            </th>
+                            @foreach (var item in Model.Where(p => p.Type == 0).ToList())
+                            {
+                                <th>@item.tbCreditIndicators.Title</th>
+                            }
+
+                        </tr>
+
+                    </thead>
+                    <tbody>
+
+                        <tr style="text-align:center;">
+                            <td>نماینده مقیم</td>
+                            @foreach (var item in Model.Where(p => p.Type == 0).ToList())
+                            {
+                                <td><input value="@item.Value" class="form-control ziro_td"  id="ziro_ @item.FK_CreditIndicators"/></td>
+                            }
+                        </tr>
+                        <tr style="text-align:center;">
+                            <td>کادر اداری</td>
+                            @foreach (var item in Model.Where(p => p.Type == 1).ToList())
+                            {
+                                <td><input value="@item.Value" class="form-control one_td" id="one_ @item.FK_CreditIndicators" /></td>
+                            }
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="row">
+                    <div class="col-xl-11"></div>
+                    <div class="col-xl-1">
+                        <button id="savebtn" class="btn form-control buttonGeneral">
+                            <i class="fa fa-save fa-fw me-1 VecGeneral"></i>
+                            <span class="bGeneral-text">ذخیره</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+
+<script>
+
+    $(function () {
+        $.each($("input"), function (index, item) {
+
+            var amount = $(this).val().replace(/[\D\s\._\-]+/g, "");
+            amount = amount ? parseInt(amount, 10) : 0;
+            $(this).val(function () {
+                return amount.toLocaleString("en-US");
+            });
+        });
+    });
+    $("input").keyup(function () {
+        var amount = $(this).val().replace(/[\D\s\._\-]+/g, "");
+        amount = amount ? parseInt(amount, 10) : 0;
+        $(this).val(function () {
+            return amount.toLocaleString("en-US");
+        });
+    });
+</script>
+
+<script>
+
+    $("#savebtn").click(function () {
+        var listvalues = [];
+         $('.ziro_td').each(function (i, obj) {
+            var value = new Object();
+            value.Type = 0;
+            value.FK_CreditIndicators = $(this).attr("id").split("_")[1] ;
+            value.FK_Peyman = '@Model.FirstOrDefault().FK_Peyman' ;
+            value.Value = $(this).val() ;
+            listvalues.push(value);
+         });
+          $('.one_td').each(function (i, obj) {
+            var value = new Object();
+            value.Type = 1;
+            value.FK_CreditIndicators = $(this).attr("id").split("_")[1] ;
+            value.FK_Peyman = '@Model.FirstOrDefault().FK_Peyman' ;
+            value.Value = $(this).val() ;
+            listvalues.push(value);
+          });
+        console.log(listvalues);
+        $("#loading-message").css("display", "block");
+                       $.ajax({
+                           url: '@Url.Action("SaveZaribHa", "Peyman", new { area = "Contracts" })',
+                           data: { list_zaribha: listvalues},
+                            type: "Post",
+                            dataType: "html",
+                           success: function (resp) {
+                               $("#loading-message").css("display", "none");
+                               console.log(resp);
+                               Toast.fire({
+                                   icon: 'success',
+                                   background: '#35434A',
+                                   color: 'white',
+                                   title: "با موفقیت ثبت شد"
+                               }).then(() => {
+                                   location.reload();
+                               });
+
+                            },
+                            error: function (resp) {
+                                console.log(resp);
+                                console.log("nashod");
+                                Toast.fire({
+                                    icon: 'success',
+                                    background: '#35434A',
+                                    color: 'white',
+                                    title: "عملیات با خطا مواجه شده است"
+                                }).then(() => {
+                                });
+                             $("#loading-message").css("display", "none");
+
+                            }
+                       });
+
+    });
+    var Toast = Swal.mixin({
+        toast: true,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    });
+
+
+</script>

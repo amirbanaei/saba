@@ -1,0 +1,549 @@
+﻿@{
+    //   ViewBag.TitleLargModal = " پیمان ها جدید";
+    Layout = null;
+
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using SaabWebProject.Models.DomainModels;
+
+@{
+    SaabEntities db = new SaabEntities();
+}
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+@*@model IEnumerable<SaabWebProject.Models.DomainModels.tbPeymanContracts>*@
+<style>
+    .tableH_Lock {
+        max-height: 533px;
+        /*height: 533px;*/
+    }
+
+    thead {
+        position: sticky;
+        top: 0;
+        text-align: center;
+        z-index: 2;
+    }
+
+    .inputFilter {
+        margin-bottom: 0px !important;
+    }
+
+    thead th {
+        vertical-align: middle;
+    }
+</style>
+<div class="card">
+    <div class="table-content p-4">
+        <div class="tab-pane fade show active" id="allTab">
+            <div class="table-responsive tableH_Lock">
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr style="text-align:center">
+                            <th>
+                                @Html.DisplayName("فعالیت")
+                            </th>
+                            @*<th>
+                                    @Html.DisplayName("#")
+                                </th>*@
+                            <th>
+                                @Html.DisplayName("عنوان")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter01-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            <th>
+                                @Html.DisplayName("درصد")
+
+                            </th>
+                            <th>
+                                @Html.DisplayName("غیرفعال ")
+
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{ int counter = 0;}
+
+
+                        @foreach (var item in db.dbergha2.ToList())
+                        {
+                            <tr class="task-list-row "
+                                data-filter01="@item.name">
+                                @*data-filter02="@Html.DisplayFor(modelItem => item.pec_BriefTitle)"
+                                    data-filter03="@Html.DisplayFor(modelItem => item.pec_ContractNumber)"
+                                    data-filter04="@Html.DisplayFor(modelItem => item.pec_ProjectCode)"
+                                    data-filter05="@Html.DisplayFor(modelItem => item.pec_ShmasiStartTime)"
+                                    data-filter06="@Html.DisplayFor(modelItem => item.pec_ShmasiENDTime)"*@
+                                @*@counter+=@item.vazn;*@
+                                <td>
+                                    <div class="ms-sm-4 mt-sm-0 mt-2 dropdown-toggle">
+                                        <a href="#" data-bs-toggle="dropdown" class="text-white text-opacity-75 text-decoration-none">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                        <div class="dropdown-menu">
+                                            <a data-bs-toggle="modal" data-bs-target="#modalLg1" class="dropdown-item edit" id="Edit_@item.ID">ویرایش</a>
+                                            <a data-bs-toggle="modal" data-bs-target="#modalLg1" class="dropdown-item Details" id="Detail_@item.ID">جزئیات</a>
+                                            @*<a data-bs-toggle="modal" data-bs-target="#modalLg" class="dropdown-item HadeEntezar" id="HadeEntezar_@item.pec_ID">تعیین حدود انتظار</a>
+                                                <a data-bs-toggle="modal" data-bs-target="#modalLg1" class="dropdown-item Pey2in" id="Pey2in_@item.pec_ID">مشاهده حدود انتظار</a>
+
+                                                <a data-bs-toggle="modal" data-bs-target="#modalLg1" class="dropdown-item zaribHa" id="zaribHa_@item.pec_ID">مقادیر کادر ستادی پیمان </a>
+                                                <a data-bs-toggle="modal" data-bs-target="#modalLg1" class="dropdown-item Pey4in" id="Pey4in_@item.pec_ID">محدودیت ریالی</a>
+
+                                                <a data-bs-toggle="modal" data-bs-target="#modalLg1" class="dropdown-item soratvaziatmafad" id="soratvaziatmafad_@item.pec_ID">مفاد صورت وضعیت</a>*@
+
+                                            @*<a class="dropdown-item Delete" id="Delete_@item.pec_ID">غیر فعال</a>
+                                                <a class="dropdown-item uploadSummery" id="uploadSummery_@item.pec_ID">
+                                                    <span>آپلود پیمان امضا شده</span>*@
+                                            @*</a>
+                                                @if (item.pec_FileSystemName != null)
+                                                {
+                                                    <a class="dropdown-item details" id="" href="~/Areas/Contracts/Contents/Peymans/@item.pec_FileSystemName">مشاهده پبمان امضا شده</a>
+                                                }
+                                                <input id="inp_file" style="display:none" type="file" class="form-control" value="" />
+                                                <input id="summery_file5" style="display:none" type="file" class="form-control" value="" />*@
+
+
+                                        </div>
+                                    </div>
+                                </td>
+                                @*<td>
+                                        @{counter = counter + 1;}
+
+                                        <span>@counter</span>
+                                    </td>*@
+                                <td>
+                                    @item.name
+                                <td>
+                                    <input type="number"
+                                           class="form-control vazn-input"
+                                           data-id="@item.ID"
+                                           data-name="@item.name"
+                                           value="@item.vazn"
+                                           min="0" max="100" />
+
+                                </td>
+                                <td style="text-align:center">
+                                    <input type="checkbox"
+                                           class="del-checkbox"
+                                           data-id="@item.ID"
+                                           @(item.del == true ? "checked" : "") />
+                                </td>
+
+                            </tr>
+                        }
+
+
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-6">
+            <span>جمع در صد ها </span>
+            <span id="sumVazn">0</span>
+        </div>        <div class="col-xl-6">
+            <button id="saveAll" class="btn btn-success mt-3">ثبت همه</button>
+
+        </div>
+    </div>
+
+
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Scripts/sweetalert2.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Scripts/popper.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Scripts/popper.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script>
+    function updateSum() {
+        let sum = 0;
+        $(".vazn-input").each(function () {
+            let val = parseFloat($(this).val()) || 0;
+            sum += val;
+        });
+
+        $("#sumVazn").text(sum);
+
+        if (sum > 100) {
+            $("#sumVazn").css("color", "red");
+        } else {
+            $("#sumVazn").css("color", "green");
+        }
+
+        return sum;
+    }
+
+    $(document).on("input", ".vazn-input", function () {
+        updateSum();
+    });
+
+    // محاسبه اولیه جمع
+    $(document).ready(function () {
+        updateSum();
+    });
+
+    // ذخیره همه با دکمه
+    // ذخیره همه با دکمه
+    $("#saveAll").click(function () {
+        let sum = updateSum();
+        if (sum > 100) {
+            Swal.fire({
+                icon: 'error',
+                title: 'خطا',
+                text: 'جمع درصدها نباید بیشتر از 100 شود!',
+                confirmButtonText: 'باشه'
+            });
+            return;
+        }
+
+        let data = [];
+        $(".vazn-input").each(function () {
+            let id = $(this).data("id");
+            let name = $(this).data("name");
+            let vazn = $(this).val();
+            let del = $(`.del-checkbox[data-id='${id}']`).is(":checked"); // گرفتن وضعیت چک‌باکس
+
+            data.push({
+                ID: id,
+                Name: name,
+                Vazn: vazn,
+                Del: del
+            });
+        });
+
+        $.ajax({
+            url: '/Setting/Orders/SaveAllVazn',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (res) {
+                if (res.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'موفقیت',
+                        text: 'همه موارد ذخیره شد',
+                        confirmButtonText: 'باشه'
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'هشدار',
+                        text: res.message,
+                        confirmButtonText: 'باشه'
+                    });
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'خطا',
+                    text: 'خطا در ارسال اطلاعات',
+                    confirmButtonText: 'باشه'
+                });
+            }
+        });
+    });
+
+</script>
+<script>
+
+    var
+        filters = {
+            filter01: null,
+            filter02: null,
+            filter03: null,
+            filter04: null,
+            filter05: null,
+            filter06: null,
+        };
+
+    function updateFilters() {
+        $('.task-list-row').hide().filter(function () {
+            var self = $(this),
+                result = true;
+
+            Object.keys(filters).forEach(function (filter) {
+                var filterData = self.data(filter);
+                if (filters[filter] && (filters[filter] != 'None') && (filters[filter] != 'همه')) {
+                    // تبدیل داده به رشته و بررسی مقدار
+                    result = result && (filterData && filterData.toString().indexOf(filters[filter]) !== -1);
+                }
+            });
+
+            return result;
+        }).show();
+    }
+
+    function changeFilter(filterName) {
+        filters[filterName] = this.value;
+        updateFilters();
+    }
+
+    // Assigned User Dropdown Filter
+    $('#filter01-filter').on('input', function () {
+        changeFilter.call(this, 'filter01');
+    });
+    $('#filter02-filter').on('input', function () {
+        changeFilter.call(this, 'filter02');
+    });
+    $('#filter03-filter').on('input', function () {
+        changeFilter.call(this, 'filter03');
+    });
+    $('#filter04-filter').on('input', function () {
+        changeFilter.call(this, 'filter04');
+    });
+    $('#filter05-filter').on('input', function () {
+        changeFilter.call(this, 'filter05');
+    });
+    $('#filter06-filter').on('input', function () {
+        changeFilter.call(this, 'filter06');
+    });
+
+
+</script>
+<script>
+    var fd = new FormData();
+
+    function sendAjaxFile(url2, fd2) {
+        //alert("hjdsvfhjfdsv2");
+
+        $("#loading-message").css("display", "block");
+        fd2.append("ID", ID);
+        $.ajax({
+            url: url2,
+            type: 'POST',
+            data: fd2,
+            processData: false,
+            contentType: false,
+            success: function (resp1) {
+                $("#loading-message").css("display", "none");
+
+                if (resp1 == "True") {
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "اطلاعات با موفقیت آپدیت شد"
+                    }).then(() => {
+                        location.reload();
+                    });
+                } else {
+                    $("#loading-message").css("display", "none");
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                    }).then(() => {
+                        $("#loading-message").css("display", "none");
+                    });
+
+
+                }
+
+            },
+            error: function (resp1) {
+                $("#loading-message").css("display", "none");
+                Toast.fire({
+                    icon: 'success',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                }).then(() => {
+                    $("#loading-message").css("display", "none");
+                });
+            }
+        });
+
+
+
+    }
+</script>
+<script>
+         var obj = new FormData();
+
+  $(".uploadSummery").click(function () {
+    FK_DDOfTitle = $(this).attr("id").split("_")[2];
+    ID = $(this).attr("id").split("_")[1];
+      $("#summery_file5").click();
+});
+
+ $("#summery_file5").change(function (e) {
+    $.each(e.target.files, function (index, file) {
+        obj.append("files", file);
+    });
+     sendAjaxFile('@Url.Action("UploadFile", "Peyman", new { area = "Contracts" })', obj);
+ });
+
+
+
+    $(".uplload").click(function () {
+                ID = $(this).attr("id").split("_")[1];
+
+        $("#inp_file").click();
+     });
+     $("#inp_file").change(function (e) {
+               // fd.append("id", 1);
+         alert("hjdsvfhjfdsv");
+                $.each(e.target.files, function (index, file) {
+                    fd.append("files", file);
+                });
+         sendAjaxFile('@Url.Action("UploadFile", "Peyman",new { area = "Contracts" })',fd)
+
+     });
+    $(".edit").click(function () {
+        console.log("xxx");
+        var idd = $(this).attr("id").split("_")[1];
+        console.log("xxx" + idd);
+
+$("#big_modal_body1").load('@Url.Action("unicdarsadzer","Orders", new { area="Setting" })?id=' + idd);
+    });
+    $(".Details").click(function () {
+        var idd = $(this).attr("id").split("_")[1];
+        $("#big_modal_body1").load('@Url.Content("/Peyman/_PartialDetailPeyman")?id='+idd);
+    });
+    $(".HadeEntezar").click(function () {
+        var idd = $(this).attr("id").split("_")[1];
+        $("#big_modal_body").load('@Url.Content("/Peyman/_PartialHadeEntezar")?id='+idd);
+    });
+    $(".zaribHa").click(function () {
+        var idd = $(this).attr("id").split("_")[1];
+        $("#big_modal_body1").load('@Url.Content("/Peyman/_PartialzaribHa")?id='+idd);
+    });
+    $(".Pey4in").click(function () {
+         var idd = $(this).attr("id").split("_")[1];
+         $("#big_modal_body1").load('@Url.Content("/Peyman/_PartialPey4in")?id='+idd);
+    });
+
+
+    $(".soratvaziatmafad").click(function () {
+      var idd = $(this).attr("id").split("_")[1];
+      $("#big_modal_body1").load('@Url.Content("/Peyman/soratvaziatmafad")?id='+idd);
+ });
+
+
+    $(".Pey2in").click(function () {
+        console.log("djkksd");
+         var idd = $(this).attr("id").split("_")[1];
+         $("#big_modal_body1").load('@Url.Content("/Peyman/_PartialPey2in")?id='+idd);
+    });
+
+
+      $(".Delete").click(function () {
+        var idd = $(this).attr("id").split("_")[1];
+
+
+     /*document.getElementById("loading-message").style.display = "block";*/
+
+
+
+
+
+     Swal.fire({
+         title: 'آیا از غیر فعال کردن  مطمئن هستید؟',
+         icon: 'question',
+         showCancelButton: true,
+         background: 'rgb(29,40,52)',
+         color: 'white',
+         confirmButtonColor: '#3085d6',
+         cancelButtonColor: '#d33',
+         confirmButtonText: 'بله ',
+         cancelButtonText: 'خیر'
+     }).then((result) => {
+
+         if (result.isConfirmed == true) {
+             $(".loader").css('display', 'block');
+
+
+          $.ajax({
+              url: '@Url.Action("Peyman_Delete2", "Peyman", new { area = "Contracts" })',
+              data: { ID: idd },
+              type: "Post",
+              dataType: "html",
+              success: function (resp) {
+                  $("#loading-message").css("display", "none");
+                  if (resp == "True") {
+                      Toast.fire({
+                          icon: 'success',
+                          background: '#35434A',
+                          color: 'white',
+                          title: "پیمان با موفقیت غیر فعال شد  "
+                      }).then(() => {
+                          location.reload();
+                      });
+                  } else {
+                      Toast.fire({
+                          icon: 'success',
+                          background: '#35434A',
+                          color: 'white',
+                          title: "نمیتوانید این پیمان را حذف کنید"
+                      }).then(() => {
+                      });
+                  }
+
+              },
+              error: function (resp2) {
+                  $("#loading-message").css("display", "none");
+                  Toast.fire({
+                      icon: 'success',
+                      background: '#35434A',
+                      color: 'white',
+                      title: "،حذف پیمان با خطا مواجه شده است ، از این پیمان در قسمتی استفاده شده است"
+                  }).then(() => {
+                      location.reload();
+                  });
+              }
+          });
+         }
+
+     });
+
+
+
+
+
+
+
+
+
+      });
+
+    var Toast = Swal.mixin({
+        toast: true,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    });
+</script>

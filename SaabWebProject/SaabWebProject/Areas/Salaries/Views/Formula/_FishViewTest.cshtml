@@ -1,0 +1,689 @@
+﻿@model SaabWebProject.Models.ViewModels.Salaries.Formula.ManualFishDetail
+
+
+
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+<link href="~/MyStyles/cardstyle.css" rel="stylesheet" />
+
+<style>
+    .box_style01 {
+        background: var(--bs-app-theme-panel-bg);
+        backdrop-filter: blur(1px);
+        border-radius: 15px;
+        padding: 9px;
+        border: 2px solid var(--bs-border-input-color) !important;
+        text-align: center;
+    }
+    .box_style01R {
+        background: var(--bs-app-theme-panel-bg);
+        backdrop-filter: blur(1px);
+        border: 2px solid var(--bs-border-input-color) !important;
+        border-radius: 0 15px 15px 0;
+        height: 100%;
+        text-align: center;
+    }
+    .box_style01C {
+        background: var(--bs-app-theme-panel-bg);
+        backdrop-filter: blur(1px);
+        border: 2px solid var(--bs-border-input-color) !important;
+        height: 100%;
+        text-align: center;
+    }
+    .box_style01L {
+        background: var(--bs-app-theme-panel-bg);
+        backdrop-filter: blur(1px);
+        border: 2px solid var(--bs-border-input-color) !important;
+        border-radius: 15px 0 0 15px;
+        height: 100%;
+        text-align: center;
+    }
+    h1, h2, h3, h4, h5, h6 {
+        text-align: center;
+    }
+</style>
+
+
+
+<div class="card" style="">
+    <div class="card-body">
+        <div class="row box_style01 ">
+            <div class="row">
+                <div class="col-xl-3" style="text-align:center;">
+
+                </div>
+                <div class="col-xl-6" style="text-align:center;">
+                    @Model.FishHeader.PeymanName
+                    <br />
+                    <br />
+                    <br />
+                    فیش حقوقی آزمایشی
+                </div>
+                <div class="col-xl-3" style="text-align:center;">
+
+                </div>
+            </div>
+            <div class="row mt-10px">
+                <div class="col-xl-4 ">
+                    شماره پرسنلی:  @Model.FishHeader.PersonalCode
+                    <br />
+                    <br />
+                    <br />
+                    عنوان شغل   @Model.FishHeader.OnvanShoql
+                    <br />
+                    <br />
+                    <br />
+                    شماره ملی:   @Model.FishHeader.NationalCode
+                </div>
+                <div class="col-xl-4 mt-10px ">
+                    <p style="font-size:20px">   نام و نام خانوادگی:     @Model.FishHeader.UserName</p>
+
+                    مزد شغل روزانه(ریال):          @Model.FishValues.FirstOrDefault(p => p.Title == "مزد شغل (روزانه-ریال)").Value.ToString("N1")
+                    <br />
+                    <br />
+                    مزد شغل سنوات(ریال):           @Model.FishValues.FirstOrDefault(p => p.Title == "مزد سنوات (روزانه-ریال)").Value.ToString("N1")
+
+                    <br />
+                    <br />
+
+                    جمع دستمزد روزانه(ریال):         @Model.FishValues.FirstOrDefault(p => p.Title == "جمع مزد مبنا ( روزانه-ریال)").Value.ToString("N1")
+                </div>
+                <div class="col-xl-4 mt-10px">
+
+
+
+                    <br />
+                    <p style="font-size:20px">                             تعداد روز ماه: @Model.FishHeader.TedadRoozMonth</p>
+
+                    <br />
+                    نرخهر ساعت اضافه کار(ریال):     @Model.FishValues.FirstOrDefault(p => p.Title == "اضافه کار ( هرساعت-ریال)").Value.ToString("N1")
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row mt-2 ">
+            <div class="col-xl-4" style="padding-right:0px">
+                <div class="card-body box_style01R" >
+                    <h1>عملکرد </h1>
+                    <hr />
+                    @*<div class="row">
+                            <div class="col-xl-12 mt-10px">
+                                شرح
+                                <br />
+                                <br />
+                                اضافه کار
+                                <br />
+                                <br />
+                                روزکارکرذ
+                                <br />
+                                <br />
+                                ماموریت
+                                <br />
+                                <br />
+                                غیبت
+                                <br />
+                                <br />
+                                نوبت کار
+                                <br />
+                                <br />
+                                کسری کارکرد
+                                <br />
+                                <br />
+                                مرخصی استغلاجی
+                                <br />
+                                <br />
+                            </div>
+                        </div>
+                            <div class="row">
+                                <div class="col-xl-12 mt-10px">
+                                    روز
+                                    <br />
+                                    <br />
+                               ساعت
+                                    <br />
+                                    <br />
+                                    روز
+                                    <br />
+                                    <br />
+                                    روز
+                                    <br />
+                                    <br />
+                                    روز
+                                    <br />
+                                    <br />
+                                روز
+                                    <br />
+                                    <br />
+                                    ساعت
+                                    <br />
+                                    <br />
+                                    روز
+                                    <br />
+                                    <br />
+                                </div>
+
+                            </div>*@
+                    <table class="table table-hover text-nowrap" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>شرح</th>
+                                <th>واحد</th>
+                                <th>مقدار</th>
+
+                            </tr>
+                        </thead>
+
+                        <tr>
+                            <td>روزکارکرد:</td>
+                            <td>روز</td>
+
+
+                            <td>@Model.FishValues.FirstOrDefault(p => p.Title == "تعداد روز کارکرد").Value</td>
+                        </tr>
+                        <tr>
+                            <td>اضافه کار</td>
+                            <td>ساعت</td>
+                            <td>@Model.FishValues.FirstOrDefault(p => p.Title == "تعداد ساعات اضافه کار").Value</td>
+
+                        </tr>
+                        <tr>
+                            <td>ماموریت</td>
+                            <td>روز</td>
+                            <td>@Model.FishValues.FirstOrDefault(p => p.Title == "تعداد روز ماموریت").Value</td>
+
+                        </tr>
+                        <tr>
+                            <td>غیبت</td>
+                            <td>روز:</td>
+
+                            <td>@Model.FishValues.FirstOrDefault(p => p.Title == "تعداد روز غیبت").Value</td>
+
+                        </tr>
+                        <tr>
+                            <td>نوبتکار</td>
+                            <td>روز</td>
+                            <td>0</td>
+
+                        </tr>
+                        <tr>
+                            <td>کسری کارکرد</td>
+                            <td>ساعت</td>
+                            <td>@Model.FishValues.FirstOrDefault(p => p.Title == "تعداد ساعات کسر کار").Value</td>
+
+                        </tr>
+                        <tr>
+                            <td>مرخصی استعلاجی</td>
+                            <td>روز</td>
+                            <td>@Model.FishValues.FirstOrDefault(p => p.Title == "تعداد روز استعلاجی").Value</td>
+
+                        </tr>
+                    </table>
+                </div>
+
+                <br />
+                @*<div class="col-xl-12">
+                        <div class="card" style="backdrop-filter:blur(10px);background: rgba(0,0,0,0.3);height:100%;    ">
+                            <div class="card-body">
+                                <p> جزئیات فعالیت: (عنوان فعالیت:استاندارد ماهانه/عملکرد ماهانه)</p>
+
+                                <div>؟</div>
+
+                            </div>
+
+                            <div class="card-arrow">
+
+
+                                <div class="card-arrow-top-left"></div>
+                                <div class="card-arrow-top-right"></div>
+                                <div class="card-arrow-bottom-left"></div>
+                                <div class="card-arrow-bottom-right"></div>
+                            </div>
+                        </div>
+                    </div>*@
+                @*<br />
+
+                    <div class="col-xl-12 mt-10px">
+                        <div class="card" style="backdrop-filter:blur(10px);background: rgba(0,0,0,0.3);height:100%;    ">
+                            <div class="card-body">
+
+                                <div class="col-xl-12"> توضیحات:</div>
+
+                            </div>
+                            <div class="card-arrow">
+
+
+                                <div class="card-arrow-top-left"></div>
+                                <div class="card-arrow-top-right"></div>
+                                <div class="card-arrow-bottom-left"></div>
+                                <div class="card-arrow-bottom-right"></div>
+                            </div>
+                        </div>
+                    </div>*@
+
+            </div>
+
+            <div class="col-xl-4 ">
+
+                <div class="card-body box_style01C" >
+
+                    <h1>حقوق و مزایا </h1>
+                    <hr>
+                    <table class="table table-hover text-nowrap" width="100%">
+                        <thead>
+                            <tr>
+                                <th>شرح</th>
+                                <th>مبلغ(ریال)</th>
+                            </tr>
+                        </thead>
+
+                        <tr>
+                            <td>مزدگروه(شغل):</td>
+                            <td>@Model.FishValues.FirstOrDefault(p => p.Title == "مزد گروه (شغل)").Value.ToString("N1")</td>
+
+                        </tr>
+                        <tr>
+                            <td> مزد سنوات</td>
+                            <td>@Model.FishValues.FirstOrDefault(p => p.Title == "مزد سنوات (ریال)").Value.ToString("N1")</td>
+
+
+                        </tr>
+                        <tr>
+                            <td>کمک هزینه مسکن</td>
+                            <td>@Model.FishValues.FirstOrDefault(p => p.Title == "کمک هزینه مسکن (ریال)").Value.ToString("N1")</td>
+
+
+                        </tr>
+                        <tr>
+                            <td>کمک هزینه اقلام مصرفی خانواده</td>
+                            <td>@Model.FishValues.FirstOrDefault(p => p.Title == "کمک هزینه اقلام مصرفی خانوار(ریال)").Value.ToString("N1")</td>
+
+
+
+                        </tr>
+                        <tr>
+                            <td>کمک هزینه عایله مندی(حق اولاد)</td>
+                            <td>@Model.FishValues.FirstOrDefault(p => p.Title == "کمک هزینه اولاد(ریال)").Value.ToString("N1")</td>
+
+
+                        </tr>
+                        <tr>
+                            <td>علی الحساب کارایی (معادل اضافه کار)</td>
+                            <td>@Model.FishValues.FirstOrDefault(p => p.Title == "اضافه کاری (ریال)").Value.ToString("N1")
+
+
+                        </tr>
+                        <tr>
+                            <td>ماموریت</td>
+                            <td>@Model.FishValues.FirstOrDefault(p => p.Title == "ماموریت (ریال)").Value.ToString("N1")
+
+
+                        </tr>
+                        <tr>
+                            <td>اصلاحیه کمک هزینه </td>
+                            <td>@Model.FishValues.FirstOrDefault(p => p.Title == "اصلاحیه کمک هزینه مسکن(ریال)").Value.ToString("N1")</td>
+
+
+                        </tr>
+                        <tr>
+                            <td>ذخیره کار مازاد قبل (بیمه و مالیات ناپذیر)</td>
+                            <td>@Model.ZakhireKarMazadQabl.ToString("N1")</td>
+
+
+                        </tr>
+                        <tr>
+                            <td>کمک هزینه بیمه تکمیلی</td>
+                            <td>@Model.FishValues.FirstOrDefault(p => p.Title == "کمک هزینه بیمه تکمیل درمان (ریال)").Value.ToString("N1")</td>
+
+
+                        </tr>
+                        <tr>
+                            <td>ایاب و ذهاب</td>
+                            <td>@Model.FishValues.FirstOrDefault(p => p.Title == "کمک هزینه ایاب و ذهاب(ریال)").Value.ToString("N1")</td>
+
+
+                        </tr>
+                        <tr>
+                            <td>پاداش</td>
+                            <td>@Model.FishValues.FirstOrDefault(p => p.Title == "پاداش(ریال)").Value.ToString("N1")</td>
+
+
+                        </tr>
+                        <tr>
+                            <td>اصلاحیه حق اولاد </td>
+                            <td>@Model.FishValues.FirstOrDefault(p => p.Title == "اصلاحیه کمک هزینه اولاد(ریال)").Value.ToString("N1")</td>
+
+
+                        </tr>
+                        @*<tr>
+                                <td>کمک هزینه تلفن همراه</td>
+
+                                <td>؟</td>
+
+
+                            </tr>*@
+                        <tr>
+                            <td>ابزار کار</td>
+                            <td>@Model.FishValues.FirstOrDefault(p => p.Title == "کمک هزینه ابزار کار(ریال)").Value.ToString("N1")</td>
+
+
+                        </tr>
+                        <tr>
+                            <td>سایر اضافات</td>
+                            <td>@Model.SayerEzafat.ToString("N1")</td>
+
+
+                        </tr>
+                        @*@foreach (var item2 in Model.FishValueQaradad)
+                            {
+
+                                <tr>
+                                    <td>@item2.Title</td>
+                                    <td>@item2.Value</td>
+
+
+                                </tr>
+
+                            }
+                            @foreach (var item2 in Model.FishValuesEzafat)
+                            {
+
+                                <tr>
+                                    <td>@item2.Title</td>
+                                    <td>@item2.Value</td>
+
+
+                                </tr>
+
+                            }*@
+                        @*<tr>
+                                <td>جمع ناخالصی حقوق و مزایا</td>
+                                <td>545454</td>
+
+
+                            </tr>*@
+
+                    </table>
+
+                    <hr />
+                    <div class="row">
+                        <div class="col-xl-9">    جمع ناخالصی حقوق و مزایا</div>
+                        <div class="col-xl-3">    @Model.JamNakhalesHoqoqVaMazaya.ToString("N1")</div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-xl-4 " style="padding-left:0px">
+
+                <div class="card-body box_style01L" >
+
+
+
+                            <h1>کسورات</h1>
+                    <hr />
+                    <table class="table table-hover text-nowrap" width="100%">
+                        <thead>
+                            <tr>
+                                <th>شرح</th>
+                                <th>مبلغ(ریال)</th>
+                            </tr>
+                        </thead>
+
+
+                        <tr>
+                            <td>
+                                جمع کل مشمول بیمه :
+                            </td>
+                            <td>@Model.FishValues.FirstOrDefault(p => p.Title == "جمع کل مشمول بیمه (ریال)").Value.ToString("N1")</td>
+
+                        </tr>
+                        <tr>
+                            <td> جمع کل مشمول مالیات :</td>
+                            <td>@Model.FishValues.FirstOrDefault(p => p.Title == "جمع کل مشمول مالیات (ریال)").Value.ToString("N1")</td>
+
+
+                        </tr>
+
+                        <tr>
+                            <td>
+                                حق بیمه سهم کارمند ( 7%) فیش جاری
+                            </td>
+                            <td>@Model.FishValues.FirstOrDefault(p => p.Title == "حق بیمه سهم کارمند (ریال)").Value.ToString("N1")</td>
+
+
+                        </tr>
+
+
+
+                        <tr>
+                            <td>
+                                مالیات سهم کارمند فیش جاری
+                            </td>
+                            <td>@Model.FishValues.FirstOrDefault(p => p.Title == "مالیات سهم کارمند (ریال)").Value.ToString("N1")</td>
+
+
+                        </tr>
+
+
+                        <tr>
+                            <td>کسری کارکرد</td>
+                            <td>@Model.kasrikarkard.ToString("N1")</td>
+
+
+                        </tr>
+                        <tr>
+                            <td>بیمه تکمیلی</td>
+                            <td>@Model.BimetakmiliForFishTest.ToString("N1")</td>
+
+
+                        </tr>
+
+                        @*@foreach (var item2 in Model.FishValuesAqsat)
+        {
+            <tr>
+                <td>
+                    @item2.Title
+                </td>
+                <td>@item2.Value</td>
+
+            </tr>
+
+        }
+
+        @foreach (var item2 in Model.FishValuesKosoorat)
+        {
+            <tr>
+                <td>
+                    @item2.Title
+                </td>
+                <td>@item2.Value</td>
+
+            </tr>
+
+        }*@
+                        @*<tr>
+            <td>بیمه تکمیلی</td>
+            <td>5444</td>
+
+
+        </tr>
+
+        <tr>
+            <td>جریمه یا سایر کسور</td>
+            <td>5444</td>
+
+
+        </tr>
+
+
+        <tr>
+            <td>سایر</td>
+            <td>5444</td>
+
+
+        </tr>*@
+
+                        <tr>
+                            <td>ذخیره کارمزد(درحال بررسی)</td>
+                            <td>@Model.ZakhireKarMazad.ToString("N1")</td>
+
+
+                        </tr>
+                        <tr>
+                            <td>سایر کسورات</td>
+                            <td>@Model.sayerkosoorat.ToString("N1")</td>
+
+
+                        </tr>
+                        @*<tr>
+            <td>کسرمولفه های انگیزشی بابت کسرکارها</td>
+            <td>5444</td>
+
+
+        </tr>*@
+
+
+                    </table>
+
+                            <hr />
+                            <div class="row">
+                                <div class="col-xl-9">    جمع کل کسورات</div>
+                                <div class="col-xl-3">@Model.jamkolekosoorat.ToString("N1")</div>
+                            </div>
+                            <hr />
+
+                            <div class="row">
+                                <div class="col-xl-9">   خالص قایل دریافت </div>
+                                <div class="col-xl-3">@Model.KhalesQabelDaryaft.ToString("N1")</div>
+                            </div>
+
+
+
+
+
+
+                    @*<div class="col-xl-12 mt-10px">
+                            <div class="card" style="backdrop-filter:blur(10px);background: rgba(0,0,0,0.3);height:100%;    ">
+                                <div class="card-body">
+
+
+
+                                    <div class="row">
+                                        <div class="col-xl-8">   توضیح:مبلغ بیمه تکمیلی:</div>
+                                        <div class="col-xl-4">    54565635</div>
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xl-8">
+                                            کمک هزینه بیمه تکمیلی:
+                                        </div>
+                                        <div class="col-xl-4">    5665</div>
+                                    </div>
+                                </div>
+                                <div class="card-arrow">
+
+
+                                    <div class="card-arrow-top-left"></div>
+                                    <div class="card-arrow-top-right"></div>
+                                    <div class="card-arrow-bottom-left"></div>
+                                    <div class="card-arrow-bottom-right"></div>
+                                </div>
+                            </div>
+                        </div>*@
+
+                </div>
+
+                <div class="card-arrow">
+
+
+                    <div class="card-arrow-top-left"></div>
+                    <div class="card-arrow-top-right"></div>
+                    <div class="card-arrow-bottom-left"></div>
+                    <div class="card-arrow-bottom-right"></div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+
+
+
+
+
+    @*<div class="row mt-4">
+            <div class="card" style="backdrop-filter:blur(10px);background: rgba(0,0,0,0.3);height:100%;    ">
+                <div class="card-body">
+
+                    <div class="row">
+                        <div class="col-xl-3 ">شرح پاداش / جرائم (سایر کسور) جدول فیش:</div>
+                        <div class="col-xl-9"> fdddsf</div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="card-arrow">
+                    <div class="card-arrow-top-left"></div>
+                    <div class="card-arrow-top-right"></div>
+                    <div class="card-arrow-bottom-left"></div>
+                    <div class="card-arrow-bottom-right"></div>
+                </div>
+
+
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="card" style="backdrop-filter:blur(10px);background: rgba(0,0,0,0.3);height:100%;    ">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-xl-1 ">توضیحات:</div>
+                        <div class="col-xl-11"> fdddsf</div>
+                    </div>
+                </div>
+
+
+                <div class="card-arrow">
+                    <div class="card-arrow-top-left"></div>
+                    <div class="card-arrow-top-right"></div>
+                    <div class="card-arrow-bottom-left"></div>
+                    <div class="card-arrow-bottom-right"></div>
+                </div>
+
+
+            </div>
+        </div>*@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+
+
+</div>
+</div>
+
+
+
+

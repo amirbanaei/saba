@@ -1,0 +1,181 @@
+﻿@{
+    Layout = null;
+}
+@section Styles{
+    <link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+    <link href="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.style.css" rel="stylesheet" />
+}
+
+@*------------------------------------------------[1402/08/20]-|KH|-*@
+<style>
+
+    select, input, button {
+        width: 100%;
+    }
+</style>
+<link href="~/MyStyles/inputstyleandformstyle.css" rel="stylesheet" />
+<div class="card" style="padding:10px;">
+
+    <div class="row">
+        <div class="col-xl-6">
+            <label class="form-label">انتخاب نوع تجهیز</label>
+            @Html.Action("_ListGroup", "DefFacilitiesEquipment")
+        </div>
+
+        <div class="col-xl-3">
+            <label class="form-label"> پیمان </label>
+            <div id="pymn2"> </div>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-xl-2">
+            <div class="row ">
+                <div class="col-xl-12">
+                    <label class="form-label">سال</label>
+                    
+                </div>
+                <div class="col-xl-12">
+                    <select class="form-select" id="year_usr1">
+                        <option value="0">انتخاب کنید</option>
+                        <option value="1400">1400</option>
+                        <option value="1401">1401</option>
+                        <option value="1402">1402</option>
+                        <option value="1403">1403</option>
+                        <option value="1404">1404</option>
+                        <option value="1405">1405</option>
+                    </select>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-2">
+            <div class="row">
+                <div class="col-xl-12">
+                    <label class="form-label">ماه</label>
+                    
+                </div>
+                <div class="col-xl-12">
+                    <select class="form-select" id="month_usr1">
+                        <option value="0">انتخاب کنید</option>
+                        <option value="1">فروردین</option>
+                        <option value="2">اردیبهشت</option>
+                        <option value="3">خرداد</option>
+                        <option value="4">تیر</option>
+                        <option value="5">مرداد</option>
+                        <option value="6">شهریور</option>
+                        <option value="7">مهر</option>
+                        <option value="8">آبان</option>
+                        <option value="9">آذر</option>
+                        <option value="10">دی</option>
+                        <option value="11">بهمن</option>
+                        <option value="12">اسفند</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="row">
+                <div class="col-md-12">
+                    <label form-label>از تاریخ</label>
+                    
+                </div>
+
+                <div class="col-md-12">
+                    <input class="form-control picker" id="datepickerFrom_shw" />
+                    <input class="form-control picker" type="hidden" id="datepickerFromEn_shw" />
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="row">
+                <div class="col-md-12">
+                    <label form-label>تا تاریخ</label>
+                    
+                </div>
+
+                <div class="col-md-12">
+                    <input class="form-control picker" id="datepickerTo_shw" />
+                    <input class="form-control picker" type="hidden" id="datepickerToEn_shw" />
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3 ">
+
+
+    </div>
+
+
+
+    <div class="row  mt-3">
+        <div class="col-xl-2">
+            <button id="downloadButton" class="btn form-control buttonsabt">
+                <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                <span class="bSabt-text">ثبت</span>
+            </button>
+
+        </div>
+        <div class="col-xl-2"></div>
+        <div class="col-xl-2"></div>
+        <div class="col-xl-2"></div>
+        <div class="col-xl-2"></div>
+        <div class="col-xl-2">
+            <div class="row">
+                @*<div class="col-xl-12">
+                    <button id="botton1" type="button" class="bas btn form-control buttonsabt">
+            <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+            <span class="bSabt-text">ثبت</span>
+        </button>
+
+                </div>*@
+            </div>
+        </div>
+    </div>
+
+    <!-- arrow -->
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+
+@* سه رقم جدا کردن *@
+<script>
+
+    $(function(){
+        $("#pymn2").load('@Url.Content("/RegistrationAndConfirmationProcedures/ReffrenceSaveGetPeymans3")?isSabt=True&IsFor=0');
+
+        $("#select_EquipmentGroup").change(function(){
+           console.log($(this).val());
+           if($(this).val() != "Select"){
+           $("#pymn2").load('@Url.Content("/RegistrationAndConfirmationProcedures/ReffrenceSaveGetPeymans")?isSabt=True&IsFor='+$(this).val(), function () {
+                $("#select_peyman").attr("id", "select_peyman3");
+                $("#select_peyman3").picker({ search: true });
+           });
+           }else{
+                $("#pymn2").html("");
+           }
+
+         });
+    });
+
+        var fd = new FormData();
+      function downloadAjax() {
+        $("#loading-message").css("display", "block");
+        window.location = '@Url.Action("ExportExcel_MachinsOrTools", "DefFacilitiesEquipment",new { area = "Contracts" })?Peyman_ID='+$("#select_peyman3").val()+'&type='+$("#select_EquipmentGroup").val();
+        $("#loading-message").css("display", "none");
+      }
+
+</script>
+@*-------------------------------------------------------------|KH|-*@

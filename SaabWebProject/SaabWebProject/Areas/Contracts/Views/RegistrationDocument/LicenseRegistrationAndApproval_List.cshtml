@@ -1,0 +1,219 @@
+﻿@model List<SaabWebProject.Models.DomainModels.tbDocumentsDefiOfDoctTitles_Users>
+
+@{
+    Layout = null;
+}
+
+<div class="card">
+    <div class="table-content p-4">
+        <div class="tab-pane fade show active" id="allTab">
+            <div class="table-responsive tableH_Lock">
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr style="text-align:center">
+                            <th>
+                                @Html.DisplayName("فعالیت")
+                            </th>
+                            <th>
+                                @Html.DisplayName("#")
+                            </th>
+                            <th>
+                                @Html.DisplayName("پیمان")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter08-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            <th>
+                                @Html.DisplayName("عنوان")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter09-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            <th>
+                                @Html.DisplayName("کاربران ثبت")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter10-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            <th>
+                                @Html.DisplayName("کاربران تایید")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter11-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+
+
+                        </tr>
+                    </thead>
+                    <tbody style="text-align:center">
+                        @{ var counter = 0;
+                            string karbaransabt = "";
+                            string karbaranteed = "";
+                        }
+                        @foreach (var item in Model)
+                        {
+                            counter++;
+                            if (item.IsSabt == true)
+                            {
+                                karbaransabt = @item.tbUsers.FullName;
+
+                            }
+                            else
+                            {
+                                karbaransabt = "";
+                            }
+                            //==========================================
+                            if (item.IsTaeed == true)
+                            {
+                                karbaranteed = @item.tbUsers.FullName;
+                            }
+                            else
+                            {
+                                karbaranteed = "";
+                            }
+                            <tr class="task-list-rowM"
+                                data-filter08="@item.tbDocumentsDefinitionOfDocumentTitles.tbPeymanContracts.pec_Title"
+                                data-filter09="@item.tbDocumentsDefinitionOfDocumentTitles.Title"
+                                data-filter10="@karbaransabt"
+                                data-filter11="@karbaranteed">
+
+                                <td>
+                                    <div class="ms-sm-4 mt-sm-0 mt-2 dropdown-toggle">
+                                        <a href="#" data-bs-toggle="dropdown" class="text-white text-opacity-75 text-decoration-none">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item Delete" id="Delete_@item.ID">حذف</a>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>@counter</td>
+                                <td>@item.tbDocumentsDefinitionOfDocumentTitles.tbPeymanContracts.pec_Title</td>
+                                <td>@item.tbDocumentsDefinitionOfDocumentTitles.Title</td>
+                                <td>@karbaransabt</td>
+                                <td>@karbaranteed</td>
+
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+<script>
+
+    var filtersM = {
+        filter08: null,
+        filter09: null,
+        filter10: null,
+        filter11: null,
+    };
+
+    function updateFiltersM() {
+        $('.task-list-rowM').hide().filter(function () {
+            var self = $(this),
+                result = true;
+
+            Object.keys(filtersM).forEach(function (filter) {
+                var filterData = self.data(filter);
+                if (filtersM[filter] && (filtersM[filter] != 'None') && (filtersM[filter] != 'همه')) {
+                    // تبدیل داده به رشته و بررسی مقدار
+                    result = result && (filterData && filterData.toString().indexOf(filtersM[filter]) !== -1);
+                }
+            });
+
+            return result;
+        }).show();
+    }
+
+    function changeFilterM(filterName) {
+        filtersM[filterName] = this.value;
+        updateFiltersM();
+    }
+
+    // Assigned User Dropdown Filter
+    $('#filter08-filter').on('input', function () {
+        changeFilterM.call(this, 'filter08');
+    });
+    $('#filter09-filter').on('input', function () {
+        changeFilterM.call(this, 'filter09');
+    });
+    $('#filter10-filter').on('input', function () {
+        changeFilterM.call(this, 'filter10');
+    });
+    $('#filter11-filter').on('input', function () {
+        changeFilterM.call(this, 'filter11');
+    });
+</script>
+<script>
+    $(".edit").click(function () {
+        var idd = $(this).attr("id").split("_")[1];
+        $("#big_modal_body").load('@Url.Content("/Peyman/_PartialUpdatePeymans")?id='+idd);
+    });
+      $(".Delete").click(function () {
+        var idd = $(this).attr("id").split("_")[1];
+          $("#loading-message").css("display", "block");
+          $.ajax({
+              url: '@Url.Action("LicenseRegistrationAndApproval_delete", "RegistrationDocument", new { area = "Contracts" })',
+              data: { ID: idd },
+              type: "Post",
+              dataType: "html",
+              success: function (resp) {
+                  $("#loading-message").css("display", "none");
+                  if (resp == "True") {
+                      Toast.fire({
+                          icon: 'success',
+                          background: '#35434A',
+                          color: 'white',
+                          title: "با موفقیت حذف شد"
+                      }).then(() => {
+                          location.reload();
+                      });
+                  } else {
+                      Toast.fire({
+                          icon: 'success',
+                          background: '#35434A',
+                          color: 'white',
+                          title: "قادر به حذف  نیستید"
+                      }).then(() => {
+                      });
+                  }
+
+              },
+              error: function (resp2) {
+                  $("#loading-message").css("display", "none");
+                  Toast.fire({
+                      icon: 'success',
+                      background: '#35434A',
+                      color: 'white',
+                      title: "حذف  با خطا مواجه شده است "
+                  }).then(() => {
+                      location.reload();
+                  });
+              }
+          });
+      });
+
+    var Toast = Swal.mixin({
+        toast: true,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    });
+</script>
+

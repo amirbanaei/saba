@@ -1,0 +1,214 @@
+﻿
+
+@using SaabWebProject.Models.DomainModels;
+@{
+    ViewBag.Title = "گزارش مالی";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    SaabEntities db = new SaabEntities();
+
+}
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+
+<link href="~/Content/installments.css" rel="stylesheet" />
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+@*<link href="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.style.css" rel="stylesheet" />*@
+
+<script src="~/Assets/js/jalalidatepicker.min.js"></script>
+<link href="~/Assets/css/jalalidatepicker.min.css" rel="stylesheet" />
+<script src="~/Assets/js/jalaali.min.js"></script>
+<link href="~/MyStyles/jalalidatepicker.css" rel="stylesheet" />
+
+<div class="tab-content">
+    <div class="d-flex align-items-center">
+        <p class="m-0" style="line-height:70px">نحوه درخواست: </p>
+        <div class="wrapper mx-3" style="box-shadow: none !important;">
+            <input class="Option_PeKa" type="radio" name="UserOrPeyman" id="option-1" value="User" checked>
+            <input class="Option_PeKa" type="radio" name="UserOrPeyman" id="option-2" value="Peyman">
+            <label for="option-1" class="option option-1">
+                <div class="dot"></div>
+                <span>کاربر</span>
+            </label>
+            <label for="option-2" class="option option-2">
+                <div class="dot"></div>
+                <span>پیمان</span>
+            </label>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xl-6" style="display:none">
+            <label class="form-label ">پیمان</label>
+
+
+            @Html.Action("_GetAllListPeymans_Select", "Peyman", new { area = "Contracts" })
+
+        </div>
+        <div class="col-xl-6">
+            <label class="form-label">کاربر</label>
+
+
+            @Html.Action("_GetAllUsers_Select", "Users", new { area = "Users" })
+
+        </div>
+        <div class="col-xl-2">
+            <div class=" form-group mb-12">
+                <label class="form-label" id="FromDate"> از تاریخ </label>
+                @*------------------------------------------------[1402/--/--]-|KH|-*@
+                <input data-jdp jdp-btn-close data-jdp-miladi-input="datepickerFromEn_Eq1" id="datepickerFrom_Eq1" class="form-control pdate">
+                <input id="datepickerFromEn_Eq1" type="hidden" />
+                @*-------------------------------------------------------------|KH|-*@
+            </div>
+        </div>
+        <div class="col-xl-2">
+            <div class=" form-group mb-12">
+                <label class="form-label" id="ToDate"> تا تاریخ </label>
+                @*------------------------------------------------[1402/--/--]-|KH|-*@
+                <input data-jdp jdp-btn-close data-jdp-miladi-input="datepickerToEn_Eq1" id="datepickerTo_Eq1" class="form-control pdate">
+                <input id="datepickerToEn_Eq1" type="hidden" />
+                @*-------------------------------------------------------------|KH|-*@
+            </div>
+        </div>
+        <div class="col-xl-2" id="RadifEtebari">
+
+            <label class="form-label"> نوع</label>
+            <select class="form-select" id="select_Etebar22">
+                <option value="0" hidden>انتخاب مورد</option>
+                <option value="1">بستانکار</option>
+                <option value="2">بدهکار</option>
+                <option value="3">هردو</option>
+            </select>
+
+        </div>
+    </div>
+
+    <div class="row ">
+        <div class="col-xl-3">
+            <label class="form-label"> شروع مبلغ </label>
+
+            <input class="form-control" id="moblagh" value="0" />
+
+        </div>
+        <div class="col-xl-3 sss" id="RadifEtebar4" style="display:none">
+
+            <label class="form-label"> ردیف اعتباری</label>
+            <select class="form-select" id="select_Etebar2">
+                <option value="0" hidden>انتخاب مورد</option>
+                @foreach (var it in db.tbCreditIndicators.ToList())
+                {
+                    <option value="@it.ID">@it.Title</option>
+
+                }
+
+            </select>
+
+        </div>
+    </div>
+    <div class="row dd">
+        <div class="col-xl-11"></div>
+        <div class="col-xl-1" >
+            <a href="#" class="btn form-control buttonGeneral" id="Show_Report">
+                <i class="fa fa-eye fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text">نمایش</span>
+            </a>
+        </div>
+    </div>
+    <div class="row dd2" style="display:none">
+        <div class="col-xl-11"></div>
+        <div class="col-xl-1" >
+            <a href="#" class="btn form-control buttonGeneral" id="Show_Report1">
+                <i class="fa fa-eye fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text">نمایش</span>
+            </a>
+        </div>
+    </div>
+    <div id="myTable" class=" mt-10px">
+
+    </div>
+</div>
+<script>
+
+    $('input[type=radio][name=UserOrPeyman]').change(function () {
+
+        if (this.value == 'User') {
+            $("#select_users").closest("div").show()
+            $("#select_peyman").closest("div").hide()
+            $(".sss").closest("div").hide()
+            $(".dd").closest("div").show()
+            $(".dd2").closest("div").hide()
+
+
+            /*------------------------------------------------[1402/08/17]-|KH|-*/
+            //$("#CheckBox1").closest("div").show()
+            //$("#CheckBox2").closest("div").show()
+            //$("#CheckBox3").closest("div").hide()
+            /*-------------------------------------------------------------|KH|-*/
+        }
+        else if (this.value == 'Peyman') {
+            $("#select_peyman").closest("div").show()
+            $("#select_users").closest("div").hide()
+            $(".sss").closest("div").show()
+            $(".dd2").closest("div").show()
+            $(".dd").closest("div").hide()
+
+
+            /*------------------------------------------------[1402/08/17]-|KH|-*/
+            //$("#CheckBox1").closest("div").show()
+            //$("#CheckBox2").closest("div").hide()
+            //$("#CheckBox3").closest("div").show()
+            ///*-------------------------------------------------------------|KH|-*/
+        }
+    });
+</script>
+<script>
+    jalaliDatepicker.startWatch({
+        time: false,
+        days: ["شنبه", "1شنبه", "2شنبه", "3شنبه", "4شنبه", "5شنبه", "جمعه"],
+        persianDigits: true,
+        autoClose: true,
+        autocomplete: true,
+        // showCloseBtn:true,
+        showEmptyBtn: false,
+        showCloseBtn: true,
+        zIndex: 100000,
+
+    });
+    //-----------------------------------------------------------------
+    var inputs = document.querySelectorAll("[data-jdp-miladi-input]");
+    for (var i = 0; i < inputs.length; i++) {
+        inputs[i].addEventListener("jdp:change", function (e) {
+            var miladiInput = document.getElementById(this.getAttribute("data-jdp-miladi-input"));
+            var date = this.value.replace(' ', '').slice(0, 10).split('/');
+            date = jalaali.toGregorian(parseInt(date[0]), parseInt(date[1]), parseInt(date[2]),)
+            // If it was empty
+            if (!this.value) {
+                date = "";
+            }
+            // If it was only history
+            else if (this.value.replace(' ', '').length < 11) {
+                date = date.gy + '-' + date.gm + '-' + date.gd
+            }
+            // If it was the date and time
+            else {
+                date = date.gy + '-' + date.gm + '-' + date.gd + ' ' + this.value.replace(' ', '').slice(10, 30)
+            }
+            miladiInput.value = date
+        });
+    }
+    $("#Show_Report").click(function () {
+   //console.log($("#select_Etebar8").val());
+        console.log($("#select_users").val());
+   console.log($("#datepickerFromEn_Eq1").val());
+
+
+        $("#myTable").load('@Url.Content("../../Budget/Report/Fileter")?us=' + $("#select_users").val() + '&moblagh=' + $("#moblagh").val() + '&Starttime=' + $("#datepickerFromEn_Eq1").val() + '&Endtime=' + $("#datepickerToEn_Eq1").val() + '&select_Etebar22=' + $("#select_Etebar22").val());
+})
+    $("#Show_Report1").click(function () {
+   //console.log($("#select_Etebar8").val());
+   console.log($("#datepickerToEn_Eq1").val());
+        console.log($("#select_Etebar2").val());
+
+
+        $("#myTable").load('@Url.Content("../../Budget/Report/Fileter2")?us=' + $("#select_peyman").val() + '&moblagh=' + $("#moblagh").val() + '&Starttime=' + $("#datepickerFromEn_Eq1").val() + '&FK_creditline=' + $("#select_Etebar2").val() + '&Endtime=' + $("#datepickerToEn_Eq1").val() + '&select_Etebar22=' + $("#select_Etebar22").val());
+})
+</script>

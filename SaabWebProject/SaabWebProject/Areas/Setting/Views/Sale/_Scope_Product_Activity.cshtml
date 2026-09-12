@@ -1,0 +1,194 @@
+﻿
+<script src="~/Assets/js/jalalidatepicker.min.js"></script>
+<link href="~/Assets/css/jalalidatepicker.min.css" rel="stylesheet" />
+<script src="~/Assets/js/jalaali.min.js"></script>
+<link href="~/MyStyles/jalalidatepicker.css" rel="stylesheet" />
+
+<style>
+    label {
+        font-size: .8rem;
+    }
+</style>
+
+
+<div class="card" id="card3">
+    <div class="card-body" style="z-index:12 !important">
+        <div class="row gx-0 align-items-center">
+
+            <div class="card-body" style="padding-left:0;padding-right:0">
+                <div class="row">
+                    <div class="col-xl-3">
+                        <label class="form-label">تعداد پیمان ها</label>
+                        <input class="form-control" id="peymanCount" />
+                    </div>
+                    <div class="col-xl-3">
+                        <label class="form-label">تعداد کاربران حقیقی</label>
+                        <input class="form-control" id="rightUsersCount" />
+                    </div>
+                    <div class="col-xl-3">
+                        <label class="form-label">تعداد کاربران حقوقی</label>
+                        <input class="form-control" id="legalUsersCount" />
+                    </div>
+                    <div class="col-xl-3">
+                        <label class="form-label">تاریخ خاتمه فعالیت نرم افزار </label>
+
+                        @*------------------------------------------------[1402/11/03]-|KH|-*@
+                        <input data-jdp jdp-btn-close data-jdp-miladi-input="datepickerFromEn_Eq" id="datepickerFrom_Eq" class="form-control" >
+                        <input id="datepickerFromEn_Eq" type="hidden" />
+                        @*-------------------------------------------------------------|KH|-*@
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xl-3">
+                        <label class="form-label">جغرافیای کاری نرم افزار</label>
+                        <input class="form-control" id="work_geography" />
+                    </div>
+                    <div class="col-xl-3">
+                        <label class="form-label" hidden>جغرافیای کاری نرم افزار GIS</label>
+                        <button @*disabled*@ type="button" class="btn form-control buttonGeneralW" id="mapbtn" data-toggle="modal" data-target="#modalLg">
+                            <i class="fa fa-map fa-fw me-1 VecGeneralW"></i>
+                            <span class="bGeneral-textW">نقشه</span>
+                            
+                        </button>
+                        @*<input class="form-control" />*@
+                    </div>
+                    <div class="col-xl-3">
+                        <label class="form-label">حداکثر زمان عدم فعالیت کاربر</label>
+                        <input class="form-control" id="Maximum_inactivity_time" />
+                    </div>
+                    <div class="col-xl-3">
+                        <label class="form-label">MacAddress</label>
+                        <input class="form-control" type="text" id="MacAddress" maxlength="17" />
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-xl-11">
+
+                    </div>
+                    <div class="col-xl-1" >
+                        <button class="btn form-control buttonsabt" id="btnSubmitCard3">
+                            <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                            <span class="bSabt-text">ثبت</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- arrow -->
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+<input id="input_Latitude" class="d-none" />
+<input id="input_Longitude" class="d-none" />
+
+
+@*------------------------------------------------[1402/11/03]-|KH|-*@
+<script>
+    //jalaliDatepicker.startWatch({
+    //    time: true,
+    //    days: ["شنبه", "1شنبه", "2شنبه", "3شنبه", "4شنبه", "5شنبه", "جمعه"],
+    //    persianDigits: true,
+    //    autoClose: true,
+    //    autocomplete: true,
+    //    showCloseBtn: true,
+    //    showEmptyBtn: false,
+    //    showCloseBtn: true,
+    //    zIndex: 100000,
+    //});
+    //-----------------------------------------------------------------
+    var inputs = document.querySelectorAll("[data-jdp-miladi-input]");
+    for (var i = 0; i < inputs.length; i++) {
+        inputs[i].addEventListener("jdp:change", function (e) {
+            var miladiInput = document.getElementById(this.getAttribute("data-jdp-miladi-input"));
+            var date = this.value.replace(' ', '').slice(0, 10).split('/');
+            date = jalaali.toGregorian(parseInt(date[0]), parseInt(date[1]), parseInt(date[2]),)
+            // If it was empty
+            if (!this.value) {
+                date = "";
+            }
+            // If it was only history
+            else if (this.value.replace(' ', '').length < 11) {
+                date = date.gy + '-' + date.gm + '-' + date.gd
+            }
+            // If it was the date and time
+            else {
+                date = date.gy + '-' + date.gm + '-' + date.gd + ' ' + this.value.replace(' ', '').slice(10, 30)
+            }
+            miladiInput.value = date
+        });
+    }
+</script>
+@*-------------------------------------------------------------|KH|-*@
+
+
+@* Mac Address *@
+<script>
+
+    $("#MacAddress").on("keydown", function (event) {
+        const BACKSPACE_KEY = 8
+        const _colonPositions = [2, 5, 8, 11, 14]
+        const _newValue = $(this).val().trim()
+        const _currentPosition = _newValue.length
+        if (event.keyCode !== BACKSPACE_KEY) {
+            if (_colonPositions.some(position => position === _currentPosition)) {
+                $("#MacAddress").val(_newValue.concat(':'))
+            }
+        }
+    })
+
+</script>
+
+@* Map *@
+<script>
+    $("#mapbtn").click(function () {
+        $('#mapContainer1').css('opacity', '1');
+        $('#mapContainer1').show();
+        $("#big_modal_body").append($("#mapContainer1"));
+        $("#mapContainer").show()
+    })
+</script>
+
+@* Submit *@
+<script>
+    let arguments = {};
+    $("#btnSubmitCard3").click(function () {
+        arguments.peymanCount = $('#peymanCount').val()
+        arguments.rightUsersCount = $('#rightUsersCount').val()
+        arguments.legalUsersCount = $('#legalUsersCount').val()
+        arguments.termination_date = $('#datepickerFromEn_Eq').val()
+        arguments.work_geography = $('#work_geography').val()
+        arguments.Latitude = $('#input_Latitude').val()
+        arguments.Longitude = $('#input_Longitude').val()
+        arguments.Maximum_inactivity_time = $('#Maximum_inactivity_time').val()
+        arguments.MacAddress = $('#MacAddress').val()
+
+        $.ajax({
+            type: "Post",
+            url: '/Sale/SubmitCard3',
+            dataType: 'text',
+            contentType: 'application/json',
+            traditional: true,
+            data: JSON.stringify(arguments),
+            success: function (data) {
+                $("#Error").html(data);
+                console.log($("#Error"))
+                if (data == "1") {
+                    alert('اطلاعات ثبت شد')
+                    window.location.reload();
+                }
+            },
+            error: (error) => {
+                console.log(error);
+            }
+        });
+    });
+</script>

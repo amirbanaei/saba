@@ -1,0 +1,296 @@
+﻿@model List<SaabWebProject.Models.DomainModels.tbDocuments>
+@{
+    Layout = null;
+}
+<style>
+    .tableH_LockK {
+        max-height: 528px;
+        /*height: 400px;*/
+    }
+</style>
+<div class="card">
+
+    <div class="table-content p-4">
+        <div class="tab-pane fade show active" id="allTab">
+            <div class="table-responsive tableH_LockK">
+
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr style="text-align:center">
+
+                            <th>
+                                @Html.DisplayName("#")
+                            </th>
+                            <th>
+                                @Html.DisplayName("پروژه")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter19-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            <th>
+                                @Html.DisplayName("عنوان")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter20-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            <th>
+                                @Html.DisplayName("سال / ماه / صورت وضعیت")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter21-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            <th>
+                                @Html.DisplayName(" خلاصه مدرک")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter22-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+                            <th>
+                                @Html.DisplayName(" پیوست مدرک")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter23-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+
+                            <th>
+                                @Html.DisplayName("نوع کنترل")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter24-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+
+                            <th>
+                                @Html.DisplayName("وضعیت تایید مدرک")
+                                <div class="inputWithFilterIcon">
+                                    <input type="text" id="filter25-filter" class="inputFilter form-control" placeholder="">
+                                    <span><i class="fas fa-filter"></i></span>
+                                </div>
+                            </th>
+
+                            <th>
+                                @Html.DisplayName("امکان تغییر ثبت")
+                            </th>
+
+                        </tr>
+                    </thead>
+                    <tbody style="text-align:center;">
+                        @{ int counter = 0;
+                            string kholasemadrakk = "";
+                            string peyvastmadrakk = "";
+                            string noekontrolk = "";
+                            string vazeyatetaeedmadrakk = "";
+                        }
+                        @foreach (var item in Model)
+                        {
+                            counter++;
+                            var month = item.Month.ToString();
+                            if (month == "0")
+                            {
+                                month = "";
+                            }
+                            //====================================
+                            if (item.SummaryDocument != null)
+                            {
+                                kholasemadrakk = "دانلود";
+                            }
+                            else
+                            {
+                                kholasemadrakk = "ذخیره نشده";
+                            }
+                            //====================================
+                            if (item.attachment != null)
+                            {
+                                peyvastmadrakk = "دانلود";
+                            }
+                            else
+                            {
+                                peyvastmadrakk = "ذخیره نشده";
+                            }
+                            //====================================
+                            if (item.tbDocumentsDefinitionOfDocumentTitles.TypeOfControl == 2)
+                            {
+                                noekontrolk = "مکانیزه";
+                            }
+                            else
+                            {
+                                noekontrolk = "دستی";
+                            }
+                            //====================================
+                            if (item.IsAccepted == true)
+                            {
+                                vazeyatetaeedmadrakk = "تایید شده";
+                            }
+                            else if (item.IsAccepted == false)
+                            {
+                                vazeyatetaeedmadrakk = "رد شده";
+                            }
+                            else
+                            {
+
+                            }
+                            //====================================
+                            <tr class="task-list-rowK"
+                                data-filter19="@item.peyman_Title"
+                                data-filter20="@item.doc_Title"
+                                data-filter21="@item.Year/@month/@item.SooratNumber"
+                                data-filter22="@kholasemadrakk"
+                                data-filter23="@peyvastmadrakk"
+                                data-filter24="@noekontrolk"
+                                data-filter25="@vazeyatetaeedmadrakk">
+
+                                <td>@counter</td>
+                                <td>@item.peyman_Title</td>
+                                <td>@item.doc_Title</td>
+                                <td>@item.Year/@month/@item.SooratNumber</td>
+                                @if (item.SummaryDocument != null)
+                                {
+                                    <td style="color:green">
+                                        <a target="_blank" href="~/Areas/Contracts/Contents/RegistrationDucumentSummery/@item.SummaryDocumentSystemName">
+                                            دانلود
+                                        </a>
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td style="color:red">ذخیره نشده</td>
+                                }
+
+                                @if (item.attachment != null)
+                                {
+                                    <td style="color:green">
+                                        <a target="_blank" href="~/Areas/Contracts/Contents/RegistrationDucumentAttachmentsFile/@item.attachmentSystemName">
+                                            دانلود
+                                        </a>
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td style="color:red">ذخیره نشده</td>
+                                }
+                                @if (item.tbDocumentsDefinitionOfDocumentTitles.TypeOfControl == 2)
+                                {
+                                    <td>مکانیزه</td>
+                                }
+                                else
+                                {
+                                    <td>دستی</td>
+
+                                }
+                                @if (item.IsAccepted == true)
+                                {
+                                    <td><i class="bi bi-brightness-high-fill" style="color:green" title="تایید شده"></i></td>
+                                }
+                                else if (item.IsAccepted == false)
+                                {
+                                    <td><i class="bi bi-brightness-high-fill" style="color:red" title="رد شده"></i></td>
+
+                                }
+                                else
+                                {
+                                    <td>
+                                        <a data-bs-toggle="modal" data-bs-target="#modalLg" class="dropdown-item edit2" id="Edit_@item.ID"><i class="bi bi-eye"></i></a>
+
+                                        @*<button id="expandButton2" class="btn btnEYE"><i class="bi bi-eye"></i></button>*@
+
+                                        @*<button class="btn btn-outline-default accept" id="accepted_@item.ID">تایید</button>
+                                            <button class="btn btn-outline-danger Notaccept" id="Notaccepted_@item.ID">رد</button>*@
+                                    </td>
+                                }
+
+                                @if (item.IsAccepted == true)
+                                {
+                                    <td><i class="bi bi-ckeck-circle" style="color:red"></i></td>
+                                }
+                                else
+                                {
+                                    <td><i class="bi bi-check-circle" style="color:green"></i></td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+<script src="~/Assets/js/jquery3.6.0.js"></script>
+<script src="~/Scripts/sweetalert2.js"></script>
+<script>
+    var filtersK = {
+        filter19: null,
+        filter20: null,
+        filter21: null,
+        filter22: null,
+        filter23: null,
+        filter24: null,
+        filter25: null,
+
+
+    };
+
+    function updateFiltersK() {
+        $('.task-list-rowK').hide().filter(function () {
+            var self = $(this),
+                result = true;
+
+            Object.keys(filtersK).forEach(function (filter) {
+                var filterData = self.data(filter);
+                if (filtersK[filter] && (filtersK[filter] != 'None') && (filtersK[filter] != 'همه')) {
+                    // تبدیل داده به رشته و بررسی مقدار
+                    result = result && (filterData && filterData.toString().indexOf(filtersK[filter]) !== -1);
+                }
+            });
+
+            return result;
+        }).show();
+    }
+
+    function changeFilterK(filterName) {
+        filtersK[filterName] = this.value;
+        updateFiltersK();
+    }
+
+    // Assigned User Dropdown Filter
+    $('#filter19-filter').on('input', function () {
+        changeFilterK.call(this, 'filter19');
+    });
+    $('#filter20-filter').on('input', function () {
+        changeFilterK.call(this, 'filter20');
+    });
+    $('#filter21-filter').on('input', function () {
+        changeFilterK.call(this, 'filter21');
+    });
+    $('#filter22-filter').on('input', function () {
+        changeFilterK.call(this, 'filter22');
+    });
+    $('#filter23-filter').on('input', function () {
+        changeFilterK.call(this, 'filter23');
+    });
+    $('#filter24-filter').on('input', function () {
+        changeFilterK.call(this, 'filter24');
+    });
+    $('#filter25-filter').on('input', function () {
+        changeFilterK.call(this, 'filter25');
+    });
+
+
+</script>
+<script>
+           $(".edit2").click(function () {
+    var idd = $(this).attr("id").split("_")[1];
+    console.log(idd);
+        $("#big_modal_body").load('@Url.Content("/RegistrationDocument/taeedv")?id='+idd);
+});
+</script>

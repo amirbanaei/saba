@@ -1,0 +1,150 @@
+﻿@model List<SaabWebProject.Models.DomainModels.SettingVisableShowMoalefe>
+@{
+    ViewBag.Title = "اجرا محاسبات آزمایشی";
+    Layout = "/Views/Shared/_Layout.cshtml";
+    //  Layout = null;
+}
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+<link href="/Areas/Users/Styles/Table_Scroll.css" rel="stylesheet" />
+
+<div class="tab-content">
+
+    <div class="row" style="margin-top:10px">
+        <div class="col-xl-5">
+            <label class="form-label"> پیمان  </label>
+            <div id="peymans">
+
+            </div>
+
+        </div>
+        <div class="col-xl-3" id="userlabel">
+            <label class="form-label"> کاربر  </label>
+            <input class="form-control" id="userinput" />
+            <div id="UserOFPeyman">
+
+            </div>
+
+        </div>
+        <div class="col-xl-2">
+            <div class="form-group mb-3">
+                <label class="form-label"> ماه </label>
+                <select class="form-select my_Select" id="Month">
+                    <option value="0">انتخاب کنید..</option>
+                    <option value="1">فروردین</option>
+                    <option value="2">اردیبهشت</option>
+                    <option value="3">خرداد</option>
+                    <option value="4">تیر</option>
+                    <option value="5">مرداد</option>
+                    <option value="6">شهریور</option>
+                    <option value="7">مهر</option>
+                    <option value="8">آبان</option>
+                    <option value="9">آذر</option>
+                    <option value="10">دی</option>
+                    <option value="11">بهمن</option>
+                    <option value="12">اسفند</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-xl-2">
+            <label class="form-label">سال</label>
+
+            <select id="Year" name="year_Eq" class="form-select">
+                <option value="0">انتخاب کنید</option>
+
+                @{
+                    System.Globalization.PersianCalendar cs2 = new System.Globalization.PersianCalendar();
+                    int currentYear = cs2.GetYear(DateTime.Now);
+
+                    for (var i = 4; i >= 0; i--)
+                    {
+                        var s = DateTime.Now.AddYears(-i);
+
+                        <option value="@cs2.GetYear(s)">@cs2.GetYear(s)</option>
+                    }
+                }
+            </select>
+
+        </div>
+    </div>
+    <div class="row" style="margin-bottom:10px;">
+        <div class="col-xl-11"></div>
+        <div class="col-xl-1" id="submitdiv" style=" display: none">
+            <button class="btn buttonsabt form-control" id="Submit">
+                <i class="fa fa-thumbs-up fa-fw me-1 VecGeneral"></i>
+                <span class="bSabt-text">تایید</span>
+            </button>
+        </div>
+    </div>
+
+
+    <div id="test">
+
+    </div>
+</div>
+
+
+
+
+
+<a href="#" id="DownloadLink" style="display:none"></a>
+
+
+<script src="~/Assets/js/jquery3.6.0.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/sweetalert2.js"></script>
+
+
+<script>
+
+
+    $('#Year').picker({ search: true });
+    $('#Month').picker({ search: true });
+
+
+    $("#Submit").click(function () {
+          $.ajax({
+                url: "@Url.Action("_FishParameterForFishTest", "Formula",new {area="Salaries"})",
+                type: "Post",
+                dataType: "html",
+                data: { },
+                success: function (res) {
+                    document.getElementById("loading-message").style.display = "none";
+
+
+
+                    $("#test").html(res);
+                },
+                error: function (res) {
+                    console.log(res);
+
+                    document.getElementById("loading-message").style.display = "none";
+                    Toast.fire({
+                        icon: 'error',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "عملیات  با خطا مواجه شد"
+                    });
+                    return false;
+                }
+            })
+    })
+
+
+
+
+
+    $("#peymans").load('@Url.Content("/../Contracts/Peyman/_GetAllListPeymans_Select")', function () {
+        $("#select_peyman").attr("id", "select_peyman1");
+        $("#select_peyman1").change(function () {
+            var id = $(this).val();
+            $("#userinput").css('display','none')
+
+            $("#UserOFPeyman").load('@Url.Content("/../Users/Users/_GetusersBaseOnPeymanID")?PeymanID='+id)
+            $("#userlabel").css('display','block')
+            $("#submitdiv").css('display','block')
+        });
+    });
+
+
+
+</script>

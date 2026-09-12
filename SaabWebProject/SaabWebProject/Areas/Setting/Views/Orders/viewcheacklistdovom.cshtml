@@ -1,0 +1,429 @@
+﻿@*@model SaabWebProject.Models.DomainModels.arzyzbi8_edit*@
+@using SaabWebProject.Models.DomainModels;
+@model SaabWebProject.Models.ViewModels.Contracts.Function.FunctionModel
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+
+@{
+    SaabEntities db = new SaabEntities();
+    Layout = null;
+
+    var reportLabels = new List<string>
+{
+        "گزارشات مغایرت فاز و آمپر",
+        "دستکاری در کنتور",
+        "کنتور خراب",
+        "برق غیر مجاز از شبکه",
+        "از قلم افتاده"
+    };
+
+    var reportOptions = new List<string>
+{
+        "گزارش ناصحیح است ",
+        "گزارش نشده است",
+        "گزارش صحیح است "
+    };
+}
+
+<form id="checklistForm">
+    <div class="section">
+        <div class="row">
+            <div class="col-xl-4">
+                <label class="form-label">رمز رایانه:</label>
+                @if (Model.arzyzbi8_edit != null && Model.arzyzbi8_edit.shomareh != null)
+                {
+                    <input class="form-control" name="shomareh" value="@(Model != null ? Model.arzyzbi8_edit.shomareh : "")" />
+
+                }
+                else
+                {
+                    <input class="form-control" name="shomareh"value="@Model.ComputerPassword" />
+
+                }
+            </div>
+            <div class="col-xl-4">
+                <label class="form-label">شماره اشتراک:</label>
+                @if (Model.arzyzbi8_edit != null && Model.arzyzbi8_edit.shomareh2 != null)
+                {
+                    <input class="form-control" name="shomareh2" value="@(Model.arzyzbi8_edit != null ? Model.arzyzbi8_edit.shomareh2 : "")" />
+
+                }
+                else
+                {
+                    <input class="form-control" name="shomareh2"value="@Model.shomarehheshterak" / />
+
+                }
+            </div>
+
+            <div class="col-xl-6">
+                <label class="form-label">نام و نام خانوادگی مامور قرائت</label>
+                <select class="form-select" id="typegozarwsh11" name="typegozarwsh">
+                    @if (Model.arzyzbi8_edit != null && Model.arzyzbi8_edit.FK_usr != null)
+                    {
+                        <option value="@Model.arzyzbi8_edit.FK_usr" selected>@Model.arzyzbi8_edit.tbUsers.FullName</option>
+                    }
+                    else
+                    {
+                        <option value="0">انتخاب کنید</option>
+                    }
+                    @foreach (var it in db.tbUsers.Where(s=>s.usr_City_Dutysystem==Model.cityusr).ToList())
+                    {
+                        <option value="@it.usr_ID">@it.FullName</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xl-4">
+                <label class="form-label">منطقه:</label>
+                @if (Model.arzyzbi8_edit != null && Model.arzyzbi8_edit.mantagheh != null)
+                {
+                    <input class="form-control" name="mantegheh" value="@Model.arzyzbi8_edit.mantagheh " />
+
+                }
+                else
+                {
+                    <input class="form-control" name="mantegheh" />
+
+                }
+            </div>
+            <div class="col-xl-6">
+                <label class="form-label">روز کار:</label>
+                @if (Model.arzyzbi8_edit != null && Model.arzyzbi8_edit.rozkar != null)
+                {
+                    <input class="form-control" name="rozkar" value="@Model.arzyzbi8_edit.rozkar" />
+
+                }
+                else
+                {
+                    <input class="form-control" name="rozkar" />
+
+                }
+            </div>
+        </div>
+
+        <!-- درب بسته -->
+        <input type="checkbox" id="open" name="open" @(Model.arzyzbi8_edit != null && Model.arzyzbi8_edit.vaziat == 1 ? "checked" : "") />
+        <label for="open">درب بسته</label>
+    </div>
+
+    <div id="openSection" class="section">
+        <!-- گزارش‌ها -->
+        @for (int i = 0; i < reportLabels.Count; i++)
+        {
+            var prop = typeof(SaabWebProject.Models.DomainModels.arzyzbi8_edit).GetProperty("vazsoal" + (i + 1));
+            int? savedValue = null;
+            if (Model.arzyzbi8_edit != null && prop != null)
+            {
+                var val = prop.GetValue(Model.arzyzbi8_edit);
+                if (val != null)
+                {
+                    savedValue = Convert.ToInt32(val);
+
+                }
+            }
+            if ((Model.arzyzbi8_edit != null && Model.arzyzbi8_edit.vaziat == 1))
+            {
+                <div class="report-item">
+                    <strong>@reportLabels[i] :</strong> <div class="report-options">
+                        @for (int j = 0; j < reportOptions.Count; j++)
+                        {
+                            var val = j + 1;<span class="checkbox-item"> <input type="radio" id="label@(i+1)-check@(j+1)" name="Label@(i+1)" class="form-check-input report-question" value="@reportOptions[j]" @(savedValue == val ? "checked" : "") @(i < 3 && savedValue != null ? "" : "") /> <label for="label@(i+1)-check@(j+1)" class="form-check-label">@reportOptions[j]</label> </span>}
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="report-item">
+                    <strong>@reportLabels[i] :</strong>
+                    <div class="report-options">
+                        @for (int j = 0; j < reportOptions.Count; j++)
+                        {
+                            var val = j + 1;
+                            <span class="checkbox-item">
+                                <input type="radio"
+                                       id="label@(i+1)-check@(j+1)"
+                                       name="Label@(i+1)"
+                                       class="form-check-input report-question"
+                                       value="@reportOptions[j]"
+                                       @(savedValue == val ? "checked" : "")
+                                       @(i < 3 ? "disabled" : "") />  <!-- اینجا -->
+                                <label for="label@(i+1)-check@(j+1)" class="form-check-label">@reportOptions[j]</label>
+                            </span>
+                        }
+                    </div>
+                </div>
+            }
+        }
+
+        @if (Model.arzyzbi8_edit != null && Model.arzyzbi8_edit.edittelephon != null)
+        {
+            <div class="section">
+                <input type="checkbox" id="mobileCheck" @(Model != null && Model.arzyzbi8_edit.edittelephon > 0 ? "checked" : "") />
+                <label for="mobileCheck">اصلاح شماره همراه</label>
+                <input type="text" id="mobileInput" name="edittelephon"
+                       class="form-control @(Model.arzyzbi8_edit != null && Model.arzyzbi8_edit.edittelephon > 0 ? "" : "hidden")"
+                       value="@Model.arzyzbi8_edit.edittelephon" placeholder="شماره همراه را وارد کنید" />
+            </div>
+        }
+        else
+        {
+            <div class="section">
+                <input type="checkbox" id="mobileCheck" />
+                <label for="mobileCheck">اصلاح شماره همراه</label>
+                <input type="text" id="mobileInput" name="edittelephon"
+                       class="form-control hidden"
+                       placeholder="شماره همراه را وارد کنید" />
+            </div>
+        }
+        @if (Model.arzyzbi8_edit != null && Model.arzyzbi8_edit.kilovat != null)
+        {
+            <div class="section">
+                <input type="checkbox" id="amountCheck" @(Model.arzyzbi8_edit != null && Model.arzyzbi8_edit.kilovat > 0 ? "checked" : "") />
+                <label for="amountCheck">درخواست اصلاح صورت حساب</label>
+
+                <select id="amountSelect" name="kilovat"
+                        class="form-select @(Model.arzyzbi8_edit != null && Model.arzyzbi8_edit.kilovat > 0 ? "" : "hidden")"
+                        @(Model != null && Model.arzyzbi8_edit.kilovat > 0 ? "" : "disabled")>
+                    <option value="">انتخاب کنید</option>
+                    <option value="1" @(Model.arzyzbi8_edit != null && Model.arzyzbi8_edit.kilovat == 1 ? "selected" : "")>مصرف کم باری</option>
+                    <option value="2" @(Model.arzyzbi8_edit != null && Model.arzyzbi8_edit.kilovat == 2 ? "selected" : "")>مصرف میان باری</option>
+                    <option value="3" @(Model.arzyzbi8_edit != null && Model.arzyzbi8_edit.kilovat == 3 ? "selected" : "")>مصرف پیک</option>
+                    <option value="4" @(Model.arzyzbi8_edit != null && Model.arzyzbi8_edit.kilovat == 4 ? "selected" : "")>مصرف جمعه</option>
+                    <option value="5" @(Model.arzyzbi8_edit != null && Model.arzyzbi8_edit.kilovat == 5 ? "selected" : "")>سایر</option>
+                </select>
+
+                @*<input type="number" id="amountInput" name="mablagh4kilovat"
+        class="form-control @(Model.arzyzbi8_edit != null && Model.arzyzbi8_edit.kilovat > 0 ? "" : "hidden")"
+        value="@(Model.arzyzbi8_edit != null ? Model.arzyzbi8_edit.mablagh4kilovat.ToString() : "")"
+        placeholder="مبلغ را وارد کنید"
+
+        @(Model.arzyzbi8_edit != null && Model.arzyzbi8_edit.kilovat > 0 ? "" : "disabled") />*@
+
+                <input type="text" id="amountInput" name="mablagh4kilovat"
+                       class="form-control @(Model.arzyzbi8_edit != null && Model.arzyzbi8_edit.kilovat > 0 ? "" : "hidden")"
+                       value="@(Model.arzyzbi8_edit?.mablagh4kilovat?.ToString("N0") ?? "")"
+                       placeholder="مبلغ را وارد کنید"
+                       @(Model.arzyzbi8_edit != null && Model.arzyzbi8_edit.kilovat > 0 ? "" : "disabled") />
+            </div>
+        }
+        else
+        {
+            <div class="section">
+                <input type="checkbox" id="amountCheck" />
+                <label for="amountCheck">درخواست اصلاح صورت حساب</label>
+
+                <select id="amountSelect" name="kilovat"
+                        class="form-select hidden">
+                    <option value="">انتخاب کنید</option>
+                    <option value="1">مصرف کم باری</option>
+                    <option value="2">مصرف میان باری</option>
+                    <option value="3">مصرف پیک</option>
+                    <option value="4">مصرف جمعه</option>
+                    <option value="5">سایر</option>
+                </select>
+
+                <input type="text" id="amountInput" name="mablagh4kilovat"
+                       class="form-control hidden"
+                       placeholder="مبلغ را وارد کنید"
+                       disabled />
+            </div>
+        }
+
+        <!-- اصلاح صورت حساب -->
+
+
+        <div class="section">
+            <label>کد مانع</label>
+            @if (Model.arzyzbi8_edit != null && Model.arzyzbi8_edit.codmaneh != null)
+            {
+                <input type="number" id="codmaneg" name="codmaneg" class="form-control" value="@Model.arzyzbi8_edit.codmaneh" />
+
+            }
+            else
+            {
+                <input type="number" id="codmaneg" name="codmaneg" class="form-control" />
+
+            }
+        </div>
+
+        <div class="section">
+            <label>مبلغ وصولی</label>
+            @if (Model.arzyzbi8_edit != null && Model.arzyzbi8_edit.mablagh_vosoli != null)
+            {
+                @*<input type="number" id="mablaghvosaol" name="mablaghvosaol" class="form-control" value="@Model.arzyzbi8_edit.mablagh_vosoli" />*@
+                <input type="text" id="mablaghvosaol" name="mablaghvosaol" class="form-control"
+                       value="@(Model.arzyzbi8_edit?.mablagh_vosoli?.ToString("N0") ?? "")" />
+
+            }
+            else
+            {
+                <input type="text" id="mablaghvosaol" name="mablaghvosaol" class="form-control" />
+
+            }
+            @*<input type="number" id="mablaghvosaol" name="mablaghvosaol" class="form-control" value="@(Model != null ? Model.mablagh_vosoli.ToString() : "")" />*@
+        </div>
+
+        <div class="section">
+            <input type="checkbox" id="closed2" name="vaziat" @(Model.arzyzbi8_edit != null && Model.arzyzbi8_edit.vaziat == 1 ? "checked" : "") />
+            <label for="closed2">صحت جدول زمان بندی</label>
+        </div>
+    </div>
+</form>
+
+<div class="text-center mt-3">
+    <button type="button" id="btnSave" class="btn"
+            style="background: linear-gradient(129deg, rgba(29,29,27,1) 0%, rgba(29,113,184,1) 53%, rgba(54,169,225,1) 100%)">
+        ذخیره
+    </button>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script>
+    function formatNumberInput(input) {
+        let value = input.value.replace(/,/g, ""); // حذف ویرگول‌ها
+        if (!isNaN(value) && value !== "") {
+            input.value = Number(value).toLocaleString("en-US"); // فرمت سه رقم سه رقم
+        }
+    }
+
+    // اعمال روی دو فیلد
+    $("#mablaghvosaol, #amountInput").on("input", function () {
+        formatNumberInput(this);
+    });
+    $("#btnSave").click(function () {
+        $("#mablaghvosaol, #amountInput").each(function () {
+            this.value = this.value.replace(/,/g, "");
+        });
+        var formData = $("#checklistForm").serialize();
+        $("#loading-circle .loadingText1").text("لطفا منتظر نمایش اطلاعات بمانید ...");
+        $("#loading-circle").css("display", "flex");
+        $.ajax({
+            type: "POST",
+            url: "/Setting/Orders/SaveCheckList",
+            data: formData,
+            success: function (res) {
+                if (res.success) {
+                    document.getElementById("loading-message").style.display = "none";
+                    $("#loading-circle").css("display", "none")
+                    alert(res.message);
+                    location.reload();
+                } else {
+                    alert("خطا: " + res.message);
+                }
+            }
+        });
+    });
+    $("#open").on("change", function () {
+        toggleReportQuestions2(this.checked);
+    });
+
+    $("#amountCheck").on("change", function () {
+        toggleKilovat(this.checked);
+    });
+    function toggleKilovat(enable) {
+        $("#amountSelect, #amountInput").prop("disabled", !enable);
+        $("#amountSelect").toggleClass("hidden", !enable);
+        if (!enable) {
+            $("#amountInput").addClass("hidden").val("");
+            $("#amountSelect").val("");
+        } else {
+            $("#amountInput").removeClass("hidden");
+        }
+    }
+    function toggleReportQuestions2(enable) {
+        $(".report-item").each(function (index) {
+            if (index < 3) {
+                $(this).find("input[type=radio]").prop("disabled", !enable);
+            }
+        });
+    }
+    $("#mobileCheck").on("change", function () {
+        $("#mobileInput").toggleClass("hidden", !this.checked);
+    });
+    $(".report-item").each(function (index) {
+        if (index < 3) {
+            $(this).find("input[type=radio]").prop("disabled", !enable);
+        }
+    });
+    var openChecked = $("#open").is(":checked"); // true یا false
+    toggleReportQuestions(openChecked);
+    $(document).ready(function () {
+
+        // پلاگین سرچ
+        $("#typegozarwsh11").picker({ search: true });
+
+        // وضعیت اولیه درب بسته
+        //var openChecked = $("#open").is(":checked");
+        //toggleReportQuestions(openChecked);
+
+        //$("#open").on("change", function () {
+        //    toggleReportQuestions(this.checked);
+        //});
+
+        // وضعیت اولیه موبایل
+        var hasMobile = @(Model.arzyzbi8_edit != null && Model.arzyzbi8_edit.edittelephon > 0 ? "true" : "false");
+        hasMobile = hasMobile === "true";
+
+        if (hasMobile) {
+            $("#mobileCheck").prop("checked", true);
+            $("#mobileInput").removeClass("hidden");
+        } else {
+            $("#mobileCheck").prop("checked", false);
+            $("#mobileInput").addClass("hidden");
+        }
+
+
+
+        // وضعیت اولیه اصلاح صورت حساب
+        var amountChecked = $("#amountCheck").is(":checked");
+        toggleKilovat(amountChecked);
+
+        $("#amountCheck").on("change", function () {
+            toggleKilovat(this.checked);
+        });
+        var openChecked = $("#open").is(":checked"); // true یا false
+        toggleReportQuestions(openChecked); // فعال/غیرفعال کردن سه سوال
+
+        // وقتی کاربر چک‌باکس را تغییر داد
+        $("#open").on("change", function () {
+            toggleReportQuestions(this.checked);
+        });
+
+        function toggleReportQuestions(enable) {
+            $(".report-item").each(function (index) {
+                if (index < 3) {
+                    $(this).find("input[type=radio]").prop("disabled", !enable);
+                }
+            });
+        }
+        function toggleKilovat(enable) {
+            $("#amountSelect, #amountInput").prop("disabled", !enable);
+            $("#amountSelect").toggleClass("hidden", !enable);
+            if (!enable) {
+                $("#amountInput").addClass("hidden").val("");
+                $("#amountSelect").val("");
+            } else {
+                $("#amountInput").removeClass("hidden");
+            }
+        }
+
+    });
+    $(document).ready(function () {
+
+        // وضعیت اولیه درب بسته
+
+    });
+    document.getElementById("amountCheck").addEventListener("change", function () {
+        document.getElementById("amountInput").classList.toggle("hidden", !this.checked);
+    });
+    document.getElementById("amountCheck").addEventListener("change", function () {
+        document.getElementById("amountSelect").classList.toggle("hidden", !this.checked);
+        // وقتی چک‌باکس غیر فعال شد، ورودی مبلغ رو هم مخفی کنیم
+        if (!this.checked) {
+            document.getElementById("amountInput").classList.add("hidden");
+            document.getElementById("amountSelect").value = "";
+        }
+    });
+
+</script>

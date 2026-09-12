@@ -1,0 +1,788 @@
+﻿
+@using SaabWebProject.Models.DomainModels;
+@using System.Globalization;
+
+@{
+    ViewBag.Title = "تعریف فعالیت";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    SaabEntities db = new SaabEntities();
+
+}
+
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+
+<script src="~/Assets/js/jalalidatepicker.min.js"></script>
+<link href="~/Assets/css/jalalidatepicker.min.css" rel="stylesheet" />
+<script src="~/Assets/js/jalaali.min.js"></script>
+<link href="~/MyStyles/jalalidatepicker.css" rel="stylesheet" />
+
+<link href="~/MyStyles/MyStyle.css" rel="stylesheet" />
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+<style>
+    .tableH_Lock {
+        max-height: 260px;
+    }
+
+    thead {
+        position: sticky;
+        top: 0;
+        text-align: center;
+        z-index: 2;
+    }
+</style>
+<style>
+    .modal-lg, .modal-xl {
+        margin-top: 8px !important;
+        max-width: 80% !important;
+    }
+
+    #dateDisplay {
+        float: left;
+    }
+
+    h5 {
+        margin-bottom: 0;
+    }
+
+    tr .VecGeneral {
+        margin-left: 19px;
+    }
+
+    tr .form-select, tr .form-control, tr .form-check-input {
+        margin-bottom: 0 !important
+    }
+
+    .main-table {
+        cursor: pointer;
+    }
+</style>
+<div class="tab-content">
+
+
+    <div class="row p-2">
+        <div class="col-xl-8">
+            <h5>تعریف فعالیت</h5>
+        </div>
+        <div class="col-xl-4">
+            <h5 id="dateDisplay"></h5>
+        </div>
+    </div>
+    <hr />
+    <div class="row" style="margin-top:8px">
+
+        <div class="col-xl-4">
+            <label class="form-label">عنوان اصلی </label>
+            <input class="form-control" id="sharhasli" />
+        </div>
+        <div class="col-xl-2">
+            <label class="form-label">  زمان اخطار</label>
+            <input class="form-control" id="shomar" />
+        </div>
+        <div class="col-xl-2">
+            <label class="form-label">   فاصله زمان اخطار</label>
+            <input class="form-control" id="endfalse" />
+        </div>
+        <div class="col-xl-2">
+            <label class="form-label">   تاریخ</label>
+            <input class="form-control" id="endfalse33" disabled />
+        </div>
+        <div class="col-xl-2">
+            <label class="form-label"> درجه اهمیت </label>
+            <select class="form-select my_Select" id="import">
+                <option value="0">انتخاب کنید..</option>
+                <option value="1">مهم </option>
+                <option value="2">عادی </option>
+                <option value="3">بسیار مهم </option>
+
+            </select>
+        </div>
+        <div class="col-xl-6">
+            <label class="form-label">  شرح  </label>
+            <textarea class="form-control" id="Title2" ></textarea>
+        </div>
+
+        <div class="col-xl-2" style="display:none">
+            <label class="form-label"> تاریخ </label>
+            <div class="col-xl-12">
+                @*------------------------------------------------[1402/10/14]-|KH|-*@
+                <input data-jdp jdp-btn-close data-jdp-miladi-input="datepickerFromEn_Eq12" id="datepickerFrom_Eq12" class="form-control">
+                <input id="datepickerFromEn_Eq12" type="hidden" />
+                @*-------------------------------------------------------------|KH|-*@
+            </div>
+        </div>
+    </div>
+    <hr />
+    <div class="card p-2">
+        <div class="table-responsive tableH_Lock">
+            <table id="SectionInstallmentInputs" class="main-table table table-hover" style="text-align:center;">
+                <thead>
+                    <tr>
+                        <th> شرح </th>
+                        <th> کاربران </th>
+                        <th> تاریخ</th>
+                        <th>  زمان اجرا (ساعت) </th>
+                        <th>امکان انجام کار توسط کاربر </th>
+                        <th> در آن روز </th>
+                        <th>محاسبه روزهای تعطیل </th>
+                        <th>-</th>
+
+                    </tr>
+                </thead>
+                <tbody id="recipeTableBody">
+                </tbody>
+            </table>
+        </div>
+            <div class="card-arrow">
+                <div class="card-arrow-top-left"></div>
+                <div class="card-arrow-top-right"></div>
+                <div class="card-arrow-bottom-left"></div>
+                <div class="card-arrow-bottom-right"></div>
+            </div>
+        </div>
+        <div class="row" style="margin-top:8px">
+            @*<div class="col-xl-3">
+                <a href="#" class="btn btn-outline-info form-control" id="Show_Etebar">
+                    <i class="fa fa-eye"></i>
+                    مشاهده اعتبار ردیف ها
+                </a>
+            </div>
+            <div class="col-xl-2">
+                <a href="#" class="btn btn-outline-info form-control">
+                    <i class="bi bi-download"></i>
+                    دانلود فایل نمونه
+                </a>
+
+            </div>
+            <div class="col-xl-2">
+                <a href="#" class="btn btn-outline-info form-control">
+                    <i class="bi bi-upload"></i>
+                    بارگذاری اطلاعات
+                </a>
+
+            </div
+                >*@
+
+            <div class="col-xl-1">
+                <div class="form-group mb-3">
+                    <button id="btnPlusInput" onclick="plusInputInstallmentManually(this)" class="btn form-control buttonGeneralPlus">
+                        <i class="fa fa-plus fa-fw me-1  VecGeneral"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="col-xl-11"></div>
+
+        </div>
+
+
+        <div class="row">
+            <div class="col-xl-9"></div>
+            <div class="col-xl-1">
+                <button class="btn form-control buttonGeneral uploadSummery2">
+                    <i class="bi bi-upload fa-fw me-1 VecGeneral" style="width:11px"></i>
+                    <span class="bGeneral-text">بارگذاری پیوست</span>
+                </button>
+                <input id="summery_file2" style="display: none;" type="file" class="form-control" value="" />
+            </div>
+            <div class="col-xl-1">
+                <button class="btn form-control buttonsabt" id="submitAllBtn">
+                    <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                    <span class="bSabt-text">پردازش</span>
+                </button>
+            </div>
+
+            <div class="col-xl-1">
+                <button class="btn form-control buttonsabt" id="btnCreate3">
+                    <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                    <span class="bSabt-text">ثبت</span>
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="~/Scripts/jquery-ui.js"></script>
+    <script src="~/Assets/js/jquery3.6.0.js"></script>
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+    <script src="~/Scripts/Harkat.js"></script>
+    <script src="~/Scripts/jquery-2.2.2.min.js"></script>
+
+
+
+    <script>
+        var options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+        var dateString = new Date().toLocaleDateString('fa-IR-u-nu-latn', options);
+        document.getElementById('dateDisplay').textContent = "تاریخ امروز : " + dateString;
+    </script>
+    <script>
+        jalaliDatepicker.startWatch({
+            time: false,
+            days: ["شنبه", "1شنبه", "2شنبه", "3شنبه", "4شنبه", "5شنبه", "جمعه"],
+            persianDigits: true,
+            autoClose: true,
+            //autocomplete: true,
+            showCloseBtn: true,
+            showEmptyBtn: false,
+            showCloseBtn: true,
+            zIndex: 100000,
+        });
+        function reinitializeDatepickers() {
+            var inputs = document.querySelectorAll("[data-jdp-miladi-input]");
+            console.log(inputs.length);
+
+            for (var i = 0; i < inputs.length; i++) {
+                inputs[i].addEventListener("jdp:change", function (e) {
+                    var miladiInput = document.getElementById(this.getAttribute("data-jdp-miladi-input"));
+                    var date = this.value.replace(' ', '').slice(0, 10).split('/');
+                    date = jalaali.toGregorian(parseInt(date[0]), parseInt(date[1]), parseInt(date[2]));
+
+                    if (!this.value) {
+                        date = "";
+                    } else if (this.value.replace(' ', '').length < 11) {
+                        date = date.gy + '-' + date.gm + '-' + date.gd;
+                    } else {
+                        date = date.gy + '-' + date.gm + '-' + date.gd + ' ' + this.value.replace(' ', '').slice(10, 30);
+                    }
+                    miladiInput.value = date;
+                });
+            }
+        }
+
+        //-----------------------------------------------------------------
+        var inputs = document.querySelectorAll("[data-jdp-miladi-input]");
+        for (var i = 0; i < inputs.length; i++) {
+            console.log(inputs.length);
+
+            inputs[i].addEventListener("jdp:change", function (e) {
+                var miladiInput = document.getElementById(this.getAttribute("data-jdp-miladi-input"));
+                var date = this.value.replace(' ', '').slice(0, 10).split('/');
+                date = jalaali.toGregorian(parseInt(date[0]), parseInt(date[1]), parseInt(date[2]),)
+                // If it was empty
+                if (!this.value) {
+                    date = "";
+                }
+                // If it was only history
+                else if (this.value.replace(' ', '').length < 11) {
+                    date = date.gy + '-' + date.gm + '-' + date.gd
+                }
+                // If it was the date and time
+                else {
+                    date = date.gy + '-' + date.gm + '-' + date.gd + ' ' + this.value.replace(' ', '').slice(10, 30)
+                }
+                miladiInput.value = date
+            });
+        }
+    </script>
+    <script>
+        var fd = new FormData();
+
+        $(".uploadSummery2").click(function () {
+            $("#summery_file2").click();
+        });
+
+        $("#summery_file2").change(function (e) {
+            $.each(e.target.files, function (index, file) {
+                fd.append("files", file);
+            });
+        });
+    </script>
+    <script>
+    </script>
+    <script>
+
+    jalaliDatepicker.startWatch({
+        time: true,
+        persianDigits: true,
+        autoClose: true,
+        autocomplete: true,
+        showCloseBtn: true,
+        showEmptyBtn: false,
+        showCloseBtn: true,
+        zIndex: 100000,
+    });
+
+    var nodesLength = 0; // Declare outside the function to maintain its value
+
+
+    function plusInputInstallmentManually(e) {
+        var a = 1;
+        nodesLength++;
+        a++;
+
+
+        $("#SectionInstallmentInputs tbody").append(`
+           <tr id="row_${nodesLength}" class="drag-handler">
+                <td >
+                   <textarea class="form-control " style="height: 34px;" id="bedehkar3_${nodesLength}"></textarea>
+                </td>
+                <td >
+                   <select class="form-select installmentAmountInputManually" id="creditline_${nodesLength}">
+                    <option>انتخاب کنید</option>
+                    @Html.Action("usrtbpersin", "Users", new { area = "Users" })
+                   </select>
+                </td>
+                <td >
+                     <input data-jdp jdp-btn-close data-jdp-miladi-input="datepickerFromEn_Eq12" id="datepickerFromEn_Eq12323_${nodesLength}" class="form-control">
+                     <input id="datepickerFromEn_Eq12323_${nodesLength}" type="hidden" />
+                </td>
+                <td >
+                     <input class="form-control installmentAmountInputManually3" type="text" data-jdp="" data-jdp-only-time="" id="bestankar_${nodesLength}" />
+                </td>
+                <td >
+                     <input class="form-control installmentAmountInputManually2" /*oninput="formatCurrency(this)" */id="bedehkar_${nodesLength}" disabled />
+                </td>
+                <td >
+                     <input class="form-check-input custom-control-input" type="checkbox" value="در آن روز" id="checkbox_${nodesLength}">
+                </td>
+                <td>
+                    <input class="form-check-input custom-control-input" type="checkbox" value="در آن روز" id="checkbox2_${nodesLength}">
+                </td>
+                <td >
+                   <button type="button"  class="close btn form-control buttonGeneralMins" aria-label="Close" onclick="removeRow('row_${nodesLength}')">
+                   <i class="fa fa-multiply fa-fw VecGeneral" ></i>
+                   </button>
+                 </td>
+        </tr>
+
+       `);
+        reinitializeDatepickers();
+        $('#creditline_' + nodesLength).picker({ search: true });
+    }
+
+
+
+    $(document).ready(function () {
+        var $tableBody = $('#recipeTableBody');
+
+        Sortable.create(
+            $tableBody[0],
+            {
+                animation: 100,
+                scroll: true,
+                handle: '.drag-handler',
+                onEnd: function () {
+                }
+            }
+        );
+    });
+
+
+
+
+
+    $(".deleteBtn[data-row-id='" + nodesLength + "']").on("click", function () {
+        var rowId = $(this).data("row-id");
+        nodesLength--;
+        // Remove the entire row with the corresponding ID
+        $("#row_" + rowId).remove();
+    });
+    function removeRow(rowId) {
+        // Find the row element with the given ID
+        var row = document.getElementById(rowId);
+
+        // Check if the row exists
+        if (row) {
+            // Remove the row
+            row.remove();
+            nodesLength--;
+        } else {
+            console.error("Row with ID " + rowId + " does not exist.");
+        }
+    }
+    $(document).on('click', '.buttonGeneralMins222', function () {
+    var rowId = $(this).closest('.row').attr('id');
+    var nodesLength = rowId.split('_')[1]; // Extract nodesLength from the row ID
+    var val = $('#bestankar_' + nodesLength).val();
+     var val2 = $('#datepickerFromEn_Eq12323_' + nodesLength).val();
+     var val3 = $('#creditline_' + nodesLength).val();
+     var val4 = $('#bestankar_' + nodesLength).val();
+        var val5 = $('#bedehkar3_' + nodesLength).val();
+
+    // Prepare FormData
+    var fd2 = new FormData();
+     fd2.append("DataDocument", val2);
+     fd2.append("creditline", val3);
+     fd2.append("EndTime2", val4);
+        fd2.append("title", val5);
+
+    // Add more data to fd2 as needed
+     console.log($("#datepickerFromEn_Eq12").val());
+     console.log(val4);
+     console.log(val3);
+
+    $.ajax({
+        url: '@Url.Action("Testpardas", "FinancialDocuments", new { area = "ManagementAccounting" })',
+        type: 'POST',
+        data: fd2,
+        processData: false,
+        contentType: false,
+        success: function (resp1) {
+            console.log("okeye");
+            console.log(resp1);
+            $("#loading-message").css("display", "none");
+
+            if (resp1 === "3") {
+                // Set the "بدهکار" input value to 1
+                $('#bedehkar_' + nodesLength).val('تعطیل ');
+            }
+            else if (resp1 === "4") {
+                // Set the "بدهکار" input value to 1
+                $('#bedehkar_' + nodesLength).val('مرخصس ');
+            }
+            else if (resp1 === "4") {
+                // Set the "بدهکار" input value to 1
+                $('#bedehkar_' + nodesLength).val('مرخصس ');
+            }
+            else if (resp1 === "0") {
+                $('#bedehkar_' + nodesLength).val('بلی');
+            }
+
+
+            else if (resp1 === "True") {
+                alert("با موفقیت ثبت شد");
+                location.reload();
+            } else {
+                $('#bedehkar_' + nodesLength).val(resp1);
+
+            }
+        },
+        error: function (resp1) {
+            console.log(resp1);
+            console.log("Nokeye");
+            $("#loading-message").css("display", "none");
+            Toast.fire({
+                icon: 'error',
+                background: '#35434A',
+                color: 'white',
+                title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+            });
+        }
+    });
+    });
+
+
+
+
+
+    let fii = 0;
+
+$('#submitAllBtn').click(async function () {
+    // درخواست AJAX برای دریافت مقدار fii
+    try {
+        const fiiResponse = await $.ajax({
+            url: '@Url.Action("GetMaxTarif", "FinancialDocuments", new { area = "ManagementAccounting" })',
+            type: 'GET',
+            dataType: 'json'
+        });
+        fii = fiiResponse.fii;
+    } catch (err) {
+        console.error("Error fetching max tarif (fii):", err);
+        alert("خطا در دریافت مقدار 'fii'.");
+        return;
+    }
+
+    // Loop through each installment amount input manually
+    for (let element of $('.installmentAmountInputManually')) {
+        let rowId = $(element).attr('id').split('_')[1]; // Extract nodesLength from the id
+
+        // Collecting values for each row
+        var val1 = $('#bestankar_' + rowId).val(); // Time
+        var val2 = $('#datepickerFromEn_Eq12323_' + rowId).val(); // Date
+        var val3 = $('#creditline_' + rowId).val(); // User
+        var val4 = $('#bedehkar_' + rowId).val(); // Can or Not
+        var val5 = $('#bedehkar3_' + rowId).val(); // Title
+        var IsVisible = $('#checkbox_' + rowId).is(":checked"); // Correct ID for checkbox
+        var IsVisible2 = $('#checkbox2_' + rowId).is(":checked"); // Correct ID for checkbox
+
+        console.log(val2);
+        console.log(val3);
+        console.log(val4);
+        console.log(val5);
+        console.log(val1);
+        console.log(IsVisible); // To check the value of IsVisible
+
+        if (val1 && val2 && val3 && val5) {
+            // Create an object with the gathered data
+            var rowData = {
+                "DataDocument": val2,
+                "creditline": val3,
+                "EndTime2": val1,
+                "title": val5,
+                "tar": fii // استفاده از fii که از سرور دریافت شد
+            };
+
+            var fd2 = new FormData();
+            fd2.append("DataDocument", val2);
+            fd2.append("creditline", val3);
+            fd2.append("EndTime2", val1);
+            fd2.append("title", val5);
+            fd2.append("tar", fii);
+            fd2.append("IsVisible", IsVisible);
+            fd2.append("IsVisible2", IsVisible2);
+
+            // ارسال اطلاعات با AJAX
+            try {
+                const resp = await $.ajax({
+                    url: '@Url.Action("Testpardas", "FinancialDocuments", new { area = "ManagementAccounting" })',
+                    type: 'POST',
+                    data: fd2,
+                    processData: false,
+                    contentType: false,
+                });
+
+                console.log("Row " + rowId + " submitted successfully");
+                console.log(resp);
+
+                // Assuming the server sends back 'resp1' in the response
+                var resp1 = resp.resp1 || resp; // Use resp1 if it exists, otherwise use the whole response
+                console.log($("#endfalse33").val());
+                console.log(val2);
+
+                if (val2 > $("#endfalse33").val()) {
+                    console.log(val2);
+                    $('#endfalse33').val(val2);
+                }
+                if (resp1 === "3") {
+
+                    $('#bedehkar_' + rowId).val('تعطیل ');
+                }
+                else if (resp1 === "4") {
+
+                    $('#bedehkar_' + rowId).val('مرخصی ');
+                }
+                else if (resp1 === "0") {
+
+                    $('#bedehkar_' + rowId).val('بلی');
+                }
+                else if (resp1 === "True") {
+
+                    alert("با موفقیت ثبت شد");
+                    location.reload();
+                } else {
+                    $('#bedehkar_' + rowId).val(resp1);
+                }
+            } catch (err) {
+                console.error("Error in row submission for row " + rowId);
+                console.log(err);
+                $('#bedehkar_' + rowId).val('خطا در ارسال');
+            }
+        } else {
+            alert("لطفاً تمام فیلدها را برای ردیف " + rowId + " پر کنید.");
+        }
+    }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    $("#sabt").click(function () {
+                var Filters  = [];
+
+
+           console.log("djkjsdkl");
+
+
+           $('.installmentAmountInputManually').each(function (i, obj) {
+               console.log("djkjsdkl");
+               let count = 0;
+
+               if ($(this).attr("id").split("_").length == 2) {
+                   var obj = new Object();
+
+                   count++;
+                   console.log($(this).attr("id"));
+
+                   //console.log($("#select_peyman1").val());
+                   //console.log($("#miladi_date2").val());
+                   console.log(count);
+                   var parts = $(this).attr("id").split("_"); // Corrected line                    var inputString = $(this).val();
+
+                   //var parts = id.split("_");
+
+                   obj.User_ID = $(this).val();
+                   obj.Peyman_ID = null;
+                   //obj.Creditorcredit = $("#bestankar").val();
+                   //obj.Debtorcredit = $("#bedehkar").val();
+                   var Year_id2 = "datepickerFromEn_usr_" + parts[1];
+
+                   var Year_id3 = "creditline2_" + parts[1];
+                   var Year_id4 = "bedehkar3_" + parts[1];
+                   var Year_id7 = "number1_" + parts[1];
+                   obj.numberpayvas = $("#" + Year_id7).val();
+           /*        obj.Creditlamdicatros_ID = $("#" + Year_id3).val()*/;
+                   obj.DataDocument = $("#" + Year_id2).val();
+                   //obj.Endtime = $("#miladi_date2").val();
+                   var id = $(this).attr("id");
+
+                   //var inputString = $(this).val();
+
+                   //console.log(parts);
+                   //console.log("kjkjkjkljkljk555555555555j");
+                   //var resultString = inputString.replace(/,/g, '');
+                   console.log($(this).val());
+                   var Year_id = "bestankar_" + parts[1];
+
+                   var Monthid = "bedehkar_" + parts[1];
+                   console.log(Year_id);
+                   console.log($("#" + Monthid).val());
+                   var inputString = $("#" + Monthid).val();
+                   //var resultString = inputString.replace(/,/g, '');
+                   var inputString2 = $("#" + Year_id).val();
+                   //var resultString2 = inputString2.replace(/,/g, '');
+                   obj.Debtore = inputString;
+                   obj.Creditor = inputString2;
+                   obj.Title = $("#" + Year_id4).val();
+
+                   console.log(obj.Creditorcredit);
+
+                   Filters.push(obj);
+
+
+               }
+           });
+
+
+
+
+
+
+           sendAjax('@Url.Action("creat", "FinancialDocuments", new { area = "ManagementAccounting" })', Filters);
+
+
+
+         ;
+
+    });
+
+
+         $("#btnCreate3").click(function () {
+    console.log($("#datepickerFromEn_Eq12").val());
+    sendAjax3('@Url.Action("creatforamaliat", "FinancialDocuments",new { area = "ManagementAccounting" })', fd);
+});
+
+function sendAjax3(url2, fd2) {
+    fd2.append("Title", $("#Title2").val());
+    fd2.append("sharhasli", $("#sharhasli").val());
+    fd2.append("endfalse", $("#endfalse").val());
+    fd2.append("numberpayvas", $("#shomar").val());
+    fd2.append("DataDocument", $("#endfalse33").val());
+    fd2.append("import", $("#import").val());
+
+    console.log($("#endfalse33").val());
+
+    $.ajax({
+        url: url2,
+        type: 'POST',
+        data: fd2,
+        processData: false,
+        contentType: false,
+        success: function (resp1) {
+            console.log("okeye");
+            console.log(resp1);
+            $("#loading-message").css("display", "none");
+            fd = new FormData();
+            var Filters = [];
+
+            console.log("djkjsdkl");
+
+            $('.installmentAmountInputManually').each(function (i, obj) {
+                console.log("djkjsdkl");
+                let count = 0;
+
+                if ($(this).attr("id").split("_").length == 2) {
+                    var obj = new Object();
+                    count++;
+                    console.log($(this).attr("id"));
+
+                    var parts = $(this).attr("id").split("_");
+                    obj.FK_Relationperson = $(this).val();
+
+                    var Year_id4 = "bedehkar3_" + parts[1];
+                    var val2 = $('#datepickerFromEn_Eq12323_' + parts[1]).val();
+                    var Monthid = "bedehkar_" + parts[1];
+                    var inputString = $("#" + Monthid).val();
+                    var inputString2 = $("#bestankar_" + parts[1]).val();
+
+                    obj.canornotcan = inputString;
+                    obj.DataDocument = val2;
+                    obj.clocktime2 = inputString2;
+                    obj.Title = $("#" + Year_id4).val();
+                    obj.FK_tbcreatfaal = resp1;
+                    obj.tarif = fii;  // بدون
+
+                    Filters.push(obj);
+                }
+            });
+
+            sendAjax('@Url.Action("creatfktitl", "FinancialDocuments", new { area = "ManagementAccounting" })', Filters);
+        },
+        error: function (resp1) {
+            console.log(resp1);
+            console.log("Nokeye");
+            $("#loading-message").css("display", "none");
+            Toast.fire({
+                icon: 'success',
+                background: '#35434A',
+                color: 'white',
+                title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+            }).then(() => {
+                $("#loading-message").css("display", "none");
+            });
+        }
+    });
+}
+
+   function sendAjax(url, data) {
+           console.log(url);
+
+           $.ajax({
+               beforeSend: function () {
+                   document.getElementById("loading-message").style.display = "block";
+               },
+               url: url,
+               data: { Filters: data },
+               type: "POST",
+               dataType: "html",
+               success: function (resp) {
+                   console.log(resp);
+                   document.getElementById("loading-message").style.display = "none";
+                   if (resp == "True") {
+                       alert("با موفقیت ثبت شد");
+                       location.reload();
+                   }
+
+                   else {
+                       alert("مبلغ های های بستانکارهای شما بیش از حد مجاز در قرار داد است ")
+                   }
+               },
+               error: function (resp) {
+                   document.getElementById("loading-message").style.display = "none";
+                   alert("دچار مشکل شده است ");
+                   console.log(resp);
+               }
+           });
+       }
+
+    </script>
+

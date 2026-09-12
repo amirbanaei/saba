@@ -1,0 +1,194 @@
+﻿
+@{
+    //ViewBag.Title = "نمایش لاگ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+<script src="~/Assets/js/jquery3.6.0.js"></script>
+<script src="~/Assets/plugins/bootstrapTables/dist/bootstrap-table-locale-all.js"></script>
+<script src="~/Assets/plugins/bootstrapTables/dist/bootstrap-table-locale-all.min.js"></script>
+<script src="~/Assets/plugins/bootstrapTables/dist/bootstrap-table.js"></script>
+<script src="~/Assets/plugins/bootstrapTables/dist/bootstrap-table.min.js"></script>
+<link href="~/Assets/plugins/bootstrapTables/dist/bootstrap-table.css" rel="stylesheet" />
+<link href="~/Assets/plugins/bootstrapTables/dist/bootstrap-table.min.css" rel="stylesheet" />
+<script src="~/Assets/plugins/bootstrapTables/src/extensions/addrbar/bootstrap-table-addrbar.js"></script>
+<style>
+    @@media print {
+
+
+        * {
+            margin-top: 1px !important;
+            margin-bottom: 0px !important;
+            font-size: 10px !important;
+            color: #000000 !important;
+            background-color: #fff !important;
+            /*            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact; */
+        }
+
+        .TableDiv {
+            padding: 6px 10px 6px 10px !important
+        }
+
+        .buttonGeneral, #header, #sidebar, .app-footer, #loading-overlay, .app-theme-panel, #printPageButton, .pace.pace-active {
+            display: none !important;
+        }
+
+
+        td, th {
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            border: 1px solid #000;
+        }
+
+        .modal-body, .card-body {
+            padding: 0 !important;
+        }
+
+        .hiddenC {
+            border: 1px solid #fff;
+        }
+
+        @@page:first {
+            margin-top: -30px;
+        }
+
+        @@page {
+            size: A4 landscape;
+            margin: 30px 20px;
+        }
+    }
+</style>
+<style>
+    table {
+        margin-bottom: 1px !important;
+        width: 100% !important;
+        /*        page-break-before: always;*/
+        page-break-after: always;
+    }
+</style>
+@{
+    int columnsPerTable = 20; // تعداد ستون‌ها در هر جدول
+    int Wt = 100 / (columnsPerTable + 1);
+    // تعریف لیست تاریخ‌ها
+    var dates = new List<string>
+     {
+        "A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8", "A9", "A10",
+        "A11", "A12", "A13", "A14", "A15", "A16", "A17", "A18", "A19", "A20",
+        "A11", "A12", "A13", "A14", "A15", "A16", "A17", "A18", "A19", "A20",
+        "A11", "A12", "A13", "A14", "A15", "A16", "A17", "A18", "A19", "A20",
+        "A11", "A12", "A13", "A14", "A15", "A16", "A17", "A18", "A19", "A20",
+        "A11", "A12", "A13", "A14", "A15", "A16", "A17", "A18", "A19", "A20",
+        "A11", "A12", "A13", "A14", "A15", "A16", "A17", "A18", "A19", "A20",
+        "A11", "A12", "A13", "A14", "A15", "A16", "A17", "A18", "A19", "A20",
+        "A11", "A12", "A13", "A14", "A15", "A16", "A17", "A18", "A19", "A20",
+
+
+    };
+
+    // تعریف لیست ستون‌ها
+    var columns = new List<string>
+     {
+        "A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8", "A9", "A10",
+        "A11", "A12", "A13", "A14", "A15", "A16", "A17", "A18", "A19", "A20",
+        "A21", "A22", "A23", "A24", "A25", "A26", "A27", "A28", "A29", "A30",
+        "A31", "A32", "A33", "A34", "A35", "A36", "A37", "A38", "A39", "A40",
+        "A41", "A42", "A43", "A44", "A45",
+    };
+    if (columns.Count % columnsPerTable != 0)
+    {
+        int ADD = ((columns.Count / columnsPerTable) + 1) * columnsPerTable - ((columns.Count / columnsPerTable) * columnsPerTable + (columns.Count % columnsPerTable));
+        for (int i = 0; i < ADD; i++)
+        {
+            columns.Add("");
+        }
+    }
+
+
+
+    //===============================code01
+    int totalColumns = columns.Count;
+    int numberOfTables = (int)Math.Ceiling((double)totalColumns / columnsPerTable); // محاسبه تعداد جدول‌ها
+
+}
+
+<style>
+    th,td {
+        width: @($"{Wt}%");
+    }
+
+    /*@@media print {
+        #header {
+            display: none !important;
+        }
+
+        @@page {
+            size: landscape;*/ /* تنظیم حالت لندسکیپ */
+            /*margin:30px ;
+        }
+
+
+    }*/
+</style>
+
+<button class="btn form-control buttonGeneral" id="printPageButton" onclick="window.print(); return false;">
+    <i class="fa fa-print fa-fw me-1 VecGeneral"></i>
+    <span class="bGeneral-text">پرینت</span>
+</button>
+<div class="TableDiv">
+    @for (int tableIndex = 0; tableIndex < numberOfTables; tableIndex++)
+    {
+        <table class="TableP" border="1" style="margin-bottom: 20px;" id="my-table_@tableIndex">
+            <thead>
+                <tr>
+                    <th>عنوان</th>
+                    @for (int columnIndex = tableIndex * columnsPerTable; columnIndex < Math.Min((tableIndex + 1) * columnsPerTable, totalColumns); columnIndex++)
+                    {
+                        if (columns[columnIndex] != "")
+                        {
+                            <th>@columns[columnIndex]</th>
+                        }
+                        else
+                        {
+                            <th class="hiddenC">@columns[columnIndex]</th>
+                        }
+
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var date in dates)
+                {
+                    <tr>
+                        <td>@date</td>
+                        @for (int columnIndex = tableIndex * columnsPerTable; columnIndex < Math.Min((tableIndex + 1) * columnsPerTable, totalColumns); columnIndex++)
+                        {
+                            if (columns[columnIndex] != "")
+                            {
+                                <td></td>
+                            }
+                            else
+                            {
+                                <td class="hiddenC"></td>
+                            }
+                        }
+                    </tr>
+                }
+            </tbody>
+            @*<tfoot>
+                    <tr>
+                        <th>عنوان</th>
+                        @for (int columnIndex = tableIndex * columnsPerTable; columnIndex < Math.Min((tableIndex + 1) * columnsPerTable, totalColumns); columnIndex++)
+                        {
+                            <th>@columns[columnIndex]</th>
+                        }
+                    </tr>
+                </tfoot>*@
+        </table>
+    }
+</div>
+
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/js/jquery3.6.0.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+

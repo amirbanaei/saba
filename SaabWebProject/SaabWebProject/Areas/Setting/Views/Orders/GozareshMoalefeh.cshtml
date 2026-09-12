@@ -1,0 +1,237 @@
+﻿@model SaabWebProject.Models.ViewModels.Contracts.Function.FunctionModel
+@using SaabWebProject.Models.DomainModels;
+
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+
+<style>
+    .table th:nth-child(1),
+    .table td:nth-child(1) {
+        position: sticky;
+        right: 0;
+        background-color: #146792;
+        z-index: 10;
+    }
+
+    .table th:nth-child(2),
+    .table td:nth-child(2) {
+        position: sticky;
+        right: 137px;
+        z-index: 10;
+        background-color: #146792;
+    }
+
+    .tableH_Lock1 {
+        max-height: 470px;
+    }
+
+    thead {
+        position: sticky;
+        top: 0;
+        text-align: center;
+        z-index: 2;
+    }
+
+    .inputFilter {
+        margin-bottom: 0px !important;
+    }
+
+    thead th {
+        vertical-align: middle;
+    }
+</style>
+
+@{
+    ViewBag.Title = "گزارش کارها";
+    Layout = null;
+}
+
+<div class="table-responsive tableH_Lock1">
+    <table class="table table-bordered text-nowrap">
+        <thead>
+            <tr>
+                <!-- ستون 1 -->
+                <th>
+                    نام و نام خانوادگی
+                    <div class="inputWithFilterIcon">
+                        <input type="text" id="filter01-filter"
+                               class="inputFilter form-control"
+                               data-filter="filter01" />
+                    </div>
+                </th>
+
+                <!-- ستون 2 -->
+                <th>
+                    کد پرسنلی
+                    <div class="inputWithFilterIcon">
+                        <input type="text" id="filter02-filter"
+                               class="inputFilter form-control"
+                               data-filter="filter02" />
+                    </div>
+                </th>
+
+                <!-- ستون شهرستان -->
+                <th>
+                    شهرستان
+                    <div class="inputWithFilterIcon">
+                        <input type="text" class="inputFilter form-control" data-filter="filter03" />
+                    </div>
+                </th>
+                <th>
+                    شغل
+                    <div class="inputWithFilterIcon">
+                        <input type="text" class="inputFilter form-control " data-filter="filter03" />
+                    </div>
+                </th>
+
+                <!-- ستون معادل -->
+                <th>
+                    معادل
+                    <div class="inputWithFilterIcon">
+                        <input type="text" class="inputFilter form-control dynamic-filter" data-filter="dynMoadel" />
+                    </div>
+                </th>
+
+                <!-- ستون های پویا -->
+                @{
+                    int colIndex = 0;
+                }
+                @foreach (var title in Model.MoalefehTitles)
+                {
+                    <th>
+                        @title
+                        <div class="inputWithFilterIcon">
+                            <input type="text"
+                                   class="inputFilter form-control dynamic-filter"
+                                   data-filter="dyn-@colIndex" />
+                        </div>
+                    </th>
+                    colIndex++;
+                }
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var user in Model.Users)
+            {
+                <tr class="task-list-row"
+                    data-filter01="@user.FullName"
+                    data-filter02="@user.PersonalId"
+                    data-filter03="@user.CityName"
+                            data-filter04="@user.JobName">
+
+                    <td>@user.FullName</td>
+                    <td>@user.PersonalId</td>
+                    <td>@user.CityName</td>
+                                        <td>@user.JobName</td>
+
+                    <td>@(user.Moadel.ToString("0.0000"))</td>
+                    @{
+                        int colIndex2 = 0;
+                    }
+
+                    @foreach (var title in Model.MoalefehTitles)
+                    {
+                        var value = user.Values[title];
+                        <td>@value.ToString("0.0")</td>
+                        colIndex2++;
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script>
+    $(document).ready(function () {
+
+        // =============================
+        // فرمت هزارگان ورودی عددی
+        // =============================
+        function formatThousandsInput(el) {
+            let v = el.value;
+            if (!v) return;
+            let op = "";
+            if (v.startsWith(">=") || v.startsWith("<=")) { op = v.substring(0, 2); v = v.substring(2); }
+            else if (v.startsWith(">") || v.startsWith("<") || v.startsWith("=")) { op = v.substring(0, 1); v = v.substring(1); }
+            v = v.replace(/[^\d]/g, '');
+            if (!v) { el.value = op; return; }
+            v = parseInt(v, 10).toLocaleString('en-US');
+            el.value = op + v;
+        }
+
+        $(document).on('input', '.dynamic-filter', function () { formatThousandsInput(this); });
+
+        // =============================
+        // بررسی شرط عددی
+        // =============================
+        function parseNumberFilter(expr, value) {
+            if (!expr) return true;
+            expr = expr.replace(/,/g, '').trim();
+            let operator = null;
+            if (expr.startsWith(">=")) operator = ">=";
+            else if (expr.startsWith("<=")) operator = "<=";
+            else if (expr.startsWith("!=")) operator = "!=";
+            else if (expr.startsWith(">")) operator = ">";
+            else if (expr.startsWith("<")) operator = "<";
+            else if (expr.startsWith("=")) operator = "=";
+            else operator = "=";
+            let num = parseFloat(expr.replace(/^[<>!=]+/, ''));
+            if (isNaN(num)) return true;
+            value = (value || "0").toString().replace(/,/g, '');
+            value = parseFloat(value) || 0;
+            switch (operator) {
+                case ">=": return value >= num;
+                case "<=": return value <= num;
+                case ">": return value > num;
+                case "<": return value < num;
+                case "=": return value == num;
+                case "!=": return value != num;
+                default: return true;
+            }
+        }
+
+        // =============================
+        // ساخت آبجکت فیلترها
+        // =============================
+        let filters = {};
+        $('[data-filter]').each(function () { filters[$(this).data('filter')] = null; });
+
+        // =============================
+        // تغییر فیلتر
+        // =============================
+        $(document).on('input', '[data-filter]', function () {
+            let key = $(this).data('filter');
+            filters[key] = this.value;
+            updateFilters();
+        });
+
+        // =============================
+        // اعمال فیلتر
+        // =============================
+        function updateFilters() {
+            $('.task-list-row').each(function () {
+                let self = $(this);
+                let result = true;
+                Object.keys(filters).forEach(function (filter) {
+                    let filterValue = filters[filter];
+                    if (!filterValue) return;
+                    // ستون های پویا (عددی)
+                    if (filter.startsWith('dyn-') || filter === "dynMoadel") {
+                        let colIndex = filter.startsWith('dyn-') ? parseInt(filter.split('-')[1]) + 4 : 3;
+                        let cell = self.find('td').eq(colIndex);
+                        let numericValue = cell.text().trim();
+                        result = result && parseNumberFilter(filterValue, numericValue);
+                    }
+                    else { // ستون های متنی
+                        let textValue = self.data(filter);
+                        result = result && textValue && textValue.toString().toLowerCase().indexOf(filterValue.toLowerCase()) !== -1;
+                    }
+                });
+                if (result) self.show();
+                else self.hide();
+            });
+        }
+
+    });
+</script>

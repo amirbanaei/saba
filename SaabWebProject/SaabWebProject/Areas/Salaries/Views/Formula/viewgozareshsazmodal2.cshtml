@@ -1,0 +1,624 @@
+﻿@{
+    ViewBag.Title = "";
+    Layout = null;
+}
+
+<link rel='stylesheet' href='~/Assets/luckysheet/dist/plugins/css/pluginsCss.css' />
+<link rel='stylesheet' href='~/Assets/luckysheet/dist/plugins/plugins.css' />
+<link rel='stylesheet' href='~/Assets/luckysheet/dist/css/luckysheet.css' />
+<link rel='stylesheet' href='~/Assets/luckysheet/dist/assets/iconfont/iconfont.css' />
+<script src="~/Assets/luckysheet/dist/plugins/js/plugin.js"></script>
+<script src="~/Assets/luckysheet/dist/luckysheet.umd.js"></script>
+@*<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>*@
+<script src="~/Assets/luckysheet/dist/plugins/js/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/luckyexcel/dist/luckyexcel.umd.js"></script>
+<style>
+
+    #toolbarLucksheet {
+        display: flex;
+        background: #fff;
+        width: 100%;
+        position: relative;
+        padding: 2px;
+        border-radius: 4px;
+        justify-content: flex-start;
+        flex-direction: row-reverse;
+    }
+
+        #toolbarLucksheet i {
+            font-size: 22px;
+        }
+
+    .buttonLucksheet {
+        width: 35px;
+        height: 35px;
+        position: relative;
+        margin-right: 2px;
+        border-color: #676767;
+    }
+
+    .iconLucksheet {
+        width: 27px !important;
+        height: 27px;
+        position: absolute;
+        top: 2px;
+        left: 3px;
+        color: #4d4d4d;
+    }
+</style>
+<div id="toolbarLucksheet">
+    <button id="btn-insert-file" type="button" class="form-control buttonLucksheet" onclick="ShowDialogFile1()">
+        <i class="bi bi-box-arrow-in-down iconLucksheet"></i>
+
+    </button>
+    <input id="uploadExcel" type="file" style="display:none" />
+    @*<button id="btn-export-file" type="button" class="form-control buttonLucksheet">
+            <i class="bi bi-box-arrow-down  iconLucksheet"></i>
+        </button>*@
+
+    <button id="btn-insert-row" type="button" class="form-control buttonLucksheet">
+        <img class="iconLucksheet" src="~/Assets/luckysheet/dist/iconT/insert-row-5.svg" />
+    </button>
+    <button id="btn-delete-row" type="button" class="form-control buttonLucksheet">
+        <img class="iconLucksheet" src="~/Assets/luckysheet/dist/iconT/delete-row-7.svg" />
+    </button>
+    <button id="btn-insert-column" type="button" class="form-control buttonLucksheet">
+        <img class="iconLucksheet" src="~/Assets/luckysheet/dist/iconT/insert-column-5.svg" />
+    </button>
+    <button id="btn-delete-column" type="button" class="form-control buttonLucksheet">
+        <img class="iconLucksheet" src="~/Assets/luckysheet/dist/iconT/delete-column-6.svg" />
+    </button>
+    <input type="text" id="reportIdInput" placeholder="شناسه گزارش (ReportId)" class="form-control" style="width: 10rem;margin-bottom:0 !important"/>
+    <button id="btn-fill-dynamic" type="button" class="form-control buttonLucksheet">
+        <i class="bi bi-eye iconLucksheet"></i>
+        @*نمایش گزارش پویا*@
+    </button>
+    <button id="btn-export-excel" type="button" class="form-control buttonLucksheet">
+        <i class="bi bi-box-arrow-down iconLucksheet"></i>
+        @*<span class="bGeneral-text">خروجی اکسل</span>*@
+    </button>
+
+</div>
+<div id="luckysheet"></div>
+
+
+
+
+<script src="/Assets/luckysheet/plugins/exportToExcel.js"></script>
+<script>
+    async function exportToPdfFromLuckysheet() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('l', 'mm', 'a4'); // حالت افقی بهتره برای جدول
+
+        for (let sheet of luckysheet.getAllSheets()) {
+            const sheetData = sheet.data;
+            if (!sheetData) continue;
+
+            const headers = [];
+            const rows = [];
+
+            for (let r = 0; r < sheetData.length; r++) {
+                const row = sheetData[r];
+                const rowData = [];
+
+                for (let c = 0; c < row.length; c++) {
+                    const cell = row[c];
+                    rowData.push(cell?.v || '');
+                }
+
+                if (r === 0) {
+                    headers.push(...rowData);
+                } else {
+                    rows.push(rowData);
+                }
+            }
+
+            doc.autoTable({
+                head: [headers],
+                body: rows,
+                styles: { font: 'sans', fontSize: 10 },
+                headStyles: { fillColor: [52, 152, 219] },
+                theme: 'grid',
+                margin: { top: 20 }
+            });
+
+            doc.addPage();
+        }
+
+        doc.save("گزارش-luckysheet.pdf");
+    }
+</script>
+
+<script>
+    let allSheets = [];
+
+    function fetchAndAddSheetDynamic(apiUrl, sheetName) {
+        fetch(apiUrl)
+            .then(res => res.json())
+            .then(pivotData => {
+                if (!pivotData || pivotData.length === 0) {
+                    alert("داده‌ای وجود ندارد.");
+                    return;
+                }
+                console.log(pivotData);
+                // استخراج کلیدهای ستون‌ها از کلیدهای شیء اول
+                const firstRow = pivotData[0];
+                const colNames = Object.keys(firstRow);
+                console.log(firstRow);
+                console.log(colNames);
+
+                if (colNames.length < 2) {
+                    alert("ساختار داده نامعتبر است.");
+                    return;
+                }
+
+                const rowKey = colNames[0]; // کلید ردیف مثل: 'کد پرسنلی'
+                const colKeys = colNames.slice(1); // بقیه کلیدها ستون‌های ماتریس‌اند
+                console.log("rowKey" + rowKey);
+                console.log("colKeys" + colKeys);
+                const rowLabels = pivotData.map(r => r[rowKey]);
+                const uniqueRows = [...new Set(rowLabels)];
+                const uniqueCols = [...new Set(colKeys)];
+                console.log("uniqueRows" + uniqueRows);
+                console.log("uniqueCols" + uniqueCols);
+                console.log("rowLabels" + rowLabels);
+
+
+                const rowCount = uniqueRows.length + 1;
+                const colCount = uniqueCols.length + 1;
+                const data = Array.from({ length: rowCount }, () => Array(colCount).fill(null));
+
+                // عنوان ردیف اول
+                data[0][0] = { v: rowKey };
+
+                // عناوین ستون‌ها
+                for (let c = 0; c < uniqueCols.length; c++) {
+                    data[0][c + 1] = { v: uniqueCols[c] };
+                }
+
+                // مقادیر ردیف‌ها + داده‌ها
+                for (let r = 0; r < uniqueRows.length; r++) {
+                    const rowLabel = uniqueRows[r];
+                    data[r + 1][0] = { v: rowLabel };
+
+                    // پیدا کردن ردیف اصلی
+                    const rowData = pivotData.find(x => x[rowKey] === rowLabel);
+                    if (!rowData) continue;
+
+                    for (let c = 0; c < uniqueCols.length; c++) {
+                        const colKey = uniqueCols[c];
+                        const value = rowData[colKey];
+                        data[r + 1][c + 1] = { v: value };
+                    }
+                }
+
+                allSheets.push({
+                    name: sheetName,
+                    data: data
+                });
+
+                luckysheet.create({
+                    container: 'luckysheet',
+                    data: allSheets,
+                    showtoolbar: true,
+                    showinfobar: true,
+                    showstatisticBar: true,
+                    showSheetbar: true,
+                    enableAddRow: true,
+                    enableAddCol: true,
+                });
+
+                alert(`شیت "${sheetName}" اضافه شد.`);
+            })
+            .catch(err => {
+                console.error("خطا:", err);
+                alert("خطا در دریافت داده");
+            });
+    }
+
+    // رویداد برای گزارش پویا
+    document.getElementById('btn-fill-dynamic')?.addEventListener('click', () => {
+        const reportId = document.getElementById('reportIdInput')?.value;
+        if (!reportId) {
+            alert("لطفاً شناسه گزارش را وارد کنید.");
+            return;
+        }
+        fetchAndAddSheetDynamic(`/Salaries/Formula/GetPivotDataDynamic?reportId=${reportId}`, `Report_${reportId}`);
+    });
+
+
+</script>
+<script>
+    document.getElementById('btn-export-excel')?.addEventListener('click', () => {
+        if (!allSheets.length) {
+            alert("هیچ شیتی برای خروجی وجود ندارد.");
+            return;
+        }
+
+        const wb = XLSX.utils.book_new();
+
+        allSheets.forEach(sheet => {
+            const rawData = sheet.data;
+            const ws = {};
+            const merges = [];
+
+            for (let r = 0; r < rawData.length; r++) {
+                for (let c = 0; c < rawData[r].length; c++) {
+                    const cell = rawData[r][c];
+                    if (!cell) continue;
+
+                    const cellRef = XLSX.utils.encode_cell({ r, c });
+                    const outCell = {};
+                    let val = cell.v;
+
+                    // تبدیل true/false (به صورت رشته یا بولی) به 1 و 0
+                    if (typeof val === "string" && val.trim().toLowerCase() === "true") {
+                        val = 1;
+                    } else if (typeof val === "string" && val.trim().toLowerCase() === "false") {
+                        val = 0;
+                    } else if (val === true) {
+                        val = 1;
+                    } else if (val === false) {
+                        val = 0;
+                    }
+
+                    // اگر فرمول بود
+                    if (cell.f) {
+                        outCell.f = cell.f;
+                        if (!isNaN(val) && val !== "") {
+                            outCell.v = parseFloat(val);
+                            outCell.t = "n";
+                        } else {
+                            outCell.v = val;
+                            outCell.t = "s";
+                        }
+                    } else if (!isNaN(val) && val !== "") {
+                        outCell.v = parseFloat(val);
+                        outCell.t = "n";
+                    } else {
+                        outCell.v = val;
+                        outCell.t = "s";
+                    }
+
+                    // استایل‌ها
+                    if (cell.bg || cell.fc || cell.bl || cell.it) {
+                        outCell.s = {
+                            fill: cell.bg
+                                ? { patternType: "solid", fgColor: { rgb: cell.bg.replace("#", "") } }
+                                : undefined,
+                            font: {
+                                bold: !!cell.bl,
+                                italic: !!cell.it,
+                                color: cell.fc ? { rgb: cell.fc.replace("#", "") } : undefined
+                            },
+                            alignment: {
+                                horizontal: "center",
+                                vertical: "center",
+                                wrapText: true
+                            }
+                        };
+                    }
+
+                    ws[cellRef] = outCell;
+                }
+            }
+
+            // مرج‌ها
+            if (sheet.config?.merge) {
+                for (const key in sheet.config.merge) {
+                    const m = sheet.config.merge[key];
+                    merges.push({
+                        s: { r: m.r, c: m.c },
+                        e: { r: m.r + m.rs - 1, c: m.c + m.cs - 1 }
+                    });
+                }
+                ws["!merges"] = merges;
+            }
+
+            // محدوده شیت
+            const range = XLSX.utils.encode_range({
+                s: { r: 0, c: 0 },
+                e: { r: rawData.length - 1, c: rawData[0]?.length - 1 || 0 }
+            });
+            ws["!ref"] = range;
+
+            XLSX.utils.book_append_sheet(wb, ws, sheet.name);
+        });
+
+        XLSX.writeFile(wb, "PivotReports.xlsx");
+    });
+
+</script>
+
+<script>
+    function exportPDF() {
+        const luckysheetContainer = document.getElementById("luckysheet");
+
+        // تنظیمات PDF
+        const opt = {
+            margin: 0.5,
+            filename: 'گزارش.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+        };
+
+        html2pdf().set(opt).from(luckysheetContainer).save();
+    }
+</script>
+<script>
+    async function exportToPdfFromLuckysheet() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('l', 'mm', 'a4'); // حالت افقی بهتره برای جدول
+
+        for (let sheet of luckysheet.getAllSheets()) {
+            const sheetData = sheet.data;
+            if (!sheetData) continue;
+
+            const headers = [];
+            const rows = [];
+
+            for (let r = 0; r < sheetData.length; r++) {
+                const row = sheetData[r];
+                const rowData = [];
+
+                for (let c = 0; c < row.length; c++) {
+                    const cell = row[c];
+                    rowData.push(cell?.v || '');
+                }
+
+                if (r === 0) {
+                    headers.push(...rowData);
+                } else {
+                    rows.push(rowData);
+                }
+            }
+
+            doc.autoTable({
+                head: [headers],
+                body: rows,
+                styles: { font: 'sans', fontSize: 10 },
+                headStyles: { fillColor: [52, 152, 219] },
+                theme: 'grid',
+                margin: { top: 20 }
+            });
+
+            doc.addPage();
+        }
+
+        doc.save("گزارش-luckysheet.pdf");
+    }
+</script>
+
+<script>
+    // فرض می‌کنیم المان با آی‌دی uploadExcel در جای دیگری از کد HTML شما وجود دارد
+    const uploadInput = document.getElementById("uploadExcel");
+    if (uploadInput) {
+        uploadInput.addEventListener("change", function (event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            LuckyExcel.transformExcelToLucky(file, function (exportJson, luckysheetfile) {
+                if (exportJson.sheets == null || exportJson.sheets.length === 0) {
+                    alert("فایل اکسل حاوی داده‌ای نیست.");
+                    return;
+                }
+
+                // حذف Luckysheet قبلی (مهم قبل از ایجاد جدید)
+                if (window.luckysheet && typeof window.luckysheet.destroy === 'function') {
+                    try {
+                        window.luckysheet.destroy();
+                    } catch (e) { console.error("Error destroying:", e); }
+                }
+
+
+                // ایجاد Luckysheet جدید با داده‌های اکسل
+                luckysheet.create({
+                    container: 'luckysheet',
+                    data: exportJson.sheets,
+                    title: exportJson.info.name,
+                    userInfo: exportJson.info.nameCreator,
+                    lang: 'en', // تنظیمات دیگر را مطابق نیاز اضافه کنید
+                    showinfobar: true,
+                    showtoolbar: true, // نوار ابزار پیش‌فرض را نگه دارید یا false کنید
+                    showstatisticBar: true,
+                    showSheetbar: true,
+                    allowEdit: true,
+                    // --- مهم: تنظیمات showtoolbarConfig را اینجا هم اعمال کنید اگر می‌خواهید ثابت بماند ---
+                    showtoolbarConfig: {
+                        print: false,
+                        chart: false,
+                        pivotTable: false,
+                    },
+                    // enableAddRow/Col را هم در صورت نیاز تنظیم کنید
+                    enableAddRow: true, // یا false
+                    enableAddCol: true, // یا false
+                });
+                // پاک کردن مقدار ورودی فایل تا بتوان همان فایل را دوباره آپلود کرد
+                event.target.value = null;
+            }, function (err) {
+                console.error("Error processing Excel file:", err);
+                alert("خطا در پردازش فایل اکسل.");
+            });
+        });
+    } else {
+        // اگر المان آپلود وجود ندارد، یک هشدار در کنسول نمایش بده
+        // console.warn("Element with ID 'uploadExcel' not found. Upload functionality will not work.");
+    }
+</script>
+
+<script>
+
+    // مقادیر ViewBag (با Encode برای جلوگیری از خطا)
+    let rowT = @Html.Raw(Json.Encode(ViewBag.Row ?? 30)); // مقدار پیش‌فرض 30
+    let colT = @Html.Raw(Json.Encode(ViewBag.Col ?? 20)); // مقدار پیش‌فرض 20
+
+    console.log("Initial Rows:", rowT);
+    console.log("Initial Cols:", colT);
+
+    //----------------------------------
+    // پیکربندی اولیه Luckysheet
+    const options = {
+        container: 'luckysheet', // ID عنصر DOM
+        title: 'نمونه Luckysheet', // عنوان برگه
+        row: parseInt(rowT),                  // 👈 تعداد سطرها
+        column: parseInt(colT),               // 👈 تعداد ستون‌ها
+        showinfobar: true,
+        showtoolbar: true, // نوار ابزار پیش‌فرض Luckysheet
+        showstatisticBar: true,
+        showSheetbar: true,
+        allowEdit: true,
+        enableAddRow: true, // دکمه پیش‌فرض افزودن سطر فعال باشد یا خیر؟
+        enableAddCol: true, // دکمه پیش‌فرض افزودن ستون فعال باشد یا خیر؟
+        lang: 'en',
+        showtoolbarConfig: { // تنظیمات نمایش دکمه‌های نوار ابزار پیش‌فرض
+            print: false,
+            chart: false,
+            pivotTable: false,
+            // ... سایر دکمه‌ها را می‌توانید false کنید
+        },
+        data: [ // داده‌های اولیه برای برگه اول
+            {
+                name: 'Sheet1',
+                color: '',
+                index: 0,
+                status: 1,
+                order: 0,
+                celldata: [], // در ابتدا خالی
+                config: {},
+            }
+        ],
+        // می‌توانید هوک‌های دیگری هم در صورت نیاز اینجا اضافه کنید
+        // hook: { ... }
+    };
+
+    // --- ایجاد Luckysheet اولیه ---
+    // اول destroy می‌کنیم (همانطور که در کد شما بود، برای اطمینان از پاک شدن نمونه قبلی)
+    if (window.luckysheet && typeof window.luckysheet.destroy === 'function') {
+       try {
+          window.luckysheet.destroy();
+       } catch(e) { console.error("Error destroying:", e); }
+    }
+    // حالا نمونه جدید را ایجاد می‌کنیم
+    luckysheet.create(options);
+    console.log("Initial Luckysheet instance created.");
+    // لاگ گرفتن داده‌های برگه اول (همانطور که در کد شما بود)
+    // console.log(luckysheet.getAllSheets()[0].data); // ممکن است data در این سطح تعریف نشده باشد، celldata مناسب‌تر است
+    // console.log("Initial Cell Data:", luckysheet.getAllSheets()[0].celldata);
+
+    // ----------------------------------
+    // ***** شروع کد اضافه شده برای فعال‌سازی دکمه‌های سفارشی *****
+    // ----------------------------------
+    const btnInsertRow = document.getElementById('btn-insert-row');
+    const btnDeleteRow = document.getElementById('btn-delete-row');
+    const btnInsertColumn = document.getElementById('btn-insert-column');
+    const btnDeleteColumn = document.getElementById('btn-delete-column');
+
+    // بررسی وجود دکمه‌ها قبل از افزودن listener
+    if (btnInsertRow && btnDeleteRow && btnInsertColumn && btnDeleteColumn) {
+
+        // درج سطر
+        btnInsertRow.addEventListener('click', function () {
+            const selectedRange = luckysheet.getRange();
+            if (!selectedRange || selectedRange.length === 0) {
+                alert("لطفاً ابتدا یک سلول یا محدوده برای درج سطر انتخاب کنید.");
+                return;
+            }
+            const startRow = selectedRange[0].row[0];
+            luckysheet.insertRow(startRow, 1); // درج 1 سطر *بالای* سطر انتخاب شده
+        });
+
+        // حذف سطر
+        btnDeleteRow.addEventListener('click', function () {
+            const selectedRange = luckysheet.getRange();
+            if (!selectedRange || selectedRange.length === 0) {
+                alert("لطفاً ابتدا سطر یا سطرهای مورد نظر برای حذف را انتخاب کنید.");
+                return;
+            }
+            const startRow = selectedRange[0].row[0];
+            const endRow = selectedRange[0].row[1];
+             // محاسبه تعداد سطرها برای حذف (endRow - startRow + 1)
+            // luckysheet.deleteRow(startRow, endRow - startRow + 1); // API قدیمی‌تر؟
+             luckysheet.deleteRow(startRow, endRow); // API جدیدتر از شروع تا پایان را می‌گیرد
+        });
+
+        // درج ستون
+        btnInsertColumn.addEventListener('click', function () {
+            const selectedRange = luckysheet.getRange();
+            if (!selectedRange || selectedRange.length === 0) {
+                alert("لطفاً ابتدا یک سلول یا محدوده برای درج ستون انتخاب کنید.");
+                return;
+            }
+            const startCol = selectedRange[0].column[0];
+            luckysheet.insertColumn(startCol, 1); // درج 1 ستون *سمت چپ* ستون انتخاب شده
+        });
+
+        // حذف ستون
+        btnDeleteColumn.addEventListener('click', function () {
+            const selectedRange = luckysheet.getRange();
+            if (!selectedRange || selectedRange.length === 0) {
+                alert("لطفاً ابتدا ستون یا ستون‌های مورد نظر برای حذف را انتخاب کنید.");
+                return;
+            }
+            const startCol = selectedRange[0].column[0];
+            const endCol = selectedRange[0].column[1];
+             // محاسبه تعداد ستون‌ها برای حذف
+            // luckysheet.deleteColumn(startCol, endCol - startCol + 1); // API قدیمی‌تر؟
+            luckysheet.deleteColumn(startCol, endCol); // API جدیدتر
+        });
+
+        console.log("Custom toolbar button listeners added.");
+
+    } else {
+        console.error("Could not find one or more custom toolbar buttons to attach listeners.");
+    }
+    // ----------------------------------
+    // ***** پایان کد اضافه شده *****
+    // ----------------------------------
+
+</script>
+<script>
+    // ... کدهای موجود شما برای Luckysheet setup و دکمه های درج/حذف سطر و ستون ...
+
+    // --- کد اضافه شده برای دکمه خروجی اکسل ---
+    const btnExportExcel = document.getElementById('btn-export-excel');
+
+    if (btnExportExcel) {
+        btnExportExcel.addEventListener('click', function () {
+            // بررسی کنید که آیا Luckysheet فعال است
+            if (typeof luckysheet === 'undefined' || !luckysheet.getAllSheets) {
+                alert("Luckysheet هنوز بارگذاری نشده یا آماده نیست.");
+                return;
+            }
+
+            // گرفتن تمام داده های شیت ها
+            let allSheets = luckysheet.getAllSheets();
+            if (!allSheets || allSheets.length === 0) {
+                alert("داده ای در Luckysheet برای خروجی گرفتن وجود ندارد.");
+                return;
+            }
+
+            // نام فایل پیش فرض
+            const fileName = 'Report_Luckysheet.xlsx';
+
+            // استفاده از تابع داخلی luckysheet.toExcel()
+            // این تابع به طور خودکار داده های Luckysheet را به فایل اکسل تبدیل کرده و دانلود می کند.
+            luckysheet.toExcel({
+                data: allSheets, // این پارامتر اختیاری است، اگر ارسال نشود، به طور پیش فرض همه شیت ها را می گیرد
+                name: fileName, // نام فایل خروجی
+                // می توانید گزینه های دیگر را نیز اضافه کنید، مانند:
+                // type: 'xlsx', // فرمت فایل (پیش فرض xlsx است)
+                // success: function() { console.log('Excel file exported successfully!'); },
+                // fail: function(e) { console.error('Excel export failed:', e); }
+            });
+
+            console.log("درخواست خروجی اکسل ارسال شد.");
+        });
+    } else {
+        console.error("دکمه با ID 'btn-export-excel' یافت نشد.");
+    }
+</script>

@@ -1,0 +1,883 @@
+﻿@using SaabWebProject.Models.DomainModels;
+@model SaabWebProject.Models.DomainModels.tbNamshnaght
+
+@{
+    SaabEntities db = new SaabEntities();
+
+
+    Layout = null;
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .modal-lg, .modal-xl {
+        margin-top: 8px;
+        max-width: 100% !important;
+    }
+    table th, table td {
+        vertical-align: middle;
+    }
+
+    th, td {
+        padding: 3px 6px !important;
+    }
+
+    .WTH {
+        width: 9.09%;
+        padding: 0 !important;
+    }
+
+    select.form-select, input.form-control {
+        margin-bottom: 0 !important;
+    }
+
+    input.form-control {
+        border-width: 1px !important;
+    }
+
+    .btn {
+        margin-bottom: 10px !important;
+    }
+
+    .TitelL {
+        border-radius: 10px;
+        background-color: #146792 !important;
+    }
+
+    .TitelC {
+        border-radius: 0 10px 10px 0;
+        background-color: #146792 !important;
+    }
+
+    .Titel3 {
+        border-radius: 10px 0 0 10px;
+        background-color: #146792 !important;
+    }
+
+    .Titel1 {
+        border-radius: 10px;
+        background-color: #1469a18f !important;
+    }
+
+    .Titel2 {
+        border-radius: 0 10px 10px 0;
+        background-color: #1469a18f !important;
+    }
+
+    .Titel4 {
+        border-radius: 10px;
+        background-color: #1469a18f !important;
+    }
+
+    .Titel5 {
+        border-radius: 10px;
+        background-color: #00eaff7d !important;
+    }
+
+    tbody, td, tfoot, th, thead, tr {
+        border-color: var(--bs-tab-content-bg) !important;
+        border-style: solid !important;
+        border-width: 1px !important;
+        text-align: center
+    }
+
+    /*    tbody tr:nth-child(even) td:not(.Titel1,.Titel2,.Titel6) {
+            background-color: #4a8fbc63 !important;
+        }
+
+        tbody tr:nth-child(even) td:last-child {
+            border-radius: 10px 0 0 10px;
+            background-color: #4a8fbc63 !important;
+        }
+
+    .table1 td {
+        border-radius: 10px !important;
+        background-color: #1469a18f !important;
+    }*/
+</style>
+<div class="card p-2">
+    <div class="card-body">
+        <div class="row ">
+            <p><span style="font-size:14px;font-weight:bold">استاندارد کاری کارکنان</span> >> @Model.Name</p>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-xl-2">
+                <label class="form-label">دوره</label>
+                <select class="form-select" id="Month02">
+                    <option value="0">انتخاب کنید..</option>
+                    <option value="1">ماهانه</option>
+                    <option value="2">سالانه</option>
+                    <option value="3">روزانه</option>
+                </select>
+            </div>
+
+        </div>
+        <div class="row" style="margin-top:20px">
+            <div class="col-xl-10">
+                <table class="table table-bordered" id="table_First">
+                    <thead>
+                        <tr>
+                            <th class="TitelL" colspan="1" rowspan="2">ردیف</th>
+                            <th class="TitelL" colspan="3" rowspan="2">شغل نیروی کار</th>
+                            <th class="TitelL" colspan="1" rowspan="2">فردی / گروهی</th>
+                            <th class="Titel4" colspan="2" rowspan="1">تکفاز</th>
+                            <th class="Titel4" colspan="2" rowspan="1">سه فاز</th>
+                            <th class="Titel4" colspan="2" rowspan="1">دیماندی</th>
+                        </tr>
+                        <tr>
+                            <th class="Titel5" colspan="1" rowspan="1">شهری</th>
+                            <th class="Titel5" colspan="1" rowspan="1">روستایی</th>
+                            <th class="Titel5" colspan="1" rowspan="1">شهری</th>
+                            <th class="Titel5" colspan="1" rowspan="1">روستایی</th>
+                            <th class="Titel5" colspan="1" rowspan="1">شهری</th>
+                            <th class="Titel5" colspan="1" rowspan="1">روستایی</th>
+                        </tr>
+                        <tr>
+                            <th class="WTH"></th>
+                            <th class="WTH"></th>
+                            <th class="WTH"></th>
+                            <th class="WTH"></th>
+                            <th class="WTH"></th>
+                            <th class="WTH"></th>
+                            <th class="WTH"></th>
+                            <th class="WTH"></th>
+                            <th class="WTH"></th>
+                            <th class="WTH"></th>
+                            <th class="WTH"></th>
+                        </tr>
+
+                    </thead>
+                    <tbody style="text-align:center">
+                        @{
+                            int i = 1;
+                        }
+                        @foreach (var IT in db.dbTitletahod.Where(p=>p.Fk_NAME==Model.ID).ToList())
+                        {
+
+                            if (IT.Fardi == true && IT.grohi == true)
+                            {
+                                var v1 = db.tbestandardshenaght.Where(p => p.fktitel == IT.ID && p.fardi == true && p.Shahri == true && p.takfaz == true).Select(s => s.estandard).FirstOrDefault();
+                                var v2 = db.tbestandardshenaght.Where(p => p.fktitel == IT.ID && p.fardi == true && p.rostaeei == true && p.takfaz == true).Select(s => s.estandard).FirstOrDefault();
+                                var v3 = db.tbestandardshenaght.Where(p => p.fktitel == IT.ID && p.fardi == true && p.rostaeei == true && p.sefaz == true).Select(s => s.estandard).FirstOrDefault();
+                                var v4 = db.tbestandardshenaght.Where(p => p.fktitel == IT.ID && p.fardi == true && p.Shahri == true && p.sefaz == true).Select(s => s.estandard).FirstOrDefault();
+                                var v5 = db.tbestandardshenaght.Where(p => p.fktitel == IT.ID && p.fardi == true && p.Shahri == true && p.demandi == true).Select(s => s.estandard).FirstOrDefault();
+                                var v6 = db.tbestandardshenaght.Where(p => p.fktitel == IT.ID && p.fardi == true && p.rostaeei == true && p.demandi == true).Select(s => s.estandard).FirstOrDefault();
+                                var v7 = db.tbestandardshenaght.Where(p => p.fktitel == IT.ID && p.grohi == true && p.rostaeei == true && p.demandi == true).Select(s => s.estandard).FirstOrDefault();
+                                var v8 = db.tbestandardshenaght.Where(p => p.fktitel == IT.ID && p.grohi == true && p.Shahri == true && p.demandi == true).Select(s => s.estandard).FirstOrDefault();
+                                var v9 = db.tbestandardshenaght.Where(p => p.fktitel == IT.ID && p.grohi == true && p.Shahri == true && p.sefaz == true).Select(s => s.estandard).FirstOrDefault();
+                                var v10 = db.tbestandardshenaght.Where(p => p.fktitel == IT.ID && p.grohi == true && p.rostaeei == true && p.sefaz == true).Select(s => s.estandard).FirstOrDefault();
+                                var v11 = db.tbestandardshenaght.Where(p => p.fktitel == IT.ID && p.grohi == true && p.rostaeei == true && p.takfaz == true).Select(s => s.estandard).FirstOrDefault();
+                                var v12 = db.tbestandardshenaght.Where(p => p.fktitel == IT.ID && p.grohi == true && p.Shahri == true && p.takfaz == true).Select(s => s.estandard).FirstOrDefault();
+
+                                <tr>
+                                    <td class="" colspan="1" rowspan="1">@i</td>
+                                    <td class="" colspan="3" rowspan="1">@IT.Title</td>
+                                    <td class="" colspan="1" rowspan="1">فردی</td>
+                                    <td colspan="1" rowspan="1"><input id="fardi_takfaz_shahri_@IT.ID" class="form-control form-control3" value="@v1" /></td>
+                                    <td colspan="1" rowspan="1"><input id="fardi_takfaz_roostayi_@IT.ID" class="form-control form-control3" value="@v2" /></td>
+                                    <td colspan="1" rowspan="1"><input id="fardi_sefaz_shahri_@IT.ID" class="form-control form-control3" value="@v4" /></td>
+                                    <td colspan="1" rowspan="1"><input id="fardi_sefaz_roostayi_@IT.ID" class="form-control form-control3" value="@v3" /></td>
+                                    <td colspan="1" rowspan="1"><input id="fardi_demandi_shahri_@IT.ID" class="form-control form-control3" value="@v5" /></td>
+                                    <td colspan="1" rowspan="1"><input id="fardi_demandi_roostayi_@IT.ID" class="form-control form-control3" value="@v6" /></td>
+                                </tr>
+
+                                {
+                                    i++;
+
+                                }
+                                <tr>
+
+
+                                    <td class="" colspan="1" rowspan="1">@i</td>
+                                    <td class="" colspan="3" rowspan="1">@IT.Title</td>
+                                    <td class="" colspan="1" rowspan="1">گروهی</td>
+                                    <td colspan="1" rowspan="1"><input id="grohi_takfaz_shahri_@IT.ID" class="form-control form-control3" value="@v12" /></td>
+                                    <td colspan="1" rowspan="1"><input id="grohi_takfaz_roostayi_@IT.ID" class="form-control form-control3" value="@v11" /></td>
+                                    <td colspan="1" rowspan="1"><input id="grohi_sefaz_shahri_@IT.ID" class="form-control form-control3" value="@v9" /></td>
+                                    <td colspan="1" rowspan="1"><input id="grohi_sefaz_roostayi_@IT.ID" class="form-control form-control3" value="@v10" /></td>
+                                    <td colspan="1" rowspan="1"><input id="grohi_demandi_shahri_@IT.ID" class="form-control form-control3" value="@v8" /></td>
+                                    <td colspan="1" rowspan="1"><input id="grohi_demandi_roostayi_@IT.ID" class="form-control form-control3" value="@v7" /></td>
+
+                                </tr>
+                                {
+                                    i++;
+
+                                }
+                            }
+                            else if (IT.Fardi == true)
+                            {
+                                var v1 = db.tbestandardshenaght.Where(p => p.fktitel == IT.ID && p.fardi == true && p.Shahri == true && p.takfaz == true).Select(s => s.estandard).FirstOrDefault();
+                                var v2 = db.tbestandardshenaght.Where(p => p.fktitel == IT.ID && p.fardi == true && p.rostaeei == true && p.takfaz == true).Select(s => s.estandard).FirstOrDefault();
+                                var v3 = db.tbestandardshenaght.Where(p => p.fktitel == IT.ID && p.fardi == true && p.rostaeei == true && p.sefaz == true).Select(s => s.estandard).FirstOrDefault();
+                                var v4 = db.tbestandardshenaght.Where(p => p.fktitel == IT.ID && p.fardi == true && p.Shahri == true && p.sefaz == true).Select(s => s.estandard).FirstOrDefault();
+                                var v5 = db.tbestandardshenaght.Where(p => p.fktitel == IT.ID && p.fardi == true && p.Shahri == true && p.demandi == true).Select(s => s.estandard).FirstOrDefault();
+                                var v6 = db.tbestandardshenaght.Where(p => p.fktitel == IT.ID && p.fardi == true && p.rostaeei == true && p.demandi == true).Select(s => s.estandard).FirstOrDefault();
+                                <tr>
+                                    <td class="" colspan="1" rowspan="1">@i</td>
+                                    <td class="" colspan="3" rowspan="1">@IT.Title</td>
+                                    <td class="" colspan="1" rowspan="1">فردی</td>
+                                    <td colspan="1" rowspan="1"><input id="fardi_takfaz_shahri_@IT.ID" class="form-control form-control3" value="@v1" /></td>
+                                    <td colspan="1" rowspan="1"><input id="fardi_takfaz_roostayi_@IT.ID" class="form-control form-control3" value="@v2" /></td>
+                                    <td colspan="1" rowspan="1"><input id="fardi_sefaz_shahri_@IT.ID" class="form-control form-control3" value="@v4" /></td>
+                                    <td colspan="1" rowspan="1"><input id="fardi_sefaz_roostayi_@IT.ID" class="form-control form-control3" value="@v3" /></td>
+                                    <td colspan="1" rowspan="1"><input id="fardi_demandi_shahri_@IT.ID" class="form-control form-control3" value="@v5" /></td>
+                                    <td colspan="1" rowspan="1"><input id="fardi_demandi_roostayi_@IT.ID" class="form-control form-control3" value="@v6" /></td>
+
+                                </tr>
+                                {
+                                    i++;
+
+                                }
+                            }
+                            else if (IT.grohi == true)
+                            {
+                                var v7 = db.tbestandardshenaght.Where(p => p.fktitel == IT.ID && p.grohi == true && p.rostaeei == true && p.demandi == true).Select(s => s.estandard).FirstOrDefault();
+                                var v8 = db.tbestandardshenaght.Where(p => p.fktitel == IT.ID && p.grohi == true && p.Shahri == true && p.demandi == true).Select(s => s.estandard).FirstOrDefault();
+                                var v9 = db.tbestandardshenaght.Where(p => p.fktitel == IT.ID && p.grohi == true && p.Shahri == true && p.sefaz == true).Select(s => s.estandard).FirstOrDefault();
+                                var v10 = db.tbestandardshenaght.Where(p => p.fktitel == IT.ID && p.grohi == true && p.rostaeei == true && p.sefaz == true).Select(s => s.estandard).FirstOrDefault();
+                                var v11 = db.tbestandardshenaght.Where(p => p.fktitel == IT.ID && p.grohi == true && p.rostaeei == true && p.takfaz == true).Select(s => s.estandard).FirstOrDefault();
+                                var v12 = db.tbestandardshenaght.Where(p => p.fktitel == IT.ID && p.grohi == true && p.Shahri == true && p.takfaz == true).Select(s => s.estandard).FirstOrDefault();
+
+                                <tr>
+                                    <td class="" colspan="1" rowspan="1">@i</td>
+                                    <td class="" colspan="3" rowspan="1">@IT.Title</td>
+                                    <td class="" colspan="1" rowspan="1">گروهی</td>
+                                    <td colspan="1" rowspan="1"><input id="grohi_takfaz_shahri_@IT.ID" class="form-control form-control3" value="@v12" /></td>
+                                    <td colspan="1" rowspan="1"><input id="grohi_takfaz_roostayi_@IT.ID" class="form-control form-control3" value="@v11" /></td>
+                                    <td colspan="1" rowspan="1"><input id="grohi_sefaz_shahri_@IT.ID" class="form-control form-control3" value="@v9" /></td>
+                                    <td colspan="1" rowspan="1"><input id="grohi_sefaz_roostayi_@IT.ID" class="form-control form-control3" value="@v10" /></td>
+                                    <td colspan="1" rowspan="1"><input id="grohi_demandi_shahri_@IT.ID" class="form-control form-control3" value="@v8" /></td>
+                                    <td colspan="1" rowspan="1"><input id="grohi_demandi_roostayi_@IT.ID" class="form-control form-control3" value="@v7" /></td>
+
+                                </tr>
+                                {
+                                    i++;
+
+                                }
+
+                            }
+                        }
+
+
+
+
+
+
+
+                        @*@{
+                                                foreach ...{
+                                        < tr >
+                                            < td class="Titel1" colspan = "1" rowspan = "1" > 10 </ td >
+                                            < td class="Titel1" colspan = "3" rowspan = "1" > قرائت کنتور مشترکین</ td >
+                                            < td class="Titel2" colspan = "1" rowspan = "1" > فردی </ td >
+                                            < td colspan = "1" rowspan = "1" >< input class="form-control" /></td>
+                                            <td colspan = "1" rowspan="1"><input class="form-control" /></td>
+                                            <td colspan = "1" rowspan="1"><input class="form-control" /></td>
+                                            <td colspan = "1" rowspan="1"><input class="form-control" /></td>
+                                            <td colspan = "1" rowspan="1"><input class="form-control" /></td>
+                                            <td colspan = "1" rowspan="1"><input class="form-control" /></td>
+                                        </tr>
+                            }
+                                        }*@
+                    </tbody>
+                </table>
+                @{
+                    var findd = db.dbTitletahod.Where(p=>p.Fk_NAME==Model.ID).FirstOrDefault();
+
+                }
+                <div class="row">
+                    <div class="col-xl-2">قرائت شهری >></div>
+                    @if (findd != null)
+                    {
+                        if (db.tbestandardshenaght.Where(p => p.dbTitletahod.Fk_NAME == findd.ID && p.ghragtshahri == 1).FirstOrDefault() != null)
+                        {
+                            <div class="col-xl-2">
+                                <div class="form-check">
+                                    <div class="row">
+                                        <div class="col-xl-1" style="width: 1%;">
+                                            <input class="form-check-input   form-check-input2" name="radiobutton_1" checked type="radio" value="" id="defaultRadio11">
+                                        </div>
+                                        <div class="col-xl-10" style="margin-top: 4px; padding-right: 0px; width: 85%;">
+                                            <label class="form-check-label" for="defaultRadio11">ماهانه</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-2">
+                                <div class="form-check">
+                                    <div class="row">
+                                        <div class="col-xl-1" style="width: 1%;">
+                                            <input class="form-check-input form-check-input2" name="radiobutton_1" type="radio" value="" id="defaultRadio12">
+                                        </div>
+                                        <div class="col-xl-10" style="margin-top: 4px; padding-right: 0px; width: 85%;">
+                                            <label class="form-check-label" for="defaultRadio12">دوماهه</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        else if (db.tbestandardshenaght.Where(p => p.dbTitletahod.Fk_NAME == findd.ID && p.ghragtshahri == 2).FirstOrDefault() != null)
+                        {
+                            <div class="col-xl-2">
+                                <div class="form-check">
+                                    <div class="row">
+                                        <div class="col-xl-1" style="width: 1%;">
+                                            <input class="form-check-input form-check-input2" name="radiobutton_1" type="radio" value="" id="defaultRadio11">
+                                        </div>
+                                        <div class="col-xl-10" style="margin-top: 4px; padding-right: 0px; width: 85%;">
+                                            <label class="form-check-label" for="defaultRadio11">ماهانه</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-2">
+                                <div class="form-check">
+                                    <div class="row">
+                                        <div class="col-xl-1" style="width: 1%;">
+                                            <input class="form-check-input form-check-input2" name="radiobutton_1" checked type="radio" value="" id="defaultRadio12">
+                                        </div>
+                                        <div class="col-xl-10" style="margin-top: 4px; padding-right: 0px; width: 85%;">
+                                            <label class="form-check-label" for="defaultRadio12">دوماهه</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col-xl-2">
+                                <div class="form-check">
+                                    <div class="row">
+                                        <div class="col-xl-1" style="width: 1%;">
+                                            <input class="form-check-input form-check-input2" name="radiobutton_1" type="radio" value="" id="defaultRadio11">
+                                        </div>
+                                        <div class="col-xl-10" style="margin-top: 4px; padding-right: 0px; width: 85%;">
+                                            <label class="form-check-label" for="defaultRadio11">ماهانه</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-2">
+                                <div class="form-check">
+                                    <div class="row">
+                                        <div class="col-xl-1" style="width: 1%;">
+                                            <input class="form-check-input form-check-input2" name="radiobutton_1" type="radio" value="" id="defaultRadio12">
+                                        </div>
+                                        <div class="col-xl-10" style="margin-top: 4px; padding-right: 0px; width: 85%;">
+                                            <label class="form-check-label" for="defaultRadio12">دوماهه</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="col-xl-2">
+                            <div class="form-check">
+                                <div class="row">
+                                    <div class="col-xl-1" style="width: 1%;">
+                                        <input class="form-check-input form-check-input2" name="radiobutton_1" type="radio" value="" id="defaultRadio11">
+                                    </div>
+                                    <div class="col-xl-10" style="margin-top: 4px; padding-right: 0px; width: 85%;">
+                                        <label class="form-check-label" for="defaultRadio11">ماهانه</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-2">
+                            <div class="form-check">
+                                <div class="row">
+                                    <div class="col-xl-1" style="width: 1%;">
+                                        <input class="form-check-input form-check-input2" name="radiobutton_1" type="radio" value="" id="defaultRadio12">
+                                    </div>
+                                    <div class="col-xl-10" style="margin-top: 4px; padding-right: 0px; width: 85%;">
+                                        <label class="form-check-label" for="defaultRadio12">دوماهه</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                </div>
+                <div class="row">
+                    <div class="col-xl-2">قرائت روستایی >></div>
+                    @if (findd != null)
+                    {
+                        if (db.tbestandardshenaght.Where(p => p.dbTitletahod.Fk_NAME == findd.ID && p.ghragtrostaei == 1).FirstOrDefault() != null)
+                        {
+                            <div class="col-xl-2">
+                                <div class="form-check">
+                                    <div class="row">
+                                        <div class="col-xl-1" style="width: 1%;">
+                                            <input class="form-check-input form-check-input23" name="radiobutton_2" checked type="radio" value="" id="defaultRadio21">
+                                        </div>
+                                        <div class="col-xl-10" style="margin-top: 4px; padding-right: 0px; width: 85%;">
+                                            <label class="form-check-label" for="defaultRadio21">ماهانه</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-2">
+                                <div class="form-check">
+                                    <div class="row">
+                                        <div class="col-xl-1" style="width: 1%;">
+                                            <input class="form-check-input form-check-input23" name="radiobutton_2" type="radio" value="" id="defaultRadio22">
+                                        </div>
+                                        <div class="col-xl-10" style="margin-top: 4px; padding-right: 0px; width: 85%;">
+                                            <label class="form-check-label" for="defaultRadio22">دوماهه</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-2">
+                                <div class="form-check">
+                                    <div class="row">
+                                        <div class="col-xl-1" style="width: 1%;">
+                                            <input class="form-check-input form-check-input23" name="radiobutton_2" type="radio" value="" id="defaultRadio23">
+                                        </div>
+                                        <div class="col-xl-10" style="margin-top: 4px; padding-right: 0px; width: 85%;">
+                                            <label class="form-check-label" for="defaultRadio23">چهارماهه</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        else if (db.tbestandardshenaght.Where(p => p.dbTitletahod.Fk_NAME == findd.ID && p.ghragtrostaei == 2).FirstOrDefault() != null)
+                        {
+                            <div class="col-xl-2">
+                                <div class="form-check">
+                                    <div class="row">
+                                        <div class="col-xl-1" style="width: 1%;">
+                                            <input class="form-check-input form-check-input23" name="radiobutton_2" checked type="radio" value="" id="defaultRadio21">
+                                        </div>
+                                        <div class="col-xl-10" style="margin-top: 4px; padding-right: 0px; width: 85%;">
+                                            <label class="form-check-label" for="defaultRadio21">ماهانه</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-2">
+                                <div class="form-check">
+                                    <div class="row">
+                                        <div class="col-xl-1" style="width: 1%;">
+                                            <input class="form-check-input form-check-input23" name="radiobutton_2" checked type="radio" value="" id="defaultRadio22">
+                                        </div>
+                                        <div class="col-xl-10" style="margin-top: 4px; padding-right: 0px; width: 85%;">
+                                            <label class="form-check-label" for="defaultRadio22">دوماهه</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-2">
+                                <div class="form-check">
+                                    <div class="row">
+                                        <div class="col-xl-1" style="width: 1%;">
+                                            <input class="form-check-input form-check-input23" name="radiobutton_2" type="radio" value="" id="defaultRadio23">
+                                        </div>
+                                        <div class="col-xl-10" style="margin-top: 4px; padding-right: 0px; width: 85%;">
+                                            <label class="form-check-label" for="defaultRadio23">چهارماهه</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        else if (db.tbestandardshenaght.Where(p => p.dbTitletahod.Fk_NAME == findd.ID && p.ghragtrostaei == 3).FirstOrDefault() != null)
+                        {
+                            <div class="col-xl-2">
+                                <div class="form-check">
+                                    <div class="row">
+                                        <div class="col-xl-1" style="width: 1%;">
+                                            <input class="form-check-input form-check-input23" name="radiobutton_2" checked type="radio" value="" id="defaultRadio21">
+                                        </div>
+                                        <div class="col-xl-10" style="margin-top: 4px; padding-right: 0px; width: 85%;">
+                                            <label class="form-check-label" for="defaultRadio21">ماهانه</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-2">
+                                <div class="form-check">
+                                    <div class="row">
+                                        <div class="col-xl-1" style="width: 1%;">
+                                            <input class="form-check-input form-check-input23" name="radiobutton_2" type="radio" value="" id="defaultRadio22">
+                                        </div>
+                                        <div class="col-xl-10" style="margin-top: 4px; padding-right: 0px; width: 85%;">
+                                            <label class="form-check-label" for="defaultRadio22">دوماهه</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-2">
+                                <div class="form-check">
+                                    <div class="row">
+                                        <div class="col-xl-1" style="width: 1%;">
+                                            <input class="form-check-input form-check-input23" name="radiobutton_2" checked type="radio" value="" id="defaultRadio23">
+                                        </div>
+                                        <div class="col-xl-10" style="margin-top: 4px; padding-right: 0px; width: 85%;">
+                                            <label class="form-check-label" for="defaultRadio23">چهارماهه</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col-xl-2">
+                                <div class="form-check">
+                                    <div class="row">
+                                        <div class="col-xl-1" style="width: 1%;">
+                                            <input class="form-check-input form-check-input23" name="radiobutton_2" type="radio" value="" id="defaultRadio21">
+                                        </div>
+                                        <div class="col-xl-10" style="margin-top: 4px; padding-right: 0px; width: 85%;">
+                                            <label class="form-check-label" for="defaultRadio21">ماهانه</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-2">
+                                <div class="form-check">
+                                    <div class="row">
+                                        <div class="col-xl-1" style="width: 1%;">
+                                            <input class="form-check-input form-check-input23" name="radiobutton_2" type="radio" value="" id="defaultRadio22">
+                                        </div>
+                                        <div class="col-xl-10" style="margin-top: 4px; padding-right: 0px; width: 85%;">
+                                            <label class="form-check-label" for="defaultRadio22">دوماهه</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-2">
+                                <div class="form-check">
+                                    <div class="row">
+                                        <div class="col-xl-1" style="width: 1%;">
+                                            <input class="form-check-input form-check-input23" name="radiobutton_2" type="radio" value="" id="defaultRadio23">
+                                        </div>
+                                        <div class="col-xl-10" style="margin-top: 4px; padding-right: 0px; width: 85%;">
+                                            <label class="form-check-label" for="defaultRadio23">چهارماهه</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+
+                    else
+                    {
+                        <div class="col-xl-2">
+                            <div class="form-check">
+                                <div class="row">
+                                    <div class="col-xl-1" style="width: 1%;">
+                                        <input class="form-check-input form-check-input23" name="radiobutton_2" type="radio" value="" id="defaultRadio21">
+                                    </div>
+                                    <div class="col-xl-10" style="margin-top: 4px; padding-right: 0px; width: 85%;">
+                                        <label class="form-check-label" for="defaultRadio21">ماهانه</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-2">
+                            <div class="form-check">
+                                <div class="row">
+                                    <div class="col-xl-1" style="width: 1%;">
+                                        <input class="form-check-input form-check-input23" name="radiobutton_2" type="radio" value="" id="defaultRadio22">
+                                    </div>
+                                    <div class="col-xl-10" style="margin-top: 4px; padding-right: 0px; width: 85%;">
+                                        <label class="form-check-label" for="defaultRadio22">دوماهه</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-2">
+                            <div class="form-check">
+                                <div class="row">
+                                    <div class="col-xl-1" style="width: 1%;">
+                                        <input class="form-check-input form-check-input23" name="radiobutton_2" type="radio" value="" id="defaultRadio23">
+                                    </div>
+                                    <div class="col-xl-10" style="margin-top: 4px; padding-right: 0px; width: 85%;">
+                                        <label class="form-check-label" for="defaultRadio23">چهارماهه</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+
+                </div>
+                <div class="row">
+                    <div class="col-xl-2">قرائت دیماندی >></div>
+                    <div class="col-xl-2">
+                        <div class="form-check">
+                            <div class="row">
+                                <div class="col-xl-1" style="width: 1%;">
+                                    <input class="form-check-input" name="radiobutton_3" type="radio" value="" id="defaultRadio31">
+                                </div>
+                                <div class="col-xl-10" style="margin-top: 4px; padding-right: 0px; width: 85%;">
+                                    <label class="form-check-label" for="defaultRadio31">ماهانه</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-2">
+                        <div class="form-check">
+                            <div class="row">
+                                <div class="col-xl-1" style="width: 1%;">
+                                    <input class="form-check-input" name="radiobutton_3" type="radio" value="" id="defaultRadio32">
+                                </div>
+                                <div class="col-xl-10" style="margin-top: 4px; padding-right: 0px; width: 85%;">
+                                    <label class="form-check-label" for="defaultRadio32">از راه دور</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-2"></div>
+        <hr />
+    </div>
+
+    <div class="row">
+        <div class="col-xl-10"></div>
+        <div class="col-xl-1">
+            <a href="#" id="createEs" class="btn form-control buttonGeneral" data-bs-toggle="modal" data-bs-target="#modalLg">
+                <i class="fa fa-plus-circle fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text">استاندارد آماده</span>
+            </a>
+        </div>
+        <div class="col-xl-1">
+            <button id="btnSaveEs" type="button" class="btn form-control buttonsabt">
+                <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                <span class="bSabt-text">ثبت</span>
+            </button>
+        </div>
+    </div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>
+
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+
+
+<script>
+    //var checkBox1Value = $("#CheckBox1").prop("checked");
+    //var checkBox2Value = $("#CheckBox2").prop("checked");
+    //if (checkBox1Value) {
+    //    fd2.append("actions", false); // اگر چک باکس 1 تیک خورده باشد، مقدار false به سمت بک فرستاده می‌شود
+    //}
+
+    //else if (checkBox2Value) {
+    //    fd2.append("actions", true); // اگر چک باکس 3 تیک خورده باشد، مقدار true به سمت بک فرستاده می‌شود
+    //}
+    //else {
+    //    fd2.append("actions", null); // اگر هیچ کدام انتخاب نشده باشند، مقدار null به سمت بک فرستاده می‌شود
+
+    //}
+
+    //var IsFirst = false;
+    //$('#IsFirst').click(function () {
+    //    if ($('#IsFirst').is(':checked')) {
+
+    //        IsFirst = true;
+    //    }
+
+    //});
+    //$('#Continue').click(function () {
+    //    if ($('#Continue').is(':checked')) {
+
+    //        IsFirst = false;
+    //    }
+    //    else {
+    //        IsFirst = true;
+
+    //    }
+    //});
+    function formatNumberWithCommas(number) {
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    // Function to remove commas from a formatted number
+    function removeCommas(number) {
+        return number.replace(/,/g, '');
+    }
+
+    // Apply the formatting to all relevant input fields
+    $("input.form-control3").on('input', function () {
+        var value = $(this).val();
+        value = removeCommas(value); // Remove existing commas
+        if ($.isNumeric(value)) {
+            $(this).val(formatNumberWithCommas(value)); // Format with commas
+        }
+    });
+    $("input.form-control3").each(function () {
+        var value = $(this).val();
+        if ($.isNumeric(value)) {
+            $(this).val(formatNumberWithCommas(value)); // اعمال فرمت
+        }
+    });
+
+    $("#btnSaveEs").click(function () {
+        // جمع‌آوری داده‌ها
+        var dataList = []; // ایجاد یک آرایه برای ذخیره تمام داده‌ها
+        var id = 1; 
+        $("input.form-control3").each(function () {
+            var inputId = $(this).attr("id");
+            var value = $(this).val();
+            value = removeCommas(value); // Remove commas before sending to the server
+
+            if (value) { // اگر ورودی پر شده است
+                var parts = inputId.split('_'); // تقسیم ID به اجزا
+                var type = parts[0];   // مثلا 'fardi'
+                var phase = parts[1];  // مثلا 'takfaz'
+                var area = parts[2];   // مثلا 'shahri'
+                 id = parts[3];     // ID رکورد در دیتابیس
+                dataList.push({
+                    id: id,
+                    type: type,
+                    phase: phase,
+                    area: area,
+                    value: value
+                });
+                // ارسال داده‌ها به سرور
+            }
+            else {
+                var parts = inputId.split('_'); // تقسیم ID به اجزا
+                var type = parts[0];   // مثلا 'fardi'
+                var phase = parts[1];  // مثلا 'takfaz'
+                var area = parts[2];   // مثلا 'shahri'
+                id = parts[3];     // ID رکورد در دیتابیس
+                dataList.push({
+                    id: id,
+                    type: type,
+                    phase: phase,
+                    area: area,
+                    value: 0
+                });
+            }
+        });
+
+
+
+        $("input.form-check-input2").each(function () {
+            var inputId = $(this).attr("id");
+            var value = $(this).val();
+            var checkBox1Value = $("#defaultRadio12").prop("checked");
+            var checkBox2Value = $("#defaultRadio11").prop("checked");
+            console.log(checkBox2Value);
+            console.log(checkBox1Value);
+
+            var type = null;
+            if (checkBox1Value) {
+                type= 2;// اگر چک باکس 1 تیک خورده باشد، مقدار false به سمت بک فرستاده می‌شود
+            }
+
+            else if (checkBox2Value) {
+                type = 1; // اگر چک باکس 3 تیک خورده باشد، مقدار true به سمت بک فرستاده می‌شود
+            }
+            else {
+                type= null; // اگر هیچ کدام انتخاب نشده باشند، مقدار null به سمت بک فرستاده می‌شود
+
+            }
+
+            if (value) { // اگر ورودی پر شده است
+                //var parts = inputId.split('_'); // تقسیم ID به اجزا
+                //var type = parts[0];   // مثلا 'fardi'
+                //var phase = parts[1];  // مثلا 'takfaz'
+                //var area = parts[2];   // مثلا 'shahri'
+                //var id = parts[3];
+                // ID رکورد در دیتابیس
+                dataList.push({
+                    id: id,
+
+                    ghragtshahri: type
+                });
+                // ارسال داده‌ها به سرور
+            }
+            else {
+                    // ID رکورد در دیتابیس
+                dataList.push({
+                    id: id,
+
+                    ghragtshahri: type
+                });
+            }
+        });
+
+        $("input.form-check-input23").each(function () {
+            var inputId = $(this).attr("id");
+            var value = $(this).val();
+            var checkBox1Value = $("#defaultRadio23").prop("checked");
+            var checkBox2Value = $("#defaultRadio22").prop("checked");
+            var checkBox3Value = $("#defaultRadio21").prop("checked");
+
+            var type = null;
+            if (checkBox1Value) {
+                type = 3;// اگر چک باکس 1 تیک خورده باشد، مقدار false به سمت بک فرستاده می‌شود
+            }
+
+            else if (checkBox2Value) {
+                type = 2; // اگر چک باکس 3 تیک خورده باشد، مقدار true به سمت بک فرستاده می‌شود
+            }
+            else if (checkBox3Value) {
+                type = 1; // اگر چک باکس 3 تیک خورده باشد، مقدار true به سمت بک فرستاده می‌شود
+            }
+            else {
+                type = null; // اگر هیچ کدام انتخاب نشده باشند، مقدار null به سمت بک فرستاده می‌شود
+
+            }
+
+            if (value) { // اگر ورودی پر شده است
+                //var parts = inputId.split('_'); // تقسیم ID به اجزا
+                //var type = parts[0];   // مثلا 'fardi'
+                //var phase = parts[1];  // مثلا 'takfaz'
+                //var area = parts[2];   // مثلا 'shahri'
+                //var id = parts[3];
+                // ID رکورد در دیتابیس
+                dataList.push({
+                    id: id,
+
+                    ghragtrostaei: type
+                });
+                // ارسال داده‌ها به سرور
+            }
+            else {
+                // ID رکورد در دیتابیس
+                dataList.push({
+                    id: id,
+
+                    ghragtrostaei: type
+                });
+            }
+        });
+        if (dataList.length > 0) {
+            updateDatabase(dataList);
+            console.log(dataList);
+        }
+    });
+    function updateDatabase(dataList) {
+        $.ajax({
+            url: '/Reporter/Dashboard/UpdateRecord2', // آدرس اکشن کنترلر شما
+            method: 'POST',
+            data: JSON.stringify(dataList), // ارسال آرایه به سرور
+
+            contentType: 'application/json',
+            success: function (response) {
+                console.log("Record updated successfully.");
+                if (response == "true") {
+                    alert("با موفقیت ثبت شد");
+                    location.reload();
+
+                }
+            },
+            error: function (error) {
+                console.error("Error updating record:", error);
+            }
+        });
+    }
+
+</script>

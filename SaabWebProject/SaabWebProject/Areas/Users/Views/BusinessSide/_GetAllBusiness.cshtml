@@ -1,0 +1,91 @@
+﻿@model List<SaabWebProject.Models.DomainModels.tbBusinessSide>
+
+<link href="/Areas/Users/Styles/Table_Scroll.css" rel="stylesheet"/>
+<div class="card" style="width: 100%">
+    <div class="tab-content p-4">
+        <div class="tab-pane fade show active" id="allTab">
+            <div class="table-responsive">
+                <table class="table table-hover" style="text-align:center;">
+                    <thead class="table-dark">
+                    <tr>
+                        <td>عملیات</td>
+                        <td>عنوان سمت سازمانی</td>
+                        <td>زیر مجموعه</td>
+                        <td>وضعیت</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div class="ms-sm-4 mt-sm-0 mt-2 dropdown-toggle">
+                                    <a href="#" data-bs-toggle="dropdown" class="text-white text-opacity-75 text-decoration-none">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                    <div class="dropdown-menu">
+                                        <a data-bs-toggle="modal" style="cursor:pointer" data-bs-target="#modalLg" class="dropdown-item" onclick="EditBusinessSide('@Url.Action("_EditBusinessSide", "BusinessSide")', this)">
+                                            ویرایش
+                                            <input type="hidden" value="@item.up_Id"/>
+                                        </a>
+
+                                        @if ((bool)item.up_Status)
+                                        {
+                                            <a data-bs-toggle="modal" style="cursor:pointer" class="dropdown-item DeActiveBusinessSide true" onclick="DeActiveOrActive('@Url.Action("DeActiveOrActive", "BusinessSide", new { area = "Users" })', this)" id="up_@item.up_Id">
+                                                غیرفعال
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <a data-bs-toggle="modal" style="cursor:pointer" class="dropdown-item DeActiveBusinessSide false" onclick="DeActiveOrActive('@Url.Action("DeActiveOrActive", "BusinessSide", new { area = "Users" })', this)" id="up_@item.up_Id">
+                                                فعال
+                                            </a>
+                                        }
+                                        <a style="cursor:pointer" data-bs-toggle="modal" data-bs-target="#modalLg" class="dropdown-item" onclick="AccessLevel('@Url.Action("_TreeViewAccessLevels_Positions", "AccessLevel")', this)">
+                                            تخصیص دسترسی
+                                            <input type="hidden" value="@item.up_Id"/>
+                                        </a>
+
+                                    </div>
+                                </div>
+
+                            </td>
+                            <td>@item.up_name</td>
+                            <td>
+                                @*@if (item.tbBusinessSide1 != null)
+                                        {
+                                            <span>  @item.tbBusinessSide2.up_name  </span>
+                                        }*@
+
+
+                                @if (item.tbBusinessSide2 != null)
+                                {
+                                    <span>@item.tbBusinessSide2.up_name</span>
+                                }
+
+                            </td>
+                            <td>
+                                @if (item.up_Status != null && (bool)item.up_Status == true)
+                                {
+                                    <i class="far fa-lg fa-fw me-2 fa-check-square" style="color:green"></i>
+                                }
+                                else
+                                {
+                                    <i class="far fa-lg fa-fw me-2 fa-window-close" style="color:red"></i>
+                                }
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+</div>

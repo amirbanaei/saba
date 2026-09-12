@@ -1,0 +1,197 @@
+﻿@model IEnumerable<SaabWebProject.Models.DomainModels.tbCommodityProject>
+@{
+    Layout = null;
+
+}
+<link href="~/MyStyles/jalalidatepicker.css" rel="stylesheet" />
+<link href="~/MyStyles/inputstyleandformstyle.css" rel="stylesheet" />
+<style>
+    .responsive {
+        font-size: 10px !important;
+        padding: 9px
+    }
+
+    @@media (min-width: 1270px) and (max-width: 1500px) {
+        .responsive {
+            font-size: 12px;
+            padding: 11px
+        }
+    }
+
+</style>
+
+
+
+<div class="row">
+
+    <div class="col-xl-8">
+        <div class="row">
+            <div class="col-xl-12">
+                <label class="form-label"> پیمان ها </label>
+                
+                <select class="form-select " id="pROJESELECT">
+                    <option value="0">انتخاب نمایید..</option>
+                    @{
+                        int? previousFK_pec_ID = null;
+
+
+                    }
+                    @foreach (var item in Model)
+                    {
+                        if (item.FK_PeymanContracts != previousFK_pec_ID)
+                        {
+
+
+                            <option value="@(item.FK_PeymanContracts)">@item.tbPeymanContracts.pec_Title</option>
+                        }
+
+                        previousFK_pec_ID = item.FK_PeymanContracts;
+
+                    }
+
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-2">
+        <div class="row">
+            <div class="col-xl-12">
+                <label class="form-label">سال</label>
+                
+            </div>
+            <div class="col-xl-12">
+                <select id="year_pY4" class="form-select">
+                    <option value="0">انتخاب کنید</option>
+                    @{
+                        System.Globalization.PersianCalendar cs2 = new System.Globalization.PersianCalendar();
+                        int currentYear = cs2.GetYear(DateTime.Now);
+
+                        for (var i = 4; i >= 0; i--)
+                        {
+                            var s = DateTime.Now.AddYears(-i);
+
+                            <option value="@cs2.GetYear(s)">@cs2.GetYear(s)</option>
+                        }
+                    }
+                </select>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-2">
+        <div class="row">
+            <div class="col-xl-12">
+                <label class="form-label">ماه</label>
+                
+            </div>
+            <div class="col-xl-12">
+                <select id="month_pY4" class="form-select">
+                    <option value="0">انتخاب کنید  </option>
+
+                    <option value="1">فروردین</option>
+                    <option value="2">اردیبهشت</option>
+                    <option value="3">خرداد</option>
+                    <option value="4">تیر</option>
+                    <option value="5">مرداد</option>
+                    <option value="6">شهریور</option>
+                    <option value="7">مهر</option>
+                    <option value="8">آبان</option>
+                    <option value="9">آذر</option>
+                    <option value="10">دی</option>
+                    <option value="11">بهمن</option>
+                    <option value="12">اسفند</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<div class="row" style="margin-bottom:10px;font-size:14px">
+    <div class="col-xl-11">
+
+    </div>
+    <div class="col-xl-1">
+        <a href="#" class=" btn form-control buttonGeneral responsive" id="dwn2" onclick="Detail2() ">
+            <i class="fa fa-eye fa-fw me-1 VecGeneral"></i>
+            <span class="bGeneral-text">مشاهده</span>
+        </a>
+    </div>
+    @*<div class="col-xl-3 ">
+            <a href="#" class=" btn btn-outline-info form-control xoi csss responsive Uploadforaccept4 " style="margin-top: 30px; text-align: center; border-radius: 20px; color: white; background-color: #0d3244; margin-bottom: 10px;" id="dwn">
+                <i class="bi bi-download"></i>
+                بارگزاری فایل تایید شده
+            </a>
+
+        </div>
+
+        <div class="col-xl-2 ">
+            <a data-bs-toggle="modal" data-bs-target="#modalLg1" href="#" class=" btn btn-outline-info form-control xoi csss responsive  " style="margin-top: 30px; text-align: center; border-radius: 20px; color: white; background-color: #0d3244; margin-bottom: 10px;" id="detailnew">
+                <i class="bi bi-download"></i>
+                مشاهده
+            </a>
+
+        </div>*@
+    @*<div class="col-xl-3">
+        <a class="dropdown-item Uploadforaccept" style="text-align: center;margin-top:20px;">
+            <span>بارگذاری فایل تایید کننده </span>
+        </a>*@
+    <input id="inp_file" style="display:none" type="file" class="form-control inp_file" value="" />
+    <input id="summery_file" style="display:none" type="file" class="form-control" value="" />
+    @*</div>*@
+
+</div>
+
+
+
+
+<div id="myTable">
+
+</div>
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+
+<script src="~/Scripts/popper.min.js"></script>
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Scripts/sweetalert2.js"></script>
+@*<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>*@
+
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+
+<script>
+    function Detail2() {
+        var selectedValue2 = $("#pROJESELECT").val();
+        var year_pY2 = $("#year_pY4").val();
+        var month_pY2 = $("#month_pY4").val();
+        console.log("svdfunc_ID: " + month_pY2);
+        console.log("svdfunc_ID: " + selectedValue2);
+        console.log("svdfunc_ID: " + year_pY2);
+
+        @*$("#myTable").load('@Url.Action("/WareHouse/WareHouse/tBAcceptList")?Peyman_ID=' + selectedValue2 + '&Month=' + month_pY2 + '&Year=' + year_pY2);*@
+
+        $("#myTable").load('@Url.Content("/JobGroups/tBAcceptList")?Peyman_ID=' + selectedValue2 + '&Month=' + month_pY2 + '&Year=' + year_pY2);
+
+};
+    $("#month_pY4").picker({ search: false });
+    $("#year_pY4").picker({ search: false });
+    $("#pROJESELECT").picker({ search: false });
+
+</script>
+<script>
+    jalaliDatepicker.startWatch({
+        time: true,
+        days: ["شنبه", "1شنبه", "2شنبه", "3شنبه", "4شنبه", "5شنبه", "جمعه"],
+        persianDigits: true,
+        //autoClose: true,
+        //autocomplete: true,
+        // showCloseBtn:true,
+        showEmptyBtn: false,
+        showCloseBtn: true,
+        zIndex: 100000,
+
+
+    });
+</script>

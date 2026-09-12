@@ -1,0 +1,75 @@
+﻿@{
+    Layout = null;
+}
+@model IEnumerable<SaabWebProject.Models.DomainModels.tbReffrenceSave>
+
+<div class="col-xl-7">
+    <label class="form-label"> پیمان ها </label>
+    <select class="form-select" id="baste_peyman1">
+        <option value="0">انتخاب نمایید..</option>
+        @foreach (var item in Model)
+        {
+            string a = "";
+            if (item.IsFor == 3)
+            {
+                a = "ماشین آلات";
+            }
+            else if (item.IsFor == 4)
+            {
+                a = "ابزار آلات";
+            }
+            else
+            {
+                a = "عمل کرد افراد";
+            }
+            <option value="@item.FK_PeymanID ">@item.tbPeymanContracts.pec_Title ( @a )</option>
+        }
+        0
+    </select>
+</div>
+<div class="col-xl-5">
+    <label class="form-label"> بسته ها </label>
+
+        <div id="mybaste2"></div>
+ 
+</div>
+
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+
+<script src="~/Scripts/popper.min.js"></script>
+
+<script>
+    $(function(){
+        $("#mybaste2").load('@Url.Content("/RegistrationAndConfirmationProcedures/ReffrenceSaveGetAllBaste2")?peyman_id=0', function () {
+        });
+ 
+
+        $("#baste_peyman1").change(function () {
+ var a1 = $(this).val()
+            var a = $(this).val().split('_')[0].toString();
+             console.log(a1);
+        // var b = $(this).val().split('_')[1].toString();
+
+        console.log(a);
+      //  console.log(b);
+        var x = '?peyman_id=' + a;
+
+        console.log(x);
+        $("#mybaste2").load('@Url.Content("/RegistrationAndConfirmationProcedures/ReffrenceSaveGetAllBaste2")'+x , function () {
+
+        });
+
+     
+    });
+    });
+
+</script>
+
+
+
+<script>
+    
+</script>

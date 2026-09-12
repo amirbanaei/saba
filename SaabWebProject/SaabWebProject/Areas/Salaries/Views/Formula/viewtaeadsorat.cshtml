@@ -1,0 +1,591 @@
+﻿@model IEnumerable<SaabWebProject.Models.DomainModels.tbmoalfefishexcel>
+
+@{
+    ViewBag.Title = "تایید کارکرد";
+    Layout = null;
+}
+<link href="~/MyStyles/jalalidatepicker.css" rel="stylesheet" />
+<link href="~/MyStyles/inputstyleandformstyle.css" rel="stylesheet" />
+<style>
+    .responsive {
+        font-size: 10px !important;
+        padding: 9px
+    }
+
+    @@media (min-width: 1270px) and (max-width: 1500px) {
+        .responsive {
+            font-size: 12px;
+            padding: 11px
+        }
+    }
+
+    .pc-element {
+        padding-left: 3px !important
+    }
+</style>
+
+
+
+<div class="row">
+
+    <div class="col-xl-8">
+        <div class="row">
+            <div class="col-xl-12">
+                <label class="form-label"> پیمان ها </label>
+                
+                <select class="form-select " id="Pymn">
+                    <option value="0">انتخاب نمایید..</option>
+                    @{
+                        int? previousFK_pec_ID = null;
+
+
+                    }
+                    @foreach (var item in Model)
+                    {
+                        if (item.Fk_Pymn != previousFK_pec_ID)
+                        {
+
+
+                            <option value="@(item.Fk_Pymn)_@(item.Fk_Basteh)">@item.tbPeymanContracts.pec_Title</option>
+                        }
+
+                        previousFK_pec_ID = item.Fk_Pymn;
+
+                    }
+
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-2">
+        <div class="row">
+            <div class="col-xl-12">
+                <label class="form-label">سال</label>
+                
+            </div>
+            <div class="col-xl-12">
+                <select id="year_Eq7" class="form-select">
+                    <option value="0">انتخاب کنید</option>
+                    @{
+                        System.Globalization.PersianCalendar cs2 = new System.Globalization.PersianCalendar();
+                        int currentYear = cs2.GetYear(DateTime.Now);
+
+                        for (var i = 4; i >= 0; i--)
+                        {
+                            var s = DateTime.Now.AddYears(-i);
+
+                            <option value="@cs2.GetYear(s)">@cs2.GetYear(s)</option>
+                        }
+                    }
+                </select>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-2">
+        <div class="row">
+            <div class="col-xl-12">
+                <label class="form-label">ماه</label>
+                
+            </div>
+            <div class="col-xl-12">
+                <select id="month_Eq7" class="form-select">
+                    <option value="0">انتخاب کنید  </option>
+
+                    <option value="1">فروردین</option>
+                    <option value="2">اردیبهشت</option>
+                    <option value="3">خرداد</option>
+                    <option value="4">تیر</option>
+                    <option value="5">مرداد</option>
+                    <option value="6">شهریور</option>
+                    <option value="7">مهر</option>
+                    <option value="8">آبان</option>
+                    <option value="9">آذر</option>
+                    <option value="10">دی</option>
+                    <option value="11">بهمن</option>
+                    <option value="12">اسفند</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<div class="row" style="">
+    <div class="col-xl-9">
+
+    </div>
+    <div class="col-xl-1">
+        <button class="btn btn-outline-info form-control buttonGeneral responsive" onclick="DownloadExcel22()">
+            <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+            <span class="bGeneral-text">دانلود فایل نمونه</span>
+            
+        </button>
+    </div>
+
+    <div class="col-xl-1">
+        <input name="MyExcelStream" type="file" style="display:none" />
+        <a href="#" onclick="ShowDialogFile()" class="btn form-control buttonGeneral responsive">
+            <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+            <span class="bGeneral-text"> بارگذاری اطلاعات</span>
+           
+        </a>
+    </div>
+    <div class="col-xl-1">
+        <button class="btn form-control buttonGeneral responsive" onclick="Detail7()">
+            <i class="fa fa-eye fa-fw me-1 VecGeneral"></i>
+            <span class="bGeneral-text"> مشاهده</span>
+           
+        </button>
+    </div>
+
+</div>
+<div class="Equment_list"></div>
+<input id="summery_file4" style="display:none" type="file" class="form-control" value="" />
+
+
+
+<div id="myTable7">
+
+</div>
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+
+<script src="~/Scripts/popper.min.js"></script>
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Scripts/sweetalert2.js"></script>
+@*<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>*@
+
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+
+<script>
+
+
+      function DownloadExcel22() {
+          var selectedValue = $("#Pymn").val();
+      var parts = selectedValue.split('_');
+      var FK_Baste = parts[1];
+      var pymnID = parts[0];
+
+      $.ajax({
+          beforeSend: function () {
+              document.getElementById("loading-message").style.display = "block";
+          },
+          type: 'GET',
+          dataType: 'html',
+          success: function (res) {
+              document.getElementById("loading-message").style.display = "none";
+              window.location = '@Url.Action("ExportMoalefeExcelformoalfefish", "Moalefe", new { area = "Salaries" })?PeymanID=' + pymnID;
+          },
+          error: function (res) {
+              alert("An error occurred");
+              console.log(res);
+          }
+      });
+  }
+
+
+
+    var fd = new FormData();
+    function downloadAjaxsorat() {
+        //var selectedValue = $("#baste_peymanofAccept").val();
+
+        //if (selectedValue) {
+        //    var parts = selectedValue.split('_');
+
+        //    if (parts.length >= 2) {
+        //        var FK_Baste = parts[1];
+        //        var pymnID = parts[0];
+
+        //        // Your further code logic here
+        //    } else {
+        //        console.error("Invalid format: " + selectedValue);
+        //    }
+        //} else {
+        //    console.error("Selected value is undefined or null");
+        //}
+        console.log(pymnID)
+        if ($("#select_peyman1").val() == 0) {
+            alert("لطفا عنوان را انتخاب نمائید");
+        }
+        else if ($("#year_Eq4").val() == 0) {
+            alert("سال مورد نظر را انتخاب نمایید")
+
+        } else if ($("#month_Eq4").val() == 0) {
+            console.log($("#month_usr").val())
+            alert("ماه مورد نظر را انتخاب نمایید")
+        }  else {
+            var selectedValue = $("#pROJESELECT7").val();
+            var parts = selectedValue.split('_');
+            var FK_Baste = parts[1];
+            var pymnID = parts[0];
+
+
+
+
+
+
+            console.log($("#pROJESELECT7").val());
+            console.log(FK_Baste);
+            console.log(pymnID);
+
+            $.ajax({
+
+                beforeSend: function () {
+                    document.getElementById("loading-message").style.display = "block";//مهندس دارین برعککس میزارین
+                    //این درسته
+                    //شبیه هم ننوشتین
+                    //خوب ورودی هام فرق داتشنت الاان فهمیدم چیشد + اضافه گذاشته بود
+                },
+                url: '@Url.Action("ExceleForsorat", "Moalefe", new { area = "Salaries" })?PeymanID=' + pymnID + '&month=' + $("#month_Eq4").val() + '&year=' + $("#year_Eq4").val() + '&Basteh=' + FK_Baste,
+                type: 'GET',
+                dataType: 'html',
+
+
+                success: function (res) {
+                    //if (res === "False") {
+                    //    // اجرای بلوک error در صورت مطابقت با "False"
+                    //    alert("برای این ماه و این سال این بسته تایید نهایی شده است ");
+                    //    window.location.reload();
+                    //    console.log(res);
+                    //}
+                    //else {
+
+                        $("#loading-message").css("display", "block");
+                    var selectedValue = $("#pROJESELECT7").val();
+                        var parts = selectedValue.split('_');
+                        var FK_Baste = parts[1];
+                        var pymnID = parts[0];
+                        console.log($("#baste_peyman").val())
+                        window.location =  '@Url.Action("ExceleForsorat", "Moalefe", new { area = "Salaries" })?PeymanID=' + pymnID + '&month=' + $("#month_Eq4").val() + '&year=' + $("#year_Eq4").val() + '&Basteh=' + FK_Baste;
+                        $("#loading-message").css("display", "none");
+
+                    /*}*/
+                },
+                error: function (res) {
+                    alart("fdslsfdk")
+                    console.log(res);
+                }
+            });
+
+
+
+
+
+
+        }
+
+
+
+
+      }
+</script>
+
+
+<script>
+
+    $("#upload5").click(function () {
+
+        var selectedValue = $("#PymnPymn").val();
+
+        if (selectedValue) {
+            var parts = selectedValue.split('_');
+
+            if (parts.length >= 2) {
+                var FK_Baste = parts[1];
+                var pymnID = parts[0];
+
+                // Your further code logic here
+            } else {
+                console.error("Invalid format: " + selectedValue);
+            }
+        } else {
+            console.error("Selected value is undefined or null");
+        }
+        console.log(pymnID)
+        if (pymnID == undefined) {
+            alert("پیمان مورد نظر را انتخاب نمایید")
+        //} else if ($("#select_EquipmentGroup").val() == "Select") {
+        //    alert("نوع تجهیزات خود را مشخص کنید ")
+            //}
+        }
+        else if ($("#year_Eq4").val() == 0) {
+            alert("سال مورد نظر را انتخاب نمایید")
+
+        } else if ($("#month_Eq4").val() == 0) {
+            console.log($("#month_usr").val())
+            alert("ماه مورد نظر را انتخاب نمایید")
+        } else {
+
+
+            $("#summery_file4").click();
+        }
+       });
+       $("#summery_file4").change(function (e) {
+                   $.each(e.target.files, function (index, file) {
+                       fd.append("files", file);
+                   });
+                   sendAjax10('@Url.Action("ImportExcele_TaedSorat", "Moalefe", new { area = "Salaries" })', fd);
+       });
+</script>
+<script>
+    function sendAjax10(url2, fd2) {
+        var selectedValue = $("#pROJESELECT7").val();
+        var parts = selectedValue.split('_');
+        var FK_Baste = parts[1];
+        var pymnID = parts[0];
+
+
+
+
+
+
+        console.log($("#pROJESELECT7").val());
+        console.log(FK_Baste);
+        console.log(pymnID);
+
+        $("#loading-message").css("display", "block");
+        var selectedValue = $("#pROJESELECT7").val();
+        var parts = selectedValue.split('_');
+        var FK_Baste = parts[1];
+        var pymnID = parts[0];
+        fd2.append("svdfunc_pymnID", pymnID);
+        fd2.append("svdfunc_BastehID", FK_Baste);
+        //fd2.append("FromDate", $("#datepickerFromEn_usr").val());
+        //fd2.append("ToDate", $("#datepickerToEn_usr").val());
+        //fd2.append("Year", $("#year_Eq4").val());
+        //fd2.append("Month", $("#month_Eq4").val());
+        //fd2.append("Type", $("#select_EquipmentGroup").val());
+
+        $.ajax({
+            url: url2,
+            type: 'POST',
+            data: fd2,
+            processData: false,
+            contentType: false,
+            success: function (res) {
+                $("#loading-message").css("display", "none");
+                if (res == "True") {
+                    alert("باموفقیت ثبت شد");
+                    location.reload();
+                }
+
+                fd = new FormData();
+                console.log(res);
+                console.log("jj");
+
+                    //$("#big_modal_body1").html(res)
+                    //    .then(() => {
+                       @*$("#table_div").load('@Url.Content("../defFacilitiesEquipment/_ListEquipmentMoalefeValue")');*@
+
+
+            },
+            error: function (res) {
+                $("#loading-message").css("display", "none");
+                console.log(res);
+                console.log("jj");
+                Toast.fire({
+                    icon: 'success',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                }).then(() => {
+                    $("#loading-message").css("display", "none");
+                });
+            }
+        });
+    }
+</script>
+<script>
+
+    $("#upload2").click(function () {
+
+
+    var selectedValue = $("#baste_peyman_ACCEpt3").val();
+
+    if (selectedValue) {
+        var parts = selectedValue.split('_');
+
+        if (parts.length >= 2) {
+            var svdfunc_ID = parts[0];
+            var pymnID = parts[1];
+            var Type = parts[2];
+
+            // Your further code logic here
+        } else {
+            console.error("Invalid format: " + selectedValue);
+        }
+    } else {
+        console.error("Selected value is undefined or null");
+    }
+    console.log(pymnID)
+    if (pymnID == undefined) {
+        alert("پیمان مورد نظر را انتخاب نمایید")
+    }
+    else if ($("#year_pY1").val() == 0) {
+        alert("سال مورد نظر را انتخاب نمایید")
+
+    } else if ($("#month_pY1").val() == 0) {
+        console.log($("#month_pY").val())
+        alert("ماه مورد نظر را انتخاب نمایید")
+
+    } else {
+
+
+        $("#summery_file11").click();  }
+   });
+    $("#summery_file11").change(function (e) {
+        $.each(e.target.files, function (index, file) {
+            fd.append("files", file);
+        });
+        sendAjax45('@Url.Action("UploadAttachmentFile", "DefFacilitiesEquipment",new { area = "Contracts" })', fd);
+
+   });
+
+
+
+
+
+
+
+    function Detail7() {
+        var year_pY2 = $("#year_Eq7").val();
+        var month_pY2 = $("#month_Eq7").val();
+        console.log("svdfunc_ID: " + month_pY2);
+
+        console.log("svdfunc_ID: " + year_pY2);
+        var selectedValue = $("#Pymn").val();
+        var parts = selectedValue.split('_');
+        var FK_Baste = parts[1];
+        var pymnID = parts[0];
+
+        @*$("#myTable").load('@Url.Action("/WareHouse/WareHouse/tBAcceptList")?Peyman_ID=' + selectedValue2 + '&Month=' + month_pY2 + '&Year=' + year_pY2);*@
+
+        $("#myTable7").load('@Url.Action("viewtableforacceptFishmoalfe", "Formula", new { area = "Salaries" })?Peyman_ID=' + pymnID + '&Month=' + month_pY2 + '&Year=' + year_pY2 + '&FK_Baste=' + FK_Baste);
+
+};
+    $("#year_Eq7").picker({ search: false });
+    $("#month_Eq7").picker({ search: false });
+    $("#Pymn").picker({ search: false });
+
+</script>
+<script>
+    jalaliDatepicker.startWatch({
+        time: true,
+        days: ["شنبه", "1شنبه", "2شنبه", "3شنبه", "4شنبه", "5شنبه", "جمعه"],
+        persianDigits: true,
+        //autoClose: true,
+        //autocomplete: true,
+        // showCloseBtn:true,
+        showEmptyBtn: false,
+        showCloseBtn: true,
+        zIndex: 100000,
+
+
+    });
+</script>
+<script>
+      $("input[name='MyExcelStream']").change(function () {
+                  console.log("ldsaksda0");
+
+        var file = this.files[0];
+        var ext = file.name.split('.')[1];
+        if (ext == "xlsx" || ext == "xls") {
+
+            var obj = new FormData();
+            var selectedValue = $("#Pymn").val();
+            var parts = selectedValue.split('_');
+            var FK_Baste = parts[1];
+            var pymnID = parts[0];
+
+            obj.append("MyExcelStream", file);
+
+            console.log(file);
+            $.ajax({
+            beforeSend:function (){
+              document.getElementById("loading-message").style.display = "block";
+            },
+                url: "@Url.Action("sabtexcel", "Formula", new { area = "Salaries" })?PeymanID=" + pymnID + "&FKBasteh=" + FK_Baste,
+               type: "post",
+               contentType: false,
+               data: obj,
+               processData: false,
+               cache: false,
+                success: function (res) {
+                    if (res == "True") {
+                        console.log(FK_Baste);
+                        $.ajax({
+         beforeSend:function (){
+           document.getElementById("loading-message").style.display = "block";
+         },
+                            url: "@Url.Action("ImportExcel_AddFishTAEED", "Formula", new { area = "Salaries" })?Basteh=" + FK_Baste,
+type: "post",
+
+            contentType: false,
+            data: obj,
+            processData: false,
+            cache: false,
+            success: function (res) {
+                document.getElementById("loading-message").style.display = "none";
+                Swal.fire({
+                    icon: 'success',
+                    background: 'rgb(29,40,52)',
+                    color: 'white',
+                    confirmButtonText: 'باشه',
+                    title: 'آپلود اکسل',
+                    text: res,
+                });
+
+            },
+            error: function (res) {
+                console.log(res);
+            }
+        });
+                    }
+
+                    else {
+                        console.log(res);
+                    }
+                   //document.getElementById("loading-message").style.display = "none";
+                   //Swal.fire({
+                   //    icon: 'success',
+                   //    background: 'rgb(29,40,52)',
+                   //    color: 'white',
+                   //    confirmButtonText: 'باشه',
+                   //    title: 'آپلود اکسل',
+                   //    text: res,
+                   //});
+
+               },
+               error: function (res) {
+                   console.log(res);
+               }
+           });
+        }
+        else {
+
+            Swal.fire({
+                icon: 'warning',
+                background: 'rgb(29,40,52)',
+                color: 'white',
+                confirmButtonText: 'باشه',
+                title: 'نوع فایل',
+                text: 'لطفا فایلی با پسوند اکسل وارد کنید',
+            });
+            return false;
+        }
+
+    });
+    /// Open Dialog File
+
+</script>
+<script>
+    function ShowDialogFile() {
+        console.log("ldsaksda0");
+        $("input[name='MyExcelStream']").val(null);
+        $("input[name='MyExcelStream']").click();
+    }
+</script>

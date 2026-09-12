@@ -1,0 +1,618 @@
+﻿
+@{
+    ViewBag.Title = "توزیع نقدینگی";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+@*<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />*@
+
+<div class="">
+    <ul class="nav nav-tabs nav-tabs-v2 ps-4 pe-4">
+        <li class="nav-item me-3">
+            <a href="#TaghsimVajh" class="nav-link active" data-bs-toggle="tab">
+                <button class=" nav-btn">تقسیم وجه</button>
+
+            </a>
+        </li>
+        <li class="nav-item me-3">
+            <a href="#TakhsisVajh" class="nav-link" data-bs-toggle="tab">
+                <button class=" nav-btn">تخصیص وجه</button>
+
+            </a>
+        </li>
+    </ul>
+    <div class="tab-content p-4">
+        @*تقسیم وجه  *@
+        <div class="tab-pane Show active" id="TaghsimVajh">
+            <div class="row" style="margin-top:10px;">
+                <div class="col-xl-12">
+                    <label class="form-label">پیمان</label>
+                    <div id="peyman2"></div>
+                </div>
+
+                <div class="col-xl-3">
+                    <label class="form-label">کل مبلغ قابل تقسیم</label>
+                    <input class="form-control number" />
+                </div>
+                <div class="col-xl-2">
+                    <label class="form-label">ماه</label>
+                    <select class="form-select">
+                        <option>انتخاب کنید</option>
+                    </select>
+                </div>
+                <div class="col-xl-2">
+                    <label class="form-label">سال</label>
+                    <select class="form-select">
+                        <option>انتخاب کنید</option>
+                    </select>
+                </div>
+                <div class="col-xl-2">
+                    <div class=" form-group mb-12">
+                        <label class="form-label">شماره تقسیم وجه</label>
+                        <input class="form-control" />
+                    </div>
+                </div>
+                <div class="col-xl-2"></div>
+                <div class="col-xl-1">
+                    <button href="#" id="choosemoalefe" class="btn form-control buttonGeneral" data-bs-toggle="modal" data-bs-target="#modalLg">
+                        <i class="fa fa-plus-circle fa-fw me-1 VecGeneral"></i>
+                        <span class="bGeneral-text">مولفه مورد نظر</span>
+                    </button>
+                </div>
+
+            </div>
+
+            <div class="row" style="margin-top:20px">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="firstTable">
+                                <thead>
+                                    <tr style="text-align:center;margin:auto">
+                                        <th rowspan="2" style="padding-bottom:30px">
+                                            @Html.DisplayName("ردیف")
+                                        </th>
+                                        <th rowspan="2" style="padding-bottom:30px">
+                                            @Html.DisplayName("پیمان")
+                                        </th>
+                                        <th>
+                                            @Html.DisplayName("100%")
+                                        </th>
+                                        <th>
+                                            @Html.DisplayName("100%")
+                                        </th>
+                                        <th>
+                                            @Html.DisplayName("100%")
+                                        </th>
+                                        <th>
+                                            @Html.DisplayName("50%")
+                                        </th>
+                                        <th>
+                                            @Html.DisplayName("10%")
+                                        </th>
+                                        <th>
+                                            @Html.DisplayName("70%")
+                                        </th>
+                                        <th>
+                                            @Html.DisplayName("25%")
+                                        </th>
+
+
+
+                                    </tr>
+                                    <tr style="text-align:center;margin:auto">
+
+                                        <th>
+                                            @Html.DisplayName("حقوق و مزایا")
+                                        </th>
+                                        <th>
+                                            @Html.DisplayName("ایاب و ذهاب")
+                                        </th>
+                                        <th>
+                                            @Html.DisplayName("تامین اجتماعی")
+                                        </th>
+                                        <th>
+                                            @Html.DisplayName("اجاره خودرو")
+                                        </th>
+                                        <th>
+                                            @Html.DisplayName("مالیات")
+                                        </th>
+                                        <th>
+                                            @Html.DisplayName("بیمه تکمیلی")
+                                        </th>
+                                        <th>
+                                            @Html.DisplayName("سایر")
+                                        </th>
+
+
+
+                                    </tr>
+                                </thead>
+                                <tbody style="text-align:center;">
+                                    @*<tr style="text-align:center;">
+
+
+                                            <td>1</td>
+                                            <td>قوچان</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+
+                                        </tr>
+                                        <tr style="text-align:center;">
+
+
+                                            <td>2</td>
+                                            <td>نیشابور</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+
+                                        </tr>
+                                        <tr style="text-align:center;">
+
+
+                                            <td>3</td>
+                                            <td>کاشمر</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+
+                                        </tr>
+                                        <tr style="text-align:center;">
+
+
+                                            <td>4</td>
+                                            <td>خواف</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+
+                                        </tr>
+                                        <tr style="text-align:center;">
+
+
+                                            <td>4</td>
+                                            <td>خواف</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+
+                                        </tr>
+                                        <tr style="text-align:center;">
+
+
+                                            <td>5</td>
+                                            <td>سرخس</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+
+                                        </tr>
+                                        <tr style="text-align:center;">
+
+
+                                            <td>6</td>
+                                            <td>فیروزه</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+
+                                        </tr>
+                                        <tr style="text-align:center;">
+
+
+                                            <td>7</td>
+                                            <td>تربیت حیدریه</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+
+                                        </tr>
+                                        <tr style="text-align:center;">
+
+
+                                            <td>8</td>
+                                            <td>تربت جام</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+
+                                        </tr>*@
+
+                                </tbody>
+                                <tbody>
+                                    <tr style="text-align:center;">
+                                        <td colspan="2" rowspan="2">جمع کل</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" id="totalPrice"></td>
+                                        <td colspan="5">شرح</td>
+
+                                    </tr>
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card-arrow">
+                        <div class="card-arrow-top-left"></div>
+                        <div class="card-arrow-top-right"></div>
+                        <div class="card-arrow-bottom-left"></div>
+                        <div class="card-arrow-bottom-right"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" style="margin-top:10px;">
+                <div class="col-xl-10"></div>
+                <div class="col-xl-1">
+                    <div class="form-group mb-3">
+                        <button id="" type="button" class="btn btn-outline-theme buttonGeneral">
+                            <i class="fa fa-edit fa-fw me-1 VecGeneral"></i>
+                            <span class="bGeneral-text">ویرایش مولفه ها</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-xl-1">
+                    <div class="form-group mb-3">
+                        <button id="btnSaveContract" type="button" class="btn form-control buttonsabt">
+                            <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                            <span class="bSabt-text">ثبت</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+
+        @*تخصیص وجه*@
+        <div class="tab-pane" id="TakhsisVajh">
+            <div class="row" style="margin-top:10px;">
+                <div class="col-xl-12">
+                    <label class="form-label">پیمان</label>
+                    <span id="peyman1">
+
+                    </span>
+                </div>
+                <div class="col-xl-3">
+                    <label class="form-label">کل مبلغ قابل تخصیص</label>
+                    <input class="form-control number" id="TotalPriceForTakhsis" />
+                </div>
+                <div class="col-xl-2">
+                    <div class=" form-group mb-12">
+                        <label class="form-label">شماره تخصیص</label>
+                        <input class="form-control" />
+                    </div>
+                </div>
+
+
+                <div class="col-xl-2">
+                    <label class="form-label"> ماه  </label>
+                    <select class="form-select" id="">
+                        <option value="0">انتخاب کنید..</option>
+                        <option value="1">فروردین</option>
+                        <option value="2">اردیبهشت</option>
+                        <option value="3">خرداد</option>
+                        <option value="4">تیر</option>
+                        <option value="5">مرداد</option>
+                        <option value="6">شهریور</option>
+                        <option value="7">مهر</option>
+                        <option value="8">آبان</option>
+                        <option value="9">آذر</option>
+                        <option value="10">دی</option>
+                        <option value="11">بهمن</option>
+                        <option value="12">اسفند</option>
+                    </select>
+                </div>
+
+                <div class="col-xl-2">
+                    <label class="form-label"> سال  </label>
+                    <select class="form-select">
+                        <option style="color:black">انتخاب کنید</option>
+                        <option style="color:black">1400</option>
+                        <option style="color:black">1401</option>
+                        <option style="color:black">1402</option>
+                        <option style="color:black">1403</option>
+                        <option style="color:black">1404</option>
+
+                    </select>
+                </div>
+            </div>
+
+
+            <div class="row" style="margin-top:20px">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="mytable">
+                                <thead>
+                                    <tr style="text-align:center;margin:auto">
+                                        <th rowspan="2" style="padding-bottom:30px">
+                                            @Html.DisplayName("ردیف")
+                                        </th>
+                                        <th rowspan="2" style="padding-bottom:30px">
+                                            @Html.DisplayName("پیمان")
+                                        </th>
+                                        <th>
+                                            @Html.DisplayName("درصد%")
+                                        </th>
+                                        <th>
+                                            @Html.DisplayName("مبلغ")
+                                        </th>
+                                    </tr>
+
+                                </thead>
+                                <tbody style="text-align:center;">
+                                </tbody>
+                                <tbody>
+                                    <tr style="text-align:right;">
+                                        <td>جمع کل</td>
+                                        <td id="totalprice_takhsis"></td>
+
+                                        <td colspan="2">شرح</td>
+
+                                    </tr>
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card-arrow">
+                        <div class="card-arrow-top-left"></div>
+                        <div class="card-arrow-top-right"></div>
+                        <div class="card-arrow-bottom-left"></div>
+                        <div class="card-arrow-bottom-right"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xl-11" style="margin-top:30px;">
+                    <div class="form-group mb-3">
+                    </div>
+                </div>
+                <div class="col-xl-1" style="margin-top:30px;">
+                    <div class="form-group mb-3">
+                        <button id="btnSaveContract" type="button" class="btn form-control buttonsabt">
+                            <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                            <span class="bSabt-text">ثبت</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+</div>
+
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+
+@*نمایش مودال تغییرات درصد مولفه ها*@
+<script>
+    $(function(){
+
+        $("#choosemoalefe").click(function(){
+               $("#big_modal_body").load('@Url.Content("/ManagementAccounting/CashDistribution/ChooseMoalefe")');
+        });
+
+    });
+
+</script>
+
+@*جدول تقسیم وجه*@
+<script>
+
+    var counter = 1;
+    $("#peyman2").load('@Url.Content("/../Contracts/Peyman/_GetAllListPeymans_Select")',function(){
+           $("#select_peyman").attr("id", "select_peyman1");
+            var $elem = $('#select_peyman1');
+            $elem.picker();
+            $elem.on('sp-change', function(){
+
+
+              var tbodyRef = document.getElementById('firstTable').getElementsByTagName('tbody')[0];
+                 //ردیف
+                // Insert a row at the end of table
+                var newRow = tbodyRef.insertRow();
+                // Insert a cell at the end of the row
+                var newCell = newRow.insertCell();
+                // Append a text node to the cell
+                var newText = document.createTextNode(counter);
+                newCell.appendChild(newText);
+              //پیمان
+                // Insert a cell at the end of the row
+                var newCell = newRow.insertCell();
+                // Append a text node to the cell
+                var newText = document.createTextNode($("#select_peyman1 option:selected").text());
+                newCell.appendChild(newText);
+              //دیگر سلول ها 7 تا
+
+                // Insert a cell at the end of the row
+                var z = document.createElement('span');
+                z.innerHTML = '<input class="form-control price" \>';
+                var newCell = newRow.insertCell();
+                newCell.appendChild(z);
+
+                var z = document.createElement('span');
+                z.innerHTML = '<input class="form-control price" \>';
+                var newCell = newRow.insertCell();
+               newCell.appendChild(z);
+
+                var z = document.createElement('span');
+                z.innerHTML = '<input class="form-control price" \>';
+                var newCell = newRow.insertCell();
+                newCell.appendChild(z);
+
+                var z = document.createElement('span');
+                z.innerHTML = '<input class="form-control price" \>';
+                var newCell = newRow.insertCell();
+                newCell.appendChild(z);
+
+                var z = document.createElement('span');
+                z.innerHTML = '<input class="form-control price" \>';
+                var newCell = newRow.insertCell();
+                newCell.appendChild(z);
+
+                var z = document.createElement('span');
+                z.innerHTML = '<input class="form-control price" \>';
+                var newCell = newRow.insertCell();
+                newCell.appendChild(z);
+
+                var z = document.createElement('span');
+                z.innerHTML = '<input class="form-control price" \>';
+                var newCell = newRow.insertCell();
+                newCell.appendChild(z);
+                counter++;
+
+                $(".price").on("keyup",function () {
+                    var amount = $(this).val().replace(/[\D\s\._\-]+/g, "");
+                    amount = amount ? parseInt(amount, 10) : 0;
+                    $(this).val(function () {
+                        return ( amount === 0 ) ? "" : amount.toLocaleString("en-US");
+                    });
+                    var totalValue = 0 ;
+                    $.each( $(".price"), function(index, item) {
+                      var amount = $(this).val().replace(/[\D\s\._\-]+/g, "");
+                      totalValue += amount ? parseInt(amount, 10) : 0;
+
+                  });
+                    $("#totalPrice").text(( totalValue === 0 ) ? "" : totalValue.toLocaleString("en-US"));
+                });
+
+       });
+     });
+
+</script>
+
+@*تخصیص وجه*@
+<script>
+    var counter1 = 1;
+        $("#peyman1").load('@Url.Content("/../Contracts/Peyman/_GetAllListPeymans_Select")',function(){
+           $("#select_peyman").attr("id", "select_peyman2");
+            var $elem = $('#select_peyman2');
+            $elem.picker();
+            $elem.on('sp-change', function(){
+
+              var tbodyRef = document.getElementById('mytable').getElementsByTagName('tbody')[0];
+                 //ردیف
+                // Insert a row at the end of table
+                var newRow = tbodyRef.insertRow();
+                // Insert a cell at the end of the row
+                var newCell = newRow.insertCell();
+                // Append a text node to the cell
+                var newText = document.createTextNode(counter1);
+                newCell.appendChild(newText);
+              //پیمان
+                // Insert a cell at the end of the row
+                var newCell = newRow.insertCell();
+                // Append a text node to the cell
+                var newText = document.createTextNode($("#select_peyman2 option:selected").text());
+                newCell.appendChild(newText);
+              //دیگر سلول ها 2 تا
+                var z = document.createElement('span');
+                z.innerHTML = '<input class="form-control darsad" id="darsad_'+counter1+'" \>';
+                var newCell = newRow.insertCell();
+                newCell.appendChild(z);
+
+                var z = document.createElement('span');
+                z.innerHTML = '<input class="form-control darsadPrice" id="darsadPrice_'+counter1+'" \>';
+                var newCell = newRow.insertCell();
+                newCell.appendChild(z);
+
+                counter1++;
+
+                $(".darsad").on("keyup",function () {
+                    var amount = $("#TotalPriceForTakhsis").val().replace(/[\D\s\._\-]+/g, "");
+                    amount = amount ? parseInt(amount, 10) : 0;
+                    var rowprice = (amount) * ($(this).val()) / 100 ;
+                    var id = $(this).attr("id").split("_")[1];
+                    $("#darsadPrice_"+id).val(( rowprice === 0 ) ? "" : rowprice.toLocaleString("en-US"));
+                    var totalvalue = 0 ;
+                    $.each( $(".darsadPrice"), function(index, item) {
+                      var amount = $(this).val().replace(/[\D\s\._\-]+/g, "");
+                      amount = amount ? parseInt(amount, 10) : 0;
+                      totalvalue += amount;
+                        $("#totalprice_takhsis").text(( totalvalue === 0 ) ? "" : totalvalue.toLocaleString("en-US"));
+                  });
+                });
+
+            });
+       });
+
+</script>
+
+@* سه رقم جدا کردن *@
+<script>
+
+    $(function () {
+        $.each($(".number"), function (index, item) {
+
+            var amount = $(this).val().replace(/[\D\s\._\-]+/g, "");
+            amount = amount ? parseInt(amount, 10) : 0;
+            $(this).val(function () {
+                return (amount === 0) ? "" : amount.toLocaleString("en-US");
+            });
+        });
+
+    });
+
+
+
+    $(".number").on("keyup", function () {
+        var amount = $(this).val().replace(/[\D\s\._\-]+/g, "");
+        amount = amount ? parseInt(amount, 10) : 0;
+        $(this).val(function () {
+            return (amount === 0) ? "" : amount.toLocaleString("en-US");
+        });
+    });
+</script>

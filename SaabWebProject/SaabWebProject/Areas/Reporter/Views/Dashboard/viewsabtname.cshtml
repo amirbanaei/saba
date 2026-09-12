@@ -1,0 +1,85 @@
+﻿@using SaabWebProject.Models.DomainModels;
+
+@{
+    SaabEntities db = new SaabEntities();
+
+    Layout = null;
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model SaabWebProject.Models.DomainModels.tbNamshnaght
+
+<div class="row" @*style="padding-left: 8px;"*@>
+    <div class="col-xl-6">
+        <label class="form-label">نام  </label>
+        <input class="form-control form-control222" id="namemoalf" />
+    </div>
+    <div class="col-xl-2">
+        <label class="form-label">فردی / گروهی</label>
+        <select class="form-select" id="doree">
+            <option value="0">انتخاب کنید..</option>
+            <option value="1">فردی</option>
+            <option value="2">گروهی</option>
+            <option value="3">هردو</option>
+        </select>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xl-10"></div>
+    <div class="col-xl-2">
+        <div>
+
+
+            <button id="dsdsdsfd" type="button" class="btn form-control buttonsabt">
+                <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                <span class="bSabt-text">ثبت</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+
+
+
+
+    function Geeks() {
+        var table = document.getElementById("table_First");
+        var rowCount = table.rows.length;
+        console.log(rowCount)
+        if (rowCount > 14) {
+            table.deleteRow(rowCount - 1);
+        }
+    }
+</script>
+<script>
+    $("#dsdsdsfd").click(function () {
+        // Create FormData and append data
+        var fd2 = new FormData();
+        fd2.append("Name", $("#namemoalf").val());
+        fd2.append("type2", $("#doree").val());
+        fd2.append("fkname", @Model.ID);
+
+        // Send data to server
+        updateDatabase(fd2);
+    });
+
+    function updateDatabase(fd2) {
+        $.ajax({
+            url: '/Reporter/Dashboard/UpdateRecor100', // Controller action URL
+            method: 'POST',
+            data: fd2, // Send FormData to the server
+            processData: false, // Important: prevent jQuery from processing data
+            contentType: false, // Important: prevent jQuery from setting contentType
+            success: function (response) {
+                console.log("Record updated successfully.");
+                if (response == "true") {
+                    alert("با موفقیت ثبت شد");
+                    location.reload();
+                }
+            },
+            error: function (error) {
+                console.error("Error updating record:", error);
+            }
+        });
+    }
+</script>

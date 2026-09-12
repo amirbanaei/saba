@@ -1,0 +1,652 @@
+﻿
+@model SaabWebProject.Models.ViewModels.Contracts.Function.FunctionModel2
+
+
+
+@{
+    ViewBag.Title = "GetDataFromExcel_Moalefe";
+    Layout = null;
+}
+<style>
+
+    th {
+        width: 50%;
+    }
+
+    .view {
+        overflow: auto;
+        white-space: nowrap; /* متن در یک خط افقی نمایش داده می‌شود */
+    }
+
+    table {
+        min-width: 100%; /* عرض جدول حداقل برابر با عرض محتوای آن است */
+    }
+
+    .hed {
+        position: sticky;
+        top: 0;
+        text-align: center;
+        z-index: 3;
+    }
+
+    .users {
+        position: sticky;
+        right: 0;
+        text-align: center;
+        z-index: 3;
+        background-color: black !important;
+    }
+
+    .modal4 {
+        display: none;
+        position: absolute; /* Change this from fixed */
+        z-index: 1000; /* Adjust z-index as needed */
+        left: 0;
+        top: 0;
+        width: 58%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content2 {
+        background-color: black;
+        position: relative; /* Add relative positioning */
+        margin: 15% auto;
+        padding: 20px;
+        border: 4px solid aqua;
+        border-radius: 30px;
+        width: 100%;
+        max-height: 100%;
+        overflow-y: auto;
+    }
+
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+    .fade-in {
+        animation: fadeIn 1s ease-in-out; /* Adjust duration and timing function as needed */
+    }
+
+    /* Keyframes for the fade-in animation */
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: scale(0.9); /* You can also use translate, depending on the desired effect */
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+</style>
+
+@*<div>
+        <div>اطلاعات</div>
+
+        <div class="row">
+            <label class="col-xl-2 mt-3">نام پیمان:</label>
+            <div class="col-xl-4 mt-3 ">
+                <input class=" form-control "  id="py2" value="@Model.SabtHeader.PeymanName" />
+            </div>
+            <label class="col-xl-2 mt-3">نام بسته :</label>
+            <div class="col-xl-4 mt-3">
+                <input class=" form-control "  id="baste2" value="@Model.SabtHeader.BastehName" />
+            </div>
+        </div>
+        <div class="row">
+            <label class="col-xl-2 mt-3">سال</label>
+            <div class="col-xl-4 mt-3">
+                <input class=" form-control " id="year"  value="@Model.SabtHeader.MoalfeVal_Year" />
+            </div>
+            <label class="col-xl-2 mt-3">ماه :</label>
+            <div class="col-xl-4 mt-3 ">
+                <input class=" form-control  " id="month"  value="@Model.SabtHeader.MoalfeVal_Month" />
+            </div>
+        </div>
+        <div class="row">
+            <label class="col-xl-2" style="display:none;">از تاریخ </label>
+            <input class="col-xl-4  " style="display:none;" id="FromDate" value="@Model.SabtHeader.FromDate" />
+
+            <label class="col-xl-2" style="display:none;">تا تاریخ  :</label>
+            <input class="col-xl-4 " style="display:none;" id="ToDate" value="@Model.SabtHeader.ToDate" />
+        </div>
+    </div>*@
+<div class="row">
+    <div>
+        <div>اطلاعات</div>
+
+        <div class="row">
+            <label class="col-xl-2 mt-3">نام پیمان:</label>
+            <div class="col-xl-4 mt-3 ">
+                <input class=" form-control "  id="py2" value="@Model.SabtHeader.PeymanName" />
+            </div>
+            <label class="col-xl-2 mt-3">نام بسته :</label>
+            <div class="col-xl-4 mt-3">
+                <input class=" form-control "  id="baste2" value="@Model.SabtHeader.BastehName" />
+            </div>
+        </div>
+        <div class="row">
+            <label class="col-xl-2 mt-3">سال</label>
+            <div class="col-xl-4 mt-3">
+                <input class=" form-control " id="year"  value="@Model.SabtHeader.MoalfeVal_Year" />
+            </div>
+            <label class="col-xl-2 mt-3">ماه :</label>
+            <div class="col-xl-4 mt-3 ">
+                <input class=" form-control  " id="month"  value="@Model.SabtHeader.MoalfeVal_Month" />
+            </div>
+        </div>
+        <div class="row">
+            <label class="col-xl-2" style="display:none;">از تاریخ </label>
+            <input class="col-xl-4  " style="display:none;" id="FromDate" value="@Model.SabtHeader.FromDate" />
+
+            <label class="col-xl-2" style="display:none;">تا تاریخ  :</label>
+            <input class="col-xl-4 " style="display:none;" id="ToDate" value="@Model.SabtHeader.ToDate" />
+        </div>
+    </div>
+
+</div>
+<div id="mymodal4" class="modal4" style="margin-left: 20% !important; height: 500px; ">
+    <div class="modal-content2">
+        <div class="row">
+            <i class="close fa fa-window-close"></i>
+        </div>
+        <div id="ss">
+
+        </div>
+
+    </div>
+</div>
+<div class="view row">
+
+
+    <div class="view col-xl-12 " style="height:250px">
+        <table class="table table-hover text-nowrap">
+            <thead>
+                <tr class="how">
+                    @{
+                        var uniqueTitles = new List<string>();
+                        var uniqueTitles2 = new List<string>();
+
+                    }
+                    <th class="hed" scope="col">نام کاربری</th>
+                    @foreach (var item2 in Model.UsersMoalefe2.ToList())
+                    {
+                        foreach (var item3 in item2.listMoalefe.ToList())
+                        {
+                            var title = item3.MoalefeTitle;
+                            if (!uniqueTitles.Contains(title))
+                            {
+                                uniqueTitles.Add(title);
+                                <th class="a hed" scope="col" data-title="@{
+    if (title.Length > 10)
+    {
+        title = title.Substring(0, 10);
+    }
+    @title
+}">@title</th>
+}
+}
+}
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item2 in Model.UsersMoalefe2.ToList())
+                {
+                    uniqueTitles2.Clear(); // پاک کردن لیست در هر حلقه جدید
+                    <tr class="hoverable">
+                        <th data-personalcode="@item2.PersonalCode" class="users table-dark" scope="row">
+                            @{
+                                var fullName = item2.FullName;
+                                if (fullName.Split(' ').Length > 5)
+                                {
+                                    fullName = string.Join(" ", fullName.Split(' ').Take(10));
+                                }
+                            }
+                            @fullName
+                        </th>
+                        @foreach (var item3 in item2.listMoalefe.ToList())
+                        {
+                            var title = item3.MoalefeTitle;
+                            if (!uniqueTitles2.Contains(title))
+                            {
+                                uniqueTitles2.Add(title);
+                                <td>
+                                    <input class="moalefe-value form-control"  data-personalcode="@item2.PersonalCode - @item3.Moalefenum -@item3.MoalefeTitle" data-title="@item3.MoalefeTitle - @item2.PersonalCode - @item3.Moalefenum " data-Moalefenum="@item3.Moalefenum" value="@item3.MoalefeValue" title="@item3.MoalefeTitle - @item3.Moalefenum" />
+                                </td>
+                            }
+                        }
+                    </tr>
+                }
+
+
+            </tbody>
+        </table>
+    </div>
+ 
+    @*<div class="form-group mb-3">
+            <button id="btnCreate12" style="float:left;border-radius: 20px;color: white; background-image: linear-gradient(#56e0fa, #055ad7);">ثبت</button>
+        </div>*@
+    <div class="form-group2 mb-3 mt-20px">
+        <!-- Button will be dynamically added here -->
+    </div>
+</div>
+
+
+@*
+    <script>
+        $("#btnCreate2").click(function () {
+            var data = [];
+
+
+            $('.users').each(function (i, obj) {
+                var userObj = {};
+                var personalcode = $(this).attr("id");
+
+                userObj.MoalfeVal_Month = $('#month').val();
+                userObj.MoalfeVal_Year = $('#year').val();
+                userObj.BateName = $('#baste').val();
+                userObj.pymn = $('#py').val();
+                userObj.MoalfeVal_FKUser = $("#" + personalcode).val();
+
+                $("." + personalcode + "_title").each(function (i, element) {
+                    var title = $(element).attr("id");
+                    var value = $("#" + title).val();
+
+                    userObj.MoalfeVal_FKMoalafeDastmozdi = title;
+                    userObj.MoalfeVal_Value = value;
+
+                    data.push(userObj);
+                    console.log(userObj);
+                });
+            });
+
+
+            sendAjax('@Url.Action("send", "MoalefeC", new { area = "Salaries" })', data);
+        });
+
+
+        function sendAjax(url, data) {
+            console.log(url);
+            $.ajax({
+                beforeSend: function () {
+                    document.getElementById("loading-message").style.display = "block";
+                },
+                url: url,
+                data: { Filters: data },
+                type: "POST",
+                dataType: "json",
+                traditional: true, // این را اضافه کردم تا آرایه‌ها به صورت درست به بک‌اند ارسال شوند
+                success: function (resp) {
+                    console.log(resp);
+                    document.getElementById("loading-message").style display = "none";
+                    if (resp === true) {
+                        alert("با موفقیت ثبت شد");
+                    } else {
+                        alert("در ثبت دچار خطا شده ایم! لطفا بعداً تلاش نمائید");
+                    }
+                },
+                error: function (resp) {
+                    document.getElementById("loading-message").style.display = "none";
+                    alert("در ثبت دچار مشکل شده است");
+                    console.log(resp);
+                }
+            });
+        }
+    </script>*@
+<!-- Add the script section at the end of your HTML body -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#expandButton2").click(function () {
+            $("#mymodal4").addClass("fade-in"); // Add the fade-in class
+            $("#mymodal4").css("display", "block");
+        });
+
+        $(".close").click(function () {
+            $("#mymodal4").removeClass("fade-in"); // Remove the fade-in class
+            $("#mymodal4").css("display", "none");
+        });
+
+        $(window).click(function (event) {
+            if (event.target == $("#mymodal4")[0]) {
+                $("#mymodal4").removeClass("fade-in"); // Remove the fade-in class
+                $("#mymodal4").css("display", "none");
+            }
+        });
+    });</script>
+<script>
+    // Define the createCleanID function outside of the document.ready function
+    function createCleanID(value) {
+        // Remove non-alphanumeric characters and replace spaces with underscores
+        return value.replace(/[^a-zA-Z0-9]/g, '_');
+    }
+
+    $(document).ready(function () {
+        // Attach a click event to the moalefe-value inputs
+        $('.moalefe-value').on('click', function () {
+            // Get the values from the clicked input
+            var personalCode = $(this).data('personalcode');
+            var moalefeTitle = $(this).data('title');
+            var moalefeValue = $(this).val();
+            var fullName = $(this).attr('title');
+            var Id = $(this).data('Moalefenum');
+            console.log(Id);
+            // Create a button with the desired attributes
+            var button = $('<button/>', {
+                class:"btn",
+                id: /*moalefeTitle - personalCode**//*//*fullName*//* moalefeTitle + '-' + personalCode*/personalCode,
+
+                text: 'مشاهده بقیه مفادیر ثبت کننده ها ',
+                // You can set any text you want
+                click: function () {
+                    $("#mymodal4").addClass("fade-in"); // Add the fade-in class
+                    $("#mymodal4").css("display", "block");
+  var selectedValue = $(this).attr('id');
+                    console.log('Personal Code: ');
+                    console.log(selectedValue);
+
+      // Split the ID into parts using underscores
+      var parts = selectedValue.split('-');
+
+                    var name = parts[0];
+                    var Moalfe = parts[1];
+          var year_pY = $("#year").val();
+          var month_pY = $("#month").val();
+          var svdfunc_BastehID = $("#baste2").val();
+          var svdfunc_pymnID = $("#py2").val();
+          console.log('Personal Code: ' + svdfunc_BastehID);
+          console.log('Moalefe Title: ' + svdfunc_pymnID);
+          console.log('Moalefe Value: ' + Moalfe);
+          console.log('Full Name: ' + name);
+
+          @*$("#big_modal_body").load('@Url.Action("ViewForAcceptModal", "ConfirmPerformance", new { area = "Contracts" })?Basteh=' + svdfunc_BastehID + '&Py=' + svdfunc_pymnID + '&Year=' + year_pY + '&Month=' + month_pY + '&name=' + name + '&Moalfe=' + Moalfe);*@
+              $.ajax({
+      beforeSend: function () {
+          document.getElementById("loading-message").style.display = "block";//مهندس دارین برعککس میزارین
+          //این درسته
+          //شبیه هم ننوشتین
+          //خوب ورودی هام فرق داتشنت الاان فهمیدم چیشد + اضافه گذاشته بود
+      },
+      url: '@Url.Action("ViewForAcceptModal", "ConfirmPerformance", new { area = "Contracts" })?Basteh=' + svdfunc_BastehID + '&Py=' + svdfunc_pymnID + '&Year=' + year_pY + '&Month=' + month_pY + '&name=' + name + '&Moalfe=' + Moalfe,
+      type: 'GET',
+      dataType: 'html',
+
+
+      success: function (res) {
+          document.getElementById("loading-message").style.display = "none";
+          $('#ss').html(res);
+      },
+      error: function (res) {
+          console.log(res);
+      }
+  });
+                },
+          style: "float: left; border-radius: 20px; color: white; background-image: linear-gradient(#56e0fa, #055ad7);"
+
+            });
+
+            // Append the button to the form-group
+            $('.form-group2').empty().append(button);
+
+            // Log the values to the console (you can remove this in your final implementation)
+            console.log('Personal Code: ' + personalCode);
+            console.log('Moalefe Title: ' + moalefeTitle);
+            console.log('Moalefe Value: ' + moalefeValue);
+            console.log('Full Name: ' + fullName);
+        });
+    });
+
+
+
+    $(".btn").click(function () {
+    var selectedValue = $(this).attr('id');
+    console.log('Personal Code: ');
+
+    if (selectedValue) {
+        // Split the ID into parts using underscores
+        var parts = selectedValue.split('_');
+
+        if (parts.length >= 2) {
+            var c = Moalfe.trim();
+            var X2 = "نصب(کنتور تکفاز ديجيتالي  گرد).شهری.گروهی";
+
+            if (c.toLowerCase() === X2.toLowerCase()) {
+                console.log('Moalefe Value: ' + c);
+            }
+            var Moalfe = "نصب(کنتور تکفاز ديجيتالي  گرد).شهری.گروهی";
+            var name = parts[1];
+            var year_pY = $("#year").val();
+            var month_pY = $("#month").val();
+            var svdfunc_BastehID = $("#baste").val();
+            var svdfunc_pymnID = $("#py").val();
+            console.log('Personal Code: ' + svdfunc_BastehID);
+            console.log('Moalefe Title: ' + svdfunc_pymnID);
+            console.log('Moalefe Value: ' + typeof Moalfe);
+
+            console.log('Full Name: ' + name);
+
+            @*$("#big_modal_body").load('@Url.Action("ViewForAcceptModal", "ConfirmPerformance", new { area = "Contracts" })?Basteh=' + svdfunc_BastehID + '&Py=' + svdfunc_pymnID + '&Year=' + year_pY + '&Month=' + month_pY + '&name=' + name + '&Moalfe=' + Moalfe);*@
+                $.ajax({
+        beforeSend: function () {
+            document.getElementById("loading-message").style.display = "block";//مهندس دارین برعککس میزارین
+            //این درسته
+            //شبیه هم ننوشتین
+            //خوب ورودی هام فرق داتشنت الاان فهمیدم چیشد + اضافه گذاشته بود
+        },
+        url: '@Url.Action("ViewForAcceptModal", "ConfirmPerformance", new { area = "Contracts" })?Basteh=' + svdfunc_BastehID + '&Py=' + svdfunc_pymnID + '&Year=' + year_pY + '&Month=' + month_pY + '&name=' + name + '&Moalfe=' + Moalfe,
+        type: 'GET',
+        dataType: 'html',
+
+
+                    success: function (res) {
+                        alert('h'); // You can replace this with your desired action                        console.log(res);
+
+                    },
+        error: function (res) {
+            console.log(res); alert('h'); // You can replace this with your desired action                        console.log(res);
+
+        }
+    });
+        }
+    }
+});
+
+</script>
+
+<script>
+
+    $('.moalefe-value').hover(function () {
+        $(this).find('.edit-btn').css('display', 'block');
+    }, function () {
+        $(this).find('.edit-btn').css('display', 'none');
+    });
+
+$("#btnCreate12").click(function () {
+    var Filters = [];
+
+    // تعریف یک لیست برای UsersMoalefe
+    var UsersMoalefe = [];
+
+    $('.users').each(function (i, obj) {
+        var personalcode = $(this).data("personalcode");
+
+        var userObj = {};
+        userObj.SabtHeader = {};
+        userObj.SabtHeader.MoalfeVal_Month = $('#month').val();
+        userObj.SabtHeader.MoalfeVal_Year = $('#year').val();
+        userObj.SabtHeader.BastehName = $('#baste2').val();
+        userObj.SabtHeader.PeymanName = $('#py2').val();
+        userObj.SabtHeader.FromDate = $('#FromDate').val();
+        userObj.SabtHeader.ToDate = $('#ToDate').val();
+
+        userObj.MoalefeUserInfo = {};
+        userObj.MoalefeUserInfo.PersonalCode = personalcode;
+        userObj.MoalefeUserInfo.FullName = $(this).text();
+        userObj.MoalefeUserInfo.listMoalefe = [];
+
+        $(".a").each(function (i, element) {
+    var title = $(element).data("title");
+    var value = $(".moalefe-value[data-personalcode='" + personalcode + "'][data-title='" + title + "']").val();
+    console.log(title);
+
+            var moalefeInfo = {};
+            moalefeInfo.MoalefeTitle = title;
+            moalefeInfo.MoalefeValue = value;
+
+            // اضافه کردن هر moalefeInfo به لیست معلفه‌ها در MoalefeUserInfo
+            userObj.MoalefeUserInfo.listMoalefe.push(moalefeInfo);
+
+            // تنظیم معلومات موجود در userObj.MoalefeUserInfo به userObj.UsersMoalefe
+
+        });
+        userObj.UsersMoalefe = [];
+        userObj.UsersMoalefe.push(userObj.MoalefeUserInfo);
+
+
+        // اضافه کردن userObj به لیست UsersMoalefe
+        UsersMoalefe.push(userObj);
+        console.log(userObj)
+    });
+
+    // تنظیم UsersMoalefe به Filters
+    Filters = UsersMoalefe;
+    console.log(Filters);
+    console.log(fd);
+    sendAjax('@Url.Action("send", "Moalefe", new { area = "Salaries" })', Filters,);
+});
+
+
+
+function sendAjax(url, data) {
+    console.log(url);
+
+    $.ajax({
+        beforeSend: function () {
+            document.getElementById("loading-message").style.display = "block";
+        },
+        url: url,
+        data: { Filters: data },
+        type: "POST",
+        dataType: "html",
+        success: function (resp) {
+            console.log(resp);
+            document.getElementById("loading-message").style.display = "none";
+            if (resp == "true") {
+                alert("با موفقیت ثبت شد");
+                location.reload();
+            } else {
+                alert("در ثبت دچار خطا شده ایم ! لطفا بعدا تلاش نمائید");
+            }
+        },
+        error: function (resp) {
+            document.getElementById("loading-message").style.display = "none";
+            alert("دچار مشکل شده است ");
+            console.log(resp);
+        }
+    });
+}
+
+
+
+
+
+
+</script>
+
+
+
+
+
+<script>
+$("#btnCreate1").click(function () {
+    var Filters = {
+        Filters: [] // تعریف لیستی برای اطلاعات فیلترها
+    };
+
+    // جمع‌آوری اطلاعات از فیلدهای ورودی
+    Filters.Month = $('#month').val();
+    Filters.Year = $('#year').val();
+    Filters.Basteh = $('#baste2').val();
+    Filters.Peyman = $('#py2').val();
+    Filters.FromDate = $('#FromDate').val();
+    Filters.ToDate = $('#ToDate').val();
+
+    // تعریف یک لیست برای UsersMoalefe
+    Filters.UsersMoalefe = [];
+
+    $('.users').each(function (i, obj) {
+        var personalcode = $(this).data("personalcode");
+        var userMoalefe = {
+            PersonalCode: personalcode,
+            FullName: $(this).text(),
+            listMoalefe: []
+        };
+
+        $(".moalefe-title[data-personalcode='" + personalcode + "']").each(function (i, element) {
+            var title = $(element).data("title");
+            var value = $(".moalefe-value[data-personalcode='" + personalcode + "'][data-title='" + title + "']").val();
+
+            var moalefeInfo = {
+                MoalefeTitle: title,
+                MoalefeValue: value
+            };
+
+            // اضافه کردن هر moalefeInfo به لیست معلفه‌ها در userMoalefe
+            userMoalefe.listMoalefe.push(moalefeInfo);
+        });
+
+        // اضافه کردن userMoalefe به لیست UsersMoalefe
+        Filters.UsersMoalefe.push(userMoalefe);
+    });
+
+    // ارسال درخواست AJAX به سرور
+    sendAjax('@Url.Action("send", "Moalefe", new { area = "Salaries" })', Filters);
+});
+
+function sendAjax(url, data) {
+    console.log(url);
+
+    $.ajax({
+        beforeSend: function () {
+            document.getElementById("loading-message").style.display = "block";
+        },
+        url: url,
+        data: { Filters: data },
+        type: "POST",
+        dataType: "html",
+        success: function (resp) {
+            console.log(resp);
+            document.getElementById("loading-message").style.display = "none";
+            if (resp == "true") {
+                alert("با موفقیت ثبت شد");
+            } else {
+                alert("در ثبت دچار خطا شده ایم! لطفاً بعداً تلاش نمائید");
+            }
+        },
+        error: function (resp) {
+            document.getElementById("loading-message").style.display = "none";
+            alert("درخواه مشکلی پیش آمده است.");
+            console.log(resp);
+        }
+    });
+}
+
+
+
+
+
+</script>

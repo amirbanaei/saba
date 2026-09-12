@@ -1,0 +1,183 @@
+﻿@using SaabWebProject.Models.DomainModels;
+
+@{ SaabEntities db = new SaabEntities();
+
+    ViewBag.Title = "گزارش کارها";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="tab-content" id="pills-tabContent" style="padding:20px;  background:#f7f7f7;">
+
+    <div class="row">
+        <div class="col-xl-3">
+            <label class="form-label">نام کاربر </label>
+
+            <select class="form-select select_peyman" id="select_peyman" name="select_peyman">
+                <option hidden value="Select">انتخاب مورد</option>
+                @foreach (var item in db.tbUsers.Where(s => s.usr_Personal_ID != null).ToList())
+                {
+                    <option value="@item.usr_ID">@item.FullName</option>
+                }
+            </select>
+
+        </div>
+        <div class="col-xl-7">
+            <div class="form-group mb-3">
+                <label class="form-label"> موضوع </label>
+                <textarea class="form-control" id="Title" style="height:33px; margin-bottom:0px !important;"></textarea>
+            </div>
+        </div>
+        <div class="col-xl-1">
+            <div class="row" style="position: relative;">
+                <div class="input1 btn form-control buttonGeneralPlus" style=" position: absolute; top: 0; left: 0;">
+                    <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                    <span class="bGeneral-text">آپلود پیوست</span>
+                </div>
+                <input type="file" id="file" class="input2 btn form-control buttonGeneralPlus" style="position: absolute; top: 0; left: 0; opacity: 0.01;" />
+            </div>
+        </div>
+        <div class="col-xl-1">
+            <button class="btn form-control buttonsabt" id="Send">
+                <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                <span class="bSabt-text">ثبت</span>
+            </button>
+        </div>       <hr />
+        <div class="row">
+            @Html.Action("viewersdal_list_see", "Orders", new { Area = "Setting" })
+        </div>
+    </div>
+    
+    </div>
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+    <script src="~/Scripts/jquery-ui.js"></script>
+    <script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+    <script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+    <script src="~/Scripts/jquery-ui.js"></script>
+    <script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="~/Scripts/jquery-ui.js"></script>
+    <script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#select_peyman").picker({ search: true });
+
+        });
+        $(function () {
+
+
+            $('#year_Eq').picker({ search: true });
+            $('#month_Eq').picker({ search: true });
+
+            $('#datepickerFrom_Eq').MdPersianDateTimePicker({
+                targetTextSelector: '#datepickerFrom_Eq',
+                targetDateSelector: '#datepickerFromEn_Eq',
+                dateFormat: 'yyyy-MM-dd',
+                isGregorian: false,
+                enableTimePicker: true,
+                disableBeforeToday: false
+            });
+
+            $('#datepickerTo_Eq').MdPersianDateTimePicker({
+                targetTextSelector: '#datepickerTo_Eq',
+                targetDateSelector: '#datepickerToEn_Eq',
+                dateFormat: 'yyyy-MM-dd',
+                isGregorian: false,
+                enableTimePicker: true,
+                disableBeforeToday: false
+            });
+        });
+    </script>
+    <script>
+      $("#Answer").click(function () {
+        $("#big_modal_body").load('@Url.Content("../../Suggestion/SuggestionandCriticism/_Sabt_Pasokh")');
+    });
+    </script>
+
+    <script>
+        var fd = new FormData();
+
+        $("#file").change(function (e) {
+            $.each(e.target.files, function (index, file) {
+                fd.append("files", file);
+            });
+        });
+    </script>
+    <script>
+        $("#Send").click(function () {
+            if ($("#Title").val() != "" ) {
+                if ($("#Title").val().length > 200) {
+                    alert("عنوان نمیتواند بیش از 200 کاراکتر باشد");
+                } else {
+                    fd.append("Title", $("#Title").val());
+
+                //fd.append("Type", $("#Type").val());
+                    fd.append("select_peyman", $("#select_peyman").val());
+                sendAjax('@Url.Action("Save", "Orders", new { area = "Setting" })', fd);
+                }
+
+            } else {
+                alert("لطفا تمامی فیلد های مورد نیاز را وارد نمائید .");
+            }
+
+        });
+    </script>
+    <script>
+        var Toast = Swal.mixin({
+            toast: true,
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+    </script>
+    <script>
+ 
+
+        function sendAjax(url2, fd2) {
+            $("#loading-message").css("display", "block");
+
+            $.ajax({
+                url: url2,
+                type: 'POST',
+                data: fd2,
+                processData: false,
+                contentType: false,
+                success: function (resp1) {
+                    $("#loading-message").css("display", "none");
+                    document.getElementById("loading-message").style.display = "block";
+                    $("#loading-circle .loadingText1").text("لطفا منتظر نمایش اطلاعات بمانید ...");
+                    $("#loading-circle").css("display", "flex");
+                    if (resp1 == "True") {
+                        $("#loading-circle").css("display", "none"); // پنهان کردن لودینگ
+
+                        alert("باموفقیت ثبت شد ");
+                        location.reload();
+                    } else {
+                        $("#loading-circle").css("display", "none"); // پنهان کردن لودینگ
+
+                        alert(resp1);
+
+                    }
+                },
+                error: function (resp1) {
+                    $("#loading-message").css("display", "none");
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                    }).then(() => {
+                        $("#loading-message").css("display", "none");
+                    });
+                }
+            });
+        }
+    </script>
+    

@@ -1,0 +1,160 @@
+﻿@{
+    ViewBag.Title = "گزارش‌ساز پیشرفته";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>گزارش‌ساز پیشرفته</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body class="p-4 bg-light">
+
+    <h3 class="mb-4">🧾 ابزار گزارش‌ساز با JOIN خودکار</h3>
+
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <label>انتخاب جدول‌ها (تا ۳ عدد):</label>
+            <div id="tableCheckboxes" class="form-check"></div>
+        </div>
+        <div class="col-md-6">
+            <label>ستون‌ها:</label>
+            <div id="columnsArea"></div>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label>فیلتر دستی (WHERE):</label>
+        <input id="whereInput" class="form-control" placeholder="مثلاً Salary.tbMoalefeValueFish.mlfvlfsh_Year = 1403" />
+    </div>
+
+    <button id="generateSql" class="btn btn-success">🎯 تولید SQL با JOIN</button>
+
+    <hr />
+    <h5>کد SQL نهایی:</h5>
+    <pre id="sqlOutput" class="bg-white p-3 border rounded"></pre>
+    <div class="mb-3">
+        <label>نام گزارش:</label>
+        <input id="namegozaresh" class="form-control" @*placeholder="مثلاً Salary.tbMoalefeValueFish.mlfvlfsh_Year = 1403"*@ />
+    </div>
+    <button id="save" class="btn btn-success">ذخیره کد</button>
+
+    <script>
+    let selectedTables = [];
+    let selectedColumns = [];
+
+    $(function () {
+        // دریافت جدول‌ها
+        $.getJSON('@Url.Action("GetTables", "Formula", new { area = "Salaries" })', function (tables) {
+            $.each(tables, function (i, name) {
+                $('#tableCheckboxes').append(`
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input table-check" value="${name}" id="table_${i}">
+                        <label class="form-check-label" for="table_${i}">${name}</label>
+                    </div>
+                `);
+            });
+        });
+
+        // وقتی جدول انتخاب می‌شود ستون‌هایش را دریافت کن
+        $(document).on('change', '.table-check', function () {
+            selectedTables = $('.table-check:checked').map(function () {
+                return this.value;
+            }).get();
+
+            //if (selectedTables.length > 3) {
+            //    alert("حداکثر ۳ جدول قابل انتخاب است.");
+            //    $(this).prop('checked', false);
+            //    return;
+            //}
+
+            $('#columnsArea').empty();
+
+            selectedTables.forEach(function (table) {
+                $.getJSON('@Url.Action("GetColumns", "Formula", new { area = "Salaries" })' + '?tableName=' + table, function (cols) {
+                    let section = `<div class="mb-2"><strong>${table}</strong><br/>`;
+                    cols.forEach(col => {
+                        section += `<label class="me-2">
+                            <input type="checkbox" class="col-checkbox" data-table="${table}" value="${col}" />
+                            ${col}
+                        </label>`;
+                    });
+                    section += "</div>";
+                    $('#columnsArea').append(section);
+                });
+            });
+        });
+
+        // ارسال اطلاعات به بک‌اند و گرفتن SQL کامل
+        $('#generateSql').on('click', function () {
+            let cols = $('.col-checkbox:checked').map(function () {
+                return {
+                    table: $(this).data('table'),
+                    column: $(this).val()
+                };
+            }).get();
+
+            if (cols.length === 0 || selectedTables.length === 0) {
+                alert("لطفاً جدول و ستون انتخاب کنید.");
+                return;
+            }
+
+            let where = $('#whereInput').val();
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GenerateSql", "Formula", new { area = "Salaries" })',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    tables: selectedTables,
+                    columns: cols,
+                    whereClause: where
+                }),
+                success: function (result) {
+                    $('#sqlOutput').text(result.sql);
+                }
+            });
+        });
+        $('#save').on('click', function () {
+            let cols = $('.col-checkbox:checked').map(function () {
+                return {
+                    table: $(this).data('table'),
+                    column: $(this).val()
+                };
+            }).get();
+
+            if (cols.length === 0 || selectedTables.length === 0) {
+                alert("لطفاً جدول و ستون انتخاب کنید.");
+                return;
+            }
+
+            let Qury = $('#sqlOutput').text();
+            let namegozareshQ = $('#namegozaresh').val();
+
+            console.log(Qury);
+            console.log(namegozareshQ);
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("creatsqlqury", "Formula", new { area = "Salaries" })',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    //tables: selectedTables,
+                    name: namegozareshQ,
+                    quyry: Qury
+                }),
+                success: function (result) {
+                    alert(result);
+                    location.reload();
+                }
+            });
+        });
+
+    });
+    </script>
+
+
+</body>
+</html>

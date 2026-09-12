@@ -1,0 +1,636 @@
+﻿
+@{
+    ViewBag.TitleLargModal = " پیمان ها جدید";
+    Layout = null;
+}
+<style>
+    .modal-lg, .modal-xl {
+        margin-top: 8px !important;
+        max-width: 80% !important;
+    }
+</style>
+<style>
+
+
+    .modal2 {
+        display: none;
+        position: absolute; /* Change this from fixed */
+        z-index: 1000; /* Adjust z-index as needed */
+        left: 0;
+        top: 0;
+        width: 65%;
+        height: auto;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content2 {
+        background-color: black;
+        position: relative; /* Add relative positioning */
+        /*  margin: 15% auto;*/
+        padding: 20px;
+        border: 4px solid aqua;
+        border-radius: 30px;
+        width: 100%;
+        max-height: 100%;
+        overflow-y: auto;
+    }
+
+    .modal3 {
+        display: none;
+        position: absolute; /* Change this from fixed */
+        z-index: 1000; /* Adjust z-index as needed */
+        left: 0;
+        top: 0;
+        width: 65%;
+        height: auto;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content3 {
+        background-color: black;
+        position: relative; /* Add relative positioning */
+        /*  margin: 15% auto;*/
+        padding: 20px;
+        border: 4px solid aqua;
+        border-radius: 30px;
+        width: 100%;
+        max-height: 100%;
+        overflow-y: auto;
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+    .fade-in {
+        animation: fadeIn 1s ease-in-out; /* Adjust duration and timing function as needed */
+    }
+</style>
+<link href="~/MyStyles/MyStyle.css" rel="stylesheet" />
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div id="formControls" class="mb-5">
+
+        <div class="card">
+            <div class="card-body pb-2">
+                <form>
+                    <div class="row">
+                        <div class="col-xl-4">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> پیمان </label>
+                                <div id="div_peyman4"></div>
+                            </div>
+                        </div>
+                        <div class="dropdown-menu"style="display:none">
+                            <a data-bs-toggle="modal" data-bs-target="#modalLg"style="display:none" class="dropdown-item edit">ویرایش</a>
+                        </div>
+                        <div class="col-xl-2">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> نوع مدرک </label>
+                                <Select class="form-select" id="typeOfDocument">
+                                    <option value="0">انتخاب نوع مدرک...</option>
+                                    <option value="1">صورت وضعیت</option>
+                                    <option value="2">حقوق و دستمزد</option>
+                                    <option value="3">استاد سیستمی</option>
+                                    <option value="4">پیشخوان</option>
+
+                                </Select>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-2">
+                            <label class="form-label"> سال </label>
+                            <select class="form-select" id="year4">
+                                <option value="0">انتخاب کنید..</option>
+                                <option value="1400">1400</option>
+                                <option value="1401">1401</option>
+                                <option value="1402">1402</option>
+                                <option value="1403">1403</option>
+                                <option value="1404">1404</option>
+                                <option value="1405">1405</option>
+                            </select>
+
+                        </div>
+                        <div class="col-xl-2" id="month" style="display:none">
+                            <div class="form-group mb-3">
+                                <label class="form-label"> ماه </label>
+                                <select class="form-select" id="month4">
+                                    <option value="0">انتخاب کنید..</option>
+                                    <option value="1">فروردین</option>
+                                    <option value="2">اردیبهشت</option>
+                                    <option value="3">خرداد</option>
+                                    <option value="4">تیر</option>
+                                    <option value="5">مرداد</option>
+                                    <option value="6">شهریور</option>
+                                    <option value="7">مهر</option>
+                                    <option value="8">آبان</option>
+                                    <option value="9">آذر</option>
+                                    <option value="10">دی</option>
+                                    <option value="11">بهمن</option>
+                                    <option value="12">اسفند</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-xl-2" id="soorat" style="display:none">
+                            <label class="form-label"> شماره صورت وضعیت </label>
+                            <input class="form-control" id="soorat_number" />
+
+                        </div>
+
+
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-11">
+
+                        </div>
+                        <div class="col-xl-1">
+                            <div class="form-group mb-3">
+                                <button id="btnBarrasi" type="button" class="btn form-control buttonsabt">
+                                    <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                                    <span class="bSabt-text">بررسی</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="ROW" id="div_table" style="display:none">
+
+                        </div>
+
+                    </div>
+                </form>
+                <div id="myModal2" class="modal2" style="margin-left:25% !important;">
+                <div class="modal-content2">
+                    <div class="row">
+                        <i class="close fa fa-window-close"></i>
+                    </div>
+                    <div id="ss">
+
+                    </div>
+
+
+                </div>
+            </div>
+            </div>
+
+            <div class="card-arrow">
+                <div class="card-arrow-top-left"></div>
+                <div class="card-arrow-top-right"></div>
+                <div class="card-arrow-bottom-left"></div>
+                <div class="card-arrow-bottom-right"></div>
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+    var ID = 0;
+    var FK_DDOfTitle = 0;
+    //نمایش یا عدم نمایش شماره صورت وضعیت وماه
+         $("#typeOfDocument").change(function(){
+                if($(this).val() == 1){ // soorat
+                    $("#month").css("display","none");
+                    $("#soorat").css("display","block");
+                }else if($(this).val() == 2){// hoghoogh
+                    $("#month").css("display","block");
+                    $("#soorat").css("display","none");
+                }else{
+                    $("#month").css("display","block");
+                    $("#soorat").css("display","none");
+                }
+         });
+
+         $("#month").change(function(){
+                $("#div_table").css("display","block")
+         });
+        $("#soorat").change(function(){
+                $("#div_table").css("display","block")
+         });
+    $(function(){
+         $("#div_peyman4").load('@Url.Content("/../Contracts/RegistrationDocument/GetPeymansForThisUser_Saver")',function(){
+                 $("#select_peyman").attr("id", "select_peyman4");
+                 $("#select_peyman4").picker({ search: true });
+             });
+    });
+    function getlist() {
+            $("#loading-message").css("display", "block");
+
+       $("#div_table").load('@Url.Content("/../Contracts/RegistrationDocument/RegistrationOfDocuments_ListTitles")', {
+            Peyman_ID: $("#select_peyman4").val(), TypeOfDocument : $("#typeOfDocument").val() , year:$("#year4").val() , month:$("#month4").val() ,soorat_number:$("#soorat_number").val()
+       }, function () {
+            $("#loading-message").css("display", "none");
+
+               //بارگذاری فایل مدرک
+               $(".UploadAttachment").click(function () {
+                   FK_DDOfTitle = $(this).attr("id").split("_")[2];
+                   ID = $(this).attr("id").split("_")[1];
+                   $("#inp_file").click();
+               });
+
+                $("#inp_file").change(function (e) {
+                   $.each(e.target.files, function (index, file) {
+                      fd.append("files", file);
+                   });
+                   sendAjax1('@Url.Action("UploadAttachmentFile", "RegistrationDocument",new { area = "Contracts" })', fd);
+                });
+               //دریافت نمونه اکسل خلاصه مدرک
+               $(".DownloadSummery").click(function () {
+                   downloadAjax();
+               });
+               //بارگذاری خلاصه مدرک
+                $(".uploadSummery").click(function () {
+                   FK_DDOfTitle = $(this).attr("id").split("_")[2];
+                   ID = $(this).attr("id").split("_")[1];
+                   $("#summery_file").click();
+               });
+
+                $("#summery_file").change(function (e) {
+                   $.each(e.target.files, function (index, file) {
+                      fd.append("files", file);
+                   });
+                   sendAjax2('@Url.Action("UploadSummaryFile", "RegistrationDocument",new { area = "Contracts" })', fd);
+                });
+            });
+    }
+
+</script>
+<script>
+    $(document).ready(function () {
+        $("#expandButton2").click(function () {
+            $("#myModal2").addClass("fade-in"); // Add the fade-in class
+            $("#myModal2").css("display", "block");
+        });
+
+        $(".close").click(function () {
+            $("#myModal2").removeClass("fade-in"); // Remove the fade-in class
+            $("#myModal2").css("display", "none");
+        });
+
+        $(window).click(function (event) {
+            if (event.target == $("#myModal2")[0]) {
+                $("#myModal2").removeClass("fade-in"); // Remove the fade-in class
+                $("#myModal2").css("display", "none");
+            }
+        });
+    });</script>
+<script>
+    $("#btnBarrasi").click(function () {
+        getlist()
+    });
+</script>
+<script>
+    var fd = new FormData();
+
+    function sendAjax1(url2, fd2) {
+        console.log();
+        console.log(ID);
+        $("#loading-message").css("display", "block");
+        fd2.append("ID", ID);
+        fd2.append("FK_DDOfTitle", FK_DDOfTitle);
+        fd2.append("FK_PeymanID", $("#select_peyman4").val());
+        fd2.append("TypeOfDocument", $("#typeOfDocument").val());
+        fd2.append("Year", $("#year4").val());
+        fd2.append("Month", $("#month4").val());
+        fd2.append("SooratNumber", $("#soorat_number").val());
+        fd2.append("Type", $("#select_EquipmentGroup").val());
+
+
+        $.ajax({
+            url: url2,
+            type: 'POST',
+            data: fd2,
+            processData: false,
+            contentType: false,
+            success: function (resp1) {
+                console.log("okeye");
+
+                $("#loading-message").css("display", "none");
+                fd = new FormData();
+                if (resp1 == "True") {
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "اطلاعات با موفقیت آپدیت شد"
+                    }).then(() => {
+                        getlist();
+                    });
+                } else {
+                    $("#loading-message").css("display", "none");
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                    }).then(() => {
+                        $("#loading-message").css("display", "none");
+                    });
+
+
+                }
+
+            },
+            error: function (resp1) {
+                console.log("Nokeye");
+                console.log(resp1);
+
+                $("#loading-message").css("display", "none");
+                Toast.fire({
+                    icon: 'success',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                }).then(() => {
+                    $("#loading-message").css("display", "none");
+                });
+            }
+        });
+    }
+</script>
+
+<script>
+    function downloadAjax() {
+        $("#loading-message").css("display", "block");
+        window.location = '@Url.Action("Export_Excel_peyman_users", "RegistrationDocument",new { area = "Contracts" })?Peyman_ID='+$("#select_peyman4").val();
+        $("#loading-message").css("display", "none");
+    }
+
+</script>
+<script>
+    function sendAjax2(url2, fd2) {
+        console.log(ID);
+        $("#loading-message").css("display", "block");
+
+        // Append form data
+        fd2.append("ID", ID);
+        fd2.append("FK_DDOfTitle", FK_DDOfTitle);
+        fd2.append("FK_PeymanID", $("#select_peyman4").val());
+        fd2.append("TypeOfDocument", $("#typeOfDocument").val());
+        fd2.append("Year", $("#year4").val());
+        fd2.append("Month", $("#month4").val());
+        fd2.append("SooratNumber", $("#soorat_number").val());
+
+        console.log(fd2);
+
+        // Make the AJAX call
+        $.ajax({
+            url: url2,
+            type: 'POST',
+            data: fd2,
+            processData: false,
+            contentType: false,
+            success: function (resp1) {
+                console.log("okeye");
+                $("#loading-message").css("display", "none");
+                fd2 = new FormData(); // Reset FormData object
+
+                if (resp1 === "True") {
+
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "اطلاعات با موفقیت آپدیت شد"
+                    }).then(() => {
+                        getlist();
+                    });
+         }
+                else if (resp1 === "False") {
+                    Swal.fire({
+                        title: 'فایل شما مغایرت دارد آیا بازم ثبت شود ؟',
+                        icon: 'question',
+                        showCancelButton: true,
+                        showDenyButton: true,
+                        background: 'rgb(29,40,52)',
+                        color: 'white',
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        denyButtonColor: '#6c757d',
+                        confirmButtonText: 'بله',
+                        cancelButtonText: 'خیر',
+                        denyButtonText: 'مشاهده'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            Toast.fire({
+                                icon: 'success',
+                                background: '#35434A',
+                                color: 'white',
+                                title: "اطلاعات با موفقیت آپدیت شد"
+                            }).then(() => {
+                                getlist();
+                            });
+
+                        } else if (result.isDenied) {
+                            // عملکرد مربوط به گزینه مشاهده
+                            //getlist();
+                            @*sendAjax5('@Url.Action("viewdetail", "RegistrationDocument",new { area = "Contracts" })');*@
+                            //var url = "/RegistrationDocument/viewdetail";
+                            //$("#big_modal_body1").load(url);
+                            $("#myModal2").addClass("fade-in"); // Add the fade-in class
+                            $("#myModal2").css("display", "block");
+            $("#ss").load('@Url.Content("/Contracts/RegistrationDocument/viewdetail")');
+
+                            // اینجا کدی که برای مشاهده باید اجرا شود را بنویسید
+                        }
+
+
+                        else if (result.isDismissed && result.dismiss === Swal.DismissReason.cancel) {
+
+
+
+
+                            // عملکرد مربوط به گزینه خیر
+                            sendAjax533('@Url.Action("deletee", "RegistrationDocument",new { area = "Contracts" })');
+                            // اینجا کدی که برای گزینه "خیر" باید اجرا شود را بنویسید
+                        }
+                    });
+                }
+
+
+
+
+                else {
+                    Toast.fire({
+                        icon: 'error',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                    });
+                }
+            },
+            error: function (resp1) {
+                console.log(resp1);
+                console.log("Nokeye");
+                $("#loading-message").css("display", "none");
+                Toast.fire({
+                    icon: 'error',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                });
+            }
+        });
+    }
+    var fd = new FormData();
+
+    function sendAjax5(url2) {
+        //console.log();
+        //console.log(ID);
+        //$("#loading-message").css("display", "block");
+        //fd2.append("ID", ID);
+        //fd2.append("FK_DDOfTitle", FK_DDOfTitle);
+        //fd2.append("FK_PeymanID", $("#select_peyman4").val());
+        //fd2.append("TypeOfDocument", $("#typeOfDocument").val());
+        //fd2.append("Year", $("#year4").val());
+        //fd2.append("Month", $("#month4").val());
+        //fd2.append("SooratNumber", $("#soorat_number").val());
+        //fd2.append("Type", $("#select_EquipmentGroup").val());
+
+
+        $.ajax({
+            url: url2,
+            type: 'POST',
+            //data: fd2,
+            processData: false,
+            contentType: false,
+            success: function (resp1) {
+                console.log("okeye");
+
+                $("#loading-message").css("display", "none");
+                fd = new FormData();
+                if (resp1 == "True") {
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "اطلاعات با موفقیت آپدیت شد"
+                    }).then(() => {
+                        getlist();
+                    });
+                } else {
+                    $("#loading-message").css("display", "none");
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                    }).then(() => {
+                        $("#loading-message").css("display", "none");
+                    });
+
+
+                }
+
+            },
+            error: function (resp1) {
+                console.log("Nokeye");
+                console.log(resp1);
+
+                $("#loading-message").css("display", "none");
+                Toast.fire({
+                    icon: 'success',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                }).then(() => {
+                    $("#loading-message").css("display", "none");
+                });
+            }
+        });
+    }
+
+
+
+
+
+
+
+
+
+
+
+    function sendAjax533(url2) {
+        //console.log();
+        //console.log(ID);
+        //$("#loading-message").css("display", "block");
+        //fd2.append("ID", ID);
+        //fd2.append("FK_DDOfTitle", FK_DDOfTitle);
+        //fd2.append("FK_PeymanID", $("#select_peyman4").val());
+        //fd2.append("TypeOfDocument", $("#typeOfDocument").val());
+        //fd2.append("Year", $("#year4").val());
+        //fd2.append("Month", $("#month4").val());
+        //fd2.append("SooratNumber", $("#soorat_number").val());
+        //fd2.append("Type", $("#select_EquipmentGroup").val());
+
+
+        $.ajax({
+            url: url2,
+            type: 'POST',
+            //data: fd2,
+            processData: false,
+            contentType: false,
+            success: function (resp1) {
+                console.log("okeye");
+
+                $("#loading-message").css("display", "none");
+                fd = new FormData();
+                if (resp1 == "True") {
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "اطلاعات با موفقیت آپدیت شد"
+                    }).then(() => {
+                        getlist();
+                    });
+                } else {
+                    $("#loading-message").css("display", "none");
+                    Toast.fire({
+                        icon: 'success',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                    }).then(() => {
+                        $("#loading-message").css("display", "none");
+                    });
+
+
+                }
+
+            },
+            error: function (resp1) {
+                console.log("Nokeye");
+                console.log(resp1);
+
+                $("#loading-message").css("display", "none");
+                Toast.fire({
+                    icon: 'success',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                }).then(() => {
+                    $("#loading-message").css("display", "none");
+                });
+            }
+        });
+    }
+
+
+
+</script>

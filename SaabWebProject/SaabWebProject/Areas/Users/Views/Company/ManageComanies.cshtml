@@ -1,0 +1,200 @@
+﻿@{
+    ViewBag.Title = "کاربران حقوقی";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+
+<div class="tab-content" >
+    <div class="row" style="margin-bottom:10px">
+        <div class="col-xl-9"></div>
+
+        <div class="col-xl-1">
+            <a href="@Url.Action("DownloadSampleExcel","Company",new {area="Users"})" class="btn form-control buttonGeneral">
+                <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text">دانلود فایل نمونه</span>
+
+            </a>
+        </div>
+        @*<a href="#" class="btn btn-outline-theme"style="margin-top:30px;border-radius:20px;  color: white;
+            background-color: #0d3244;">
+                    <i class="bi bi-download fa-fw me-1"></i>
+                    آپلود فایل
+                </a>*@
+        <div class="col-xl-1">
+
+            <a href="#" onclick="ShowDialogFile1()" class="btn form-control buttonGeneral">
+                <i class="bi bi-upload fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text"> بارگذاری اطلاعات</span>
+
+            </a>
+
+            @*<form action="@Url.Action("UploadExcel","Company", new {area="Users"})" method="post" enctype="multipart/form-data">
+
+                    <div class="row" dir="ltr">
+                        <div class="col-md-6">
+
+                            <input type="file" class="form-control buttonGeneral" name="excelFile" />
+
+                        </div>
+
+                        <div class="col-md-6" style="text-align:left;border-radius:20px;  color: white;">
+
+                            <input type="submit" class="btn btn-outline-theme form-control buttonGeneral" value="آپلود فایل" />
+
+                        </div>
+                    </div>
+                </form>*@
+        </div>
+        <div class="col-xl-1">
+            <a href="#" id="createMoalefeButtonModal" class="btn form-control buttonGeneral" data-bs-toggle="modal" data-bs-target="#modalLg">
+                <i class="fa fa-plus-circle fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text">تعریف کاربر حقوقی</span> 
+
+            </a>
+        </div>
+
+
+
+
+
+    </div>
+    <input name="MyExcelStream12" type="file" style="display:none" />
+
+
+    <div id="myTable">
+        @Html.Action("_PartialListComanies", "Company")
+    </div>
+</div>
+
+
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Scripts/sweetalert2.js"></script>
+
+<script>
+    $("input[name='MyExcelStream12']").change(function () {
+                  console.log("ldsaksda0");
+
+        var file = this.files[0];
+        var ext = file.name.split('.')[1];
+        if (ext == "xlsx" || ext == "xls") {
+
+            var obj = new FormData();
+
+            obj.append("MyExcelStream", file);
+
+            console.log(file);
+            $.ajax({
+            beforeSend:function (){
+                    document.getElementById("loading-circle").style.display = "block";
+            },
+                url: "@Url.Action("GETEXCEL", "Company", new { area = "Users" })" ,
+               type: "post",
+               contentType: false,
+               data: obj,
+               processData: false,
+               cache: false,
+                success: function (res) {
+                    console.log(res + "kjkjh");
+                    if (res == "True") {
+                        Toast.fire({
+                            icon: 'success',
+                            background: '#35434A',
+                            color: 'white',
+                            title: "اطلاعات با موفقیت ذخیره شد"
+                        });
+                        location.reload();
+                    }
+
+                    else {
+                        Toast.fire({
+                            icon: 'warning',
+                            background: 'rgb(29,40,52)',
+                            color: 'white',
+                            title: res
+                        });
+
+
+                        location.reload();
+
+                    }
+                   //document.getElementById("loading-circle").style.display = "none";
+                   //Swal.fire({
+                   //    icon: 'success',
+                   //    background: 'rgb(29,40,52)',
+                   //    color: 'white',
+                   //    confirmButtonText: 'باشه',
+                   //    title: 'آپلود اکسل',
+                   //    text: res,
+                   //});
+
+               },
+               error: function (res) {
+                   Toast.fire({
+                       icon: 'warning',
+                       background: 'rgb(29,40,52)',
+                       color: 'white',
+                       title: res
+                   });
+                   location.reload();
+}
+           });
+        }
+        else {
+
+            Swal.fire({
+                icon: 'warning',
+                background: 'rgb(29,40,52)',
+                color: 'white',
+                confirmButtonText: 'باشه',
+                title: 'نوع فایل',
+                text: 'لطفا فایلی با پسوند اکسل وارد کنید',
+            });
+            return false;
+        }
+
+    });
+    /// Open Dialog File
+
+</script>
+<script>
+    function ShowDialogFile1() {
+        console.log("ldsaksda0");
+        $("input[name='MyExcelStream12']").val(null);
+        $("input[name='MyExcelStream12']").click();
+    }
+</script>
+<script>
+
+    $(function () {
+
+
+        var Temp = '@TempData["Message"]';
+    if (Temp == '#') {
+        Toast.fire({
+            icon: 'success',
+            background: '#35434A',
+            color: 'white',
+            title: "اطلاعات با موفقیت آپلود شد"
+        });
+    }
+    else if (Temp!='') {
+
+        Toast.fire({
+            icon: 'warning',
+            background: '#35434A',
+            color: 'white',
+            title: Temp
+        });
+
+    }
+
+
+    });
+
+
+    $("#createMoalefeButtonModal").click(function () {
+        $("#big_modal_body").load('@Url.Content("/Company/_PartialCreateCompany")');
+    });
+</script>
+
+

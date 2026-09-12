@@ -1,0 +1,827 @@
+﻿@using SaabWebProject.Models.DomainModels;
+
+@{
+
+    ViewBag.Title = "ثبت دستورات";
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    SaabEntities db = new SaabEntities();
+
+}
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+
+<link href="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.style.css" rel="stylesheet" />
+
+<script src="~/Assets/js/jalalidatepicker.min.js"></script>
+<link href="~/Assets/css/jalalidatepicker.min.css" rel="stylesheet" />
+<script src="~/Assets/js/jalaali.min.js"></script>
+<link href="~/MyStyles/jalalidatepicker.css" rel="stylesheet" />
+<link href="~/MyStyles/MyStyle.css" rel="stylesheet" />
+<ul class="nav nav-tabs nav-tabs-v2 ps-4 pe-4" id="pills-tab">
+
+    <li class="nav-item me-3">
+        <a class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" href="#pills-home">
+            <button class=" nav-btn">تعریف انواع حساب</button>
+        </a>
+    </li>
+    <li class="nav-item me-3">
+        <a class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" href="#pills-profile">
+            <button class=" nav-btn">تعریف بانک</button>
+        </a>
+    </li>
+    <li class="nav-item me-3">
+        @*<a href="~/Areas/ManagementAccounting/Views/FinancialDocuments/viewasnadmalyy2.cshtml">~/Areas/ManagementAccounting/Views/FinancialDocuments/viewasnadmalyy2.cshtml</a>*@
+        <a class="nav-link" id="pills-profile2-tab" data-bs-toggle="pill" href="#pills-profile2">
+            <button class=" nav-btn">برگ چک</button>
+        </a>
+    </li>
+    <li class="nav-item me-3">
+        <a class="nav-link" id="pills-profile2-tab" data-bs-toggle="pill" href="#pills-profile3">
+            <button class=" nav-btn">مشخصات چک</button>
+        </a>
+    </li>
+
+    <li class="nav-item me-3">
+        <a class="nav-link" id="pills-profile2-tab" data-bs-toggle="pill" href="#pills-profile4">
+            <button class=" nav-btn">وضعیت چک</button>
+        </a>
+    </li>
+    <li class="nav-item me-3">
+        <a class="nav-link" id="pills-profile2-tab" data-bs-toggle="pill" href="#pills-profile5">
+            <button class=" nav-btn">وضعیت چک ها</button>
+        </a>
+
+    </li>
+</ul>
+
+
+<div class="tab-content">
+    <div class="tab-pane fade  show active" id="pills-home">
+
+        <div class="row" style="margin-top:10px">
+            <div class="col-xl-2">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <label class="form-label">
+                            نوع حساب
+                            <span class="red-star">*</span>
+                        </label>
+
+                    </div>
+                    <div class="col-xl-12">
+                        <input class="form-control" id="nohesab" @*type="number" name="usr_NationalCode"*@ @*onkeyup="ValidationInput(this)"*@ />
+                        @*<div class="invalid-feedback">این فیلد مورد نیاز است !</div>*@
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row" style="margin-bottom:10px;">
+            <div class="col-xl-11"></div>
+
+            <div class="col-xl-1" id="submitdiv">
+                <button class="btn buttonsabt form-control" id="btnCreate15552">
+                    <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                    <span class="bSabt-text">ثبت</span>
+                </button>
+            </div>
+        </div>
+
+
+        <div @*id="ListUsers"*@>
+            @Html.Action("listcheack1", "FinancialDocuments", new { area = "ManagementAccounting" })
+        </div>
+    </div>
+
+
+
+
+
+    <div class="tab-pane fade" id="pills-profile4">
+
+        <div class="row" style="margin-top:10px">
+            <div class="col-xl-2">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <label class="form-label">
+                            وضعیت مدرک
+                            <span class="red-star">*</span>
+                        </label>
+
+                    </div>
+                    <div class="col-xl-12">
+                        <input class="form-control" id="vaziat" @*type="number" name="usr_NationalCode"*@ @*onkeyup="ValidationInput(this)"*@ />
+                        @*<div class="invalid-feedback">این فیلد مورد نیاز است !</div>*@
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row" style="margin-bottom:10px;">
+            <div class="col-xl-11"></div>
+
+            <div class="col-xl-1" id="submitdiv">
+                <button class="btn buttonsabt form-control" id="btnCreate15552vaziat">
+                    <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                    <span class="bSabt-text">ثبت</span>
+                </button>
+            </div>
+        </div>
+
+
+        <div @*id="ListUsers"*@>
+            @Html.Action("listcheack5", "FinancialDocuments", new { area = "ManagementAccounting" })
+        </div>
+    </div>
+
+
+    <div class="tab-pane fade" id="pills-profile2">
+
+        <div class="row" style="margin-top:10px">
+            <div class="col-xl-3">
+                <label class="form-label">
+                    انتخاب شماره حساب
+                </label>
+                <select class="form-select" id="FK_dbAsnadCheack2">
+                    @foreach (var it in db.dbAsnadCheack2.Where(s => s.NAME != null).ToList())
+                    {
+                        <option value="@it.ID">@it.NAME</option>
+
+                    }
+
+                </select>
+            </div>
+            <div class="col-xl-2">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <label class="form-label">
+                            سریال دسته چک
+                            <span class="red-star">*</span>
+                        </label>
+
+                    </div>
+                    <div class="col-xl-12">
+                        <input class="form-control" id="SJOMERH_seryal" @*type="number" name="usr_NationalCode"*@ @*onkeyup="ValidationInput(this)"*@ />
+                        @*<div class="invalid-feedback">این فیلد مورد نیاز است !</div>*@
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-2">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <label class="form-label">
+                            تعداد برگ دست چک
+                            <span class="red-star">*</span>
+                        </label>
+
+                    </div>
+                    <div class="col-xl-12">
+                        <input class="form-control" id="COunt_Barg" @*type="number" name="usr_NationalCode"*@ @*onkeyup="ValidationInput(this)"*@ />
+                        @*<div class="invalid-feedback">این فیلد مورد نیاز است !</div>*@
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-2">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <label class="form-label">
+                            شماره سیادی
+                            @*<span class="red-star">*</span>*@
+                        </label>
+
+                    </div>
+                    <div class="col-xl-12">
+                        <input class="form-control" id="Shanasehsayadi" @*type="number" name="usr_NationalCode"*@ @*onkeyup="ValidationInput(this)"*@ />
+                        @*<div class="invalid-feedback">این فیلد مورد نیاز است !</div>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" style="margin-bottom:10px;">
+            <div class="col-xl-11"></div>
+            <div class="col-xl-1" id="submitdiv">
+                <button class="btn buttonsabt form-control" id="btnCreate3">
+                    <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                    <span class="bSabt-text">ثبت</span>
+                </button>
+            </div>
+        </div>
+
+        <div @*id="ListUsers"*@>
+            @Html.Action("listcheack13", "FinancialDocuments", new { area = "ManagementAccounting" })
+        </div>
+    </div>
+    <div class="tab-pane fade" id="pills-profile5">
+
+        <div class="row" style="margin-top:10px">
+            <div class="col-xl-3">
+                <label class="form-label">
+                    انتخاب شماره چک
+                </label>
+                <select class="form-select" id="FK_dbAsnadCheack34">
+                    @foreach (var it in db.dbAsnadCheack3.Where(s => s.SJOMERH_seryal != null).ToList())
+                    {
+                        <option value="@it.ID">@it.SJOMERH_seryal</option>
+
+                    }
+
+                </select>
+            </div>
+            <div class="col-xl-3">
+                <label class="form-label">
+                    وضعیت
+                </label>
+                <select class="form-select" id="FK_dbAsnadCheack5">
+                    @foreach (var it in db.dbAsnadCheack5.Where(s => s.NAME != null).ToList())
+                    {
+                        <option value="@it.ID">@it.NAME</option>
+
+                    }
+
+                </select>
+            </div>
+            <div class="col-xl-2">
+                <label class="form-label">تاریخ چک</label>
+                <input data-jdp jdp-btn-close data-jdp-miladi-input="datepickerFromEn_usrstart" id="datepickerFrom_usrstart" class="form-control">
+                <input id="datepickerFromEn_usrstart" type="hidden" />
+            </div>
+
+
+        </div>
+       
+            <div class="row">
+                <div class="col-xl-12">
+                    <label class="form-label">
+                        شرح
+                        <span class="red-star">*</span>
+                    </label>
+
+                </div>
+                <div class="col-xl-12">
+                    <input class="form-control" id="sharh5" @*type="number" name="usr_NationalCode"*@ @*onkeyup="ValidationInput(this)"*@ />
+                    @*<div class="invalid-feedback">این فیلد مورد نیاز است !</div>*@
+                </div>
+            </div>
+        
+        <div class="row" style="margin-bottom:10px;">
+            <div class="col-xl-11"></div>
+            <div class="col-xl-1" id="submitdiv">
+                <button class="btn buttonsabt form-control" id="btnCreate35">
+                    <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                    <span class="bSabt-text">ثبت</span>
+                </button>
+            </div>
+        </div>
+
+        <div @*id="ListUsers"*@>
+            @Html.Action("listcheack16", "FinancialDocuments", new { area = "ManagementAccounting" })
+        </div>
+    </div>
+    <div class="tab-pane fade" id="pills-profile3">
+        <div class="row" style="margin-top:10px">
+            <div class="col-xl-3">
+                <label class="form-label">
+                    انتخاب شماره حساب
+                </label>
+
+                <select class="form-select" id="shomarehhesab2">
+                    <option value="">انتخاب نمایید</option>
+
+                    @foreach (var it in db.dbAsnadCheack2.Where(s => s.shomarehhesab != null).ToList())
+                    {
+                        <option value="@it.shomarehhesab">@it.shomarehhesab</option>
+
+                    }
+
+                </select>
+            </div>
+
+
+            <div class="col-xl-3">
+                <label class="form-label">
+                    انتخاب سریال چک
+                </label>
+
+                <select class="form-select" id="SJOMERH_seryal2">
+                    <option value="">انتخاب نمایید</option>
+
+                    @foreach (var it in db.dbAsnadCheack3.Where(s => s.SJOMERH_seryal != null).ToList())
+                    {
+                        <option value="@it.SJOMERH_seryal">@it.SJOMERH_seryal</option>
+
+                    }
+
+                </select>
+            </div>
+            <!--<div class="col-xl-1">
+                <label class="form-label"> تاریخ فاکتور </label>
+                <div class="col-xl-12">-->
+            @*------------------------------------------------[1402/10/14]-|KH|-*@
+            <!--<input data-jdp jdp-btn-close data-jdp-miladi-input="datepickerFromEn_Eq12" id="datepickerFrom_Eq12" class="form-control">
+            <input id="datepickerFromEn_Eq12" type="hidden" />-->
+            @*-------------------------------------------------------------|KH|-*@
+            <!--</div>
+            </div>
+
+            <div class="col-xl-2">
+                <label class="form-label"> تاریخ پرداخت </label>
+                <div class="col-xl-12">-->
+            @*------------------------------------------------[1402/10/14]-|KH|-*@
+            <!--<input data-jdp jdp-btn-close data-jdp-miladi-input="datepickerFromEn_Eq123" id="datepickerFrom_Eq123" class="form-control">
+            <input id="datepickerFromEn_Eq123" type="hidden" />-->
+            @*-------------------------------------------------------------|KH|-*@
+            <!--</div>
+            </div>
+
+
+
+            <div class="col-xl-2">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <label class="form-label">
+                            سریال دسته چک
+                            <span class="red-star">*</span>
+                        </label>
+
+                    </div>
+                    <div class="col-xl-12">
+                        <input class="form-control" id="SJOMERH_seryal"-->
+            @*type="number" name="usr_NationalCode"*@ @*onkeyup="ValidationInput(this)"*@ <!--/>-->
+            @*<div class="invalid-feedback">این فیلد مورد نیاز است !</div>*@
+            <!--</div>
+                </div>
+            </div>
+            <div class="col-xl-2">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <label class="form-label">
+                            تعداد برگ دست چک
+                            <span class="red-star">*</span>
+                        </label>
+
+                    </div>
+                    <div class="col-xl-12">
+                        <input class="form-control" id="COunt_Barg"-->
+            @*type="number" name="usr_NationalCode"*@ @*onkeyup="ValidationInput(this)"*@ <!--/>-->
+            @*<div class="invalid-feedback">این فیلد مورد نیاز است !</div>*@
+            <!--</div>
+                </div>
+            </div>
+            <div class="col-xl-2">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <label class="form-label">
+                            شماره سیادی-->
+            @*<span class="red-star">*</span>*@
+            <!--</label>
+
+            </div>
+            <div class="col-xl-12">
+                <input class="form-control" id="Shanasehsayadi"-->
+            @*type="number" name="usr_NationalCode"*@ @*onkeyup="ValidationInput(this)"*@ <!--/>-->
+            @*<div class="invalid-feedback">این فیلد مورد نیاز است !</div>*@
+            <!--</div>
+                </div>
+            </div>-->
+        </div>
+
+        <div class="row" style="margin-bottom:10px;">
+            <div class="col-xl-11"></div>
+
+            <div class="col-xl-1" id="submitdiv">
+                <a style="cursor:pointer" data-bs-toggle="modal" data-bs-target="#modalLg1" class="btn form-control buttonGeneral EditUser" id="modalbank">
+                    <i class="fa fa-edit fa-fw me-1 VecGeneral"></i>
+                    <span class="bGeneral-text"> مشاهده صفحه</span>
+
+                </a>
+
+            </div>
+        </div>
+
+        <div @*id="ListUsers"*@>
+            @Html.Action("listcheack14", "FinancialDocuments", new { area = "ManagementAccounting" })
+        </div>
+    </div>
+
+
+
+    <div class="tab-pane fade" id="pills-profile">
+
+        <div class="row" style="margin-top:10px">
+            <div class="col-xl-2">
+                <label class="form-label">
+                    نام بانک
+                    @*<span class="red-star">*</span>*@
+                </label>
+                <input class="form-control" id="NAME" @*type="number" name="usr_NationalCode"*@ @*onkeyup="ValidationInput(this)"*@ />
+            </div>
+            <div class="col-xl-2">
+                <label class="form-label">
+                    شماره حساب
+                    @*<span class="red-star">*</span>*@
+                </label>
+                <input class="form-control" id="shomarehhesab" @*type="number" name="usr_NationalCode"*@ @*onkeyup="ValidationInput(this)"*@ />
+            </div>
+
+            <div class="col-xl-2">
+                <label class="form-label">
+                    شماره شبا                                @*<span class="red-star">*</span>*@
+                </label>
+                <input class="form-control" id="SHomarehshaba" @*type="number" name="usr_NationalCode"*@ @*onkeyup="ValidationInput(this)"*@ />
+            </div>
+
+            <div class="col-xl-2">
+                <label class="form-label">
+                    شماره کارت
+                    @*<span class="red-star">*</span>*@
+                </label>
+                <input class="form-control" id="SHomarehkart" @*type="number" name="usr_NationalCode"*@ @*onkeyup="ValidationInput(this)"*@ />
+            </div>
+
+
+            <div class="col-xl-3">
+                <label class="form-label">
+                    نوع حساب
+                </label>
+
+                <select class="form-select" id="FK_dbAsnadCheack1">
+                    @foreach (var it in db.dbAsnadCheack1.Where(s => s.Name != null).ToList())
+                    {
+                        <option value="@it.ID">@it.Name</option>
+
+                    }
+
+                </select>
+            </div>
+
+
+
+
+
+            <div class="row" style="margin-bottom:10px;">
+                <div class="col-xl-11"></div>
+
+                @*<div class="col-xl-1">
+                        <a href="#" class=" btn form-control buttonGeneral" id="dwn" onclick="DownloadExcel23() ">
+                            <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                            <span class="bGeneral-text">دانلود فایل نمونه</span>
+                        </a>
+                    </div>*@
+                <div class="col-xl-1" id="submitdiv">
+                    <button class="btn buttonsabt form-control" id="btnCreate2">
+                        <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                        <span class="bSabt-text">ثبت</span>
+                    </button>
+                </div>
+            </div>
+            <div id="test2">
+
+            </div>
+        </div>
+
+
+        <div @*id="ListUsers"*@>
+            @Html.Action("listcheack12", "FinancialDocuments", new { area = "ManagementAccounting" })
+        </div>
+
+    </div>
+</div>
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="~/Assets/js/jquery3.6.0.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Scripts/sweetalert2.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Scripts/popper.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Scripts/popper.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script>
+            $("#modalbank").click(function () {
+$("#big_modal_body1").html(null);
+        //var id = $(this).attr("id").split('_')[1];
+                var shomarehhesab2 = $("#shomarehhesab2").val();
+                var SJOMERH_seryal2 = $("#SJOMERH_seryal2").val();
+                console.log(shomarehhesab2);
+                $("#big_modal_body1").load('@Url.Content("/ManagementAccounting/FinancialDocuments/viewmodelbank")?SJOMERH_seryal2=' + SJOMERH_seryal2 + '&shomarehhesab2=' + shomarehhesab2);
+
+
+
+    });
+    jalaliDatepicker.startWatch({
+        time: false,
+        days: ["شنبه", "1شنبه", "2شنبه", "3شنبه", "4شنبه", "5شنبه", "جمعه"],
+        persianDigits: true,
+        autoClose: true,
+        //autocomplete: true,
+        showCloseBtn: true,
+        showEmptyBtn: false,
+        showCloseBtn: true,
+        zIndex: 100000,
+    });
+    function reinitializeDatepickers() {
+        var inputs = document.querySelectorAll("[data-jdp-miladi-input]");
+        console.log(inputs.length);
+
+        for (var i = 0; i < inputs.length; i++) {
+            inputs[i].addEventListener("jdp:change", function (e) {
+                var miladiInput = document.getElementById(this.getAttribute("data-jdp-miladi-input"));
+                var date = this.value.replace(' ', '').slice(0, 10).split('/');
+                date = jalaali.toGregorian(parseInt(date[0]), parseInt(date[1]), parseInt(date[2]));
+
+                if (!this.value) {
+                    date = "";
+                } else if (this.value.replace(' ', '').length < 11) {
+                    date = date.gy + '-' + date.gm + '-' + date.gd;
+                } else {
+                    date = date.gy + '-' + date.gm + '-' + date.gd + ' ' + this.value.replace(' ', '').slice(10, 30);
+                }
+                miladiInput.value = date;
+            });
+        }
+    }
+
+    //-----------------------------------------------------------------
+    var inputs = document.querySelectorAll("[data-jdp-miladi-input]");
+    for (var i = 0; i < inputs.length; i++) {
+        console.log(inputs.length);
+
+        inputs[i].addEventListener("jdp:change", function (e) {
+            var miladiInput = document.getElementById(this.getAttribute("data-jdp-miladi-input"));
+            var date = this.value.replace(' ', '').slice(0, 10).split('/');
+            date = jalaali.toGregorian(parseInt(date[0]), parseInt(date[1]), parseInt(date[2]),)
+            // If it was empty
+            if (!this.value) {
+                date = "";
+            }
+            // If it was only history
+            else if (this.value.replace(' ', '').length < 11) {
+                date = date.gy + '-' + date.gm + '-' + date.gd
+            }
+            // If it was the date and time
+            else {
+                date = date.gy + '-' + date.gm + '-' + date.gd + ' ' + this.value.replace(' ', '').slice(10, 30)
+            }
+            miladiInput.value = date
+        });
+    }
+</script>
+<script>
+    $("#btnCreate15552").click(function () {
+    console.log("inje");
+    var Filters = [];
+    var obj = new Object();
+        obj.nohesab = $("#nohesab").val();
+    //obj.fk = $("#select_peyman3").val();
+    ////obj.ShortTitle = $("#sss").val();
+    //obj.month = $("#Month2").val();
+    //obj.number_sorat = $("#value2").val();
+
+        console.log($("#nohesab").val());
+
+    //console.log($("#select_peyman3").val());
+
+    //console.log($("#Month2").val());
+
+    //console.log($("#value2").val());
+    Filters.push(obj);
+    console.log(Filters)
+        sendAjax14('@Url.Action("viewCHEzK1", "FinancialDocuments", new { area = "ManagementAccounting" })', obj);
+});
+
+    function sendAjax14(url2, fd2) {
+        const formData = new FormData();
+        formData.append("nohesab", fd2.nohesab);
+
+        $.ajax({
+            url: url2,
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (res) {
+                $("#loading-circle").css("display", "none");
+                console.log(res);
+                if (res === "True") {
+                    alert("با موفقیت ثبت شد");
+                    location.reload();
+                }
+            },
+            error: function (res) {
+                $("#loading-circle").css("display", "none");
+                console.log(res);
+                Toast.fire({
+                    icon: 'error',
+                    title: "با خطا مواجه شده است، لطفا بعدا تلاش فرمایید"
+                });
+            }
+        });
+    }
+
+    $("#btnCreate15552vaziat").click(function () {
+    console.log("inje");
+    var Filters = [];
+    var obj = new Object();
+        obj.vaziat = $("#vaziat").val();
+    //obj.fk = $("#select_peyman3").val();
+    ////obj.ShortTitle = $("#sss").val();
+    //obj.month = $("#Month2").val();
+    //obj.number_sorat = $("#value2").val();
+
+        console.log($("#vaziat").val());
+
+    //console.log($("#select_peyman3").val());
+
+    //console.log($("#Month2").val());
+
+    //console.log($("#value2").val());
+    Filters.push(obj);
+    console.log(Filters)
+        sendAjax14vaziat('@Url.Action("createCHEzK4", "FinancialDocuments", new { area = "ManagementAccounting" })', obj);
+});
+
+    function sendAjax14vaziat(url2, fd2) {
+        const formData = new FormData();
+        formData.append("vaziat", fd2.vaziat);
+
+        $.ajax({
+            url: url2,
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (res) {
+                $("#loading-circle").css("display", "none");
+                console.log(res);
+                if (res === "True") {
+                    alert("با موفقیت ثبت شد");
+                    location.reload();
+                }
+            },
+            error: function (res) {
+                $("#loading-circle").css("display", "none");
+                console.log(res);
+                Toast.fire({
+                    icon: 'error',
+                    title: "با خطا مواجه شده است، لطفا بعدا تلاش فرمایید"
+                });
+            }
+        });
+    }
+
+
+    $("#btnCreate2").click(function () {
+    console.log("inje");
+
+    var obj = {
+        NAME: $("#NAME").val(),
+        shomarehhesab: $("#shomarehhesab").val(),
+        SHomarehshaba: $("#SHomarehshaba").val(),
+        SHomarehkart: $("#SHomarehkart").val(),
+        FK_dbAsnadCheack1: $("#FK_dbAsnadCheack1").val()
+    };
+
+    console.log(obj);
+
+    sendAjax2('@Url.Action("viewCHEzK2", "FinancialDocuments", new { area = "ManagementAccounting" })', obj);
+});
+
+function sendAjax2(url2, fd2) {
+    $.ajax({
+        url: url2,
+        type: 'POST',
+        data: JSON.stringify(fd2),
+        contentType: 'application/json', // درست
+        success: function (res) {
+            $("#loading-circle").css("display", "none");
+            console.log(res);
+            if (res === "True") {
+                alert("با موفقیت ثبت شد");
+                location.reload();
+            }
+        },
+        error: function (res) {
+            $("#loading-circle").css("display", "none");
+            console.log(res);
+            Toast.fire({
+                icon: 'error',
+                title: "با خطا مواجه شده است، لطفا بعدا تلاش فرمایید"
+            });
+        }
+    });
+}
+
+    $("#btnCreate3").click(function () {
+    console.log("inje");
+
+    var obj = {
+        COunt_Barg: $("#COunt_Barg").val(),
+        SJOMERH_seryal: $("#SJOMERH_seryal").val(),
+        FK_dbAsnadCheack2: $("#FK_dbAsnadCheack2").val(),
+        Shanasehsayadi: $("#Shanasehsayadi").val(),
+    //    FK_dbAsnadCheack1: $("#FK_dbAsnadCheack1").val()
+    };
+
+    console.log(obj);
+
+    sendAjax3('@Url.Action("viewCHEzK3", "FinancialDocuments", new { area = "ManagementAccounting" })', obj);
+});
+
+function sendAjax3(url2, fd2) {
+    $.ajax({
+        url: url2,
+        type: 'POST',
+        data: JSON.stringify(fd2),
+        contentType: 'application/json', // درست
+        success: function (res) {
+            $("#loading-circle").css("display", "none");
+            console.log(res);
+            if (res === "True") {
+                alert("با موفقیت ثبت شد");
+                location.reload();
+            }
+        },
+        error: function (res) {
+            $("#loading-circle").css("display", "none");
+            console.log(res);
+            Toast.fire({
+                icon: 'error',
+                title: "با خطا مواجه شده است، لطفا بعدا تلاش فرمایید"
+            });
+        }
+    });
+    }
+
+
+
+
+
+
+
+
+
+    $("#btnCreate35").click(function () {
+    console.log("inje");
+
+    var obj = {
+        FK_dbAsnadCheack5: $("#FK_dbAsnadCheack5").val(),
+        FK_dbAsnadCheack3: $("#FK_dbAsnadCheack34").val(),
+        sharh: $("#sharh5").val(),
+        Datatime: $("#datepickerFromEn_usrstart").val(),
+    //    FK_dbAsnadCheack1: $("#FK_dbAsnadCheack1").val()
+    };
+
+    console.log(obj);
+
+    sendAjax36('@Url.Action("viewCHEzK6", "FinancialDocuments", new { area = "ManagementAccounting" })', obj);
+});
+
+    function sendAjax36(url2, fd2) {
+    $.ajax({
+        url: url2,
+        type: 'POST',
+        data: JSON.stringify(fd2),
+        contentType: 'application/json', // درست
+        success: function (res) {
+            $("#loading-circle").css("display", "none");
+            console.log(res);
+            if (res === "True") {
+                alert("با موفقیت ثبت شد");
+                location.reload();
+            }
+        },
+        error: function (res) {
+            $("#loading-circle").css("display", "none");
+            console.log(res);
+            Toast.fire({
+                icon: 'error',
+                title: "با خطا مواجه شده است، لطفا بعدا تلاش فرمایید"
+            });
+        }
+    });
+}
+</script>

@@ -1,0 +1,1024 @@
+﻿@model SaabWebProject.Models.ViewModels.Contracts.Function.FunctionModel
+@using SaabWebProject.Models.DomainModels;
+
+@{
+    ViewBag.Title = "داشبورد مامور";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+
+}
+@{
+    SaabEntities db = new SaabEntities();
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>DashbordMamoorin</title>
+    <style>
+        @@media (max-width: 768px) {
+            .title-chart {
+                background-color: var(--color-tr);
+                height: 25px !important;
+                width: 100%;
+                border-bottom: 1px solid #00ffff2e;
+                display: flex;
+            }
+
+            .Onvan-title {
+                width: 50%;
+                height: 100%;
+                text-align: start;
+                padding-right: 20px;
+                align-content: center;
+                color: aqua;
+                font-size: 6px !important;
+                font-weight: bold;
+            }
+
+            .Bazeh-title {
+                width: 50%;
+                height: 100%;
+                text-align: end;
+                align-content: center;
+                padding-left: 20px;
+                color: aqua;
+                font-size: 6px !important;
+                font-weight: bold;
+            }
+
+            .title-vosool {
+                display: flex;
+                flex-direction: column;
+                width: 20%;
+                height: 100%;
+            }
+
+                .title-vosool div {
+                    height: 50%;
+                    width: 100%;
+                    display: flex;
+                    justify-content: center;
+                }
+
+            .meghdar {
+                padding: 40px;
+                font-size: 20px !important;
+            }
+
+            .meghdar1 {
+                padding-top: 40px !important;
+                font-size: 18px !important;
+            }
+
+            .onvan {
+                padding-top: 25px !important;
+                font-size: 8px !important;
+            }
+
+            th {
+                font-size: 6px !important;
+                padding: 10px 10px !important;
+            }
+
+                th.th-bazeh {
+                    text-align: end;
+                    padding-left: 20px !important;
+                    font-size: 6px !important;
+                }
+
+                th.th-Onvan {
+                    font-size: 6px !important;
+                    text-align: start;
+                    padding-right: 20px !important;
+                }
+
+            td {
+                font-size: 6px !important;
+            }
+
+            .txt-Taghsim {
+                width: 100%;
+                height: 30px;
+                display: flex;
+                flex-direction: row;
+                font-size: 8px !important;
+                gap: 10px;
+                padding: 10px 20px;
+                align-content: center;
+            }
+        }
+
+        :root {
+            --color-tr: #0b2934;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 10px;
+        }
+
+        .field {
+            grid-column: span 12;
+            grid-row: span 3;
+            height: fit-content;
+            /* background-color: #ffffff; */
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #ffffff;
+            border: 1px solid #009595cc;
+            overflow: hidden;
+        }
+
+        .title-chart {
+            background-color: var(--color-tr);
+            height: 40px;
+            width: 100%;
+            border-bottom: 1px solid #00ffff2e;
+            display: flex;
+        }
+
+        .Onvan-title {
+            width: 50%;
+            height: 100%;
+            text-align: start;
+            padding-right: 20px;
+            align-content: center;
+            color: aqua;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .Bazeh-title {
+            width: 50%;
+            height: 100%;
+            text-align: end;
+            align-content: center;
+            padding-left: 20px;
+            color: aqua;
+            font-size: 12px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="tab-content" id="pills-tabContent">
+        <div class="dashboard">
+            <div id="" class="field" style="padding-top: 15px; padding-right:20px; align-items: flex-start;justify-content:flex-start;gap:10px; flex-direction:row;">
+                <div class="col-xl-2">
+                    <input style="text-align: center; font-weight: bold; color: aqua !important;" class="form-control" id="" value="مامورین" readonly disabled />
+                </div>
+                <div class="col-xl-2">
+                    <label class="form-label">نام شهرستان</label>
+                    <select name="color" class="form-select" id="sharestan">
+                        <option value="" selected>@Model.unicc</option>
+                        <option value="استان">استان</option>
+
+                        @foreach (var it in db.dbdashbordmamor.GroupBy(s => s.city).ToList())
+                        {
+                            <option value="@it.Key">@it.Key</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-xl-2" style="display:none">
+                    <label class="form-label">نام کاریر</label>
+                    <select name="color" class="form-select" id="sharestanpeson">
+                        <option value="0" selected>@Model.unicc</option>
+                        @foreach (var it in db.dbdashbordmamor.GroupBy(s => s.FK_usr).ToList())
+                        {
+                            var find = db.dbdashbordmamor.Where(s => s.FK_usr == it.Key).FirstOrDefault();
+                            <option value="@find.FK_usr">@find.tbUsers.FullName</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-xl-2" style="display:none">
+
+                    <label class="form-label">از تاریخ</label>
+                    <input data-jdp jdp-btn-close data-jdp-miladi-input="astime" id="datepickerFrom_shw2" class="form-control pdate" name="datepickerFrom_shw2">
+                    <input id="astime" type="hidden" />
+                </div>
+                <div class="col-xl-2" style="display:none">
+
+                    <label class="form-label">تا تاریخ</label>
+                    <input data-jdp jdp-btn-close data-jdp-miladi-input="tatime" id="datepickerFrom_shw3" class="form-control pdate" name="datepickerFrom_shw3">
+                    <input id="tatime" type="hidden" />
+                </div>
+                <div class="col-xl-1">
+                    <button id="person-sabt" class="form-control buttonGeneral">
+                        <i class="bi bi-eye fa-fw me-1 VecGeneral"></i>
+                        <span class="bGeneral-text">مشاهده</span>
+                    </button>
+                </div>
+            </div>
+            <div id="" class="field">
+                <div class="title-chart">
+                    <div class="Onvan-title">نمودار فراوانی (درصد) راندمان های کاری در هر شغل</div>
+                    <div class="Bazeh-title">(بازه زمانی از ابتدای ۱۴۰۴)</div>
+                </div>
+                <div id="chart1" style="height:100%; width:100%;"></div>
+            </div>
+            <div id="" class="field">
+                <div class="title-chart">
+                    <div class="Onvan-title">نمودار راندمان کاری هر شغل به تفکیک میزان مشارکت در فعالیتهای مختلف </div>
+                    <div class="Bazeh-title">(بازه زمانی از ابتدای ۱۴۰۴)</div>
+
+                </div>
+                <div id="chart2" style="height:100%; width:100%;"></div>
+            </div>
+            <div id="" class="field">
+                    <div class="title-chart">
+                        <div class="Onvan-title">نمودار تغییرات راندمان کاری در زمان</div>
+                        <div class="Bazeh-title">(بازه زمانی از ابتدای ۱۴۰۴)</div>
+                    </div>
+                    <div id="chart3" style="height:100%; width:100%;"></div>
+
+                </div>
+        </div>
+    </div><link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+    <link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+    <script src="~/Assets/js/jalalidatepicker.min.js"></script>
+    <link href="~/Assets/css/jalalidatepicker.min.css" rel="stylesheet" />
+    <script src="~/Assets/js/jalaali.min.js"></script>
+    <link href="~/MyStyles/jalalidatepicker.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+    <script src="~/Scripts/jquery-ui.js"></script>
+    <script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+    <script src="~/Scripts/jquery-ui.js"></script>
+    <script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+    <script src="@Url.Content("~/Scripts/jquery-3.3.1.js")"></script>
+    <script src="@Url.Content("~/Scripts/jquery-ui.js")"></script>
+    <script src="@Url.Content("~/Assets/plugins/select-picker/dist/picker.min.js")"></script>
+    <script src="@Url.Content("~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js")"></script>
+    <script src="~/Assets/plugins/apexcharts/dist/apexcharts.min.js"></script>
+    <link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+    <script src="~/Assets/js/jalalidatepicker.min.js"></script>
+    <link href="~/Assets/css/jalalidatepicker.min.css" rel="stylesheet" />
+    <script src="~/Assets/js/jalaali.min.js"></script>
+    <link href="~/MyStyles/jalalidatepicker.css" rel="stylesheet" />
+    <script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+
+    <script>
+    // ساخت آرایه‌ها بر اساس مدل Users
+    var under25 = [];
+    var between25_50 = [];
+    var between50_75 = [];
+    var between75_100 = [];
+    var over100 = [];
+    var total = [];
+
+    @* حلقه روی Users از بک‌اند *@
+    @foreach(var user in Model.Users)
+    {
+        <text>
+            under25.push(@user.Values["Under25"]);
+            between25_50.push(@user.Values["25_50"]);
+            between50_75.push(@user.Values["50_75"]);
+            between75_100.push(@user.Values["75_100"]);
+            over100.push(@user.Values["Over100"]);
+            total.push(@user.Values["Total"]);
+        </text>
+    }
+
+    var options = {
+        series: [{
+            name: 'زیر ۲۵ درصد',
+            type: 'column',
+            data: under25
+        }, {
+            name: '25 تا 50 درصد',
+            type: 'column',
+            data: between25_50
+        }, {
+            name: '50تا 75 درصد',
+            type: 'column',
+            data: between50_75
+        }, {
+            name: '75 تا 100 درصد',
+            type: 'column',
+            data: between75_100
+        }, {
+            name: 'بالای ۱۰۰ درصد',
+            type: 'column',
+            data: over100
+        }, {
+            name: 'تعداد مامور',
+            type: 'line',
+            data: total
+        }],
+        chart: {
+            height: 350,
+            type: 'line',
+            stacked: true,
+            toolbar: { show: false },
+            fontFamily: 'inherit',
+            zoom: { enabled: false }
+        },
+        colors: ['#e63946', '#f4a261', '#e9c46a', '#2a9d8f', '#4caf50', '#601CE8'],
+        stroke: {
+            width: [0,0,0,0,0,0],
+            curve: 'smooth'
+        },
+        markers: { size: 4, shape: "square", strokeColors: '#fff', strokeWidth:1, hover:{size:7} },
+        plotOptions: { bar:{ horizontal:false, columnWidth:'55%', borderRadius:8, borderRadiusApplication:'end', borderRadiusWhenStacked:'last' } },
+        dataLabels: { enabled:true, formatter: function(val){return val;}, hideOverflowingText:false, style:{ fontSize:'11px', fontFamily:'inherit', colors:['#fff'] }, background:{enabled:false}, dropShadow:{enabled:true, top:1, left:1, blur:1, color:'#000', opacity:0.45}, enabledOnSeries:[0,1,2,3,4] },
+        grid:{ borderColor:'#1b7a7a66', strokeDashArray:3, xaxis:{lines:{show:false}}, yaxis:{lines:{show:true}} },
+        yaxis: {
+            show: true,
+            min: 0,
+            max: 100,
+            tickAmount: 5,
+            labels: {
+                formatter: function (val) {
+                    return val + "%";
+                },
+                style: { colors: '#fff' }
+            }
+        },        xaxis:{ categories: ['کارشناس ستادی', 'انبار داری', 'نماینده مقیم', 'ارزیاب', 'پلیس برق', 'نصب و اصلاح', 'متصدی مشترکین', 'وصول', 'قرائت'], labels:{ offsetY:0, style:{ colors:'#fff' } }, axisTicks:{show:false} },
+        legend:{ position:'top', labels:{ colors:'#fff' } },
+        tooltip:{ theme:'dark' },
+        responsive:[{
+            breakpoint:768,
+            options:{
+                chart:{ height:400 },
+                plotOptions:{ bar:{ horizontal:false, columnWidth:'55%', borderRadius:2, borderRadiusApplication:'end', borderRadiusWhenStacked:'last' } },
+                xaxis:{ labels:{ rotate:90, rotateAlways:true, minHeight:100, style:{ colors:'#fff', fontSize:'8px', fontFamily:'inherit' } }, axisTicks:{ show:false } },
+                yaxis:{ labels:{ offsetX:-10, style:{ colors:'#fff', fontSize:'8px' } } },
+                dataLabels:{ enabled:true, formatter:function(val){return val;}, hideOverflowingText:false, style:{ fontSize:'8px', fontFamily:'inherit', colors:['#fff'] }, background:{enabled:false}, dropShadow:{enabled:true, top:1, left:1, blur:1, color:'#000', opacity:0.45}, enabledOnSeries:[0,1,2,3,4] },
+                legend:{ show:false, position:'bottom', fontSize:'12px' }
+            }
+        }]
+    };
+
+    var chart = new ApexCharts(document.querySelector("#chart1"), options);
+    chart.render();
+    </script>
+    @*<script>
+            var options = {
+                series: [{
+                    name: 'زیر ۲۵ درصد',
+                    type: 'column', // مشخص کردن نوع ستونی
+                    data: [30, 40, 45, 50, 49, 60, 70, 91, 125]
+                }, {
+                    name: '25 تا 50 درصد',
+                    type: 'column',
+                    data: [20, 30, 40, 80, 20, 80, 70, 30, 40]
+                }, {
+                    name: '50تا 75 درصد',
+                    type: 'column',
+                    data: [44, 55, 41, 67, 22, 43, 21, 41, 56]
+                }, {
+                    name: '75 تا 100 درصد',
+                    type: 'column',
+                    data: [13, 23, 20, 8, 13, 27, 33, 12, 10]
+                }, {
+                    name: 'بالای ۱۰۰ درصد',
+                    type: 'column',
+                    data: [11, 17, 15, 15, 21, 14, 15, 13, 11]
+                }, {
+                    name: 'تعداد مامور',
+                    type: 'line', // این همون خطیه که می‌خواستی
+                    data: [20, 150, 160, 220, 10, 230, 210, 180, 250]
+                }],
+                chart: {
+                    height: 350,
+                    type: 'line', // نوع اصلی چارت
+                    stacked: true, // استکی بودن برای ستون‌ها حفظ میشه
+                    toolbar: { show: false },
+                    fontFamily: 'inherit',
+                    zoom: { enabled: false, }
+                },
+                // اضافه کردن رنگ ششم برای خط (مثلاً بنفش یا سفید)
+                colors: ['#e63946', '#f4a261', '#e9c46a', '#2a9d8f', '#4caf50', '#601CE8'],
+                stroke: {
+                    width: [0, 0, 0, 0, 0, 0], // ضخامت برای ستون‌ها ۰ و برای خط ۴ باشه
+                    curve: 'smooth' // خط به صورت نرم (خمیده) باشه
+                },
+                markers: {
+                    size: 4,
+                    shape: "square",
+                    strokeColors: '#fff',
+
+                    strokeWidth: 1,
+                    hover: { size: 7 }
+                },
+                plotOptions: {
+                    bar: {
+                        horizontal: false,
+                        columnWidth: '55%',
+                        borderRadius: 8,
+                        borderRadiusApplication: 'end',
+                        borderRadiusWhenStacked: 'last'
+                    },
+                },
+                dataLabels: {
+                    enabled: true,
+                    formatter: function (val) {
+                        return val;
+                    },
+                    // اضافه کردن این بخش برای جلوگیری از مخفی شدن
+                    hideOverflowingText: false,
+                    style: {
+                        fontSize: '11px',
+                        fontFamily: 'inherit',
+                        colors: ['#fff']
+                    },
+                    background: {
+                        enabled: false, // اگه روشن باشه ممکنه باعث حذف لیبل‌های نزدیک به هم بشه
+                    },
+                    dropShadow: {
+                        enabled: true,
+                        top: 1,
+                        left: 1,
+                        blur: 1,
+                        color: '#000',
+                        opacity: 0.45
+                    },
+                    enabledOnSeries: [0, 1, 2, 3, 4], // فقط روی ستون‌ها
+                },
+                grid: {
+                    borderColor: '#1b7a7a66',
+                    strokeDashArray: 3,
+                    xaxis: { lines: { show: false } },
+                    yaxis: { lines: { show: true } }
+                },
+                yaxis: {
+                    show: true,
+                    labels: {
+                        offsetX: -10,
+                        show: true,
+                        style: { colors: '#fff' }
+                    }
+                },
+                xaxis: {
+                    categories: ['کارشناس ستادی', 'انبار داری', 'نماینده مقیم', 'ارزیاب', 'پلیس برق', 'نصب و اصلاح', 'متصدی مشترکین', 'وصول', 'قرائت'],
+                    labels: {
+                        offsetY: 0,
+                        style: { colors: '#fff' }
+                    },
+                    //axisBorder: { show: false },
+                    axisTicks: { show: false }
+                },
+                legend: {
+                    position: 'top',
+                    labels: { colors: '#fff' }
+                },
+                tooltip: {
+                    theme: 'dark'
+                },
+                responsive: [{
+                    breakpoint: 768, // برای تبلت و موبایل
+                    options: {
+                        chart: {
+                            height: 400 // یه کم ارتفاع رو بیشتر کن تا ستون‌ها فشرده نشن
+                        },
+                        plotOptions: {
+                            bar: {
+                                horizontal: false,
+                                columnWidth: '55%',
+                                borderRadius: 2,
+                                borderRadiusApplication: 'end',
+                                borderRadiusWhenStacked: 'last'
+                            },
+                        },
+                        xaxis: {
+                            //categories: ['کارشناس ستادی', 'انبار داری', 'نماینده مقیم', 'ارزیاب', 'پلیس برق', 'نصب و اصلاح', 'متصدی مشترکین', 'وصول', 'قرائت'],
+                            labels: {
+                                rotate: 90, // چرخش ۹۰ درجه
+                                rotateAlways: true, // همیشه چرخیده بمونه (حتی اگه فضا زیاد بود)
+                                minHeight: 100, // یه فضای حداقلی بده که کلمات طولانی قطع نشن
+                                style: {
+                                    colors: '#fff',
+                                    fontSize: '8px', // اندازه ۸ پیکسل
+                                    fontFamily: 'inherit'
+                                }
+                            },
+                            axisTicks: { show: false }
+                        },
+                        yaxis: {
+                            labels: {
+                                offsetX: -10,
+                                style: { colors: '#fff', fontSize: '8px' }
+                            }
+                        },
+                        dataLabels: {
+                            enabled: true,
+                            formatter: function (val) {
+                                return val;
+                            },
+                            // اضافه کردن این بخش برای جلوگیری از مخفی شدن
+                            hideOverflowingText: false,
+                            style: {
+                                fontSize: '8px',
+                                fontFamily: 'inherit',
+                                colors: ['#fff']
+                            },
+                            background: {
+                                enabled: false, // اگه روشن باشه ممکنه باعث حذف لیبل‌های نزدیک به هم بشه
+                            },
+                            dropShadow: {
+                                enabled: true,
+                                top: 1,
+                                left: 1,
+                                blur: 1,
+                                color: '#000',
+                                opacity: 0.45
+                            },
+                            enabledOnSeries: [0, 1, 2, 3, 4], // فقط روی ستون‌ها
+                        },
+                        legend: {
+                            show: false,
+                            position: 'bottom', // راهنمای نمودار بیاد پایین که فضا باز بشه
+                            fontSize: '12px'
+                        }
+                    }
+                }]
+            };
+
+            var chart = new ApexCharts(document.querySelector("#chart1"), options);
+            chart.render();
+        </script>*@
+    @*<script>
+                var series2 = [];
+        @foreach(var user in Model.Users)
+        {
+            <text>
+            series2.push({ name: '@user.JobName', data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(user.RawValues)) });
+            </text>
+        }
+
+        var options2 = {
+            series: series2,
+            chart: { type:'bar', stacked:true, height:450, toolbar:{show:false}, fontFamily:'inherit' },
+            colors: ['#e63946','#f17c58','#f4a261','#e9c46a','#8ab17d','#2a9d8f','#4caf50','#2196f3','#601CE8'],
+            stroke: { width:0, colors:['#fff'] },
+            plotOptions:{ bar:{ horizontal:false, columnWidth:'55%', borderRadius:5, borderRadiusApplication:'end', borderRadiusWhenStacked:'last' } },
+            dataLabels:{ enabled:true, style:{ fontSize:'9px', colors:['#fff'] }, dropShadow:{enabled:true} },
+            grid: { borderColor: '#1b7a7a66', strokeDashArray: 3 },
+            xaxis:{ categories: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Users.Select(u=>u.JobName))), labels:{ style:{colors:'#fff'} }, axisTicks:{show:false} },
+            yaxis:{ labels:{ offsetX:-10, style:{ colors:'#fff'} } },
+            legend:{ position:'top', horizontalAlign:'center', labels:{ colors:'#fff' } },
+            tooltip:{ theme:'dark' },
+            responsive: [{
+                breakpoint: 768,
+                options:{
+                    chart:{ height:500 },
+                    xaxis:{ labels:{ rotate:90, rotateAlways:true, minHeight:80, style:{ fontSize:'8px', fontFamily:'inherit', colors:['#fff'] } } },
+                    yaxis:{ labels:{ offsetX:-10, style:{ colors:'#fff', fontSize:'8px' } } },
+                    dataLabels:{ enabled:true, formatter:function(val){return val;}, hideOverflowingText:false, style:{ fontSize:'8px', fontFamily:'inherit', colors:['#fff'] }, background:{enabled:false}, dropShadow:{enabled:true, top:1, left:1, blur:1, color:'#000', opacity:0.45} },
+                    legend:{ show:false, position:'bottom', fontSize:'10px', offsetY:0, markers:{width:8, height:8}, itemMargin:{vertical:2} },
+                    plotOptions:{ bar:{ columnWidth:'70%' } }
+                }
+            }]
+        };
+
+        var chart2 = new ApexCharts(document.querySelector("#chart2"), options2);
+        chart2.render();
+        </script>*@
+    @*<script>
+            var options = {
+                series: [
+                    { name: 'وصول', data: [10, 15, 8, 12, 20, 15, 10, 18, 12] },
+                    { name: 'قرائت', data: [12, 10, 15, 8, 15, 20, 12, 10, 15] },
+                    { name: 'نصب و اصلاح', data: [15, 12, 10, 15, 10, 12, 15, 12, 10] },
+                    { name: 'ارزیاب', data: [8, 15, 12, 10, 12, 15, 8, 15, 12] },
+                    { name: 'پلیس برق', data: [20, 8, 15, 12, 15, 10, 20, 8, 15] },
+                    { name: 'انبار داری', data: [15, 20, 12, 15, 8, 12, 15, 20, 8] },
+                    { name: 'نماینده مقیم', data: [10, 12, 20, 8, 12, 15, 10, 12, 20] },
+                    { name: 'متصدی مشترکین', data: [12, 15, 10, 20, 15, 8, 12, 15, 10] },
+                    { name: 'کارشناس ستادی', data: [8, 10, 12, 15, 20, 12, 8, 10, 12] }
+                ],
+                chart: {
+                    type: 'bar', // وقتی خط نداری بهتره کلا تایپ چارت bar باشه
+                    height: 450,
+                    stacked: true,
+                    toolbar: { show: false },
+                    fontFamily: 'inherit'
+                },
+                // دقیقاً ۹ رنگ برای ۹ استک
+                colors: [
+                    '#e63946', '#f17c58', '#f4a261', '#e9c46a', '#8ab17d',
+                    '#2a9d8f', '#4caf50', '#2196f3', '#601CE8'
+                ],
+                stroke: {
+                    width: 0,
+                    colors: ['#fff'], // یه خط سفید خیلی نازک بین استک‌ها که خوشگل تفکیک بشن
+                },
+                plotOptions: {
+                    bar: {
+                        horizontal: false,
+                        columnWidth: '55%',
+                        borderRadius: 5,
+                        borderRadiusApplication: 'end',
+                        borderRadiusWhenStacked: 'last'
+                    },
+                },
+                dataLabels: {
+                    enabled: true,
+                    style: {
+                        fontSize: '9px',
+                        colors: ['#fff']
+                    },
+                    dropShadow: { enabled: true }
+                },
+                grid: {
+                    borderColor: '#1b7a7a66',
+                    strokeDashArray: 3
+                },
+                xaxis: {
+                    categories: ['کارشناس ستادی', 'انبار داری', 'نماینده مقیم', 'ارزیاب', 'پلیس برق', 'نصب و اصلاح', 'متصدی مشترکین', 'وصول', 'قرائت'],
+                    axisTicks: { show: false },
+
+                    labels: { style: { colors: '#fff' } }
+                },
+                yaxis: {
+                    labels: {
+                        offsetX: -10,
+                        style: { colors: '#fff' }
+                    }
+                },
+                legend: {
+                    position: 'top',
+                    horizontalAlign: 'center',
+                    labels: { colors: '#fff' }
+                },
+                tooltip: { theme: 'dark' },
+                responsive: [{
+                    breakpoint: 768, // برای ابعاد موبایل
+                    options: {
+                        chart: {
+                            height: 500 // کمی ارتفاع رو بیشتر کردم چون لیبل‌های پایین فضا می‌گیرن
+                        },
+                        xaxis: {
+                            labels: {
+                                rotate: 90, // چرخش ۹۰ درجه
+                                rotateAlways: true,
+                                minHeight: 80, // فضا برای نمایش کامل متن‌های چرخیده
+                                style: {
+                                    fontSize: '8px', // اندازه ۸ پیکسل
+                                    fontFamily: 'inherit'
+                                }
+                            }
+                        },
+                        yaxis: {
+                            labels: {
+                                offsetX: -10,
+                                style: { colors: '#fff', fontSize: '8px' }
+                            }
+                        },
+                        dataLabels: {
+                            enabled: true,
+                            formatter: function (val) {
+                                return val;
+                            },
+                            // اضافه کردن این بخش برای جلوگیری از مخفی شدن
+                            hideOverflowingText: false,
+                            style: {
+                                fontSize: '8px',
+                                fontFamily: 'inherit',
+                                colors: ['#fff']
+                            },
+                            background: {
+                                enabled: false, // اگه روشن باشه ممکنه باعث حذف لیبل‌های نزدیک به هم بشه
+                            },
+                            dropShadow: {
+                                enabled: true,
+                                top: 1,
+                                left: 1,
+                                blur: 1,
+                                color: '#000',
+                                opacity: 0.45
+                            },
+                            //enabledOnSeries: [0, 1, 2, 3, 4], // فقط روی ستون‌ها
+                        },
+                        legend: {
+                            show: false,
+                            position: 'bottom', // لجنب یا همون راهنما بیاد پایین
+                            fontSize: '10px',
+                            offsetY: 0,
+                            markers: {
+                                width: 8,
+                                height: 8
+                            },
+                            itemMargin: {
+                                vertical: 2 // فاصله بین آیتم‌های راهنما در موبایل
+                            }
+                        },
+                        plotOptions: {
+                            bar: {
+                                columnWidth: '70%' // ستون‌ها کمی پهن‌تر برای لمس راحت‌تر
+                            }
+                        }
+                    }
+                }]
+            };
+
+            var chart = new ApexCharts(document.querySelector("#chart2"), options);
+            chart.render();
+        </script>*@
+    <script>
+            var options = {
+             series: @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.Chart2Series)),
+
+                chart: {
+                    type: 'bar', // وقتی خط نداری بهتره کلا تایپ چارت bar باشه
+                    height: 450,
+                    stacked: true,
+                    toolbar: { show: false },
+                    fontFamily: 'inherit'
+                },
+                // دقیقاً ۹ رنگ برای ۹ استک
+                colors: [
+                    '#e63946', '#f17c58', '#f4a261', '#e9c46a', '#8ab17d',
+                    '#2a9d8f', '#4caf50', '#2196f3', '#601CE8'
+                ],
+                stroke: {
+                    width: 0,
+                    colors: ['#fff'], // یه خط سفید خیلی نازک بین استک‌ها که خوشگل تفکیک بشن
+                },
+                plotOptions: {
+                    bar: {
+                        horizontal: false,
+                        columnWidth: '55%',
+                        borderRadius: 5,
+                        borderRadiusApplication: 'end',
+                        borderRadiusWhenStacked: 'last'
+                    },
+                },
+                dataLabels: {
+                    enabled: true,
+                    style: {
+                        fontSize: '9px',
+                        colors: ['#fff']
+                    },
+                    dropShadow: { enabled: true }
+                },
+                grid: {
+                    borderColor: '#1b7a7a66',
+                    strokeDashArray: 3
+                },
+                xaxis: {
+                        categories: @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.Chart2Categories)),
+                    axisTicks: { show: false },
+
+                    labels: { style: { colors: '#fff' } }
+                },
+                yaxis: {
+                    labels: {
+                        offsetX: -10,
+                        style: { colors: '#fff' }
+                    }
+                },
+                legend: {
+                    position: 'top',
+                    horizontalAlign: 'center',
+                    labels: { colors: '#fff' }
+                },
+                tooltip: { theme: 'dark' },
+                responsive: [{
+                    breakpoint: 768, // برای ابعاد موبایل
+                    options: {
+                        chart: {
+                            height: 500 // کمی ارتفاع رو بیشتر کردم چون لیبل‌های پایین فضا می‌گیرن
+                        },
+                        xaxis: {
+                            labels: {
+                                rotate: 90, // چرخش ۹۰ درجه
+                                rotateAlways: true,
+                                minHeight: 80, // فضا برای نمایش کامل متن‌های چرخیده
+                                style: {
+                                    fontSize: '8px', // اندازه ۸ پیکسل
+                                    fontFamily: 'inherit'
+                                }
+                            }
+                        },
+                        yaxis: {
+                            labels: {
+                                offsetX: -10,
+                                style: { colors: '#fff', fontSize: '8px' }
+                            }
+                        },
+                        dataLabels: {
+                            enabled: true,
+                            formatter: function (val) {
+                                return val;
+                            },
+                            // اضافه کردن این بخش برای جلوگیری از مخفی شدن
+                            hideOverflowingText: false,
+                            style: {
+                                fontSize: '8px',
+                                fontFamily: 'inherit',
+                                colors: ['#fff']
+                            },
+                            background: {
+                                enabled: false, // اگه روشن باشه ممکنه باعث حذف لیبل‌های نزدیک به هم بشه
+                            },
+                            dropShadow: {
+                                enabled: true,
+                                top: 1,
+                                left: 1,
+                                blur: 1,
+                                color: '#000',
+                                opacity: 0.45
+                            },
+                            //enabledOnSeries: [0, 1, 2, 3, 4], // فقط روی ستون‌ها
+                        },
+                        legend: {
+                            show: false,
+                            position: 'bottom', // لجنب یا همون راهنما بیاد پایین
+                            fontSize: '10px',
+                            offsetY: 0,
+                            markers: {
+                                width: 8,
+                                height: 8
+                            },
+                            itemMargin: {
+                                vertical: 2 // فاصله بین آیتم‌های راهنما در موبایل
+                            }
+                        },
+                        plotOptions: {
+                            bar: {
+                                columnWidth: '70%' // ستون‌ها کمی پهن‌تر برای لمس راحت‌تر
+                            }
+                        }
+                    }
+                }]
+            };
+
+            var chart = new ApexCharts(document.querySelector("#chart2"), options);
+            chart.render();
+    </script>
+    @*<script>
+        // داده‌ها از ViewBag می‌آیند
+        var seriesData = @Html.Raw(Json.Encode(ViewBag.ChartSeriesDynamic));
+        var categories = @Html.Raw(Json.Encode(ViewBag.Categories));
+
+        var options = {
+            series: seriesData,
+            chart: {
+                type: 'bar',
+                height: 450,
+                stacked: true,
+                toolbar: { show: false },
+                fontFamily: 'inherit'
+            },
+            colors: [
+                '#e63946', '#f17c58', '#f4a261', '#e9c46a', '#8ab17d',
+                '#2a9d8f', '#4caf50', '#2196f3', '#601CE8'
+            ],
+            plotOptions: {
+                bar: { horizontal: false, columnWidth: '55%', borderRadius: 5, borderRadiusApplication: 'end', borderRadiusWhenStacked: 'last' }
+            },
+            dataLabels: {
+                enabled: true,
+                style: { fontSize: '9px', colors: ['#fff'] },
+                dropShadow: { enabled: true }
+            },
+            grid: { borderColor: '#1b7a7a66', strokeDashArray: 3 },
+            xaxis: { categories: categories, labels: { style: { colors: '#fff' } } },
+            yaxis: { labels: { style: { colors: '#fff' } } },
+            legend: { position: 'top', horizontalAlign: 'center', labels: { colors: '#fff' } },
+            tooltip: { theme: 'dark' },
+            responsive: [{
+                breakpoint: 768,
+                options: {
+                    chart: { height: 500 },
+                    xaxis: { labels: { rotate: 90, rotateAlways: true, style: { fontSize: '8px', fontFamily: 'inherit' } } },
+                    yaxis: { labels: { style: { colors: '#fff', fontSize: '8px' } } },
+                    dataLabels: { style: { fontSize: '8px', colors: ['#fff'] } },
+                    legend: { show: false },
+                    plotOptions: { bar: { columnWidth: '70%' } }
+                }
+            }]
+        };
+
+        var chart = new ApexCharts(document.querySelector("#chart2"), options);
+        chart.render();
+        </script>*@
+
+
+
+
+    <script>
+            var options = {
+                series: [
+                    { name: 'وصول', data: [10, 15, 8, 12, 20, 15, 10, 18, 12] },
+                    { name: 'قرائت', data: [12, 10, 15, 8, 15, 20, 12, 10, 15] },
+                    { name: 'نصب و اصلاح', data: [15, 12, 10, 15, 10, 12, 15, 12, 10] },
+                    { name: 'ارزیاب', data: [8, 15, 12, 10, 12, 15, 8, 15, 12] },
+                
+                ],
+                chart: {
+                    height: 450,
+                    type: 'line',
+                    background: 'transparent',
+                    toolbar: { show: false },
+                    dropShadow: { enabled: false }, // کلاً سایه رو ترکوندیم
+                    fontFamily: 'inherit'
+                },
+                colors: ['#e63946', '#f17c58', '#f4a261', '#e9c46a', '#8ab17d', '#2a9d8f', '#4caf50', '#2196f3', '#601CE8'],
+                stroke: {
+                    width: 3,
+                    curve: 'straight', // خط‌ها رو از حالت نرم درآوردم و سیخ شد
+                    lineCap: 'butt'
+                },
+                grid: {
+                    borderColor: '#1b7a7a66',
+                    strokeDashArray: 3
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                markers: {
+                    size: 4,
+                    hover: { size: 6 }
+                },
+                xaxis: {
+                    axisTicks: { show: false },
+                    categories: ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر'],
+                    labels: {
+                        style: { colors: '#fff' }
+                    }
+                },
+                yaxis: {
+                    opposite: false, // محور Y اومد سمت چپ
+                    labels: {
+                        offsetX: -10,
+                        style: { colors: '#fff' }
+                    }
+                },
+                legend: {
+                    position: 'top',
+                    horizontalAlign: 'center',
+                    labels: { colors: '#fff' }
+                },
+                tooltip: {
+                    theme: 'dark'
+                },
+                responsive: [{
+                    breakpoint: 768,
+                    options: {
+                        chart: {
+                            height: 400
+                        },
+                        stroke: {
+                            width: 2 // خط‌ها رو توی موبایل نازک‌تر کردم که روی هم نیفتن
+                        },
+                        markers: {
+                            size: 3 // نقاط روی خط رو کوچیک‌تر کردم
+                        },
+                        xaxis: {
+                            labels: {
+                                rotate: -90,
+                                rotateAlways: true,
+                                minHeight: 60,
+                                style: {
+                                    fontSize: '8px',
+                                    fontFamily: 'inherit'
+                                }
+                            }
+                        },
+                        legend: {
+                            show: false,
+                            position: 'bottom', // لجند حتماً بره پایین چون ۹ تاست و بالا رو اشغال می‌کنه
+                            fontSize: '11px',
+                            itemMargin: {
+                                horizontal: 5,
+                                vertical: 2
+                            }
+                        }
+                    }
+                }]
+            };
+
+            var chart = new ApexCharts(document.querySelector("#chart3"), options);
+            chart.render();
+        </script>
+    <script>
+  $("#person-sabt").click(function () {
+      var sharestan = $("#sharestan").val();
+            var sharestanpeson = $("#sharestanpeson").val();
+
+      if (sharestan === "0"&&sharestanpeson==0) {
+          alert("لطفاً یک شهرستان انتخاب کنید");
+          return;
+      }
+
+      // ریدایرکت به صفحه createps با پارامتر id
+      window.location.href = '@Url.Action("view_dashbord_mamorin", "Orders", new { area = "Setting" })' + "?id=" + sharestan +"&cod="+sharestanpeson;
+  });
+
+    </script>
+</body>
+</html>
+

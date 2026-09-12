@@ -1,0 +1,1374 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#050b18" />
+    <title>دستیار صوتی پرسنلی</title>
+
+    <style>
+        :root {
+            --bg: #050b18;
+            --panel: rgba(9, 22, 42, .72);
+            --panel-strong: rgba(13, 28, 51, .92);
+            --border: rgba(121, 203, 255, .16);
+            --cyan: #33edff;
+            --cyan-soft: #9af7ff;
+            --violet: #7c6cff;
+            --green: #50f1ae;
+            --danger: #ff6688;
+            --text: #ecf8ff;
+            --muted: #8ba3b9;
+            --shadow: 0 24px 80px rgba(0, 0, 0, .42);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            min-width: 320px;
+            min-height: 100%;
+            margin: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            overflow-x: hidden;
+            color: var(--text);
+            background: radial-gradient(circle at 82% 8%, rgba(40, 202, 255, .15), transparent 28rem), radial-gradient(circle at 12% 92%, rgba(124, 108, 255, .16), transparent 26rem), linear-gradient(145deg, #030812 0%, #071426 48%, #040914 100%);
+            font-family: Tahoma, "Segoe UI", Arial, sans-serif;
+        }
+
+        button, textarea {
+            font: inherit;
+        }
+
+        button {
+            color: inherit;
+        }
+
+        svg {
+            width: 22px;
+            height: 22px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .aurora {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            filter: blur(14px);
+            opacity: .35;
+        }
+
+        .aurora-one {
+            width: 360px;
+            height: 360px;
+            top: -130px;
+            right: 15%;
+            background: rgba(51, 237, 255, .12);
+        }
+
+        .aurora-two {
+            width: 400px;
+            height: 400px;
+            left: -170px;
+            bottom: -170px;
+            background: rgba(124, 108, 255, .13);
+        }
+
+        .page {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 18px;
+        }
+
+        .assistant-shell {
+            width: min(1180px, 100%);
+            height: min(820px, calc(100vh - 36px));
+            min-height: 620px;
+            display: grid;
+            grid-template-columns: 310px minmax(0, 1fr);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: 26px;
+            background: linear-gradient(145deg, rgba(13, 29, 52, .78), rgba(5, 14, 28, .66));
+            box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, .04);
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+        }
+
+        .voice-panel {
+            position: relative;
+            padding: 28px 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-left: 1px solid var(--border);
+            background: linear-gradient(180deg, rgba(16, 39, 65, .55), rgba(5, 14, 27, .25));
+        }
+
+        .brand {
+            align-self: stretch;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-logo {
+            width: 45px;
+            height: 45px;
+            display: grid;
+            place-items: center;
+            flex: 0 0 45px;
+            border: 1px solid rgba(51, 237, 255, .28);
+            border-radius: 14px;
+            color: var(--cyan);
+            background: linear-gradient(145deg, rgba(51, 237, 255, .12), rgba(124, 108, 255, .13));
+            box-shadow: 0 0 25px rgba(51, 237, 255, .09);
+        }
+
+        .brand strong, .brand span {
+            display: block;
+        }
+
+        .brand strong {
+            font-size: .95rem;
+        }
+
+        .brand span {
+            margin-top: 5px;
+            color: var(--muted);
+            font-size: .72rem;
+        }
+
+        .voice-orb-wrap {
+            position: relative;
+            width: 206px;
+            height: 206px;
+            margin-top: 66px;
+            display: grid;
+            place-items: center;
+        }
+
+        .orbit, .orbit::before, .orbit::after {
+            position: absolute;
+            border-radius: 50%;
+        }
+
+        .orbit {
+            inset: 3px;
+            border: 1px solid rgba(51, 237, 255, .14);
+            animation: rotate 12s linear infinite;
+        }
+
+            .orbit::before {
+                content: "";
+                width: 7px;
+                height: 7px;
+                top: 23px;
+                right: 29px;
+                background: var(--cyan);
+                box-shadow: 0 0 15px var(--cyan);
+            }
+
+            .orbit::after {
+                content: "";
+                inset: 18px;
+                border: 1px dashed rgba(124, 108, 255, .2);
+            }
+
+        .voice-orb {
+            position: relative;
+            z-index: 2;
+            width: 132px;
+            height: 132px;
+            display: grid;
+            place-items: center;
+            border: 1px solid rgba(51, 237, 255, .42);
+            border-radius: 50%;
+            color: #06111b;
+            background: radial-gradient(circle at 38% 30%, #c2fcff 0%, #38eaff 32%, #5576f5 76%, #251b66 100%);
+            box-shadow: 0 0 24px rgba(51, 237, 255, .38), 0 0 70px rgba(86, 107, 255, .2), inset 0 0 26px rgba(255, 255, 255, .22);
+            cursor: pointer;
+            transition: transform .22s ease, box-shadow .22s ease;
+        }
+
+            .voice-orb:hover {
+                transform: scale(1.04);
+                box-shadow: 0 0 34px rgba(51, 237, 255, .48), 0 0 85px rgba(86, 107, 255, .28);
+            }
+
+            .voice-orb svg {
+                width: 42px;
+                height: 42px;
+                stroke-width: 1.6;
+            }
+
+            .voice-orb.listening {
+                animation: listenPulse 1.15s ease-in-out infinite;
+            }
+
+                .voice-orb.listening::after {
+                    content: "";
+                    position: absolute;
+                    inset: -18px;
+                    border: 2px solid rgba(51, 237, 255, .38);
+                    border-radius: 50%;
+                    animation: ringPulse 1.15s ease-out infinite;
+                }
+
+        .voice-state {
+            margin: 18px 0 0;
+            min-height: 24px;
+            text-align: center;
+            font-size: .86rem;
+        }
+
+        .voice-help {
+            margin: 7px 0 0;
+            color: var(--muted);
+            text-align: center;
+            font-size: .7rem;
+            line-height: 1.8;
+        }
+
+        .wave {
+            height: 32px;
+            margin-top: 18px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            opacity: .45;
+        }
+
+            .wave i {
+                width: 3px;
+                height: 8px;
+                border-radius: 4px;
+                background: linear-gradient(var(--cyan), var(--violet));
+            }
+
+            .wave.active {
+                opacity: 1;
+            }
+
+                .wave.active i {
+                    animation: wave .9s ease-in-out infinite alternate;
+                }
+
+            .wave i:nth-child(2), .wave i:nth-child(8) {
+                animation-delay: .1s;
+            }
+
+            .wave i:nth-child(3), .wave i:nth-child(7) {
+                animation-delay: .2s;
+            }
+
+            .wave i:nth-child(4), .wave i:nth-child(6) {
+                animation-delay: .3s;
+            }
+
+            .wave i:nth-child(5) {
+                animation-delay: .4s;
+            }
+
+        .privacy-note {
+            width: 100%;
+            margin-top: auto;
+            padding: 13px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            border: 1px solid rgba(80, 241, 174, .13);
+            border-radius: 14px;
+            background: rgba(33, 126, 92, .06);
+        }
+
+            .privacy-note svg {
+                width: 18px;
+                flex: 0 0 18px;
+                color: var(--green);
+            }
+
+            .privacy-note b, .privacy-note span {
+                display: block;
+            }
+
+            .privacy-note b {
+                font-size: .7rem;
+            }
+
+            .privacy-note span {
+                margin-top: 5px;
+                color: #7790a6;
+                font-size: .62rem;
+                line-height: 1.7;
+            }
+
+        .chat-panel {
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            min-height: 78px;
+            padding: 15px 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .assistant-info {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+        }
+
+        .assistant-avatar {
+            width: 42px;
+            height: 42px;
+            display: grid;
+            place-items: center;
+            border: 1px solid rgba(51, 237, 255, .25);
+            border-radius: 14px;
+            color: var(--cyan);
+            background: linear-gradient(145deg, rgba(51, 237, 255, .1), rgba(124, 108, 255, .12));
+        }
+
+        .assistant-info h1 {
+            margin: 0;
+            font-size: .96rem;
+        }
+
+        .connection-state {
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--muted);
+            font-size: .68rem;
+        }
+
+            .connection-state i {
+                width: 7px;
+                height: 7px;
+                border-radius: 50%;
+                background: var(--green);
+                box-shadow: 0 0 10px var(--green);
+            }
+
+        .header-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .icon-button {
+            width: 39px;
+            height: 39px;
+            display: grid;
+            place-items: center;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--muted);
+            background: rgba(255, 255, 255, .025);
+            cursor: pointer;
+        }
+
+            .icon-button:hover, .icon-button.active {
+                color: var(--cyan);
+                border-color: rgba(51, 237, 255, .38);
+                background: rgba(51, 237, 255, .07);
+            }
+
+        .messages {
+            flex: 1;
+            min-height: 0;
+            padding: 22px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(75, 147, 190, .35) transparent;
+        }
+
+        .welcome-card {
+            max-width: 540px;
+            margin: 0 auto 24px;
+            padding: 18px;
+            border: 1px solid rgba(51, 237, 255, .13);
+            border-radius: 18px;
+            background: linear-gradient(110deg, rgba(51, 237, 255, .055), rgba(124, 108, 255, .055));
+            text-align: center;
+        }
+
+            .welcome-card strong {
+                font-size: .86rem;
+            }
+
+            .welcome-card p {
+                margin: 8px 0 0;
+                color: var(--muted);
+                font-size: .74rem;
+                line-height: 1.9;
+            }
+
+        .message {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 17px;
+        }
+
+            .message.user {
+                flex-direction: row-reverse;
+            }
+
+        .message-avatar {
+            width: 34px;
+            height: 34px;
+            display: grid;
+            place-items: center;
+            flex: 0 0 34px;
+            border-radius: 11px;
+            font-size: .66rem;
+        }
+
+        .message.assistant .message-avatar {
+            color: var(--cyan);
+            border: 1px solid rgba(51, 237, 255, .2);
+            background: rgba(51, 237, 255, .07);
+        }
+
+        .message.user .message-avatar {
+            color: white;
+            background: linear-gradient(145deg, #4963cf, #293f91);
+        }
+
+        .message-avatar svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .bubble {
+            max-width: min(78%, 620px);
+            padding: 12px 14px 9px;
+            border: 1px solid rgba(138, 180, 216, .11);
+            border-radius: 6px 16px 16px 16px;
+            background: rgba(16, 34, 56, .78);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, .14);
+        }
+
+        .message.user .bubble {
+            border-radius: 16px 6px 16px 16px;
+            border-color: rgba(78, 202, 240, .14);
+            background: linear-gradient(135deg, rgba(43, 105, 162, .54), rgba(63, 76, 153, .48));
+        }
+
+        .bubble-text {
+            margin: 0;
+            color: #dbe9f4;
+            font-size: .82rem;
+            line-height: 1.95;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .bubble-time {
+            display: block;
+            margin-top: 7px;
+            color: #667f95;
+            direction: ltr;
+            text-align: right;
+            font-size: .6rem;
+        }
+
+        .message.user .bubble-time {
+            text-align: left;
+            color: #8dbbcf;
+        }
+
+        .typing-dots {
+            height: 20px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+            .typing-dots i {
+                width: 6px;
+                height: 6px;
+                border-radius: 50%;
+                background: var(--cyan);
+                animation: typing 1s ease-in-out infinite;
+            }
+
+                .typing-dots i:nth-child(2) {
+                    animation-delay: .15s;
+                }
+
+                .typing-dots i:nth-child(3) {
+                    animation-delay: .3s;
+                }
+
+        .quick-prompts {
+            padding: 0 20px 10px;
+            display: flex;
+            gap: 7px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+            .quick-prompts button {
+                min-height: 34px;
+                padding: 7px 12px;
+                white-space: nowrap;
+                border: 1px solid rgba(91, 166, 209, .17);
+                border-radius: 99px;
+                color: #91aabd;
+                background: rgba(8, 22, 39, .58);
+                cursor: pointer;
+                font-size: .7rem;
+            }
+
+                .quick-prompts button:hover {
+                    color: var(--cyan-soft);
+                    border-color: rgba(51, 237, 255, .35);
+                }
+
+        .composer-wrap {
+            padding: 0 20px 14px;
+        }
+
+        .composer {
+            min-height: 58px;
+            padding: 7px;
+            display: flex;
+            align-items: flex-end;
+            gap: 7px;
+            border: 1px solid rgba(51, 237, 255, .2);
+            border-radius: 16px;
+            background: rgba(4, 13, 25, .72);
+            box-shadow: 0 0 25px rgba(51, 237, 255, .035), inset 0 0 18px rgba(51, 237, 255, .018);
+        }
+
+            .composer:focus-within {
+                border-color: rgba(51, 237, 255, .47);
+                box-shadow: 0 0 28px rgba(51, 237, 255, .08);
+            }
+
+            .composer textarea {
+                flex: 1;
+                min-height: 42px;
+                max-height: 126px;
+                padding: 10px 5px;
+                resize: none;
+                border: 0;
+                outline: 0;
+                color: var(--text);
+                background: transparent;
+                line-height: 1.55;
+                font-size: .82rem;
+            }
+
+                .composer textarea::placeholder {
+                    color: #627b91;
+                }
+
+        .composer-button {
+            width: 42px;
+            height: 42px;
+            display: grid;
+            place-items: center;
+            flex: 0 0 42px;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+
+        .mini-mic {
+            border: 0;
+            color: #839bad;
+            background: transparent;
+        }
+
+            .mini-mic:hover, .mini-mic.listening {
+                color: var(--cyan);
+                background: rgba(51, 237, 255, .07);
+            }
+
+        .send-button {
+            border: 1px solid rgba(51, 237, 255, .42);
+            color: #031119;
+            background: linear-gradient(145deg, var(--cyan), #65a9ff);
+            box-shadow: 0 0 20px rgba(51, 237, 255, .19);
+        }
+
+            .send-button:disabled {
+                opacity: .32;
+                cursor: not-allowed;
+                box-shadow: none;
+                filter: saturate(.3);
+            }
+
+            .send-button:not(:disabled):hover {
+                transform: translateY(-1px);
+                box-shadow: 0 0 28px rgba(51, 237, 255, .28);
+            }
+
+        .composer-caption {
+            margin: 8px 4px 0;
+            color: #5e768c;
+            text-align: center;
+            font-size: .61rem;
+        }
+
+        .toast {
+            position: fixed;
+            z-index: 30;
+            left: 50%;
+            bottom: 24px;
+            max-width: calc(100% - 30px);
+            padding: 10px 16px;
+            border: 1px solid rgba(51, 237, 255, .23);
+            border-radius: 11px;
+            color: #d5fbff;
+            background: rgba(5, 17, 31, .96);
+            box-shadow: var(--shadow);
+            transform: translate(-50%, 20px);
+            opacity: 0;
+            pointer-events: none;
+            transition: .25s ease;
+            font-size: .75rem;
+        }
+
+            .toast.show {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+
+        @@keyframes rotate {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @@keyframes listenPulse {
+            50% {
+                transform: scale(1.07);
+            }
+        }
+
+        @@keyframes ringPulse {
+            from {
+                transform: scale(.82);
+                opacity: 1;
+            }
+
+            to {
+                transform: scale(1.22);
+                opacity: 0;
+            }
+        }
+
+        @@keyframes wave {
+            from {
+                height: 7px;
+            }
+
+            to {
+                height: 29px;
+            }
+        }
+
+        @@keyframes typing {
+            0%, 100% {
+                opacity: .25;
+                transform: translateY(0);
+            }
+
+            50% {
+                opacity: 1;
+                transform: translateY(-4px);
+            }
+        }
+
+        @@media (max-width: 820px) {
+            .page {
+                padding: 8px;
+            }
+
+            .assistant-shell {
+                height: calc(100vh - 16px);
+                min-height: 560px;
+                grid-template-columns: 1fr;
+                border-radius: 19px;
+            }
+
+            .voice-panel {
+                min-height: 150px;
+                padding: 16px 18px;
+                display: grid;
+                grid-template-columns: 1fr auto;
+                grid-template-rows: auto auto;
+                border-left: 0;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .voice-orb-wrap {
+                grid-column: 2;
+                grid-row: 1 / 3;
+                width: 106px;
+                height: 106px;
+                margin: 0;
+            }
+
+            .voice-orb {
+                width: 72px;
+                height: 72px;
+            }
+
+                .voice-orb svg {
+                    width: 28px;
+                    height: 28px;
+                }
+
+            .orbit {
+                inset: 0;
+            }
+
+                .orbit::after {
+                    inset: 10px;
+                }
+
+                .orbit::before {
+                    top: 10px;
+                    right: 16px;
+                }
+
+            .voice-state, .voice-help {
+                text-align: right;
+                padding-left: 12px;
+            }
+
+            .voice-state {
+                margin: 17px 0 0;
+            }
+
+            .wave, .privacy-note {
+                display: none;
+            }
+
+            .brand {
+                grid-column: 1;
+                grid-row: 1;
+            }
+
+            .brand-logo {
+                width: 38px;
+                height: 38px;
+                flex-basis: 38px;
+            }
+
+            .chat-panel {
+                min-height: 0;
+            }
+
+            .chat-header {
+                min-height: 64px;
+                padding: 10px 13px;
+            }
+
+            .messages {
+                padding: 14px 12px;
+            }
+
+            .welcome-card {
+                margin-bottom: 16px;
+            }
+
+            .bubble {
+                max-width: 86%;
+            }
+
+            .quick-prompts {
+                padding-inline: 11px;
+            }
+
+            .composer-wrap {
+                padding: 0 10px 10px;
+            }
+        }
+
+        @@media (max-width: 470px) {
+            .assistant-shell {
+                grid-template-rows: 128px minmax(0, 1fr);
+            }
+
+            .voice-panel {
+                min-height: 128px;
+                padding: 13px;
+            }
+
+            .brand span {
+                display: none;
+            }
+
+            .voice-help {
+                display: none;
+            }
+
+            .voice-state {
+                align-self: end;
+                font-size: .72rem;
+            }
+
+            .voice-orb-wrap {
+                width: 92px;
+                height: 92px;
+            }
+
+            .voice-orb {
+                width: 64px;
+                height: 64px;
+            }
+
+            .assistant-info h1 {
+                font-size: .83rem;
+            }
+
+            .assistant-avatar {
+                display: none;
+            }
+
+            .bubble-text {
+                font-size: .77rem;
+            }
+
+            .message-avatar {
+                width: 30px;
+                height: 30px;
+                flex-basis: 30px;
+            }
+        }
+
+        @@media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: .01ms !important;
+                transition-duration: .01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="aurora aurora-one"></div>
+    <div class="aurora aurora-two"></div>
+
+    <main class="page">
+        <section class="assistant-shell" aria-label="دستیار صوتی پرسنلی">
+            <aside class="voice-panel">
+                <div class="brand">
+                    <div class="brand-logo" aria-hidden="true">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 3 5 6v5c0 4.8 2.7 8.1 7 10 4.3-1.9 7-5.2 7-10V6l-7-3Z"></path>
+                            <path d="m9 12 2 2 4-4"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <strong>همیار پرسنلی</strong>
+                        <span>دستیار امن حقوق و قرارداد</span>
+                    </div>
+                </div>
+
+                <div class="voice-orb-wrap">
+                    <div class="orbit" aria-hidden="true"></div>
+                    <button type="button" id="mainMicButton" class="voice-orb" aria-label="شروع گفت‌وگوی صوتی">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <rect x="9" y="3" width="6" height="11" rx="3"></rect>
+                            <path d="M5 11a7 7 0 0 0 14 0M12 18v3M9 21h6"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <p class="voice-state" id="voiceState">برای صحبت، دکمه میکروفن را لمس کنید</p>
+                <p class="voice-help">گفتار فارسی شما به متن تبدیل می‌شود؛ پیش از ارسال امکان ویرایش دارید.</p>
+
+                <div class="wave" id="voiceWave" aria-hidden="true">
+                    <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                </div>
+
+                <div class="privacy-note">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M7 10V7a5 5 0 0 1 10 0v3"></path>
+                        <rect x="5" y="10" width="14" height="11" rx="2"></rect>
+                    </svg>
+                    <div>
+                        <b>ارتباط امن</b>
+                        <span>کلید API فقط در سرور نگهداری می‌شود و در این صفحه قابل مشاهده نیست.</span>
+                    </div>
+                </div>
+            </aside>
+
+            <section class="chat-panel">
+                <header class="chat-header">
+                    <div class="assistant-info">
+                        <div class="assistant-avatar" aria-hidden="true">
+                            <svg viewBox="0 0 24 24">
+                                <rect x="4" y="7" width="16" height="13" rx="4"></rect>
+                                <path d="M12 3v4M9 14h.01M15 14h.01"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h1>دستیار هوشمند پرسنلی</h1>
+                            <div class="connection-state"><i></i><span id="connectionText">آماده پاسخ‌گویی</span></div>
+                        </div>
+                    </div>
+
+                    <div class="header-actions">
+                        <button type="button" class="icon-button active" id="speakerButton" aria-label="روشن یا خاموش کردن خواندن پاسخ" title="خواندن صوتی پاسخ">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M11 5 6 9H3v6h3l5 4V5ZM15 9a4 4 0 0 1 0 6M18 6a8 8 0 0 1 0 12"></path>
+                            </svg>
+                        </button>
+                        <button type="button" class="icon-button" id="clearButton" aria-label="پاک کردن گفت‌وگو" title="گفت‌وگوی جدید">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M4 7h16M9 7V4h6v3M7 7l1 14h8l1-14"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </header>
+
+                <div class="messages" id="messages" aria-live="polite">
+                    <div class="welcome-card" id="welcomeCard">
+                        <strong>سلام، چطور می‌توانم کمکتان کنم؟</strong>
+                        <p>می‌توانید سؤال را تایپ کنید یا با انتخاب میکروفن به فارسی صحبت کنید.</p>
+                    </div>
+
+                    <article class="message assistant">
+                        <div class="message-avatar" aria-hidden="true">
+                            <svg viewBox="0 0 24 24">
+                                <rect x="4" y="7" width="16" height="13" rx="4"></rect>
+                                <path d="M12 3v4M9 14h.01M15 14h.01"></path>
+                            </svg>
+                        </div>
+                        <div class="bubble">
+                            <p class="bubble-text">درباره فیش حقوقی، مزایا یا قرارداد خود سؤال کنید. برای اطلاعات رسمی، پاسخ باید با داده ثبت‌شده در سامانه تطبیق داده شود.</p>
+                            <time class="bubble-time">اکنون</time>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="quick-prompts">
+                    <button type="button" data-prompt="فیش حقوقی این ماه من را توضیح بده">توضیح فیش این ماه</button>
+                    <button type="button" data-prompt="اقلام اصلی فیش حقوقی چیست؟">اقلام اصلی فیش</button>
+                    <button type="button" data-prompt="شرایط کلی قرارداد کار را توضیح بده">راهنمای قرارداد</button>
+                </div>
+
+                <div class="composer-wrap">
+                    <form id="chatForm" class="composer" autocomplete="off">
+                        @Html.AntiForgeryToken()
+
+                        <button type="button" class="composer-button mini-mic" id="miniMicButton" aria-label="شروع ضبط صدا">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <rect x="9" y="3" width="6" height="11" rx="3"></rect>
+                                <path d="M5 11a7 7 0 0 0 14 0M12 18v3M9 21h6"></path>
+                            </svg>
+                        </button>
+
+                        <textarea id="messageInput" name="message" rows="1" maxlength="500" placeholder="پیام خود را بنویسید…" aria-label="متن پیام"></textarea>
+
+                        <button type="submit" class="composer-button send-button" id="sendButton" aria-label="ارسال پیام" disabled>
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="m5 12 14-8-4 16-3-6-7-2Z"></path>
+                                <path d="m12 14 7-10"></path>
+                            </svg>
+                        </button>
+                    </form>
+                    <p class="composer-caption">پاسخ هوش مصنوعی ممکن است خطا داشته باشد؛ اطلاعات حساس را بدون کنترل سرور ارسال نکنید.</p>
+                </div>
+            </section>
+        </section>
+    </main>
+
+    <div class="toast" id="toast" role="status"></div>
+
+    <script>
+        (function () {
+            "use strict";
+
+            var sendMessageUrl = '@Url.Action("SendMessage", "Orders", new { area = "Setting" })';
+            var form = document.getElementById("chatForm");
+            var input = document.getElementById("messageInput");
+            var sendButton = document.getElementById("sendButton");
+            var mainMicButton = document.getElementById("mainMicButton");
+            var miniMicButton = document.getElementById("miniMicButton");
+            var speakerButton = document.getElementById("speakerButton");
+            var clearButton = document.getElementById("clearButton");
+            var messages = document.getElementById("messages");
+            var voiceState = document.getElementById("voiceState");
+            var voiceWave = document.getElementById("voiceWave");
+            var connectionText = document.getElementById("connectionText");
+            var toast = document.getElementById("toast");
+
+            var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            var recognition = null;
+            var isListening = false;
+            var speakReplies = true;
+            var isSending = false;
+
+            function getCurrentTime() {
+                try {
+                    return new Intl.DateTimeFormat("fa-IR", {
+                        hour: "2-digit",
+                        minute: "2-digit"
+                    }).format(new Date());
+                } catch (e) {
+                    return "اکنون";
+                }
+            }
+
+            function showToast(message) {
+                toast.textContent = message;
+                toast.classList.add("show");
+
+                window.clearTimeout(showToast.timer);
+                showToast.timer = window.setTimeout(function () {
+                    toast.classList.remove("show");
+                }, 2200);
+            }
+
+            function resizeInput() {
+                input.style.height = "auto";
+                input.style.height = Math.min(input.scrollHeight, 126) + "px";
+                sendButton.disabled = !input.value.trim() || isSending;
+            }
+
+            function scrollToBottom() {
+                messages.scrollTo({
+                    top: messages.scrollHeight,
+                    behavior: "smooth"
+                });
+            }
+
+            function createAssistantAvatar() {
+                var avatar = document.createElement("div");
+                avatar.className = "message-avatar";
+                avatar.setAttribute("aria-hidden", "true");
+                avatar.innerHTML = '<svg viewBox="0 0 24 24"><rect x="4" y="7" width="16" height="13" rx="4"></rect><path d="M12 3v4M9 14h.01M15 14h.01"></path></svg>';
+                return avatar;
+            }
+
+            function appendMessage(role, text) {
+                var article = document.createElement("article");
+                article.className = "message " + role;
+
+                var avatar;
+
+                if (role === "assistant") {
+                    avatar = createAssistantAvatar();
+                } else {
+                    avatar = document.createElement("div");
+                    avatar.className = "message-avatar";
+                    avatar.textContent = "من";
+                }
+
+                var bubble = document.createElement("div");
+                bubble.className = "bubble";
+
+                var paragraph = document.createElement("p");
+                paragraph.className = "bubble-text";
+                paragraph.textContent = text;
+
+                var time = document.createElement("time");
+                time.className = "bubble-time";
+                time.textContent = getCurrentTime();
+
+                bubble.appendChild(paragraph);
+                bubble.appendChild(time);
+                article.appendChild(avatar);
+                article.appendChild(bubble);
+                messages.appendChild(article);
+                scrollToBottom();
+
+                return article;
+            }
+
+            function appendTyping() {
+                var article = document.createElement("article");
+                article.className = "message assistant";
+                article.id = "typingMessage";
+
+                var bubble = document.createElement("div");
+                bubble.className = "bubble";
+                bubble.innerHTML = '<div class="typing-dots" aria-label="در حال دریافت پاسخ"><i></i><i></i><i></i></div>';
+
+                article.appendChild(createAssistantAvatar());
+                article.appendChild(bubble);
+                messages.appendChild(article);
+                scrollToBottom();
+
+                return article;
+            }
+
+            function speak(text) {
+                if (!speakReplies || !("speechSynthesis" in window)) {
+                    return;
+                }
+
+                window.speechSynthesis.cancel();
+
+                var utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = "fa-IR";
+                utterance.rate = 0.95;
+                utterance.pitch = 1;
+
+                var voices = window.speechSynthesis.getVoices();
+                var persianVoice = voices.find(function (voice) {
+                    return voice.lang && voice.lang.toLowerCase().indexOf("fa") === 0;
+                });
+
+                if (persianVoice) {
+                    utterance.voice = persianVoice;
+                }
+
+                window.speechSynthesis.speak(utterance);
+            }
+
+            async function sendMessage(text) {
+                var cleanMessage = (text || "").trim();
+
+                if (!cleanMessage || isSending) {
+                    return;
+                }
+
+                if (cleanMessage.length > 500) {
+                    showToast("پیام نباید بیشتر از ۵۰۰ کاراکتر باشد.");
+                    return;
+                }
+
+                stopListening();
+                window.speechSynthesis && window.speechSynthesis.cancel();
+
+                appendMessage("user", cleanMessage);
+                input.value = "";
+                isSending = true;
+                resizeInput();
+                connectionText.textContent = "در حال دریافت پاسخ…";
+
+                var typingMessage = appendTyping();
+
+                try {
+                    var tokenElement = form.querySelector('input[name="__RequestVerificationToken"]');
+                    var body = new URLSearchParams();
+
+                    body.append("message", cleanMessage);
+                    body.append("__RequestVerificationToken", tokenElement.value);
+
+                    var response = await fetch(sendMessageUrl, {
+                        method: "POST",
+                        credentials: "same-origin",
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+                            "X-Requested-With": "XMLHttpRequest"
+                        },
+                        body: body.toString()
+                    });
+
+                    var rawResponse = await response.text();
+                    var data;
+
+                    try {
+                        data = JSON.parse(rawResponse);
+                    } catch (jsonError) {
+                        throw new Error("پاسخ سرور معتبر نیست.");
+                    }
+
+                    if (!response.ok || !data.success) {
+                        throw new Error(data.message || "خطا در دریافت پاسخ");
+                    }
+
+                    typingMessage.remove();
+                    appendMessage("assistant", data.answer);
+                    speak(data.answer);
+                    connectionText.textContent = "آماده پاسخ‌گویی";
+                } catch (error) {
+                    typingMessage.remove();
+                    appendMessage("assistant", "در حال حاضر ارتباط با دستیار هوشمند برقرار نشد. لطفاً دوباره تلاش کنید.");
+                    connectionText.textContent = "خطا در ارتباط";
+                    showToast(error.message || "خطا در ارتباط با سرور");
+                } finally {
+                    isSending = false;
+                    resizeInput();
+                    input.focus();
+                }
+            }
+
+            function setListeningState(active) {
+                isListening = active;
+                mainMicButton.classList.toggle("listening", active);
+                miniMicButton.classList.toggle("listening", active);
+                voiceWave.classList.toggle("active", active);
+                mainMicButton.setAttribute("aria-label", active ? "توقف ضبط صدا" : "شروع گفت‌وگوی صوتی");
+                miniMicButton.setAttribute("aria-label", active ? "توقف ضبط صدا" : "شروع ضبط صدا");
+            }
+
+            function stopListening() {
+                if (recognition && isListening) {
+                    recognition.stop();
+                }
+
+                setListeningState(false);
+            }
+
+            function startListening() {
+                if (!SpeechRecognition) {
+                    voiceState.textContent = "مرورگر شما تشخیص گفتار را پشتیبانی نمی‌کند";
+                    showToast("برای قابلیت صوتی از Chrome یا Edge جدید و اتصال HTTPS استفاده کنید.");
+                    return;
+                }
+
+                if (isListening) {
+                    stopListening();
+                    return;
+                }
+
+                if (!recognition) {
+                    recognition = new SpeechRecognition();
+                    recognition.lang = "fa-IR";
+                    recognition.continuous = false;
+                    recognition.interimResults = true;
+
+                    recognition.onstart = function () {
+                        setListeningState(true);
+                        voiceState.textContent = "در حال شنیدن… صحبت کنید";
+                    };
+
+                    recognition.onresult = function (event) {
+                        var transcript = "";
+
+                        for (var i = event.resultIndex; i < event.results.length; i++) {
+                            transcript += event.results[i][0].transcript;
+                        }
+
+                        input.value = transcript.trim();
+                        resizeInput();
+
+                        if (event.results[event.results.length - 1].isFinal) {
+                            voiceState.textContent = "متن آماده است؛ بررسی و ارسال کنید";
+                            input.focus();
+                        }
+                    };
+
+                    recognition.onerror = function (event) {
+                        setListeningState(false);
+
+                        if (event.error === "not-allowed" || event.error === "service-not-allowed") {
+                            voiceState.textContent = "دسترسی میکروفن داده نشده است";
+                            showToast("اجازه استفاده از میکروفن را در مرورگر فعال کنید.");
+                        } else if (event.error === "no-speech") {
+                            voiceState.textContent = "صدایی تشخیص داده نشد؛ دوباره تلاش کنید";
+                        } else {
+                            voiceState.textContent = "خطا در تشخیص صدا";
+                            showToast("تشخیص گفتار با خطا مواجه شد.");
+                        }
+                    };
+
+                    recognition.onend = function () {
+                        setListeningState(false);
+
+                        if (!input.value.trim()) {
+                            voiceState.textContent = "برای صحبت، دکمه میکروفن را لمس کنید";
+                        }
+                    };
+                }
+
+                try {
+                    input.value = "";
+                    resizeInput();
+                    recognition.start();
+                } catch (error) {
+                    setListeningState(false);
+                    showToast("امکان شروع میکروفن وجود ندارد.");
+                }
+            }
+
+            form.addEventListener("submit", function (event) {
+                event.preventDefault();
+                sendMessage(input.value);
+            });
+
+            input.addEventListener("input", resizeInput);
+
+            input.addEventListener("keydown", function (event) {
+                if (event.key === "Enter" && !event.shiftKey) {
+                    event.preventDefault();
+                    form.requestSubmit();
+                }
+            });
+
+            mainMicButton.addEventListener("click", startListening);
+            miniMicButton.addEventListener("click", startListening);
+
+            speakerButton.addEventListener("click", function () {
+                speakReplies = !speakReplies;
+                speakerButton.classList.toggle("active", speakReplies);
+                speakerButton.setAttribute("aria-pressed", String(speakReplies));
+
+                if (!speakReplies && "speechSynthesis" in window) {
+                    window.speechSynthesis.cancel();
+                }
+
+                showToast(speakReplies ? "خواندن صوتی پاسخ روشن شد" : "خواندن صوتی پاسخ خاموش شد");
+            });
+
+            clearButton.addEventListener("click", function () {
+                stopListening();
+
+                if ("speechSynthesis" in window) {
+                    window.speechSynthesis.cancel();
+                }
+
+                var dynamicMessages = messages.querySelectorAll(".message");
+
+                for (var i = 1; i < dynamicMessages.length; i++) {
+                    dynamicMessages[i].remove();
+                }
+
+                input.value = "";
+                resizeInput();
+                connectionText.textContent = "آماده پاسخ‌گویی";
+                voiceState.textContent = "برای صحبت، دکمه میکروفن را لمس کنید";
+                showToast("گفت‌وگوی جدید آماده شد");
+            });
+
+            var quickPromptButtons = document.querySelectorAll("[data-prompt]");
+
+            for (var i = 0; i < quickPromptButtons.length; i++) {
+                quickPromptButtons[i].addEventListener("click", function () {
+                    sendMessage(this.getAttribute("data-prompt"));
+                });
+            }
+
+            if (!SpeechRecognition) {
+                voiceState.textContent = "برای قابلیت صوتی از Chrome یا Edge استفاده کنید";
+            }
+
+            resizeInput();
+        })();
+    </script>
+</body>
+</html>

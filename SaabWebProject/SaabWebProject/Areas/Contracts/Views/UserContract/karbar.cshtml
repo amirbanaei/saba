@@ -1,0 +1,32 @@
+﻿@model int
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<button class="btn btn-primary" onclick="generateBaleCode()">
+    اتصال حساب به بله
+</button>
+
+<div id="baleResult" style="margin-top:15px; display:none;" class="alert alert-info"></div>
+
+<script>
+    function generateBaleCode() {
+        // استفاده از Model که همان user.usr_ID است
+        $.get("/UserContract/GenerateLinkCode", { userId: @Model }, function (res) {
+            if (res.success) {
+                $("#baleResult")
+                    .html("کد اتصال شما: <strong>" + res.code + "</strong><br>لطفا این کد را در چت ربات ارسال کنید.")
+                    .show();
+            } else {
+                alert("خطا در ساخت کد: " + (res.message || ""));
+            }
+        });
+    }
+</script>
+
+
+
+
+
+
+

@@ -1,0 +1,199 @@
+﻿
+@{
+
+    ViewBag.Title = "گزارش فیش حقوقی";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    //Layout = null;
+}
+<link href="~/Assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+<link href="~/Assets/plugins/BootstrapPersianDateTimePicker/src/jquery.md.bootstrap.datetimepicker.style.css" rel="stylesheet" />
+
+<link href="~/MyStyles/MyStyle.css" rel="stylesheet" />
+<link href="~/MyStyles/Tablestyle.css" rel="stylesheet" />
+<div class="mt-10px">
+    <div class="row " style="">
+        <div class="col-xl-3">
+            <label class="form-label"> کاربر </label>
+            <span id="users"></span>
+        </div>
+        <div class="col-xl-2">
+            <label class="form-label">ماه</label>
+            <select class="form-select my_Select" id="Month">
+                <option value="0">انتخاب مورد</option>
+                <option value="1">فروردین</option>
+                <option value="2">اردیبهشت</option>
+                <option value="3">خرداد</option>
+                <option value="4">تیر</option>
+                <option value="5">مرداد</option>
+                <option value="6">شهریور</option>
+                <option value="7">مهر</option>
+                <option value="8">آبان</option>
+                <option value="9">آذر</option>
+                <option value="10">دی</option>
+                <option value="11">بهمن</option>
+                <option value="12">اسفند</option>
+            </select>
+        </div>
+        <div class="col-xl-2">
+            <div class="col-xl-12">
+                <label class="form-label">سال</label>
+            </div>
+            <div class="col-xl-12">
+                <div class="col-xl-12">
+                    <select class="form-select" id="Year">
+                        <option value="0">انتخاب کنید</option>
+
+                        @{
+                            System.Globalization.PersianCalendar cs2 = new System.Globalization.PersianCalendar();
+                            int currentYear = cs2.GetYear(DateTime.Now);
+
+                            for (var i = 4; i >= 0; i--)
+                            {
+                                var s = DateTime.Now.AddYears(-i);
+
+                                <option value="@cs2.GetYear(s)">@cs2.GetYear(s)</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3"></div>
+        <div class="col-xl-2">
+            <button class="btn form-control buttonGeneral" id="btnShowSR" data-bs-toggle="modal" data-bs-target="#modalLg">
+                <i class="fa fa-eye fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text">نمایش</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+@*<div class="mytableSR" style="margin-top:20px">
+
+    </div>*@
+
+
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Scripts/sweetalert2.js"></script>
+<script src="~/Scripts/popper.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+      $("#users").load('@Url.Content("/Users/Users/_GetAllUsers_Select3")',function(){
+          $('#select_users').attr("id","UserID");
+
+        });
+    });
+</script>
+<script>
+    var Toast = Swal.mixin({
+        toast: true,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    });
+    function sendAjax26799(url2, fd2) {
+        console.log($("#UserID").val());
+        console.log($("#Month").val());
+        fd2.append("UserID", $("#UserID").val());
+        fd2.append("Year", $("#Year").val());
+        fd2.append("Month", $("#Month").val());
+
+        $.ajax({
+            url: url2,
+            type: 'POST',
+            data: fd2,
+            processData: false,
+            contentType: false,
+            success: function (resp1) {
+
+                // دریافتی از بک‌اند را در المان با کلاس myTable نمایش دهید
+
+                if (resp1 == "0") {
+                    Toast.fire({
+                        icon: 'error',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "مجوز نمایش فیش صادر نشده است"
+                    }).then(() => {
+                        $("#loading-message").css("display", "none");
+                    });
+                }
+                else if (resp1 == "-1") {
+                    Toast.fire({
+                        icon: 'error',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "فیشی برای این کاربر در این ماه محاسبه نشده است"
+                    }).then(() => {
+                        $("#loading-message").css("display", "none");
+                    });
+                }
+                else if (resp1 == "-2") {
+                    Toast.fire({
+                        icon: 'error',
+                        background: '#35434A',
+                        color: 'white',
+                        title: "در نمایش فیش خطایی رخ داده است"
+                    }).then(() => {
+                        $("#loading-message").css("display", "none");
+                    });
+                }
+                else {
+                    $("#loading-message").css("display", "none");
+                    fd = new FormData();
+                    // $(".mytableSR").html(resp1);
+                    $("#big_modal_body").html(resp1)
+                    // $("#modalLg").modal('show')
+                }
+
+            },
+            error: function (resp1) {
+                console.log(resp1);
+                console.log("Nokeye");
+                $("#loading-message").css("display", "none");
+                Toast.fire({
+                    icon: 'success',
+                    background: '#35434A',
+                    color: 'white',
+                    title: "با خطا مواجه شده است ، لطفا بعدا تلاش فرمایید"
+                }).then(() => {
+                    $("#loading-message").css("display", "none");
+                });
+            }
+        });
+    }
+
+</script>
+<script>
+    var fd = new FormData();
+        //----------------------------------------------------------------
+    $("#btnShowSR").click(function () {
+        console.log($("#UserID").val());
+        console.log($("#Month").val());
+
+            if ($("#UserID").val() == 0) {
+                alert("لطفا مولفه را انتخاب کنید");
+            }
+            else if ($("#Month").val() == 0) {
+                alert("لطفا ماه را انتخاب کنید");
+            }
+            else if ($("#Year").val() == 0) {
+                alert("لطفا سال را انتخاب کنید");
+            }
+
+           else {
+                sendAjax26799('@Url.Action("ShowFish", "Formula", new { area = "Salaries" })', fd);
+           };
+     });
+</script>
+
+
+
+
+

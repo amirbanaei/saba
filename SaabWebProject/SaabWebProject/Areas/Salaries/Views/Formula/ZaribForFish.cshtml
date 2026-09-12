@@ -1,0 +1,146 @@
+﻿
+@{
+    ViewBag.Title = "ضریب فیش";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="mb-5">
+    <div class="card">
+        <div class="card-body pb-2">
+            <div class="row" style="margin-top:20px">
+                <div class="col-xl-6">
+                    <label class="form-label"> پیمان </label>
+                    @Html.Action("_GetAllListPeymans_Select", "Peyman", new { area = "Contracts" })
+                </div>
+                <div class="col-xl-2">
+                    <label class="form-label"> ضریب کسر کار </label>
+                    <input class="form-control AmountInput" id="pymnzrbfsh_zaribkasrekar" />
+                </div>
+                <div class="col-xl-2">
+                    <label class="form-label"> ضریب مأموریت </label>
+                    <input class="form-control AmountInput" id="pymnzrbfsh_zaribmamoriat" />
+                </div>
+
+                <div class="col-xl-2">
+                    <label class="form-label"> ضریب غیبت </label>
+                    <input class="form-control AmountInput" id="pymnzrbfsh_zaribqeybat" />
+                </div>
+
+            </div>
+            <hr  />
+            <div class="row" id="Div_ContinueForm">
+                <div class="col-xl-11">
+
+                </div>
+                <div class="col-xl-1">
+                    <button class="btn form-control buttonsabt" id="submitZaribForFish">
+                        <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                        <span class="bSabt-text">ثبت</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="card-arrow" style="z-index:-100">
+                <div class="card-arrow-top-left"></div>
+                <div class="card-arrow-top-right"></div>
+                <div class="card-arrow-bottom-left"></div>
+                <div class="card-arrow-bottom-right"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Assets/plugins/BootstrapPersianDateTimePicker/dist/jquery.md.bootstrap.datetimepicker.js"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+<script>
+    $(".AmountInput").on("keyup", function (event) {
+
+        // کاربر متنی انتخابی انتخاب میکند
+        var selection = window.getSelection().toString();
+        if (selection !== '') {
+            return;
+        }
+
+        // زمانی که جهت ها کلیک میشوند
+        if ($.inArray(event.keyCode, [38, 40, 37, 39]) !== -1) {
+            return;
+        }
+
+        var $this = $(this);
+
+        // گرفتن مقدار
+        var input = $this.val();
+
+        var input = input.replace(/[\D\s\._\-]+/g, "");
+        input = input ? parseInt(input, 10) : 0;
+
+        $this.val(function () {
+            return (input === 0) ? "" : input.toLocaleString("en-US");
+        });
+    }); 
+    @*$(function(){
+    $("#div_peyman5").load('@Url.Action(".../../Contracts/RegistrationDocument/GetPeymansForThisUser_Saver")', function(response, status, xhr) {
+        if (status == "success") {
+            console.log("Load successful");
+        } else {
+            console.error("Load failed with status: " + status);
+        }
+    });
+});*@
+    $("#submitZaribForFish").click(function () {
+        console.log($("#pymnzrbfsh_zaribkasrekar").val());
+        console.log($("#pymnzrbfsh_zaribmamoriat").val());
+        console.log($("#pymnzrbfsh_zaribmamoriat").val());
+        console.log($("#select_peyman").val());
+        var inputString = $("#pymnzrbfsh_zaribkasrekar").val();
+        var pymnzrbfsh_zaribkasrekar = inputString.replace(/,/g, '');
+
+        var inputString2 = $("#pymnzrbfsh_zaribqeybat").val();
+        var pymnzrbfsh_zaribqeybat = inputString2.replace(/,/g, '');
+
+        var inputString3 = $("#pymnzrbfsh_zaribmamoriat").val();
+        var pymnzrbfsh_zaribmamoriat = inputString3.replace(/,/g, '');
+
+
+
+        if ($("#select_peyman").val() == "Select") {
+            alert("لطفا نام پیمان را انتخاب نمایید ")
+        } else {
+
+                             $.ajax({
+ beforeSend: function () {
+     document.getElementById("loading-message").style.display = "block";
+
+                                     console.log($("#pymnzrbfsh_zaribmamoriat").val());
+
+                                 },
+
+                                 url: '@Url.Action("creatForzarib2", "Moalefe", new { area = "Salaries" })?pymnzrbfsh_zaribkasrekar=' + pymnzrbfsh_zaribkasrekar + '&pymnzrbfsh_zaribmamoriat=' + pymnzrbfsh_zaribmamoriat + '&pymnzrbfsh_zaribqeybat=' + pymnzrbfsh_zaribqeybat + '&FKPeyman=' + $("#select_peyman").val(),
+ type: 'GET',
+ dataType: 'html',
+
+
+ success: function (res) {
+     document.getElementById("loading-message").style.display = "none";
+
+
+     if (res == "True") {
+         alert("با موفقیت ثبت شد");
+         location.reload();
+     }
+
+},
+error: function (res) {
+    console.log(res);
+}
+                             });
+        }
+    });
+
+
+</script>

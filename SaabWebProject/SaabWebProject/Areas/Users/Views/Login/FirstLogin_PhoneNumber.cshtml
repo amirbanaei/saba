@@ -1,0 +1,113 @@
+﻿@model long
+@{
+    ViewBag.Title = "کد تایید";
+    Layout = "~/Areas/Users/Views/Shared/_LayoutAccount.cshtml";
+}
+@section style{
+    <link type="text/css" href="~/Areas/Users/Styles/Login/FirstLogin_PhoneNumber.css" rel="stylesheet" />
+
+}
+<div class="login">
+
+    <div class="login-content">
+        <div class="alert alert-danger alert-dismissable fade show p-3" id="alert" style="display:none;">
+            @*<button type="button" class="btn-close" data-bs-dismiss="alert"></button>*@
+            <p id="alert_message"></p>
+
+        </div>
+        <form method="POST" name="login_form" style="padding:46px;">
+            <h1 style="padding-bottom:50px;" class="text-center">@ViewBag.Title</h1>
+            <div class="row" dir="ltr">
+                <div class="col-md-3 col-sm-3 col-3">
+                    <input maxlength="1" style="text-align: center;" type="text" class="code form-control form-control-lg bg-white bg-opacity-5" value="" />
+                </div>
+                <div class="col-md-3 col-sm-3 col-3">
+                    <input maxlength="1" style="text-align:center;" type="text" class="code form-control form-control-lg bg-white bg-opacity-5" value="" />
+                </div>
+                <div class="col-md-3 col-sm-3 col-3">
+                    <input maxlength="1" style="text-align:center;" type="text" class="code form-control form-control-lg bg-white bg-opacity-5" value="" />
+                </div>
+                <div class="col-md-3 col-sm-3 col-3">
+                    <input maxlength="1" style="text-align:center;" type="text" class="code form-control form-control-lg bg-white bg-opacity-5" value="" />
+                </div>
+            </div>
+
+            <button onclick='AccpetCode("@Url.Action("FirstLogin_SmsCode","Login")",@Model,"@Url.Action("SetNewpassword","Login",new { phonenumber = Model })")' style="margin-top:12px;" type="button" class="btn btn-outline-default btn-lg d-block w-100 fw-500 mb-3">تایید</button>
+            @*تماس بگیرید*@
+            <div class="row">
+
+                <div class="col-md-8 col-sm-8 col-8" style="text-align:right;">
+                    <a href="@Url.Action("FirstLogin_Call","Login")" style="font-size:15px;margin-top:7px;text-decoration:none;">تماس بگیرید؟</a>
+                </div>
+                <div class="col-md-4 col-sm-4 col-4">
+
+                </div>
+            </div>
+            @*تا ارسال کد دوباره*@
+            <div class="row" id="SendCode">
+                <div class="col-md-4 col-sm-4 col-4">
+
+                </div>
+                <div class="col-md-8 col-sm-8 col-8" style="text-align:left;" id="timer">
+                    <label id="SendAgain" style="font-size:15px;margin-top:7px;">تا ارسال دوباره <label>: <label id="secound">59</label>:<label id="minus">9</label></label></label>
+                </div>
+            </div>
+            <a href="#" onclick="history.back()" style="text-decoration:none;">برگشت</a>
+        </form>
+    </div>
+
+</div>
+@section script{
+    <script src="~/Areas/Users/Scripts/Login/FirstLogin_PhoneNumber.js"></script>
+    <script>
+
+        $(function () {
+            CountDowner("@Url.Action("FirstLogin_PhoneNumber","Login",new { phonenumber=Model })");
+
+        });
+        function CountDowner(url) {
+    var minus = 9;
+    var secound = 59;
+    var counter = 0.01;
+    var x = setInterval(function () {
+
+        //if (minus == 1) {
+        //    counter = 1;
+        //}
+        //if (secound != 0) {
+        //    secound = secound - counter;
+        //} else if (minus == 00 && secound == 0) {
+        //    var str = "<a href=" + url + " style='text-decoration: none;'>ارسال کد دوباره</a>";
+        //    document.getElementById("SendAgain").remove();
+        //    document.getElementById("timer").innerHTML = str;
+        //    stop();
+        //    clearInterval(x);
+        //    return false;
+        //} else {
+        //    minus = 00;
+        //    secound = 59;
+        //}
+        console.log(secound);
+        console.log(minus);
+        if (secound == 0 && minus != 0) {
+            secound = 59;
+            minus = minus - 1;
+        } else if (secound == 0 && minus == 0) {
+            var str = "<a href=" + url + " style='text-decoration: none;'>ارسال کد دوباره</a>";
+            document.getElementById("SendAgain").remove();
+            document.getElementById("timer").innerHTML = str;
+            stop();
+            clearInterval(x);
+            return false;
+        } else {
+            secound = secound - 1;
+            
+        }
+
+        document.getElementById("minus").innerHTML = minus.toString();
+        document.getElementById("secound").innerHTML = secound.toString();
+    }, 1000);
+}
+
+    </script>
+}

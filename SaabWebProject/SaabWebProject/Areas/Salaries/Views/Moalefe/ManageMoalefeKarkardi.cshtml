@@ -1,0 +1,202 @@
+﻿@model SaabWebProject.Models.ViewModels.Salaries.MoalefeKarkardi.UserAndMoalefeVM
+@{
+    ViewBag.Title = "مدیریت مولفه های کارکردی";
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+
+
+<link rel="stylesheet" href="~/Assets/plugins/select-picker/dist/picker.min.css" />
+
+<div class="row">
+    <div class="col-md-12">
+        
+        <label>آپلود فایل اکسل </label>
+        
+    </div>
+    
+    <div class="col-md-12" style="text-align: left">
+        @using (Html.BeginForm("ImportExcel_Moalefe", "Moalefe", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <input type="file" class="form-control" name="MyExcelStream" accept=".xlsx,.xls" />
+            <hr />
+            <input class="btn btn-outline-success" style="float: left" placeholder="انتحاب فایل ..." type="submit" value="ارسال" />
+        }
+    </div>
+</div>
+<hr />
+@using (Html.BeginForm("ExportMoalefeExcel", "Moalefe", FormMethod.Post,new {id="ExportMoalefeForm"}))
+{
+    <div class="row">
+        <div class="col-md-3">
+            <div class="col-md-12">
+                
+                <label>کاربران</label>
+            </div>
+            
+            <div class="col-md-12">
+                <select class="form-control" id="select_users" multiple="multiple" name="usrID">
+                    @foreach (var item in Model.Userlst.ToList())
+                    {
+                        <option value="@item.usr_ID">@item.FullName</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="col-md-12">
+                
+                <label>مولفه ها</label>
+            </div>
+            
+            <div class="col-md-12">
+                <select class="form-control" id="select_moalefe" multiple="multiple" name="MoalefeID">
+                    @foreach (var item in Model.MaolefeKarkardilst.ToList())
+                    {
+                        <option value="@item.md_ID">@item.md_Title</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="col-md-12">
+                
+                <label>سال</label>
+            </div>
+            
+            <div class="col-md-12">
+                <select class="form-control" id="select_year" name="year">
+                    @{
+                        <option value="-1">انتخاب مورد</option>
+                        System.Globalization.PersianCalendar c = new System.Globalization.PersianCalendar();
+
+                        for (var i = 5; i >= 1; i--)
+                        {
+                            var s = DateTime.Now.AddYears(-i);
+                            <option value="@c.GetYear(s)">@c.GetYear(s)</option>
+                        }
+                        <option value="@c.GetYear(DateTime.Now)">@c.GetYear(DateTime.Now)</option>
+                        for (var i = 1; i < 5; i++)
+                        {
+                            var s = DateTime.Now.AddYears(i);
+                            <option value="@c.GetYear(s)">@c.GetYear(s)</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="col-md-12">
+                
+                <label>ماه</label>
+            </div>
+            
+            <div class="col-md-12">
+                <select class="form-control" id="select_month" name="month">
+                    @{
+                        <option value="-1">انتخاب مورد</option>
+                        for (var i = 1; i <= 12; i++)
+                        {
+                            if (c.GetMonth(DateTime.Now) == i)
+                            {
+                                <option value="@c.GetMonth(DateTime.Now)">@c.GetMonth(DateTime.Now)</option>
+
+                            }
+                            else
+                            {
+                                <option value="@i">@i</option>
+                            }
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-md-12" style="text-align: left">
+            <button class="btn form-control buttonGeneral" type="button" id="DownloadExcel">
+                <i class="bi bi-download fa-fw me-1 VecGeneral"></i>
+                <span class="bGeneral-text">دانلود</span>
+                
+            </button>
+        </div>
+    </div>
+}
+
+<script src="/Scripts/jquery-3.3.1.min.js" type="text/javascript"></script>
+<script src="/Scripts/sweetalert2.js" type="text/javascript"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js" type="text/javascript"></script>
+<script>
+
+    $(function() {
+
+        var message = "@TempData["message"]";
+        if (message != "") {
+
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: message
+            });
+            return false;
+
+        }
+
+
+    });
+
+    var Toast = Swal.mixin({
+        toast: true,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    });
+
+    $("#select_users").picker({ search: true });
+    $("#select_moalefe").picker({ search: true });
+    $("#select_year").picker({ search: true });
+    $("#select_month").picker({ search: true });
+
+    $("#DownloadExcel").click(function () {
+
+
+        if ($("#select_users").val().length == 0) {
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: "لطفا کاربران را انتخاب کنید"
+            });
+        } else if ($("#select_moalefe").val().length == 0) {
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: "لطفا مولفه ها را انتخاب کنید"
+            });
+        } else if ($("#select_year").val() == -1) {
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: "لطفا سال را انتخاب کنید"
+            });
+        } else if ($("#select_month").val() == -1) {
+            Toast.fire({
+                icon: 'warning',
+                background: '#35434A',
+                color: 'white',
+                title: "لطفا ماه را انتخاب کنید"
+            });
+        } else {
+            $("#ExportMoalefeForm").submit();
+        }
+
+    });
+
+</script>

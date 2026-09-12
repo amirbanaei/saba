@@ -1,0 +1,85 @@
+﻿@using SaabWebProject.Models.DomainModels;
+
+@{
+    SaabEntities db = new SaabEntities();
+
+    Layout = null;
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="row" @*style="padding-left: 8px;"*@>
+    <div class="col-xl-6">
+        <label class="form-label">نام  </label>
+        <input class="form-control form-control222" id="name_mkj" />
+    </div>
+</div>
+    <div class="row">
+        <div class="col-xl-10"></div>
+        <div class="col-xl-2">
+            <div>
+
+               
+                <button id="btnSaveContract222" type="button" class="btn form-control buttonsabt">
+                    <i class="bi bi-clipboard-check fa-fw me-1 VecGeneral"></i>
+                    <span class="bSabt-text">ثبت</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        $("#btnSaveContract222").click(function () {
+        // جمع‌آوری داده‌ها
+        var dataList = []; // ایجاد یک آرایه برای ذخیره تمام داده‌ها
+
+        $("input.form-control222").each(function () {
+            var inputId = $(this).attr("id");
+            var value = $(this).val();
+
+            if (value) { // اگر ورودی پر شده است
+                var parts = inputId.split('_'); // تقسیم ID به اجزا
+                var type = parts[0];   // مثلا 'fardi'
+                   // ID رکورد در دیتابیس
+                dataList.push({
+              
+                    Name: value
+                });
+                // ارسال داده‌ها به سرور
+            }
+        });
+        if (dataList.length > 0) {
+            updateDatabase(dataList);
+            console.log(dataList);
+        }
+    });
+    function updateDatabase(dataList) {
+        $.ajax({
+            url: '/Reporter/Dashboard/UpdateRecord9', // آدرس اکشن کنترلر شما
+            method: 'POST',
+            data: JSON.stringify(dataList), // ارسال آرایه به سرور
+
+            contentType: 'application/json',
+            success: function (response) {
+                console.log("Record updated successfully.");
+                if (response == "true") {
+                    alert("با موفقیت ثبت شد");
+                    location.reload();
+
+                }
+            },
+            error: function (error) {
+                console.error("Error updating record:", error);
+            }
+        });
+    }
+
+
+    function Geeks() {
+        var table = document.getElementById("table_First");
+        var rowCount = table.rows.length;
+        console.log(rowCount)
+        if (rowCount > 14) {
+            table.deleteRow(rowCount - 1);
+        }
+    }
+    </script>

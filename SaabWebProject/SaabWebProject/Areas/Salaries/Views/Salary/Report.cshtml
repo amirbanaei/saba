@@ -1,0 +1,195 @@
+﻿@{
+    /**/
+
+    ViewBag.Title = "گزارش";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+    var mystring = "";
+}
+
+<div class="card">
+    <ul class="nav nav-tabs nav-tabs-v2 ps-4 pe-4">
+        <li class="nav-item me-3">
+            <a href="#show_Fish" class="nav-link active" data-bs-toggle="pill">
+                <button class=" nav-btn">نمایش فیش</button>
+            </a>
+        </li>
+        @*<li class="nav-item me-3">
+            <a href="#show_Report" class="nav-link" data-bs-toggle="pill">
+                <button class=" nav-btn">گزارش</button>
+            </a>
+        </li>*@
+    </ul>
+    <div class="tab-content p-4">
+        <div class="tab-pane fade show active" id="show_Fish">
+            @*@Html.Action("/Salaries/Formula/MoshahedeFish_For_Report")*@
+            @Html.Action("MoshahedeFish_For_Report", "Formula", new { area = "Salaries" })
+        </div>
+
+        <div class="tab-pane fade show " id="show_Report" style="margin-top:10px">
+            <div class="card">
+                <div class="card-body pb-2">
+                    <div class="row">
+                        <div class="col-xl-4">
+                            <label class="form-label"> خروجی مورد نظر  </label>
+                            <select class="form-select">
+                                <option>انتخاب کنید</option>
+                                <option>فیش حقوقی</option>
+                                <option>لیست بیمه تامین اجتماعی</option>
+                                <option>لیست مالیات حقوق</option>
+                                <option>لیست واریزی بانک</option>
+                                <option>لیست هایلو واریزی بانک</option>
+                                <option>لیست پاداش ها و جرایم</option>
+                                <option>لیست کارکرد تایید شده پرسنل</option>
+                                <option>لیست کارکرد ثبت شده پرسنل</option>
+
+                            </select>
+                        </div>
+                        <div class="col-xl-6">
+                            <label class="form-label"> پیمان مورد نظر  </label>
+                            @Html.Action("_GetAllListPeymans_SingleSelect", "Peyman", new { area = "Contracts" })
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-4" id="userselect" style="display:none">
+
+
+
+                        </div>
+                        <div class="col-xl-3">
+                            <label class="form-label"> ماه  </label>
+                            <select class="form-select" id="month">
+                                <option value="0">انتخاب کنید..</option>
+                                <option value="01">فروردین</option>
+                                <option value="02">اردیبهشت</option>
+                                <option value="03">خرداد</option>
+                                <option value="04">تیر</option>
+                                <option value="05">مرداد</option>
+                                <option value="06">شهریور</option>
+                                <option value="07">مهر</option>
+                                <option value="08">آبان</option>
+                                <option value="09">آذر</option>
+                                <option value="10">دی</option>
+                                <option value="11">بهمن</option>
+                                <option value="12">اسفند</option>
+                            </select>
+                        </div>
+                        <div class="col-xl-3">
+                            <label class="form-label"> سال  </label>
+                            <select class="form-select" id="year">
+                                <option style="color:black">انتخاب کنید</option>
+                                <option style="color:black">1400</option>
+                                <option style="color:black">1401</option>
+                                <option style="color:black">1402</option>
+                                <option style="color:black">1403</option>
+                                <option style="color:black">1404</option>
+
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-top:30PX;">
+                        <div class="col-xl-6" style="margin-top:4.5%">
+                        </div>
+                        <div class="col-xl-6">
+                            <div class="form-group mb-3">
+                                <button id="btnCreate" type="button" class="btn btn-outline-info" style=" float: left;">
+                                    <i class="fa fa-file-alt fa-fw me-1 VecGeneral"></i>
+                                    <span class="bGeneral-text"> تولید گزارش</span>
+                                   
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-arrow">
+                    <div class="card-arrow-top-left"></div>
+                    <div class="card-arrow-top-right"></div>
+                    <div class="card-arrow-bottom-left"></div>
+                    <div class="card-arrow-bottom-right"></div>
+                </div>
+            </div>
+            <div id="Report">
+
+            </div>
+        </div>
+    </div>
+    <div class="card-arrow">
+        <div class="card-arrow-top-left"></div>
+        <div class="card-arrow-top-right"></div>
+        <div class="card-arrow-bottom-left"></div>
+        <div class="card-arrow-bottom-right"></div>
+    </div>
+
+</div>
+<script src="~/Scripts/jquery-3.3.1.js" type="text/javascript"></script>
+<script src="~/Assets/plugins/select-picker/dist/picker.min.js"></script>
+
+<script>
+    $("#btnCreate").click(function () {
+
+   sendAjax();
+    });
+     function sendAjax() {
+            $.ajax({
+                url: '@Url.Action("DownloadFish","Salary",new { area = "Salaries" })',
+                data: { year: $("#year").val(), month: $("#month").val(), personelCode: $("#UserOfPeyman").val(), peyman: $("#select_peyman1").val()  },
+                type: "Post",
+                dataType: "html",
+                success: function () {
+                    @*if (resp == "True") {
+                        $.ajax({
+                            url: '@Url.Action("ReportPage", "Salary")',
+                            dataType: 'html',
+                            type: 'Get',
+                            success: function (res) {
+                                $("#Report").html(res);
+                            }
+                        })
+
+                    }*@
+
+                    var link = '@Url.Action("DownloadFish", "Salary", new {area= "Salaries", year = "7", month = "8", personelCode="9", peyman="10" })'
+                  //link = link.replace("Statment", "s");
+
+                  link = link.replace("7", $("#year").val());
+                    link = link.replace("8", $("#month").val());
+                    link = link.replace("9", $("#UserOfPeyman").val());
+                    link = link.replace("10", $("#select_peyman1").val());
+                  link = link.replace("amp;", "");
+                  link = link.replace("amp;", "");
+                  link = link.replace("amp;", "");
+                  link = link.replace("amp;", "");
+
+                  window.location = link;
+
+                   },
+                   error: function (resp2) {
+
+                   }
+     });
+
+    }
+</script>
+<script>
+    $("#select_peyman1").on('change', function () {
+
+      $.ajax({
+          url: '@Url.Action("_ListUsersOfPeyman", "Salary",new { area = "Salaries" })',
+          data: { idPeyman: $(this).val() },
+                type: "Post",
+                dataType: "html",
+          success: function (resp) {
+                 $("#userselect").css('display', 'block')
+                 $("#userselect").html(resp);
+                   },
+                   error: function (resp2) {
+
+                   }
+     });
+    });
+</script>
+
